@@ -6,11 +6,16 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import DetectPlatform from "../../DetectPlatform";
-import {Ionicons, AntDesign} from "@expo/vector-icons";
+// import {Ionicons, AntDesign} from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import DialogInput from 'react-native-dialog-input';
 import { triggerNoQbForm } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
+AntDesign.loadFont();
+Ionicons.loadFont();
 class LedgerIntegration extends Component {
   constructor(props) {
     super(props);
