@@ -1,8 +1,8 @@
 import React, { Component,Fragment } from "react";
-import { View, Text, Image, StyleSheet, BackHandler,Alert,  } from "react-native";
+import { View, Text, Image, StyleSheet, BackHandler,Alert,TouchableOpacity } from "react-native";
 import { Button, Card, Overlay, Input } from "react-native-elements";
 import { LEDGERS, network } from "../../constants/constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
+//import { TouchableOpacity } from "react-native-gesture-handler";
 import { Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import DetectPlatform from "../../DetectPlatform";
