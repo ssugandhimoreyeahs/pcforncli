@@ -54,6 +54,7 @@ import QuickbookConnected from "./src/views/ftux/quickBookConnected";
 import CategoryScreen from "./src/views/components/profile/categoryscreen";
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
+import SplashScreen from "react-native-splash-screen";
 
 const MainNavigator = createStackNavigator(
   {
@@ -319,6 +320,22 @@ const store = createStore(reducer,applyMiddleware(ReduxThunk));
 const NavigationApp = createAppContainer(MainNavigator);
 
 export default class App extends React.Component {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+      count: 0
+    }
+  }
+  componentDidMount = () => {
+    console.log("I am in componentDidMountApp - ");
+    SplashScreen.hide();
+  }
+  static getDerivedStateFromProps(props,state){
+    
+    return null;
+  }
   render() {
     return (
      
