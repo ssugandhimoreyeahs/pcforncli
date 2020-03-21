@@ -1,10 +1,10 @@
 import React, { Component, Fragment } from "react";
-import { StyleSheet, View, Alert, Keyboard,Image, SafeAreaView, StatusBar,BackHandler,Platform } from "react-native";
+import { StyleSheet, View, Alert, Keyboard,Image, SafeAreaView, StatusBar,BackHandler,Platform,TouchableOpacity, ScrollView } from "react-native";
 import { Button, Card, Input, Text, Icon } from "react-native-elements";
 import { Dropdown } from "react-native-material-dropdown";
 import { updateUserWithCompany,getUser,uploadCompanyLogo } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
+//import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import { CONNECTION_ABORTED,TRY_AGAIN,BUSINESS_PROFILE_UPDATED } from "../../api/message";
 import {
   BUSINESS_MODEL_OPTIONS,
