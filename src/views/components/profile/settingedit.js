@@ -153,7 +153,7 @@ return(
                         </View>
                     </View>
 
-       <View style={{marginTop:100,backgroundColor:"#FFFFFF", flexDirection:'column',width:"100%", alignItems:'center',}}>
+       <View style={{marginTop:120,backgroundColor:"#FFFFFF", flexDirection:'column',width:"100%", alignItems:'center',}}>
 
 
        {/* <View style={styles.vname}>
@@ -178,7 +178,7 @@ return(
           
         </View>
 
-        <View style={{ marginTop:25,width:"90%",flexDirection:"row",
+        <View style={{ marginTop:40,width:"90%",flexDirection:"row",
         justifyContent:"space-between",
         borderBottomWidth:1,
         borderBottomColor:"#007AFF",backgroundColor:"#FFFFFF",
@@ -193,7 +193,7 @@ style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10
           />
         </View>
 
-        <View style={{ marginTop:25,width:"90%",flexDirection:"row",
+        <View style={{ marginTop:40,width:"90%",flexDirection:"row",
         justifyContent:"space-between",
         borderBottomWidth:1,
         borderBottomColor:"#007AFF",backgroundColor:"#FFFFFF",
