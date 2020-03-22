@@ -2,7 +2,7 @@ import { createAppContainer, } from "react-navigation";
 import {createStackNavigator} from 'react-navigation-stack';
 import { createStore, applyMiddleware } from "redux";
 import {AntDesign} from "@expo/vector-icons"
-import {Text, TouchableOpacity,SafeAreaView, BackHandler } from "react-native";
+import { Platform } from "react-native";
 import React, { Component } from "react";
 import { Provider } from "react-redux";
 import axios from "axios";
@@ -321,21 +321,14 @@ const NavigationApp = createAppContainer(MainNavigator);
 
 export default class App extends React.Component {
 
-  constructor(props){
-    super(props);
-
-    this.state = {
-      count: 0
-    }
-  }
+  
   componentDidMount = () => {
     console.log("I am in componentDidMountApp - ");
-    SplashScreen.hide();
+    if(Platform.OS == "android"){
+      SplashScreen.hide();
+    }
   }
-  static getDerivedStateFromProps(props,state){
-    
-    return null;
-  }
+  
   render() {
     return (
      
