@@ -324,9 +324,9 @@ export default class App extends React.Component {
   
   componentDidMount = () => {
     console.log("I am in componentDidMountApp - ");
-    if(Platform.OS == "android"){
+    //if(Platform.OS == "android"){
       SplashScreen.hide();
-    }
+    //}
   }
   
   render() {
