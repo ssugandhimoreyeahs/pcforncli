@@ -734,7 +734,7 @@
 			baseConfigurationReference = 9A052D9147491AA0B1CF8AF4 /* Pods-pocket_cfo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1.20;
+				CURRENT_PROJECT_VERSION = 3.1.20;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = FS87CRZ2ZU;
 				HEADER_SEARCH_PATHS = (
@@ -783,7 +783,7 @@
 				);
 				INFOPLIST_FILE = pocket_cfo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -801,7 +801,7 @@
 			baseConfigurationReference = E5AAD9FEF022BA4EC9604E7C /* Pods-pocket_cfo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CURRENT_PROJECT_VERSION = 1.20;
+				CURRENT_PROJECT_VERSION = 3.1.20;
 				DEVELOPMENT_TEAM = FS87CRZ2ZU;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -849,7 +849,7 @@
 				);
 				INFOPLIST_FILE = pocket_cfo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				MARKETING_VERSION = 3.0;
+				MARKETING_VERSION = 1.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
