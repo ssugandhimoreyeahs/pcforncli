@@ -67,8 +67,8 @@ const TransactionComponent = (props) => {
            </View>
 
            <View style={{ flexDirection: "row", justifyContent: "space-between",marginTop:5  }}>
-              <View style={{ justifyContent:"center",width:"65%",paddingLeft:5 }}><Text style={{color:'#1D1E1F',fontSize:10,}}>{ props.date }</Text></View>
-              <View style={{ width:"35%" }}>
+              <View style={{ justifyContent:"center",width:"60%",paddingLeft:5 }}><Text style={{color:'#1D1E1F',fontSize:10,}}>{ props.date }</Text></View>
+              <View style={{ width:"40%" }}>
               <TouchableOpacity style={{ ...styles.btn }}
                 onPress={()=>{
                   if(userData.bankStatus != "linked"){

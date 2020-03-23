@@ -1,13 +1,16 @@
 import React, { Component, Fragment } from "react";
-import { StyleSheet, View, Alert,Keyboard, SafeAreaView, StatusBar,BackHandler } from "react-native";
+import { StyleSheet, View, Alert,Keyboard, SafeAreaView, StatusBar,BackHandler,TouchableOpacity } from "react-native";
 import { Button, Input, Text, Icon } from "react-native-elements";
 import { createUser } from "../../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
 import DetectPlatform from "../../../DetectPlatform";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import {AntDesign} from "@expo/vector-icons";
+//import {  } from "react-native-gesture-handler";
+//import {AntDesign} from "@expo/vector-icons";
 import { updateUserPassword } from "../../../api/api";
 import { PASSWORD_UPDATED,INVALID_OLD_PASSWORD,CONNECTION_ABORTED,TRY_AGAIN } from "../../../api/message";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
+AntDesign.loadFont();
 
  class Changepassword extends Component {
   constructor(props) {
