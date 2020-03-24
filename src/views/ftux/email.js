@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     width: "75%"
   },
   input: {
-    marginVertical: "3%",
+    marginVertical: "2%",
     textAlign: "center"
   }
 });

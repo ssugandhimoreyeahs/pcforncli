@@ -152,7 +152,7 @@ class Password extends Component {
         <Input
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.input}
-          placeholder={"password"}
+          placeholder={"Password"}
           secureTextEntry={true}
           value={this.state.password}
           onChangeText={text => this.handleChangeText(text)}
