@@ -13,7 +13,7 @@ import { triggerNoQbForm } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import BenchLogo from "../../assets/bench_updated.jpeg";
 AntDesign.loadFont();
 Ionicons.loadFont();
 class LedgerIntegration extends Component {
@@ -364,10 +364,8 @@ handleNoQbButton = async () => {
                   }}
                 >
                     <Image
-                      source={
-                        require("../../assets/bench_logo.png")
-                      }
-                      style={{ alignSelf: "center",width: 80,height:40  }}
+                      source={BenchLogo}
+                      style={{ alignSelf: "center",width: 100,height:50  }}
                       resizeMode='center'
                     />
                 </Card>

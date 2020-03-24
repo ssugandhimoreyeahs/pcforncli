@@ -1,7 +1,7 @@
 import APPJSON from "../../app.json";
 
 export const API_TIMEOUT = 40000;
-export const APP_VERSION = "3.1.20";
+export const APP_VERSION = "3.1.20-St-1.3";
 const NETWORKINSTANCE = {
   SANDBOXINSTANCE : "http://18.222.152.47:8081/v0.1", //code for the using the sandbox
   PRODUCTIONINSTANCE : "http://3.132.213.123:8081/v0.1", // code for the production

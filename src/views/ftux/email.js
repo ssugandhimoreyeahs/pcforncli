@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { StyleSheet, View,Alert,Keyboard, SafeAreaView, StatusBar,BackHandler} from "react-native";
+import { StyleSheet, View,Alert,Keyboard, SafeAreaView, StatusBar,BackHandler, TouchableOpacity} from "react-native";
 import { Button, Input, Text } from "react-native-elements";
 import { isUserAlreadyExist } from "../../api/api";
 import { CONNECTION_ABORTED, TRY_AGAIN } from "../../api/message";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { TouchableOpacity } from "react-native-gesture-handler";
+//import {  } from "react-native-gesture-handler";
 //import {AntDesign} from "@expo/vector-icons"
 import  DetectPlatform  from "../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -106,14 +106,16 @@ AntDesign.loadFont();
           visible={this.state.isSpinner}
           textStyle={styles.spinnerTextStyle}
         />
-        <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
+        <TouchableOpacity onPress={()=>{
+          this.props.navigation.goBack();
+        }}>
         <AntDesign size={30} name='left' style={{alignSelf:'flex-start', marginLeft:10,marginTop:5}} />
         </TouchableOpacity>
         <Text style={styles.text}>What's your business email address?</Text>
         <Input
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.input}
-          placeholder={"business email address"}
+          placeholder={"Business email address"}
           value={this.state.email}
           onChangeText={text => this.handleChangeText(text)}
         />
@@ -155,13 +157,14 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   inputContainer: {
+    marginTop:60,
     alignSelf: "center",
     borderBottomColor: "#007AFF",
-    marginVertical: "10%",
+    marginVertical: "2%",
     width: "75%"
   },
   input: {
-    marginVertical: "5%",
+    marginVertical: "3%",
     textAlign: "center"
   }
 });
