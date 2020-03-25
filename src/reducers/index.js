@@ -10,6 +10,7 @@ import { cicReducer } from "./cashinchange";
 import { arDataReducer } from "./incommingar";
 import { insightsDataReducer } from './insights';
 import { forecastReducer } from "./forecast";
+import { salesReducer } from "./sales";
 
 export default combineReducers({
   financials,
@@ -20,5 +21,6 @@ export default combineReducers({
   cashInChange: cicReducer,
   incommingArRedux: arDataReducer,
   insightsRedux: insightsDataReducer,
-  forecastReducer: forecastReducer
+  forecastReducer: forecastReducer,
+  salesReducer: salesReducer
 });

@@ -294,13 +294,25 @@ class CategoryScreen extends React.Component{
             <View style={Styles.margins}>
                  <Spinner visible={isSpinner} />
                 <View style={{width:'100%', height:100, backgroundColor:'#FFFFFF', flexDirection:'row',justifyContent:'space-between', }}> 
-                    <TouchableOpacity onPress={ ()=> {this.props.navigation.goBack()}}>
+                    {
+                        this.state.isUsefulTouched == false ?
+                        <TouchableOpacity onPress={ ()=> {this.props.navigation.goBack()}}>
                         <View style={{backgroundColor:'#FFFFFF', width:34,height:30, marginTop:54,marginLeft:10,}}><AntDesign name='left' size={25} color={'#000000'}/></View>
+                     </TouchableOpacity> :
+                     <TouchableOpacity onPress={ ()=> { this.setState( (prevState) => { return { isUsefulTouched: !prevState.isUsefulTouched } } ); }}>
+                        <View style={{backgroundColor:'#FFFFFF', width:34,height:30, marginTop:54,marginLeft:10,}}><AntDesign name='close' size={25} color={'#000000'}/></View>
                      </TouchableOpacity>
+                    }
                     <Text style={{fontSize:17, width:129, marginLeft:45, marginRight:45, marginTop:54, height:22, color:'#000000',}}>Select Category</Text>
-                    <TouchableOpacity onPress={ ()=>{ this.setState( (prevState) => { return { isUsefulTouched: !prevState.isUsefulTouched } } ); } }>
+                    {
+                        this.state.isUsefulTouched == false ?
+                        <TouchableOpacity onPress={ ()=>{ this.setState( (prevState) => { return { isUsefulTouched: !prevState.isUsefulTouched } } ); } }>
                         <View style={{backgroundColor:'#FFFFFF',marginRight:10, marginTop:54,}}><Text style={{color:'#4A90E2',fontSize:17,}}>Edit</Text></View>
+                    </TouchableOpacity> :
+                    <TouchableOpacity disabled={true} onPress={ ()=>{ this.setState( (prevState) => { return { isUsefulTouched: !prevState.isUsefulTouched } } ); } }>
+                        <View style={{backgroundColor:'#FFFFFF',marginRight:10, marginTop:54,}}><Text style={{color:'#4A90E2',fontSize:17,}}>{`     `}</Text></View>
                     </TouchableOpacity>
+                    }
                 </View>
                  {
                    this.state.isUsefulTouched ? this.FirstViewComponent() : this.SecondViewComponent()

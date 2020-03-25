@@ -1,8 +1,8 @@
 import React, { Component,Fragment } from "react";
-import { View, Text, Image, StyleSheet, BackHandler,Alert,  } from "react-native";
+import { View, Text, Image, StyleSheet, BackHandler,Alert,TouchableOpacity } from "react-native";
 import { Button, Card, Overlay, Input } from "react-native-elements";
 import { LEDGERS, network } from "../../constants/constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
+//import { TouchableOpacity } from "react-native-gesture-handler";
 import { Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
 import DetectPlatform from "../../DetectPlatform";
@@ -13,7 +13,7 @@ import { triggerNoQbForm } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import BenchLogo from "../../assets/bench_updated.jpeg";
 AntDesign.loadFont();
 Ionicons.loadFont();
 class LedgerIntegration extends Component {
@@ -364,10 +364,8 @@ handleNoQbButton = async () => {
                   }}
                 >
                     <Image
-                      source={
-                        require("../../assets/bench_logo.png")
-                      }
-                      style={{ alignSelf: "center",width: 80,height:40  }}
+                      source={BenchLogo}
+                      style={{ alignSelf: "center",width: 100,height:50  }}
                       resizeMode='center'
                     />
                 </Card>
