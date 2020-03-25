@@ -36,6 +36,8 @@ import { cicAsynCreator } from "../../../reducers/cashinchange";
 import { fetchArAsyncCreator } from "../../../reducers/incommingar";
 import { fetchInsightsAsyncCreator } from "../../../reducers/insights";
 import { fetchForecastAsyncCreator } from "../../../reducers/forecast";
+import { salesAsyncCreator } from "../../../reducers/sales";
+
 const TIMEOUT_POPUP = 60000;
 class Dashboard extends PureComponent {
   
@@ -201,16 +203,16 @@ class Dashboard extends PureComponent {
   
         if(userResponse.userData.qbIntegrationStatus == true){
   
-          getSalesDataPromise().then((salesDataResponse)=>{
-            if(salesDataResponse.result == true && salesDataResponse.salesChartData.length > 0 ){
-              this.setState({ isSalesLoadedOnce:true,salesData:salesDataResponse.salesChartData,salesTotalAmount: salesDataResponse.response.finalAmount,showSalesChartLoader:false });
-            }else{
-              this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
-            }
-          }).catch((error)=>{
-            this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
-          })
-        
+          // getSalesDataPromise().then((salesDataResponse)=>{
+          //   if(salesDataResponse.result == true && salesDataResponse.salesChartData.length > 0 ){
+          //     this.setState({ isSalesLoadedOnce:true,salesData:salesDataResponse.salesChartData,salesTotalAmount: salesDataResponse.response.finalAmount,showSalesChartLoader:false });
+          //   }else{
+          //     this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
+          //   }
+          // }).catch((error)=>{
+          //   this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
+          // })
+          this.props.fetchSales();
           this.props.fetchIncommingAr();
           
         
@@ -430,7 +432,10 @@ const mapDispatchToProps = dispatch => {
   fetchCashInChange: ( cicCurrentRange = 0 ) => { dispatch(cicAsynCreator(cicCurrentRange)) },
   fetchIncommingAr: () => { dispatch(fetchArAsyncCreator()); },
   fetchInsights: () => { dispatch(fetchInsightsAsyncCreator()); },
-  fetchForecast: () => { dispatch(fetchForecastAsyncCreator()); }
+  fetchForecast: () => { dispatch(fetchForecastAsyncCreator()); },
+  fetchSales: (salesCurrentRange = 3, isMultiple = false) => { 
+      dispatch(salesAsyncCreator(salesCurrentRange,isMultiple)); 
+    }
   }
 };
 

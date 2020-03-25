@@ -1,14 +1,11 @@
 import { createAppContainer, } from "react-navigation";
 import {createStackNavigator} from 'react-navigation-stack';
 import { createStore, applyMiddleware } from "redux";
-import {AntDesign} from "@expo/vector-icons"
-import { Platform } from "react-native";
 import React, { Component } from "react";
+import { View,Text } from "react-native";
 import { Provider } from "react-redux";
 import axios from "axios";
-import axiosMiddleware, { returnRejectedPromiseOnError } from "redux-axios-middleware";
 import reducer from "./src/reducers";
-
 import { network } from "./src/constants/constants";
 import Name from "./src/views/ftux/name";
 import Title from "./src/views/ftux/title";
@@ -47,7 +44,6 @@ import TimeOut from "./src/views/components/profile/timeout";
 import FeedbackSubmission from "./src/views/feedback/feedbackSubmission";
 import ChangePassword from "./src/views/components/profile/changepassword";
 import ForgetPassword from "./src/views/ftux/forgetPassword";
-import somethingWrong from "./src/views/ftux/somethingWrong";
 import ReduxThunk from "redux-thunk";
 import QuickbookIntegration from "./src/views/ftux/quickbookIntegration";
 import QuickbookConnected from "./src/views/ftux/quickBookConnected";
@@ -55,6 +51,8 @@ import CategoryScreen from "./src/views/components/profile/categoryscreen";
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
 import SplashScreen from "react-native-splash-screen";
+
+import Axios from "axios";
 
 const MainNavigator = createStackNavigator(
   {
@@ -319,13 +317,15 @@ const store = createStore(reducer,applyMiddleware(ReduxThunk));
 
 const NavigationApp = createAppContainer(MainNavigator);
 
-export default class App extends React.Component {
+export default class App extends Component {
 
   
   componentDidMount = () => {
     console.log("I am in componentDidMountApp - ");
     //if(Platform.OS == "android"){
-      SplashScreen.hide();
+      setTimeout(()=>{
+        SplashScreen.hide();
+      },500);
     //}
   }
   
@@ -341,3 +341,25 @@ export default class App extends React.Component {
     );
   }
 }
+
+// export default class App extends Component{
+
+//   componentDidMount(){
+//     SplashScreen.hide();
+//     console.log("sdf");
+//     Axios.get("https://jsonplaceholder.typicode.com/users")
+//     .then((response)=>{
+//       console.log(response.status);
+//     }).catch((error)=>{
+//       console.log(error.status);
+//       console.log(error);
+//     })
+//   }
+//   render(){
+//     return(
+//       <View>
+//         <Text>Hello</Text>
+//       </View>
+//     );
+//   }
+// }

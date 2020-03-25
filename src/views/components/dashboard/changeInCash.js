@@ -34,8 +34,8 @@ class ChangeInCash extends Component {
 
     //code here
     const { cicCurrentRange } = props.cashInChangeData;
-    //console.log("testing here inside static getDerivedStatefromprops--------------------------------------");
-    console.log("getting cic Current range here ---------------",cicCurrentRange);
+    // //console.log("testing here inside static getDerivedStatefromprops--------------------------------------");
+    // console.log("getting cic Current range here ---------------",cicCurrentRange);
     let renderButton;
     if(cicCurrentRange == 1){
         renderButton = "This Month";
@@ -46,7 +46,7 @@ class ChangeInCash extends Component {
     }else{
         renderButton = "12 Months"
     }
-    console.log("render button ----------------------",renderButton);
+    // console.log("render button ----------------------",renderButton);
     //console.log("Ends Here")
     return { cocMonths: renderButton };
 }
@@ -138,7 +138,7 @@ class ChangeInCash extends Component {
     // cashInChangeData.masterLoader = false;
     // cashInChangeData.childLoader = true;
 
-    console.log("code test here ----------------------------------");
+   // console.log("code test here ----------------------------------");
     let isCICGraphEmpty = true;
     if(cashInChangeData.isFetched == true){
       for(let i = 0;i < cashInChangeData.cicData.cash.length; i++ ){
@@ -153,7 +153,7 @@ class ChangeInCash extends Component {
     
 
     //total = 15000;
-    console.log("ends here ----------------------------- new here");
+    //console.log("ends here ----------------------------- new here");
     return (
       <View>
         <View style={styles.margins}>
