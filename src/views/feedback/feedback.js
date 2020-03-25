@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { StyleSheet, View, TextInput, ToastAndroid, BackHandler,Alert,Platform,Image } from "react-native";
+import { StyleSheet, View, TextInput, ToastAndroid, BackHandler,Alert,Platform,Image,TouchableOpacity } from "react-native";
 import { Button, Text } from "react-native-elements";
 import SelectableTag from "../../controls/SelectableTag";
 import BottomNavLayout from "../../controls/bottom-nav-layout";
@@ -9,7 +9,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 // import { EvilIcons,Entypo } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import * as Permissions from 'expo-permissions';
-import { TouchableOpacity } from "react-native-gesture-handler";
+//import { TouchableOpacity } from "react-native-gesture-handler";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import ImagePickerRN from "react-native-image-picker";
@@ -178,39 +178,39 @@ export default class FeedbackScreen extends Component {
       }
     });
 
-    return false;
-    if(Platform.OS === 'ios'){
-      try{
-        const takePermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-        const permissionStatus = await Permissions.getAsync(Permissions.CAMERA_ROLL);
-        if( permissionStatus.status === "granted" ){
-          let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          //allowsEditing: false,
-          // aspect: [4, 3],
-          quality: 0.4
-        });
+    // return false;
+    // if(Platform.OS === 'ios'){
+    //   try{
+    //     const takePermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    //     const permissionStatus = await Permissions.getAsync(Permissions.CAMERA_ROLL);
+    //     if( permissionStatus.status === "granted" ){
+    //       let result = await ImagePicker.launchImageLibraryAsync({
+    //       mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //       //allowsEditing: false,
+    //       // aspect: [4, 3],
+    //       quality: 0.4
+    //     });
     
-        if (!result.cancelled) {
-          this.setState({ feedbackImages: [...this.state.feedbackImages,result ] })
-        }
-       }
-      }catch(error){
-        Alert.alert("Error","Error While Selecting Image Try Again!");
-      }
+    //     if (!result.cancelled) {
+    //       this.setState({ feedbackImages: [...this.state.feedbackImages,result ] })
+    //     }
+    //    }
+    //   }catch(error){
+    //     Alert.alert("Error","Error While Selecting Image Try Again!");
+    //   }
      
        
-    }else{
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        //allowsEditing: false,
-        // aspect: [4, 3],
-        quality: 0.4
-      });
-      if (!result.cancelled) {
-        this.setState({ feedbackImages: [...this.state.feedbackImages,result ] })
-      }
-    }
+    // }else{
+    //   let result = await ImagePicker.launchImageLibraryAsync({
+    //     mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    //     //allowsEditing: false,
+    //     // aspect: [4, 3],
+    //     quality: 0.4
+    //   });
+    //   if (!result.cancelled) {
+    //     this.setState({ feedbackImages: [...this.state.feedbackImages,result ] })
+    //   }
+    // }
 
   }
 

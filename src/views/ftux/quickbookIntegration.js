@@ -6,10 +6,12 @@ import { APINETWORK } from "../../constants/constants";
 import { getCurrentAuthToken } from "../../api/api";
 import { triggerQbDataCopyDb } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { Ionicons } from '@expo/vector-icons';
+//import { Ionicons } from '@expo/vector-icons';
 import DetectPlatform from "../../DetectPlatform";
 import Url from "url";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
+Ionicons.loadFont();
 class QuickbookIntegration extends Component{
     injectedJavaScripttt = `(function() {
         window.postMessage = function(data) {
@@ -113,14 +115,25 @@ class QuickbookIntegration extends Component{
                 {
                     this.state.isBodyLoaded ? 
                     <Fragment>
+                    <View style={{ height:"100%",width:"100%",backgroundColor:"#ECEEF1" }}>
+                    <View style={{ paddingVertical: 5,flexDirection:"row",width:"100%"  }}>
 
-                        <View style={{flexDirection:'row', width:'75%',marginTop:'1%',alignSelf:"flex-start",justifyContent:'space-between',}}>
-                                    <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
-                                    <Ionicons size={30} name='md-close' style={{alignSelf:'flex-start', marginLeft: 15,}} />
-                                    </TouchableOpacity>
-                                    <Text style={{ fontSize:17, fontWeight:"bold" }}>QuickBooks Integration</Text>
-                        </View>
+                    <View style={{ width:"10%",justifyContent:"center",alignItems:"center" }}>
+                        <TouchableOpacity  onPress={()=>{ this.props.navigation.goBack(); }} >
+                            <Ionicons name='md-close' size={25} color={'#000000'}/>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ width:"80%",justifyContent:"center",alignItems:"center" }}>
+
+                    <Text style={{ fontSize:17,fontWeight:"bold",color:"black" }}>{ `Quickbooks Integration` }</Text>
+
+                        
+                    </View>
+                    </View>
+                        {/* <View style={{ paddingVertical:7,backgroundColor:"#ECEEF1" }}></View> */}
+                        
                         <WebView 
+                        
                         incognito={true}
                         source={{ uri: APINETWORK.quickbooks, 
                                 headers: { Authorization:this.state.Authorization },
@@ -131,13 +144,14 @@ class QuickbookIntegration extends Component{
                         }}
                         
                         onMessage={(e) => { this.onMessageCalls(e); }}
-                        style={{ marginTop: StatusBar.currentHeight }}
+                        
                         
                     //  cacheEnabled={false}
                     //  sharedCookiesEnabled={false}
                     //  thirdPartyCookiesEnabled={false}
                     />
-
+                        
+                        </View>
                         </Fragment> : null
                 }
             </Fragment>
