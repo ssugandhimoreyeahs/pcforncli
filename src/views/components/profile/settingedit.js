@@ -171,7 +171,7 @@ return(
           
           <TextInput 
           
-          style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:-5,  height:30 }}
+          style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:0,  height:30 }}
           value={this.state.firstname} 
           onChangeText={ (firstname)=>{ this.setState({ firstname }) } }
           />
@@ -187,7 +187,7 @@ return(
           <Text style={{ fontSize: 16,color:"#000000"  }}>Last Name</Text>
           <TextInput 
 
-style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:-5,  height:30 }}
+style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:0,  height:30 }}
           value={this.state.lastname} 
           onChangeText={ (lastname)=>{ this.setState({ lastname }) } }
           />
@@ -202,7 +202,7 @@ style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10
           <Text style={{ fontSize: 16,color:"#000000"  }}>Title</Text>
           <TextInput 
 
-style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:-5,  height:30 }}
+style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:0,  height:30 }}
           value={this.state.title} 
           onChangeText={ (title)=>{ this.setState({ title }) } }
           />

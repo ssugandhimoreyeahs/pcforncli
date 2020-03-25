@@ -52,7 +52,7 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* pocket_cfoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = pocket_cfoTests.m; sourceTree = "<group>"; };
 		0D677F7CF9C59F0E00AFE755 /* libPods-pocket_cfo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-pocket_cfo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		13B07F961A680F5B00A75B9A /* PCFO-3.1.20-ST-1.5.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PCFO-3.1.20-ST-1.5.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* PocketCFO.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PocketCFO.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = pocket_cfo/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = pocket_cfo/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -206,7 +206,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* PCFO-3.1.20-ST-1.5.app */,
+				13B07F961A680F5B00A75B9A /* PocketCFO.app */,
 				00E356EE1AD99517003FC87E /* pocket_cfoTests.xctest */,
 				2D02E47B1E0B4A5D006451C7 /* PocketCFOTVOS.app */,
 				2D02E4901E0B4A5D006451C7 /* pocket_cfo-tvOSTests.xctest */,
@@ -266,7 +266,7 @@
 			);
 			name = pocket_cfo;
 			productName = pocket_cfo;
-			productReference = 13B07F961A680F5B00A75B9A /* PCFO-3.1.20-ST-1.5.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* PocketCFO.app */;
 			productType = "com.apple.product-type.application";
 		};
 		2D02E47A1E0B4A5D006451C7 /* pocket_cfo-tvOS */ = {
@@ -705,7 +705,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PCFO-3.1.20-ST-1.4.app/PCFO-3.1.20-ST-1.4";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketCFO.app/PocketCFO";
 			};
 			name = Debug;
 		};
@@ -725,7 +725,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PCFO-3.1.20-ST-1.4.app/PCFO-3.1.20-ST-1.4";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/PocketCFO.app/PocketCFO";
 			};
 			name = Release;
 		};
@@ -790,7 +790,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
-				PRODUCT_NAME = "PCFO-3.1.20-ST-1.5";
+				PRODUCT_NAME = PocketCFO;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -856,7 +856,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
-				PRODUCT_NAME = "PCFO-3.1.20-ST-1.5";
+				PRODUCT_NAME = PocketCFO;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

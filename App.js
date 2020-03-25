@@ -321,12 +321,11 @@ export default class App extends Component {
 
   
   componentDidMount = () => {
-    console.log("I am in componentDidMountApp - ");
-    //if(Platform.OS == "android"){
+    
       setTimeout(()=>{
         SplashScreen.hide();
-      },500);
-    //}
+      },400);
+    
   }
   
   render() {

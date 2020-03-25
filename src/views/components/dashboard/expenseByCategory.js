@@ -182,7 +182,7 @@ class ExpenseByCategory extends Component{
                         </View>
                      :
                      <View style={{ height:177,marginTop:15,justifyContent:"center",alignItems:"center" }}>
-                         <Text style={{ color:"#070640" }}>No Data Available!</Text>
+                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
                      </View>
                  }
              
