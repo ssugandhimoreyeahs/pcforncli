@@ -235,7 +235,11 @@ class ChangeInCash extends Component {
           <View style={{width:"40%",height:"100%",}}>
           <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
             //onPress={()=>this.props.navigation.navigate("ChangeInCashInsights")}
-            onPress={()=>{ Alert.alert("Message","Coming Soon!",[ { text: "Cancel"  } ],false);  }}
+            onPress={()=>{ 
+              Alert.alert("Coming soon",
+              "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
+              }
+              }
             
             />
           </View>

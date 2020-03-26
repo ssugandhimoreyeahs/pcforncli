@@ -9,7 +9,7 @@ import { unlinkBankAccount,reLinkBankAccount,validPlaidToken } from "../../../ap
 import { connect } from "react-redux";
 import { fetchUserAsyncActionCreator } from "../../../reducers/getUser";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import { SURE_UNLINK_ACCOUNT,SURE_RELINK_ACCOUNT } from "../../../api/message";
+import { SURE_UNLINK_ACCOUNT,SURE_RELINK_ACCOUNT,ERROR } from "../../../api/message";
 AntDesign.loadFont();
 
 class Integration extends Component{
@@ -141,13 +141,22 @@ class Integration extends Component{
     
       errorWhileDisconnectingBank = () => {  
         Alert.alert(  
-            'Error',  
-            'Error Try Again.',  
+            ERROR.title,  
+            ERROR.message,  
             [  
                 {  
-                    text: 'OK',  
+                    text: 'Okay',  
                     onPress: () => {
-                        this.props.navigation.goBack();
+                        //this.props.navigation.goBack();
+
+                        this.setState(()=>{ return { isSpinner:false } },()=>{
+                            setTimeout(()=>{
+                                
+                                    this.props.navigation.goBack();
+                                
+                            },300);
+                        });
+
                     },  
                     style: 'ok',
                 },
@@ -163,7 +172,7 @@ class Integration extends Component{
             MESSAGE,  
             [  
                 {  
-                    text: 'Ok',  
+                    text: 'Okay',  
                     onPress: () => {
                         
                         
@@ -192,7 +201,7 @@ class Integration extends Component{
             if(isUserSuccessfullyReLinked.result == true){
                 this.setState((prevState)=>{ return { isSpinner: false } },()=>{
                     
-                    setTimeout(()=>{ this.showSuccessfullyPopup("Message","Account Successfully Connected") },100);
+                    setTimeout(()=>{ this.showSuccessfullyPopup("Success","You have successfully connected your bank account.") },100);
                 })
 
             }else{
@@ -207,7 +216,7 @@ class Integration extends Component{
             if(isUserSuccessfullyUnlinked.result == true){
                 this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                     
-                    setTimeout(()=>{ this.showSuccessfullyPopup("Message","Account Successfully Disconnected") },100);
+                    setTimeout(()=>{ this.showSuccessfullyPopup("Success","You have successfully disconnected your bank account.") },100);
                 })
 
             }else{
@@ -252,7 +261,7 @@ class Integration extends Component{
                     <View style={{flexDirection:"column",width:"58%",height:60,}}><Text style={{fontWeight:"bold",fontSize:16}}>{ bankData.institution_name1 }</Text></View>
                     {/* <View style={{flexDirection:"column",width:"40%",height:60}}><Text style={{fontWeight:"bold",fontSize:16}}>Beneficial State Bank - peerlook</Text></View> */}
                      <View style={{flexDirection:"column",width:"40%",height:30}}>
-                   <TouchableOpacity onPress={()=>{ this.showConfirmPopupBeforeAction("Message",SURE_RELINK_ACCOUNT,"RELINK"); }}
+                   <TouchableOpacity onPress={()=>{ this.showConfirmPopupBeforeAction("Reconnect",SURE_RELINK_ACCOUNT,"RELINK"); }}
                     //onPress={()=>{this.showAlert()}}
                     style={{borderRadius:30,borderWidth:0,backgroundColor:"#b80909",flexDirection:"row",height:21, justifyContent:"center"}}>
                        <AntDesign name="close" size={15} color="#fff" style={{alignSelf:"center"}} />
@@ -271,7 +280,7 @@ class Integration extends Component{
                     <View style={{flexDirection:"column",width:"58%",height:60,}}><Text style={{fontWeight:"bold",fontSize:16}}>{ bankData.institution_name1 }</Text></View>
                     {/* <View style={{flexDirection:"column",width:"40%",height:60}}><Text style={{fontWeight:"bold",fontSize:16}}>Beneficial State Bank - peerlook</Text></View> */}
                      <View style={{flexDirection:"column",width:"40%",height:30}}>
-                   <TouchableOpacity onPress={()=>{ this.showConfirmPopupBeforeAction("Message",SURE_UNLINK_ACCOUNT,"UNLINK"); }}
+                   <TouchableOpacity onPress={()=>{ this.showConfirmPopupBeforeAction("Disconnect",SURE_UNLINK_ACCOUNT,"UNLINK"); }}
                     //onPress={()=>{this.showAlert()}}
                     style={{borderRadius:30,borderWidth:0,backgroundColor:"#007AFF",flexDirection:"row",height:21, justifyContent:"center"}}>
                        <AntDesign name="check" size={15} color="#fff" style={{alignSelf:"center"}}/>

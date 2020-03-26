@@ -109,11 +109,11 @@ handleOtherPress = (param) => {
             
             setTimeout(()=>{
               Alert.alert(
-                "Success",
-                "Your Information Successfully Saved",
+                "Thank you",
+                "We have saved your answer. Thanks for letting us know.",
               [
                 {
-                  text: 'Ok',
+                  text: 'Done',
                   onPress: () => {
                     this.props.navigation.getParam("createLedgerIntegration")();
                     this.props.navigation.getParam("hasSuccessfullyExecutedNoQb")();

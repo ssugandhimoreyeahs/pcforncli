@@ -243,7 +243,8 @@ class Sales extends Component {
            //onPress={()=>this.props.navigation.navigate("SalesInsights")}
            onPress={()=>{  
             // Alert.alert("Message","Coming Soon!");  
-            Alert.alert("Message","Coming Soon!",[ { text: "Cancel"  } ],false);
+            Alert.alert("Coming soon",
+            "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
             }}
            />
           </View>

@@ -33,7 +33,7 @@ class Password extends Component {
     Alert.alert(
       heading,
       content, [{
-          text: 'OK',
+          text: 'Okay',
           //onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       },],{
@@ -94,18 +94,18 @@ class Password extends Component {
       }
       else if(user.result === false){
         this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner } },()=>{ setTimeout(()=>{
-          this.showAlert("Error",user.response.message);
+          this.showAlert("Something went wrong",user.response.message);
         },100) });
       }
       else{
         if(user.error.code != undefined && user.error.code == "ECONNABORTED"){
           this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner } },()=>{ setTimeout(()=>{
-            this.showAlert("",CONNECTION_ABORTED);
+            this.showAlert("Something went wrong","Please try again.");
           },100) });
           
         }else{
           this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner } },()=>{ setTimeout(()=>{
-            this.showAlert("Error",TRY_AGAIN);
+            this.showAlert("Something went wrong","Please try again.");
           },100) });
         }
       }

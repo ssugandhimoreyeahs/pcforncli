@@ -5,7 +5,7 @@ import { Dropdown } from "react-native-material-dropdown";
 import { updateUserWithCompany,getUser,uploadCompanyLogo } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
 //import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
-import { CONNECTION_ABORTED,TRY_AGAIN,BUSINESS_PROFILE_UPDATED } from "../../api/message";
+import { ERROR,BUSINESS_PROFILE_CREATED } from "../../api/message";
 import {
   BUSINESS_MODEL_OPTIONS,
   COMPANY_SIZE_OPTIONS,
@@ -100,7 +100,7 @@ Ionicons.loadFont();
     Alert.alert(
       heading,
       content, [{
-          text: 'OK',
+          text: 'Okay',
           //onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       },],{
@@ -158,9 +158,9 @@ Ionicons.loadFont();
       this.setState((prevState)=>{ return { spinner:!prevState.spinner } },()=>{ setTimeout(()=>{
         
         Alert.alert(
-          "Message",
-          BUSINESS_PROFILE_UPDATED, [{
-              text: 'OK',
+          "Success",
+          BUSINESS_PROFILE_CREATED, [{
+              text: 'Okay',
               //onPress: () => console.log('Cancel Pressed'),
               onPress: () => {
                 this.props.navigation.getParam("createBusinessProfile")();
@@ -177,20 +177,20 @@ Ionicons.loadFont();
           
     }else if(profileUpdated.result == false){
       this.setState((prevState)=>{ return { spinner:!prevState.spinner } },()=>{ setTimeout(()=>{
-        this.showAlert("Error",TRY_AGAIN);
+        this.showAlert(ERROR.title,ERROR.message);
       },100) });
     }else{
 
 
       if(profileUpdated.error.code != undefined && profileUpdated.error.code == "ECONNABORTED"){
         this.setState((prevState)=>{ return { spinner:!prevState.spinner } },()=>{ setTimeout(()=>{
-          this.showAlert("",CONNECTION_ABORTED);
+          this.showAlert(ERROR.title,ERROR.message);
         },100) });
         
       }
       else{
         this.setState((prevState)=>{ return { spinner:!prevState.spinner } },()=>{ setTimeout(()=>{
-          this.showAlert("Error",TRY_AGAIN);
+          this.showAlert(ERROR.title,ERROR.message);
         },100) });
       }
 
@@ -263,12 +263,20 @@ Ionicons.loadFont();
         { (isBodyLoaded == true) ?  (showReloadingPage == true) ?
         <TryAgainScreen handleButton={()=>{ this.fetchUser(); }} />
         : <ScrollView>
-        <View style={{flexDirection:'row', width:'100%',}}>
-        <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
-          <Ionicons size={30} name='md-close' style={{alignSelf:'flex-start', marginLeft:10,}} />
-        </TouchableOpacity>
-        <Text style={styles.header}>Create Business Profile</Text>
-        </View>
+        <View style={{ marginTop: 10,flexDirection:"row",width:"100%" }}>
+
+          <View style={{ width:"8%",justifyContent:"center",alignItems:"flex-end" }}>
+              <TouchableOpacity  onPress={()=>{ this.props.navigation.goBack(); }} >
+                  <Ionicons name='md-close' size={28} color={'#000000'}/>
+              </TouchableOpacity>
+          </View>
+          <View style={{ width:"87%",justifyContent:"center",alignItems:"center" }}>
+
+          <Text style={{ fontSize:17,fontWeight:"bold",color:"black" }}>{ `Create Business Profile` }</Text>
+
+              
+          </View>
+          </View>
         
         {/* <Card containerStyle={styles.card}>
           <Icon

@@ -75,12 +75,12 @@ const TransactionComponent = (props) => {
                    setTimeout(()=>{
                      
                      Alert.alert(
-                       'Message',
-                       `You're Not Connected to the Bank`,
+                       'Bank Disconnected',
+                       `Your bank account has been disconnected. Please reconnect again.`,
                        [
                          {text: 'Cancel'},
                          {
-                           text: 'Connect Here',
+                           text: 'Reconnect',
                            onPress: () =>{ props.navigation.navigate("Integration") },
                            style: 'cancel',
                          }
@@ -271,12 +271,12 @@ class Checking extends React.PureComponent{
 
 showUserIsNotConnectedToBankAlert = () => {
   Alert.alert(
-    'Message',
-    `You're Not Connected to the Bank`,
+    'Bank Disconnected',
+    `Your bank account has been disconnected. Please reconnect again.`,
     [
       {text: 'Cancel'},
       {
-        text: 'Connect Here',
+        text: 'Reconnect',
         onPress: () =>{ this.props.navigation.navigate("Integration") },
         style: 'cancel',
       }
