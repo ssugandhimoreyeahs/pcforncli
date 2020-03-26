@@ -62,7 +62,9 @@ export default class SalesChart extends Component {
                     >
                   <VictoryAxis
                     dependentAxis={true}
-                    style={{ tickLabels: { fontSize:11 } }}
+                    style={{ tickLabels: { fontSize:11 },
+                    grid: { stroke: "#EEE", strokeDasharray: "50,0" },
+                     }}
                     tickValues={customYAXISValues}
                       tickFormat={y => {
                         if(y >= 1000){
