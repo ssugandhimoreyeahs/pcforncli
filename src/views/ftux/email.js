@@ -26,7 +26,7 @@ AntDesign.loadFont();
     Alert.alert(
       heading,
       content, [{
-          text: 'OK',
+          text: 'Okay',
           //onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       },],{
@@ -73,11 +73,11 @@ AntDesign.loadFont();
     }else if(isUserExist.result == "error"){
       if(isUserExist.error && isUserExist.error.code == "ECONNABORTED"){
         this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner } },()=>{ setTimeout(()=>{
-          this.showAlert("",CONNECTION_ABORTED);
+          this.showAlert("Something went wrong","Please try again.");
         },100) });
       }else{
         this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner,isButtonEnabled:!prevState.isButtonEnabled } },()=>{ setTimeout(()=>{
-          this.showAlert("Error",TRY_AGAIN);
+          this.showAlert("Something went wrong","Please try again.");
         },100) });
       }
     }

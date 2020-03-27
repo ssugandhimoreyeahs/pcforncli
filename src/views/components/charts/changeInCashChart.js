@@ -78,21 +78,45 @@ class ChangeInCashChart extends Component {
     // console.log(composingDataLevel1);
     // console.log("ends here ----------------");
     return (
-        <View>
+        <View style={{ 
+          
+          alignItems:'flex-start',width:gw,
+          marginLeft:15
+          }}>
           <VictoryChart  
           style={{
-            parent: { marginLeft: -40 }
+            parent: { marginLeft: -55 }
           }}
           height={270} width={gw} 
-          domainPadding={{ x: cashInChangeData.cicCurrentRange == 1 ? 0 : 20 }}
+          domainPadding={{ x: cashInChangeData.cicCurrentRange == 1 ? 7 : 20 }}
         >
 	      
-        <VictoryAxis  style={{ axis: { stroke: '#000' } }} tickFormat={()=>{ return "" }} />
+        <VictoryAxis  
+        //style={{ axis: { stroke: '#000' } }} 
+        tickValues={composingDataLevel1.map(each => each.x)}
+        style = 
+        { cashInChangeData.cicCurrentRange == 1 ? 
+        { tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0},
+            grid:{ stroke: currentvalue => { 
+              //if(currentvalue == new Date().getDate()){ return "grey"; }  
+                if(currentvalue == new Date().getDate()){
+                  return "grey";
+                }
+                  },
+                  strokeDasharray: [1,3]           
+                }
+              } : 
+              { tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0} } 
+        }
+        tickFormat={()=>{ return "" }} 
+
+
+        />
         <VictoryAxis 
           dependentAxis={true} 
           style={{
             axis: { stroke: "none" },
-            grid: { stroke: "#EEE", strokeDasharray: "5,5" },
+            grid: { stroke: "#EEE", strokeDasharray: "50,0" },
             tick: { display: "none" }
           }} 
           offsetX={gw}
@@ -140,7 +164,7 @@ class ChangeInCashChart extends Component {
           
           />
         <VictoryBar
-            barRatio={0.5}
+            barRatio={0.6}
             style={{ data: { fill: (items)=>{  if(items.y < 0){return "#FF7B32" }else{ return "#1188DF" }  } } }}
             data={ composingDataLevel1 }
         />
@@ -148,13 +172,24 @@ class ChangeInCashChart extends Component {
         
 
         {/* <View style={{ marginTop:-35,marginLeft: cashInChangeData.cicCurrentRange == 1 ? 10 : 10,marginBottom:15,flexDirection:"row",justifyContent:"space-between",width:gw-95,paddingRight:-5 }}></View> */}
-        <View style={{ marginTop:-35,marginLeft: cashInChangeData.cicCurrentRange == 1 ? 10 : 10,marginBottom:15,flexDirection:"row",justifyContent:"space-between",width:gw-105,paddingRight:-5 }}>
+        <View style={{ 
+          alignSelf:"flex-start",
+          marginTop:-30,
+          flexDirection:"row",
+          justifyContent:"space-between",
+          width:gw-105
+          }}>
 
             {
               cashInChangeData.cicCurrentRange == 1 ?
-                cash.map( (singleData,index) => (
-                  <Text key={index} style={{ fontSize:6,color:"#000" }}> {new Date(singleData.date).getDate() } </Text>
-                ))
+                cash.map( (singleData,index) => {
+                  let showDtValue = new Date(singleData.date).getDate();
+                  if(showDtValue % 2 == 0){
+                    return <Text key={index} style={{ fontSize:9,color:"#000",fontWeight: showDtValue == new Date().getDate() ? "bold" : null }}> { showDtValue } </Text>
+                  }else{
+                    return null;
+                  }
+                })
               : cash.map( (singleData,index) => (
                 <Text key={index} style={{ fontSize:9,color:"#000" }}> {singleData.month} </Text>
               ))
