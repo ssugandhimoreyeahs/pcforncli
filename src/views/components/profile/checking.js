@@ -1029,20 +1029,20 @@ fetchTransactionsFirstTime = async (userData) => {
                 <TouchableOpacity onPress={()=>{ this.chooseTransactionSelectType('Inflow') }} style={{width:'30%', height:'99.9%',borderWidth: 1,borderColor:'#737373', justifyContent:'center', backgroundColor:currentAction == 'Inflow' ? '#070640': '#FFFFFF',}}>
                 <Text style={{fontSize:12, color: currentAction == 'Inflow' ? "#fff" : "#07053E", textAlign:'center'}}>Inflow</Text>
                 </TouchableOpacity>
-                <TouchableOpacity disabled={true} style={{width:'30%', height: '99.9%', backgroundColor:currentAction == 'Transfer' ? '#070640': '#FFFFFF', justifyContent:'center',borderColor:'#737373',borderWidth:1,}}>
+                {/* <TouchableOpacity disabled={true} style={{width:'30%', height: '99.9%', backgroundColor:currentAction == 'Transfer' ? '#070640': '#FFFFFF', justifyContent:'center',borderColor:'#737373',borderWidth:1,}}>
                   <Text style={{fontSize:12, color: currentAction == 'Transfer' ? "#fff" : "#07053E", textAlign:'center'}}>Transfer</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               
-              <Button title="Uncategoried" type="outline" 
+              {/* <Button title="Uncategoried" type="outline" 
                 buttonStyle={{flexDirection:'row-reverse'}}
                 containerStyle={{height:26, marginRight:'2%',justifyContent:'space-between',width:'28%',borderRadius:5,
                 borderColor:'#318FE9'}}
                 titleStyle={{color:'#4A90E2',fontSize:12,marginTop:-6}} 
-                icon={<SimpleLineIcons name="arrow-down" size={10} color="#4A90E2" style={{marginTop:-3}} />} />
+                icon={<SimpleLineIcons name="arrow-down" size={10} color="#4A90E2" style={{marginTop:-3}} />} /> */}
                 
             </View>
-            <Text style={{color:'#1D1E1F', width:93,height:15,fontSize:11,alignSelf:"flex-end",marginBottom:13,marginRight:'2%'}}>26 uncategorized</Text>
+            {/* <Text style={{color:'#1D1E1F', width:93,height:15,fontSize:11,alignSelf:"flex-end",marginBottom:13,marginRight:'2%'}}>26 uncategorized</Text> */}
           </View>
           
           {

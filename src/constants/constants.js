@@ -5,7 +5,7 @@ export const APP_VERSION = APPJSON.version;
 const NETWORKINSTANCE = {
   SANDBOXINSTANCE : "http://18.222.152.47:8081/v0.1", //code for the using the sandbox
   PRODUCTIONINSTANCE : "http://3.132.213.123:8081/v0.1", // code for the production
-  NGROK : "https://8d895f91.ngrok.io/v0.1"
+  NGROK : "https://f9b71eee.ngrok.io/v0.1"
 }
 const APIENDPOINT = {
   endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,

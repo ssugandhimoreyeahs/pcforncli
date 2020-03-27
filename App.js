@@ -51,8 +51,8 @@ import CategoryScreen from "./src/views/components/profile/categoryscreen";
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
 import SplashScreen from "react-native-splash-screen";
-
-import Axios from "axios";
+import messaging from '@react-native-firebase/messaging';
+import firebaseapp from "@react-native-firebase/app";
 
 const MainNavigator = createStackNavigator(
   {
@@ -319,7 +319,20 @@ const NavigationApp = createAppContainer(MainNavigator);
 
 export default class App extends Component {
 
-  
+  async registerAppWithFCM() {
+    await messaging().registerForRemoteNotifications();
+  }
+
+  async requestPermission() {
+    const granted = messaging().requestPermission();
+   
+    if (granted) {
+      this.registerAppWithFCM();
+    } else {
+      console.log('User declined messaging permissions :(');
+    }
+  }
+
   componentDidMount = () => {
     
       setTimeout(()=>{

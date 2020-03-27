@@ -200,7 +200,7 @@ class ChangeInCash extends Component {
                  {
                    isCICGraphEmpty == true ?
                     <View style={{height:238,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
-                        <Text style={{ color:"#070640" }}>No Data Available!</Text>
+                        <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
                     </View>
                    :
                    

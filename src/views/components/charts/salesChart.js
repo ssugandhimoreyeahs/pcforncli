@@ -27,8 +27,9 @@ export default class SalesChart extends Component {
      // console.log("inside the true condition");
       this.props.salesData.map( singleSalesData => {
           let obj = {};
-          obj.x = singleSalesData.month
-          obj.y = singleSalesData.amount
+          obj.x = this.props.salesCurrentRange == 1 ? new Date(singleSalesData.date).getDate() : singleSalesData.month;
+          //console.log(obj.x);
+          obj.y = singleSalesData.amount;
           applySalesGraph.push(obj);
       });
     }
@@ -54,7 +55,7 @@ export default class SalesChart extends Component {
                   countGraphToBeDisplay < 12 ?
                   <VictoryChart height={260} width={gw}
                   // theme={VictoryTheme.material} 
-                  domainPadding={{ x: this.props.salesCurrentRange == 3 ? 35 : 20 }}
+                  domainPadding={{ x: this.props.salesCurrentRange == 3 ? 35 : 10 }}
                   // animate={{
                   //   duration: 4000,
                   //   onLoad: { duration: 2000 }
@@ -96,12 +97,16 @@ export default class SalesChart extends Component {
                   />
                   <VictoryAxis
                     
-                    tickValues={applySalesGraph.x}
+                    tickValues={applySalesGraph.map(each => each.x)}
                     tickFormat={x => {
-                        // let xDate = new Date(x);
-                        // let readyDate = ``;
-                        // readyDate = readyDate+xDate.getDate()+" "+monthArray[xDate.getMonth()];
-                        return x;
+                        if(this.props.salesCurrentRange == 1){
+                          let render = "";
+                          render = x%2 == 0 ? x : "";
+                          return render;
+                        }else{
+                          return x;
+                        }
+                        
                     }
                       // JS_DATE_INDEX_TO_MONTH_MAP[(new Date(x).getMonth() + 1) % 12]
                     }
