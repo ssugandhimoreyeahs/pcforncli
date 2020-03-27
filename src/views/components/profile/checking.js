@@ -107,10 +107,17 @@ const TransactionComponent = (props) => {
   );
 }
 const ShowDateHeadings = ({date}) => {
+  //console.log("Date Recieved in Transactions - ",date);
+  //let currentTransactionDateObj = new Date(date);
+  let currentTransactionDateObj = date.split("-");
+  console.log("Test here - ",currentTransactionDateObj);
+  // return(
+  // <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[currentTransactionDateObj.getMonth()]} ${currentTransactionDateObj.getDate()}, ${currentTransactionDateObj.getFullYear()}`}</Text>
+  // );
 
-  let currentTransactionDateObj = new Date(date);
+  //update using the split logic
   return(
-  <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[currentTransactionDateObj.getMonth()]} ${currentTransactionDateObj.getDate()}, ${currentTransactionDateObj.getFullYear()}`}</Text>
+    <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[ parseInt(currentTransactionDateObj[1]) - 1 ]} ${currentTransactionDateObj[2]}, ${currentTransactionDateObj[0]}`}</Text>
   );
 };
 class Checking extends React.PureComponent{

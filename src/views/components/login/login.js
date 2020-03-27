@@ -8,7 +8,7 @@ import imageLogo from "../../../assets/logo.png";
 import { login } from "../../../api/api";
 import tandc from "../../legal/legal";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { CONNECTION_ABORTED,INVALID_CREDENTIALS,TRY_AGAIN } from "../../../api/message";
+import { CONNECTION_ABORTED,INVALID_CREDENTIALS,TRY_AGAIN,ERROR } from "../../../api/message";
 import DetectPlatfrom from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
@@ -28,7 +28,7 @@ class LoginScreen extends React.Component {
     Alert.alert(
       heading,
       content, [{
-          text: 'OK',
+          text: 'Okay',
          // onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       },],{
@@ -91,17 +91,17 @@ class LoginScreen extends React.Component {
       else{
         if(isUserValid.error.code != undefined && isUserValid.error.code == "ECONNABORTED"){
           this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner } },()=>{ setTimeout(()=>{
-            this.showAlert("",CONNECTION_ABORTED);
+            this.showAlert(ERROR.title,ERROR.message);
           },100) });
           
         }else if(isUserValid.error.response != undefined && ( isUserValid.error.response.status == 401  || isUserValid.error.response.status == 400)){
           this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner } },()=>{ setTimeout(()=>{
-            this.showAlert("Error",INVALID_CREDENTIALS);
+            this.showAlert("Message",INVALID_CREDENTIALS);
           },100) });
           
         }else{
           this.setState((prevState)=>{ return { isSpinner:!prevState.isSpinner } },()=>{ setTimeout(()=>{
-            this.showAlert("Error",TRY_AGAIN);
+            this.showAlert(ERROR.title,ERROR.message);
           },100) });
         }
       }
