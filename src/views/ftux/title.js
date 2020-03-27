@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { StyleSheet, View, SafeAreaView, StatusBar,BackHandler } from "react-native";
+import { StyleSheet, View, SafeAreaView, StatusBar,BackHandler,TouchableOpacity } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
-import { TouchableOpacity } from "react-native-gesture-handler";
+// import {  } from "react-native-gesture-handler";
 import DetectPlatform from "../../DetectPlatform";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -46,7 +46,9 @@ Ionicons.loadFont();
     return (
       <React.Fragment>
       
-        <TouchableOpacity onPress={()=> this.props.navigation.navigate("ValueProp")}>
+        <TouchableOpacity onPress={()=>{
+          this.props.navigation.navigate("ValueProp");
+        }}>
         <Ionicons size={30} name='md-close' style={{alignSelf:'flex-start', marginLeft:25,marginTop:5}} />
         </TouchableOpacity>
         <Text style={{alignSelf:'center',marginTop:'10%'}} h4>What's your title?</Text>

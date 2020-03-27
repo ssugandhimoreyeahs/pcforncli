@@ -23,17 +23,29 @@ export async function getSalesData(){
     }
   }
 
-  export function getSalesDataPromise(){
+  export function getSalesDataPromise(salesCurrentRange = 3){
    
     return new Promise( (resolve,reject)=>{
       AsyncStorage.getItem("authToken").then((token)=>{
-
-        axios.get(APINETWORK.getSalesData,{
+        let readySalesUrl = APINETWORK.getSalesData;
+        if(salesCurrentRange == 1){
+          readySalesUrl = `${readySalesUrl}?past=1`;
+        }else if(salesCurrentRange == 3){
+          readySalesUrl = `${readySalesUrl}?past=3`;
+        }else if(salesCurrentRange == 6){
+          readySalesUrl = `${readySalesUrl}?past=6`;
+        }else if(salesCurrentRange == 12){
+          readySalesUrl = `${readySalesUrl}?past=12`;
+        }else{
+          readySalesUrl = `${readySalesUrl}?past=6`;
+        }
+        console.log("Trigger Sales Api Request - ",readySalesUrl);
+        axios.get(readySalesUrl,{
           headers: { Authorization: token,"Content-Type": "application/json" },
           timeout
         }).then((getSalesResponse)=>{
           if(getSalesResponse.data.success == true && getSalesResponse.status == 200){
-             resolve({ result:true, salesChartData: getSalesResponse.data.datamonth, response:getSalesResponse.data });
+             resolve({ result:true, salesData: getSalesResponse.data,salesChartData: getSalesResponse.data.datamonth, response:getSalesResponse.data });
           }else{
              reject({ result:false, response: getSalesResponse.data });
           }

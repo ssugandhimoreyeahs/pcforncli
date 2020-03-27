@@ -103,6 +103,7 @@ Ionicons.loadFont();
 
  componentDidMount(){
   const { getParam } = this.props.navigation;
+  //console.log("getting User seting params here --- ",getParam("fir"))
   this.setState({ firstname:getParam("firstname"), title:getParam("title"), username:getParam("username"), lastname:getParam("lastname") })
   BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
 }
@@ -152,15 +153,62 @@ return(
                         </View>
                     </View>
 
-       <View style={{marginTop:100,backgroundColor:"#FFFFFF", flexDirection:'column',width:"100%", alignItems:'center',}}>
+       <View style={{marginTop:120,backgroundColor:"#FFFFFF", flexDirection:'column',width:"100%", alignItems:'center',}}>
 
 
-       <View style={styles.vname}>
+       {/* <View style={styles.vname}>
           <Text style={styles.texttitle}>First Name</Text>
           <TextInput style={styles.textdata} value={this.state.firstname} onChangeText={(firstname)=>{ this.setState({ firstname }) }}></TextInput>
-        </View> 
+        </View>  */}
         
-        <View style={styles.vtitle}>
+        <View style={{ width:"90%",flexDirection:"row",
+        justifyContent:"space-between",
+        borderBottomWidth:1,
+        borderBottomColor:"#007AFF",backgroundColor:"#FFFFFF",
+        borderWidth:0,borderColor:"red"
+        }}>
+          <Text style={{ fontSize: 16,color:"#000000"  }}>First Name</Text>
+          
+          <TextInput 
+          
+          style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:0,  height:30 }}
+          value={this.state.firstname} 
+          onChangeText={ (firstname)=>{ this.setState({ firstname }) } }
+          />
+          
+        </View>
+
+        <View style={{ marginTop:40,width:"90%",flexDirection:"row",
+        justifyContent:"space-between",
+        borderBottomWidth:1,
+        borderBottomColor:"#007AFF",backgroundColor:"#FFFFFF",
+        borderWidth:0,borderColor:"red"
+        }}>
+          <Text style={{ fontSize: 16,color:"#000000"  }}>Last Name</Text>
+          <TextInput 
+
+style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:0,  height:30 }}
+          value={this.state.lastname} 
+          onChangeText={ (lastname)=>{ this.setState({ lastname }) } }
+          />
+        </View>
+
+        <View style={{ marginTop:40,width:"90%",flexDirection:"row",
+        justifyContent:"space-between",
+        borderBottomWidth:1,
+        borderBottomColor:"#007AFF",backgroundColor:"#FFFFFF",
+        borderWidth:0,borderColor:"red"
+        }}>
+          <Text style={{ fontSize: 16,color:"#000000"  }}>Title</Text>
+          <TextInput 
+
+style={{ textAlignVertical:"top",textAlign:"right",width:250,marginHorizontal:10,fontSize:16,borderColor:"blue",borderWidth:0,paddingTop:0,  height:30 }}
+          value={this.state.title} 
+          onChangeText={ (title)=>{ this.setState({ title }) } }
+          />
+        </View>
+
+        {/* <View style={styles.vtitle}>
           <Text style={styles.texttitle}>Last Name</Text>
           <TextInput style={styles.textdata} value={this.state.lastname} onChangeText={(lastname)=>{ this.setState({ lastname }) }}></TextInput>
         </View> 
@@ -168,7 +216,7 @@ return(
         <View style={styles.vtitle}>
           <Text style={styles.texttitle}>Title</Text>
           <TextInput style={styles.textdata} value={this.state.title} onChangeText={(title)=>{ this.setState({ title }) }}></TextInput>
-        </View> 
+        </View>  */}
 
         {/* <View style={styles.vemail}>
           <Text style={styles.texttitle}>Business Email</Text>
@@ -234,7 +282,7 @@ const styles = StyleSheet.create({
       
     },
     buttonContainer: {
-      marginTop: 10,
+      marginTop: 20,
       width: "75%",
       alignSelf:'center',
     },

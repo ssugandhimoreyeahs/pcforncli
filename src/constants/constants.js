@@ -1,17 +1,17 @@
 import APPJSON from "../../app.json";
 
 export const API_TIMEOUT = 40000;
-export const APP_VERSION = "3.1.20";
+export const APP_VERSION = APPJSON.version;
 const NETWORKINSTANCE = {
   SANDBOXINSTANCE : "http://18.222.152.47:8081/v0.1", //code for the using the sandbox
   PRODUCTIONINSTANCE : "http://3.132.213.123:8081/v0.1", // code for the production
   NGROK : "https://8d895f91.ngrok.io/v0.1"
 }
 const APIENDPOINT = {
-  endPoint: NETWORKINSTANCE.SANDBOXINSTANCE,
+  endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
   isQuickBookProduction:true,
-  isPlaidProduction: false,
-  //isPlaidProduction: true
+  //isPlaidProduction: false,
+  isPlaidProduction: true
 }
 
 const USERDATAAPIS = {
@@ -68,7 +68,7 @@ const PLAIDAPIS = {
 const QUICKBOOKSAPIS = {
   quickbooks: APIENDPOINT.endPoint+"/quickBooks/",
   quickBookCopyDb: APIENDPOINT.endPoint+"/quickBooks/Invoice",
-  getSalesData: APIENDPOINT.endPoint+"/quickBooks/getInvoice?past=6",
+  getSalesData: APIENDPOINT.endPoint+"/quickBooks/getInvoice",
   qbCallBackUrl: APIENDPOINT.isQuickBookProduction == true ? `https://api.cloud9performancesolutions.com/v0.1/quickBooks/callback` : APIENDPOINT.endPoint+"/quickBooks/callback",
   qbNGROKCallBackUrl: APIENDPOINT.endPoint+"/quickBooks/callback",
   noQbForm : APIENDPOINT.endPoint+"/quickBooks/NoQbForm",
@@ -149,7 +149,7 @@ export const INDUSTRY_OPTIONS = [
   { value: "Biotech" },
   { value: "Community" },
   { value: "Construction" },
-  { value: "Continuing Education" },
+  //{ value: "Continuing Education" },
   { value: "Crypto / Blockchain" },
   { value: "Developer Tools" },
   { value: "E-sports" },
@@ -158,7 +158,7 @@ export const INDUSTRY_OPTIONS = [
   { value: "Entertainment" },
   { value: "Environmental Services" },
   { value: "Financial Services" },
-  { value: "Fitness / Wellness" },
+  { value: "Fitness/Wellness" },
   { value: "Food/Beverage" },
   { value: "Freight" },
   { value: "Gaming" },
@@ -167,8 +167,8 @@ export const INDUSTRY_OPTIONS = [
   { value: "Hardware" },
   { value: "Healthcare" },
   { value: "Insurance" },
-  { value: "Language Learning" },
-  { value: "Lending / Loan Manager" },
+  //{ value: "Language Learning" },
+  { value: "Lending/Loan" },
   { value: "Marketplace" },
   { value: "Media" },
   { value: "Public Transportation" },
@@ -176,7 +176,7 @@ export const INDUSTRY_OPTIONS = [
   { value: "Recruiting/Talent" },
   { value: "Robotics" },
   { value: "Security" },
-  { value: "Sourcing / Recruiting" },
+  //{ value: "Sourcing / Recruiting" },
   { value: "Transportation" },
   { value: "Travel/Tourism" },
   { value: "Virtual Reality" },

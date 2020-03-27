@@ -175,6 +175,13 @@ android {
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
 	        signingConfig signingConfigs.release
+            //code starts from here
+            debuggable false
+            //shrinkResources true
+            //zipAlignEnabled true
+            //minifyEnabled true
+            useProguard true
+            //code remove from here
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
@@ -195,6 +202,7 @@ android {
 }
 
 dependencies {
+    implementation project(':react-native-splash-screen')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
   

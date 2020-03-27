@@ -45,21 +45,7 @@ export default class SalesChart extends Component {
     // console.log("Getting custom y Axis here - ",customYAXISValues);
     // console.log("----------------------------------------------------");
     
-    const { historicalFinances } = this.props;
-    let data = {};
-    if (historicalFinances) {
-      data = Object.keys(historicalFinances).map(currentMonthKey => {
-        const currentMonth = Moment(currentMonthKey, "YYYY-MM-DD");
-
-        return {
-          x: currentMonth.toDate(),
-          y: historicalFinances[currentMonthKey]
-            ? historicalFinances[currentMonthKey].revenue
-            : 0
-        };
-      });
-      //old logic not be used in the development or production builds
-    }
+    
     const gw=Dimensions.get("window").width;
     return (
       <Fragment>
@@ -68,7 +54,7 @@ export default class SalesChart extends Component {
                   countGraphToBeDisplay < 12 ?
                   <VictoryChart height={260} width={gw}
                   // theme={VictoryTheme.material} 
-                  domainPadding={{ x: 15 }}
+                  domainPadding={{ x: this.props.salesCurrentRange == 3 ? 35 : 20 }}
                   // animate={{
                   //   duration: 4000,
                   //   onLoad: { duration: 2000 }

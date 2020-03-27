@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { StyleSheet, View, Alert,Keyboard, SafeAreaView, StatusBar,BackHandler,Platform } from "react-native";
+import { StyleSheet, View, Alert,Keyboard, SafeAreaView, StatusBar,BackHandler,Platform,TouchableOpacity } from "react-native";
 import { Button, Input, Text, Icon } from "react-native-elements";
 import { createUser } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { CONNECTION_ABORTED,USER_EXIST,TRY_AGAIN } from "../../api/message";
-import { TouchableOpacity } from "react-native-gesture-handler";
+//import {  } from "react-native-gesture-handler";
 //import {AntDesign} from "@expo/vector-icons";
 import DetectPlatform from "../../DetectPlatform";
 import { APP_VERSION } from "../../constants/constants";
@@ -142,14 +142,17 @@ class Password extends Component {
         ) : (
           undefined
         )} */}
-        <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
+        <TouchableOpacity onPress={()=> {
+          this.props.navigation.goBack(); 
+        }
+        }>
           <AntDesign size={30} name='left' style={{alignSelf:'flex-start', marginLeft:10,marginTop:5}} />
         </TouchableOpacity>
         <Text style={styles.text1}>Create a strong password</Text>
         <Input
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.input}
-          placeholder={"password"}
+          placeholder={"Password"}
           secureTextEntry={true}
           value={this.state.password}
           onChangeText={text => this.handleChangeText(text)}
