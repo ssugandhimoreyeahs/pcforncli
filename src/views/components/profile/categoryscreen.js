@@ -175,16 +175,16 @@ class CategoryScreen extends React.Component{
                 this.props.fetchExpenseByCategory(3);
                 //this.props.fetchMainExepenseByCategory();
                 setTimeout(()=>{
-                    Alert.alert("Message","Transaction Category Successfully Changed",[
-                        { text:"Ok",onPress:()=>{ 
+                    // Alert.alert("Message","Transaction Category Successfully Changed",[
+                    //     { text:"Ok",onPress:()=>{ 
                             //this.props.navigation.dispatch(resetAction); 
                             this.props.navigation.getParam("resetTransactionScreen")();
                             setTimeout(()=>{
                                 this.props.navigation.goBack();
                             },500);
                             
-                        }}
-                    ])
+                    //     }}
+                    // ])
                 },100);
             })
         }else{
@@ -198,11 +198,13 @@ class CategoryScreen extends React.Component{
     }
     handleAddCategoryToTransaction = (categoryId,categoryName) => {
         console.log("change Request name - ",categoryName);
-        Alert.alert("Message","Sure Change Transaction Category ?",[
+        Alert.alert("Category Change","Are you sure to change this category?",[
             { text:"Cancel" },
-            { text:"Sure",onPress:()=>{
-                this.setState({ isSpinner:true });
-                this.triggerAddCategoryToTransaction(categoryId,categoryName);
+            { text:"Confirm",onPress:()=>{
+                this.setState({ isSpinner:true },()=>{
+                    this.triggerAddCategoryToTransaction(categoryId,categoryName);
+                });
+                
             } }
         ])
         

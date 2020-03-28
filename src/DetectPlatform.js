@@ -39,7 +39,8 @@ const NewComponent = (OriginalComponent, customStyle = {} ) => {
                 {
                     ( Platform.OS == "android" ) ?
                     <Fragment>
-                        <View style={{  width:'100%' }} />
+                        {/* <View style={{ backgroundColor: '#9c9a9a', height: StatusBar.currentHeight, width:'100%' }} /> */}
+                        <View style={{ width:'100%' }} />
                         <View style={{ ...customStyle }}>
                         <OriginalComponent {...this.props} />
                         </View>

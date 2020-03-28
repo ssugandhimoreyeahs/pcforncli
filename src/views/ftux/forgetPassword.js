@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { StyleSheet, View,Alert,Keyboard, SafeAreaView, StatusBar,BackHandler } from "react-native";
+import { StyleSheet, View,Alert,Keyboard, SafeAreaView, StatusBar,BackHandler,TouchableOpacity } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
 import { forgetPassword } from "../../api/api";
 import {  FORGET_PASSWORD_SEND, TRY_AGAIN } from "../../api/message";
 import Spinner from 'react-native-loading-spinner-overlay';
-import { TouchableOpacity } from "react-native-gesture-handler";
 //import {AntDesign} from "@expo/vector-icons"
 import DetectPlatform from "../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";

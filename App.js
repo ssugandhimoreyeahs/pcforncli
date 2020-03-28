@@ -343,7 +343,7 @@ export default class App extends Component {
       // }
       setTimeout(()=>{
         SplashScreen.hide();
-      },400);
+      },450);
     
   }
   
