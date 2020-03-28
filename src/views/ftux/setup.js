@@ -2,7 +2,7 @@ import React, { Component,Fragment,PureComponent } from "react";
 import { StyleSheet, TouchableOpacity, View, SafeAreaView, StatusBar,Dimensions,ScrollView,Platform, BackHandler } from "react-native";
 import { Button, Card, Text, Image,Overlay } from "react-native-elements";
 import { fetchQuestionsFromApi } from "../../api/api";
-import axios from "axios";
+//import axios from "axios";
 // import { ScrollView } from "react-native-gesture-handler";
 
 import DetectPlatform from "../../DetectPlatform";

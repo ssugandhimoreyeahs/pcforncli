@@ -10,18 +10,7 @@ export default class SalesChart extends Component {
     super(props);
   }
   render() {
-    
-    
     let applySalesGraph = [];
-
-    var countGraphToBeDisplay = 0;
-    let{ salesData: forOnlyLoop } = this.props;
-    for(let i=0;i<forOnlyLoop.length;i++){
-      if(forOnlyLoop[i].amount == 0){
-        countGraphToBeDisplay++;
-      }
-    }
-    //console.log("Sales Data length - ",this.props.salesData.length);
     if(this.props.salesData.length > 0){
      // console.log(this.props.salesData);
      // console.log("inside the true condition");
@@ -29,7 +18,7 @@ export default class SalesChart extends Component {
           let obj = {};
           obj.x = this.props.salesCurrentRange == 1 ? new Date(singleSalesData.date).getDate() : singleSalesData.month;
           //console.log(obj.x);
-          obj.y = singleSalesData.amount;
+          obj.y = parseFloat(singleSalesData.amount);
           applySalesGraph.push(obj);
       });
     }
@@ -48,14 +37,19 @@ export default class SalesChart extends Component {
     
     
     const gw=Dimensions.get("window").width;
+    let { salesCurrentRange } = this.props;
+    let barRatio = salesCurrentRange == 1 ? 0.5 : 
+    salesCurrentRange == 3 ? 0.1 : 
+    salesCurrentRange == 6 ? 0.15 : 
+    salesCurrentRange == 12 ? 0.25 : 0.2; 
     return (
       <Fragment>
         {
           this.props.salesData.length > 0 ?
-                  countGraphToBeDisplay < 12 ?
-                  <VictoryChart height={260} width={gw}
+                  
+            <VictoryChart height={260} width={gw}
                   // theme={VictoryTheme.material} 
-                  domainPadding={{ x: this.props.salesCurrentRange == 3 ? 35 : 10 }}
+                  domainPadding={{ x: salesCurrentRange == 3 ? 35 : 10 }}
                   // animate={{
                   //   duration: 4000,
                   //   onLoad: { duration: 2000 }
@@ -114,57 +108,12 @@ export default class SalesChart extends Component {
                       tickLabels: { angle: 0, stroke: "#8E8E93", strokeWidth: 0.5, fontSize: 11 }
                     }}
                   />
-                  <VictoryBar barRatio={0.3} data={applySalesGraph} style={{ data: { fill: "#1188DF" } }} />
+                  <VictoryBar barRatio={ barRatio } data={applySalesGraph} style={{ data: { fill: "#1188DF" } }} />
           </VictoryChart>
-          :
+          
 
-                <VictoryChart height={260} width={gw}
-                // theme={VictoryTheme.material} 
-                domainPadding={{ x: 10 }}
-                // animate={{
-                //   duration: 4000,
-                //   onLoad: { duration: 2000 }
-                // }}
-                  >
-            <VictoryAxis
-            dependentAxis={true}
-            tickValues={[0]}
-            />
-            <VictoryAxis
-            tickValues={applySalesGraph.x}
-            tickFormat={x => {
-            // let xDate = new Date(x);
-            // let readyDate = ``;
-            // readyDate = readyDate+xDate.getDate()+" "+monthArray[xDate.getMonth()];
-            return x;
-            }
-            // JS_DATE_INDEX_TO_MONTH_MAP[(new Date(x).getMonth() + 1) % 12]
-            }
-            style={{
-            tickLabels: { angle: 0, stroke: "#8E8E93", strokeWidth: 0.5 }
-            }}
-            />
-            <VictoryBar barRatio={0.1} data={applySalesGraph} style={{ data: { fill: "#1188DF" } }} />
-            </VictoryChart>
 
-             :
-
-              <VictoryChart height={260} width={gw}
-              theme={VictoryTheme.material} 
-              >
-              <VictoryAxis
-                dependentAxis={true} 
-                tickValues={[0]}
-                />
-              <VictoryAxis
-                tickValues={[0]} /> 
-              <VictoryBar
-                style={{
-                  data: { stroke: "url(#gradient)", strokeWidth: 5 }
-                }}
-                data={ [    ]}
-              />
-            </VictoryChart>
+             : null
         }
       </Fragment>
     );

@@ -73,8 +73,13 @@ class QuickbookIntegration extends Component{
                 if(this.props.navigation.getParam("reloadDashBoardDataForQb")){
                     console.log("here for reloading qb data");
                     const qbCopyResponse = await triggerQbDataCopyDb();
-                    console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
-                    this.props.navigation.getParam("reloadDashBoardDataForQb")();
+                    //console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
+                    // this.props.navigation.getParam("reloadDashBoardDataForQb")();
+
+                    //change here for custom exp
+                    setTimeout(()=>{
+                        this.props.navigation.getParam("reloadDashBoardDataForQb")();
+                    },1500);
                 }
                 this.setState({ spinner:false },()=>{
                     this.props.navigation.navigate("QuickbookConnected",{

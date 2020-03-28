@@ -1,6 +1,9 @@
 PODS:
   - boost-for-react-native (1.63.0)
+  - Crashlytics (3.14.0):
+    - Fabric (~> 1.10.2)
   - DoubleConversion (1.1.6)
+  - Fabric (1.10.2)
   - FBLazyVector (0.61.5)
   - FBReactNativeSpec (0.61.5):
     - Folly (= 2018.10.22.00)
@@ -307,6 +310,12 @@ PODS:
   - RNFBApp (6.3.4):
     - Firebase/Core (~> 6.13.0)
     - React
+  - RNFBCrashlytics (6.3.4):
+    - Crashlytics (~> 3.14.0)
+    - Fabric (~> 1.10.2)
+    - Firebase/Core (~> 6.13.0)
+    - React
+    - RNFBApp
   - RNFBMessaging (6.3.4):
     - Firebase/Messaging (~> 6.13.0)
     - React
@@ -355,6 +364,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
+  - "RNFBCrashlytics (from `../node_modules/@react-native-firebase/crashlytics`)"
   - "RNFBMessaging (from `../node_modules/@react-native-firebase/messaging`)"
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -365,6 +375,8 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - boost-for-react-native
+    - Crashlytics
+    - Fabric
     - Firebase
     - FirebaseAnalytics
     - FirebaseAnalyticsInterop
@@ -439,6 +451,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/async-storage"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
+  RNFBCrashlytics:
+    :path: "../node_modules/@react-native-firebase/crashlytics"
   RNFBMessaging:
     :path: "../node_modules/@react-native-firebase/messaging"
   RNGestureHandler:
@@ -454,7 +468,9 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
+  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   FBLazyVector: aaeaf388755e4f29cd74acbc9e3b8da6d807c37f
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
   Firebase: 458d109512200d1aca2e1b9b6cf7d68a869a4a46
@@ -497,6 +513,7 @@ SPEC CHECKSUMS:
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNCAsyncStorage: 00bdf63f7f1e0f11d3323533dba4f222e58bf092
   RNFBApp: 7d4006751de8bb5cafa2e8d2e7d94ee250df81db
+  RNFBCrashlytics: 93e1cc09a93aa4bb1e9b5a07af0efb2702db5a39
   RNFBMessaging: 51cc7f6beaf4c4feac6f18ea941bba5854e3d9c6
   RNGestureHandler: 5329a942fce3d41c68b84c2c2276ce06a696d8b0
   RNScreens: 03bf608b92ac0acf323f47d8f5b63a8f829340c8
