@@ -46,7 +46,8 @@ class Dashboard extends PureComponent {
     this.onDashBoardFocused = true;
     this.showQuickBooksPopupFlag = false;
     this.showBankNotConnectedPopupFlag = false;
-    this.showBankCredentialChangePopup = false;
+    this.showBankCredentialChangePopupFlag = false;
+
     this.state = {
       isSalesLoadedOnce:false,
       isCOHLoadedOnce:false,
@@ -88,10 +89,11 @@ class Dashboard extends PureComponent {
     }
   }
   fetchUser = () =>{
-    this.showBankCredentialChangePopup = false;
+    this.showBankCredentialChangePopupFlag = false;
     this.showBankNotConnectedPopupFlag = false;
     this.showQuickBooksPopupFlag = false;
     let isValidTokenApiCalled = false;
+
     getUserPromise().then((userResponse)=>{
       console.log("Dashboard user - ",userResponse);
       if(userResponse.result == true){
@@ -169,41 +171,18 @@ class Dashboard extends PureComponent {
             isValidTokenApiCalled = true;
             validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
               if(triggerValidPlaidToken.result == true){
-                
-                  if(triggerValidPlaidToken.response.isValidPlaidToken == false){
-                    this.showBankCredentialChangePopup = true;
-                    Alert.alert("Message","Bank Credentials Changed Please Connect to Bank Again",
-                    [
-                      {text: 'Cancel', onPress: () => {
-                        if(userResponse.userData.qbIntegrationStatus == true && triggerValidPlaidToken.response.IsQuickbookToken == false){
-                          this.showQuickBooksPopupFlag = true;
-                          this.showQBReconnectPopup();
-                        }
-                      }},
-                      {
-                        text: 'Connect Here',
-                        //onPress: () => { this.props.navigation.navigate("Integration"); },
-                        onPress: () => { 
-                          if(userResponse.userData.qbIntegrationStatus == true && triggerValidPlaidToken.response.IsQuickbookToken == false){
-                            this.showQuickBooksPopupFlag = true;
-                          }
-                          this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) },
-                        
-                      }
-                    ],
-                    {cancelable: false}
-                    );
+                if(triggerValidPlaidToken.response.isValidPlaidToken == false){
+                    //this.showBankCredentialChangePopupFlag = true;
+                    let isshowQBPopupFlag = userResponse.userData.qbIntegrationStatus == true && triggerValidPlaidToken.response.IsQuickbookToken == false ? true : false;
+                    this.showBankCredentialChangePopup(isshowQBPopupFlag);
                 }else{
-                  
                   if(userResponse.userData.qbIntegrationStatus == true && triggerValidPlaidToken.response.IsQuickbookToken == false){
                     //this.showQuickBooksPopupFlag = true;
-                    this.showQBReconnectPopup();
+                    this.showQBPopup();
                   }
                 }
-                
               }
-              
-            }).catch((error)=>{
+             }).catch((error)=>{
               console.log("Validate Plaid Token Promise error 1 - ",error);
             });
         }
@@ -214,7 +193,7 @@ class Dashboard extends PureComponent {
             //   isValidTokenApiCalled == false){
             //   validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
             //     if( triggerValidPlaidToken.result == true && triggerValidPlaidToken.response.IsQuickbookToken == false){
-            //           this.isShowQbReconnectPopup();
+            //           this.isshowQBPopup();
             //     }
             //   }).catch((error)=>{
             //     console.log("Validate Plaid Token Promise error 2 - ",error);
@@ -230,52 +209,20 @@ class Dashboard extends PureComponent {
           if(this.state.isCountApiTriggered == false){
               if(userResponse.userData.bankIntegrationStatus == false){
 
-                  
                   validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
                     if(triggerValidPlaidToken.result == true){
                       
-                      setTimeout(()=>{
-                        Alert.alert("Info","You're Not Connected To The Bank Please Connect To Bank",[ 
-                          { text:"Cancel", onPress: () => {
-                            if(userResponse.userData.qbIntegrationStatus == true && 
-                              triggerValidPlaidToken.response.IsQuickbookToken == false){
-                                // this.showQuickBooksPopupFlag = true;
-                                this.showQBReconnectPopup();
-                            }
-                          }},
-                          { text:"Connect Here", onPress:()=>{ 
-                            if(userResponse.userData.qbIntegrationStatus == true && 
-                              triggerValidPlaidToken.response.IsQuickbookToken == false){
-                                this.showQuickBooksPopupFlag = true;
-                                
-                            }
-                            this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) } }
-                        ]);
-                       },1000);
+                        let isShowQBPopup = userResponse.userData.qbIntegrationStatus == true && 
+                        triggerValidPlaidToken.response.IsQuickbookToken == false ? true : false;
+                        this.showConnectBankPopup(isShowQBPopup);
 
-                    }
-                    else{
-                      setTimeout(()=>{
-                        Alert.alert("Info","You're Not Connected To The Bank Please Connect To Bank",[ 
-                          { text:"Cancel" },
-                          { text:"Connect Here", onPress:()=>{
-                            this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) } }
-                        ],{cancelable: false});
-                       },1000);
+                    }else{
+                      this.showConnectBankPopup(false);
                     }
                   }).catch((error)=>{
-                    setTimeout(()=>{
-                      Alert.alert("Info","You're Not Connected To The Bank Please Connect To Bank",[ 
-                        { text:"Cancel" },
-                        { text:"Connect Here", onPress:()=>{
-                          this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) } }
-                      ],{cancelable: false});
-                     },1000);
+                    this.showConnectBankPopup(false);
                   }); 
-                 
-                  
-                
-                }
+              }
               
               this.setState({ isCountApiTriggered: true });
               setTimeout(()=>{
@@ -293,8 +240,8 @@ class Dashboard extends PureComponent {
     
   }
 
-  showQBReconnectPopup = () => {
-    setTimeout(()=>{
+  showQBPopup = () => {
+    
       Alert.alert("Message","Somethings went wrong with Quickbooks Please Reconnect Quickbooks",
                   [
                     {text: 'Cancel'},
@@ -309,7 +256,48 @@ class Dashboard extends PureComponent {
                   ],
                   {cancelable: false}
                   );
-    },150);
+    
+  }
+  showBankCredentialChangePopup = (isShowQBPopup = false) => {
+
+    Alert.alert("Message","Bank Credentials Changed Please Connect to Bank Again",
+    [
+      {text: 'Cancel', onPress: () => {
+        if(isShowQBPopup){
+          //this.showQuickBooksPopupFlag = true;
+          this.showQBPopup();
+        }
+      }},
+      {
+        text: 'Connect Here',
+        onPress: () => { 
+          if(isShowQBPopup){
+            this.showQuickBooksPopupFlag = true;
+          }
+          this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) },
+        
+      }
+    ],
+    {cancelable: false}
+    );
+
+  }
+  showConnectBankPopup = (isShowQBPopup = false) => {
+
+    Alert.alert("Info","You're Not Connected To The Bank Please Connect To Bank",[ 
+      { text:"Cancel", onPress: () => {
+        if(isShowQBPopup){
+            // this.showQuickBooksPopupFlag = true;
+            this.showQBPopup();
+        }
+      }},
+      { text:"Connect Here", onPress:()=>{ 
+        if(isShowQBPopup){
+            this.showQuickBooksPopupFlag = true;
+        }
+        this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) } }
+    ]);
+
   }
   componentDidMount = async () => {
     //console.log("State length Test ",this.state.cashOnHandGraph.length);
@@ -396,31 +384,19 @@ class Dashboard extends PureComponent {
 
     if(this.showQuickBooksPopupFlag){
       setTimeout(()=>{
-        this.showQBReconnectPopup();
+        this.showQBPopup();
       },500);
       this.showQuickBooksPopupFlag = false;
     }
     else if(this.showBankNotConnectedPopupFlag){
       setTimeout(()=>{
-        Alert.alert("Info","You're Not Connected To The Bank Please Connect To Bank",[ 
-          { text:"Cancel", onPress: () => {
-          //  if(this.showQuickBooksPopupFlag){
-          //     setTimeout(()=>{
-          //       this.showQBReconnectPopup();
-          //     },300);
-          //     // this.showQuickBooksPopupFlag == false;
-          //   }
-          }
-          },
-          { text:"Connect Here", onPress:()=>{
-            this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) } }
-        ],{cancelable: false});
+        this.showConnectBankPopup();
       },500);
     }
     
    
   }
-  render() {
+  render(){
     
     const financials = this.props.financials;
     const { isSpinner } = this.state;
