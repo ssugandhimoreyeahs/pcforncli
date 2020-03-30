@@ -630,17 +630,3 @@ const styles = StyleSheet.create({
   }
 });
 
-/*
-garbage data 
-
-// getSalesDataPromise().then((salesDataResponse)=>{
-          //   if(salesDataResponse.result == true && salesDataResponse.salesChartData.length > 0 ){
-          //     this.setState({ isSalesLoadedOnce:true,salesData:salesDataResponse.salesChartData,salesTotalAmount: salesDataResponse.response.finalAmount,showSalesChartLoader:false });
-          //   }else{
-          //     this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
-          //   }
-          // }).catch((error)=>{
-          //   this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
-          // })
-
-          */
