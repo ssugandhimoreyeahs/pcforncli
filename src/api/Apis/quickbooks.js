@@ -29,7 +29,7 @@ export async function getSalesData(){
       AsyncStorage.getItem("authToken").then((token)=>{
         let readySalesUrl = APINETWORK.getSalesData;
         if(salesCurrentRange == 1){
-          readySalesUrl = `${readySalesUrl}?past=1`;
+          readySalesUrl = `${readySalesUrl}?past=0`;
         }else if(salesCurrentRange == 3){
           readySalesUrl = `${readySalesUrl}?past=3`;
         }else if(salesCurrentRange == 6){

@@ -16,7 +16,7 @@ import {
   STATE_OF_INCORP_OPTIONS,
   YEAR_FOUNDED_OPTIONS
 } from "../../../constants/constants";
-import { CONNECTION_ABORTED,TRY_AGAIN,BUSINESS_PROFILE_UPDATED } from "../../../api/message";
+import { ERROR,BUSINESS_PROFILE_UPDATED } from "../../../api/message";
 import DetectPlatform from "../../../DetectPlatform";
 import * as ImagePicker from 'expo-image-picker';
 
@@ -59,7 +59,7 @@ AntDesign.loadFont();
   Alert.alert(
     heading,
     content, [{
-        text: 'OK',
+        text: 'Okay',
         //onPress: () => console.log('Cancel Pressed'),
         style: 'cancel'
     },],{
@@ -124,9 +124,9 @@ handleButtonDisabled = () => {
         
         setTimeout(()=>{ 
           Alert.alert(
-            "Message",
-            "Business Profile Successfully Updated", [{
-                text: 'OK',
+            "Success",
+            BUSINESS_PROFILE_UPDATED, [{
+                text: 'Okay',
                 //onPress: () => console.log('Cancel Pressed'),
                 onPress : () => {
                   this.props.reduxDispatch(fetchUserAsyncActionCreator());
@@ -144,13 +144,13 @@ handleButtonDisabled = () => {
 
       if(profileUpdated.error.code != undefined && profileUpdated.error.code == "ECONNABORTED"){
         this.setState((prevState)=>{ return { spinner:!prevState.spinner } },()=>{ setTimeout(()=>{
-          this.showAlert("",CONNECTION_ABORTED);
+          this.showAlert(ERROR.title,ERROR.message);
         },100) });
         
       }
       else{
         this.setState((prevState)=>{ return { spinner:!prevState.spinner } },()=>{ setTimeout(()=>{
-          this.showAlert("Error",TRY_AGAIN);
+          this.showAlert(ERROR.title,ERROR.message);
         },100) });
       }
     }

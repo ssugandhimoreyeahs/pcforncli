@@ -200,7 +200,7 @@ class ChangeInCash extends Component {
                  {
                    isCICGraphEmpty == true ?
                     <View style={{height:238,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
-                        <Text style={{ color:"#070640" }}>No Data Available!</Text>
+                        <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
                     </View>
                    :
                    
@@ -235,7 +235,11 @@ class ChangeInCash extends Component {
           <View style={{width:"40%",height:"100%",}}>
           <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
             //onPress={()=>this.props.navigation.navigate("ChangeInCashInsights")}
-            onPress={()=>{ Alert.alert("Message","Coming Soon!",[ { text: "Cancel"  } ],false);  }}
+            onPress={()=>{ 
+              Alert.alert("Coming soon",
+              "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
+              }
+              }
             
             />
           </View>

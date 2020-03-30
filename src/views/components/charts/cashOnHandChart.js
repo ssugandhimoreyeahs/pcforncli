@@ -13,9 +13,6 @@ import { isFloat } from "../../../api/common";
 export default class CashOnHandChart extends PureComponent {
   constructor(props) {
     super(props);
-    //Receieve the past and future data into the props
-    //cohPast={this.props.cohPast} cohFuture={this.props.cohFuture}
-
   }
 
   getRunwayColor(cash, expenses, sales) {
@@ -28,63 +25,12 @@ export default class CashOnHandChart extends PureComponent {
     let monthArray = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
     let dateObj = new Date();
     let currentMonth = monthArray[dateObj.getMonth()];
-    //  VictoryNative requires data to be in the format:
-    //     [
-    //         { x: "2019-08-01", y: 12000 },
-    //         { x: "2019-09-01", y: 11000 }
-    //     ]
-    // here we transform our data into this format
-    // console.log("I am in chash on hand chart");
-    // console.log(this.props.cashOnHandGraphData);
-    // console.log("Again back");
     let applyGraph = [];
-  //   if(this.props.cashOnHandGraphData.length > 0){
-    
-  //   for(let i=1;i<32;i++){
-  //     let obj = {};
-  //     let dateToBePush;
-  //     obj.x = i;
-  //     obj.y = 0;
-  //     this.props.cashOnHandGraphData.map( singleData => {
-  //         let currentDate = new Date(singleData.date);
-  //         if(currentDate.getDate() == i ){
-  //           obj.y = singleData.amount;
-  //         }
-  //     });
-  //     applyGraph.push(obj);
-  //   }
-  //  }else{
-  //   for(let i=0;i<=30;i=i+5){
-  //     let obj = {};
-  //     let dateToBePush;
-  //     obj.x = i;
-  //     obj.y = 0;
-  //     applyGraph.push(obj);
-  //   }
-  //  }
-    
-     // console.log("Getting Coh Values = ",this.props.cohPast," ",this.props.cohFuture);
-    //  console.log("Getting Coh Data = ",this.props.cashOnHandGraphData);
-    //  console.log("-------------------------------------------------------");
+  
        if(this.props.cohPast == 0 && this.props.cohFuture == 0){
-     //    console.log("I am Successfully in Condition 1");
+     
         if(this.props.cashOnHandGraphData.length > 0){
-     //     console.log("I am Successfully in Condition 2");
-          // for(let i=1;i<32;i++){
-          //   let obj = {};
-          //   this.props.cashOnHandGraphData.map( (singleGraph) => {
-              
-          //    let dateobj   = new Date(singleGraph.date);
-          //    let todayDate = dateobj.getDate();
-          //     console.log(singleGraph.date);
-          //     if(i == todayDate){
-          //       obj.x = todayDate;
-          //       obj.y = singleGraph.amount;
-          //       console.log("Ready x,y ",obj);
-          //     }
-          //   });
-          //   applyGraph.push(obj);
-          // }
+     
           for(let i=1;i<31;i++){
             let obj = {};
             obj.x = i;
@@ -150,28 +96,19 @@ export default class CashOnHandChart extends PureComponent {
       });
     }
     data = data.filter(Boolean);
-    // we must calculate the color of each point on our line chart
-    // according to runway color at that point.
-    // we calculate runway length given cash, expenses, and revenue at a particular point in time
-    // each runway length corresponds to a particular color
+    
     
     var gradients = [];
     let { cashOnHandGraphData: forGradientData,cohFuture,cohPast } = this.props;
     var isLogicUtilize = 0;
     for (var i = 0; i < forGradientData.length; i++) {
-      // const month = Moment(data[i].x).format("YYYY-MM-DD");
-      // const cash = historicalFinances[month].cash;
-      // const expenses = historicalFinances[month].expenses;
-      // const revenue = historicalFinances[month].revenue;
-
-      // calculate the position along the line chart for each data point
-      // ie this point is at 17% of the total distance of the line
+      
       const offset = Math.trunc(((i + 1) / forGradientData.length) * 100);
       const gradient = getHealthScoreColor(offset);
 
       if(( cohPast == 3 && cohFuture == 1) || (cohFuture == 3 && cohPast == 3)){
         let gettingCurentMonth = ALL_MONTHS[new Date().getMonth()];
-       // console.log("Getting Current Month Data ",forGradientData[i].month);
+      
 
         if(gettingCurentMonth == forGradientData[i].month){
           isLogicUtilize = 1;
@@ -200,12 +137,6 @@ export default class CashOnHandChart extends PureComponent {
       
     }//end of loop
     const gw=Dimensions.get("window").width;
-    // const graphWidht=gw-((3/100)*gw)
-    // console.log(graphWidht)
-    // console.log("Start")
-    // console.log(JSON.stringify(data))
-    // console.log("End")
-  //  console.log("rendering applyGraph ",applyGraph);
   let customYaxis = [];
   if(applyGraph.length > 0){
           //calculate latest Logic for the Yaxis
@@ -242,7 +173,10 @@ export default class CashOnHandChart extends PureComponent {
              </LinearGradient>
            </Defs>
            <VictoryAxis
-             style={{ tickLabels: { fontSize:11 } }}
+           
+             style={{ tickLabels: { fontSize:11 },
+             grid: { stroke: "#EEE", strokeDasharray: "50,0" },
+              }}
              dependentAxis={true}
              tickValues={customYaxis}
              tickFormat={y => {
@@ -320,7 +254,9 @@ export default class CashOnHandChart extends PureComponent {
              </LinearGradient>
            </Defs>
            <VictoryAxis
-           style={{ tickLabels: { fontSize:11 } }}
+           style={{ tickLabels: { fontSize:11 },
+           grid: { stroke: "#EEE", strokeDasharray: "50,0" },
+            }}
              dependentAxis={true}
              tickValues={customYaxis}
              tickFormat={y => {

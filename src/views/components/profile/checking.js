@@ -75,12 +75,12 @@ const TransactionComponent = (props) => {
                    setTimeout(()=>{
                      
                      Alert.alert(
-                       'Message',
-                       `You're Not Connected to the Bank`,
+                       'Bank Disconnected',
+                       `Your bank account has been disconnected. Please reconnect again.`,
                        [
                          {text: 'Cancel'},
                          {
-                           text: 'Connect Here',
+                           text: 'Reconnect',
                            onPress: () =>{ props.navigation.navigate("Integration") },
                            style: 'cancel',
                          }
@@ -107,10 +107,17 @@ const TransactionComponent = (props) => {
   );
 }
 const ShowDateHeadings = ({date}) => {
+  //console.log("Date Recieved in Transactions - ",date);
+  //let currentTransactionDateObj = new Date(date);
+  let currentTransactionDateObj = date.split("-");
+  console.log("Test here - ",currentTransactionDateObj);
+  // return(
+  // <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[currentTransactionDateObj.getMonth()]} ${currentTransactionDateObj.getDate()}, ${currentTransactionDateObj.getFullYear()}`}</Text>
+  // );
 
-  let currentTransactionDateObj = new Date(date);
+  //update using the split logic
   return(
-  <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[currentTransactionDateObj.getMonth()]} ${currentTransactionDateObj.getDate()}, ${currentTransactionDateObj.getFullYear()}`}</Text>
+    <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[ parseInt(currentTransactionDateObj[1]) - 1 ]} ${currentTransactionDateObj[2]}, ${currentTransactionDateObj[0]}`}</Text>
   );
 };
 class Checking extends React.PureComponent{
@@ -271,12 +278,12 @@ class Checking extends React.PureComponent{
 
 showUserIsNotConnectedToBankAlert = () => {
   Alert.alert(
-    'Message',
-    `You're Not Connected to the Bank`,
+    'Bank Disconnected',
+    `Your bank account has been disconnected. Please reconnect again.`,
     [
       {text: 'Cancel'},
       {
-        text: 'Connect Here',
+        text: 'Reconnect',
         onPress: () =>{ this.props.navigation.navigate("Integration") },
         style: 'cancel',
       }
@@ -1029,20 +1036,20 @@ fetchTransactionsFirstTime = async (userData) => {
                 <TouchableOpacity onPress={()=>{ this.chooseTransactionSelectType('Inflow') }} style={{width:'30%', height:'99.9%',borderWidth: 1,borderColor:'#737373', justifyContent:'center', backgroundColor:currentAction == 'Inflow' ? '#070640': '#FFFFFF',}}>
                 <Text style={{fontSize:12, color: currentAction == 'Inflow' ? "#fff" : "#07053E", textAlign:'center'}}>Inflow</Text>
                 </TouchableOpacity>
-                <TouchableOpacity disabled={true} style={{width:'30%', height: '99.9%', backgroundColor:currentAction == 'Transfer' ? '#070640': '#FFFFFF', justifyContent:'center',borderColor:'#737373',borderWidth:1,}}>
+                {/* <TouchableOpacity disabled={true} style={{width:'30%', height: '99.9%', backgroundColor:currentAction == 'Transfer' ? '#070640': '#FFFFFF', justifyContent:'center',borderColor:'#737373',borderWidth:1,}}>
                   <Text style={{fontSize:12, color: currentAction == 'Transfer' ? "#fff" : "#07053E", textAlign:'center'}}>Transfer</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
               
-              <Button title="Uncategoried" type="outline" 
+              {/* <Button title="Uncategoried" type="outline" 
                 buttonStyle={{flexDirection:'row-reverse'}}
                 containerStyle={{height:26, marginRight:'2%',justifyContent:'space-between',width:'28%',borderRadius:5,
                 borderColor:'#318FE9'}}
                 titleStyle={{color:'#4A90E2',fontSize:12,marginTop:-6}} 
-                icon={<SimpleLineIcons name="arrow-down" size={10} color="#4A90E2" style={{marginTop:-3}} />} />
+                icon={<SimpleLineIcons name="arrow-down" size={10} color="#4A90E2" style={{marginTop:-3}} />} /> */}
                 
             </View>
-            <Text style={{color:'#1D1E1F', width:93,height:15,fontSize:11,alignSelf:"flex-end",marginBottom:13,marginRight:'2%'}}>26 uncategorized</Text>
+            {/* <Text style={{color:'#1D1E1F', width:93,height:15,fontSize:11,alignSelf:"flex-end",marginBottom:13,marginRight:'2%'}}>26 uncategorized</Text> */}
           </View>
           
           {

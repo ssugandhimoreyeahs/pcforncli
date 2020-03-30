@@ -4,7 +4,7 @@ import Moment from "moment";
 import SalesChart from "../charts/salesChart";
 // import {Ionicons, SimpleLineIcons} from '@expo/vector-icons';
 import { Dropdown } from "react-native-material-dropdown";
-//import {Button_Months} from "../../../constants/constants";
+import {Button_Months} from "../../../constants/constants";
 import { Button } from "react-native-elements";
 import { numberWithCommas } from "../../../api/common";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -20,13 +20,7 @@ Ionicons.loadFont();
 AntDesign.loadFont();
 const gw=Dimensions.get("window").width;
 
-const Button_Months = [
-  // { value: "This Month" },
-  { value: "3 Months" },
-  { value: "6 Months" },
-  { value: "12 Months" }
-  
-];
+
 
 class Sales extends Component {
   constructor(props) {
@@ -234,7 +228,7 @@ class Sales extends Component {
                 onBlur={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
                 onFocus={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
                 inputContainerStyle={styles.detailsInputContainer}
-                dropdownPosition={3.5}
+                dropdownPosition={4.5}
                 fontSize={11} />
                 <SimpleLineIcons name={this.state.arrowStyle} color="#030538" style={{marginTop:10, marginRight:20,}}/>
           </TouchableOpacity>
@@ -243,7 +237,8 @@ class Sales extends Component {
            //onPress={()=>this.props.navigation.navigate("SalesInsights")}
            onPress={()=>{  
             // Alert.alert("Message","Coming Soon!");  
-            Alert.alert("Message","Coming Soon!",[ { text: "Cancel"  } ],false);
+            Alert.alert("Coming soon",
+            "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
             }}
            />
           </View>

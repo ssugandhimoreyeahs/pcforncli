@@ -153,7 +153,8 @@ class IncomingAR extends Component {
                   <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
                   onPress={()=>{ 
                     //this.props.navigation.navigate("IncomingARInsights")
-                    Alert.alert("Message","Coming Soon!");
+                    Alert.alert("Coming soon",
+                    "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
                   
                   }}/>
                 </View>
