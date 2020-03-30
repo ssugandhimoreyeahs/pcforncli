@@ -42,6 +42,11 @@ class Integration extends Component{
     }
      isUserConnectedToBank = async () => {
         const { userData } = this.props.reduxState.userData;
+        if(userData.bankIntegrationStatus == false && 
+            userData.qbIntegrationStatus == false ){
+                this.setState({ isSpinner: false, isBodyLoaded: true });
+                return;
+            }
         const triggerValidPlaidToken = await validPlaidToken();
         console.log("Getting user connected to bank");
         console.log(userData);
@@ -108,7 +113,17 @@ class Integration extends Component{
             <View style={bankNotConnectedStyle.integrationView}>
             <View style={bankNotConnectedStyle.innerViews}>
              <View style={{flexDirection:"column",width:"64%",height:30}}><Text style={{fontWeight:"bold"}}>Bank Integration</Text></View>
-             <View style={{flexDirection:"column",width:"36%",height:30}}><TouchableOpacity onPress={()=>{ this.props.navigation.navigate("BankIntegration", { reloadDashBoardData:()=>{ this.props.navigation.getParam("reloadDashBoardData")() },comeFromInnerIntegration:true,reloadInnerIntegrationScreen:()=>{ this.isUserConnectedToBank(); } } ); }} style={{borderRadius:15,borderColor:"#000000",borderWidth:1}}><Text style={{ paddingLeft:"25%" }}>Connect</Text></TouchableOpacity></View>
+             <View style={{flexDirection:"column",width:"36%",height:30}}>
+             <TouchableOpacity 
+                onPress={()=>{  this.props.navigation.navigate("BankIntegration", { 
+                    reloadPlaid:()=>{ 
+                         this.props.navigation.getParam("reloadPlaid")() 
+                    },
+                    comeFromInnerIntegration:true,
+                    reloadInnerIntegrationScreen:()=>{ 
+                        this.isUserConnectedToBank(); 
+                    } } ); }} 
+                style={{borderRadius:15,borderColor:"#000000",borderWidth:1}}><Text style={{ paddingLeft:"25%" }}>Connect</Text></TouchableOpacity></View>
             </View>
             </View>
           );
@@ -122,11 +137,11 @@ class Integration extends Component{
            <View style={{flexDirection:"column",width:"36%",height:30}}>
            <TouchableOpacity onPress={()=>{ 
                this.props.navigation.navigate("QuickbookIntegration", { 
-                   reloadDashBoardDataForQb:()=>{ 
-                       this.props.navigation.getParam("updateSalesChartOnly")(); 
-                       //setTimeout(()=>{ this.checkAgainQuickbooksisConnectedOrNot(); },2000);
+                reloadQuickbooks:()=>{ 
+                       this.props.navigation.getParam("reloadQuickbooks")(); 
                     }
-            ,comeFromInnerIntegrationOnQB:true } ); }} style={{borderRadius:15,borderColor:"#000000",borderWidth:1}}><Text style={{ paddingLeft:"25%" }}>Connect</Text></TouchableOpacity></View>
+            ,comeFromInnerIntegrationOnQB:true 
+            } ); }} style={{borderRadius:15,borderColor:"#000000",borderWidth:1}}><Text style={{ paddingLeft:"25%" }}>Connect</Text></TouchableOpacity></View>
           </View>
           </View>
         );

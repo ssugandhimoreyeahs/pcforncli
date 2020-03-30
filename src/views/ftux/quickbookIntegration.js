@@ -1,17 +1,16 @@
 import React,{ Component,Fragment } from "react";
 import { Text,View,Image,TouchableOpacity,StatusBar, Alert  } from "react-native";
 import { WebView } from "react-native-webview";
-//import OfflineCacheWebView from 'react-native-offline-cache-webview';
 import { APINETWORK } from "../../constants/constants";
 import { getCurrentAuthToken } from "../../api/api";
 import { triggerQbDataCopyDb } from "../../api/api";
 import Spinner from 'react-native-loading-spinner-overlay';
-//import { Ionicons } from '@expo/vector-icons';
 import DetectPlatform from "../../DetectPlatform";
 import Url from "url";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
 Ionicons.loadFont();
+
 class QuickbookIntegration extends Component{
     injectedJavaScripttt = `(function() {
         window.postMessage = function(data) {
@@ -28,14 +27,7 @@ class QuickbookIntegration extends Component{
         }
     }
     componentDidMount = async () => {
-        // let myUrl = "http://msgmy.in:8081/v0.1/quickBooks/callback?code=25&error=true";
-        // let myUrlObj = Url.parse(myUrl,true);
-        // console.log("Testing Url Response here");
-        // if(myUrlObj.query.error == undefined){
-        //     console.log("error nhi hai");
-        // }else{
-        //     console.log("error hai");
-        // }
+        
         const AuthorizationResponse = await getCurrentAuthToken();
 
         if(AuthorizationResponse.result == true){
@@ -70,17 +62,8 @@ class QuickbookIntegration extends Component{
                      // console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
                     this.props.navigation.getParam("createBankIntegration")();
                 }
-                if(this.props.navigation.getParam("reloadDashBoardDataForQb")){
-                    console.log("here for reloading qb data");
-                    //const qbCopyResponse = await triggerQbDataCopyDb();
-                    //console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
-                    // this.props.navigation.getParam("reloadDashBoardDataForQb")();
-
-                    //change here for custom exp
-                    this.props.navigation.getParam("reloadDashBoardDataForQb")();
-                    // setTimeout(()=>{
-                     
-                    // });
+                if(this.props.navigation.getParam("reloadQuickbooks")){
+                    this.props.navigation.getParam("reloadQuickbooks")();
                 }
                 this.setState({ spinner:false },()=>{
                     this.props.navigation.navigate("QuickbookConnected",{
@@ -88,14 +71,12 @@ class QuickbookIntegration extends Component{
                             if(this.props.navigation.getParam("createBankIntegration")){
                                 this.props.navigation.navigate("Setup");
                             }
-                            if(this.props.navigation.getParam("reloadDashBoardDataForQb")){
+                            if(this.props.navigation.getParam("reloadQuickbooks")){
                                 this.props.navigation.navigate("Contact");
                             }
                         }
                     });
-                })
-    
-                    },6000);
+                })},6000);
                 }else{
                     this.setState((prevState)=>{
                         return {
@@ -103,7 +84,7 @@ class QuickbookIntegration extends Component{
                         }
                     },()=>{
                         setTimeout(()=>{
-                            Alert.alert("Message","QuickBooks Connection Successfully Aborted",[ { text:'Ok',onPress:()=>{  this.props.navigation.goBack();  } } ],{ cancelable:false });
+                            Alert.alert("Message","QuickBooks Connection Successfully Aborted",[ { text:'Okay',onPress:()=>{  this.props.navigation.goBack();  } } ],{ cancelable:false });
                         },100);
                     })
                 }
