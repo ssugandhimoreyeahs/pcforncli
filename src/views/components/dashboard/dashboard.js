@@ -122,19 +122,21 @@ class Dashboard extends PureComponent {
                 console.log("current Balance promise error - resposne - ",error);
                 this.setState({ userCurrentBalance: 0,showCOHChartLoader:false });
             })
-            getCashOnHandGraphPromiseBased(this.state.past,this.state.future).then((cashOnHandGraphData)=>{
-              console.log("cashOnHand Response Here -------------------- ");
-              console.log(cashOnHandGraphData);
-              console.log("----------------------------------------------------------------");
-              if(cashOnHandGraphData.result == true && cashOnHandGraphData.response.length > 0){
-                this.setState({ cashOnHandGraph:cashOnHandGraphData.response,isCOHLoadedOnce: true });
-               }else{
+            setTimeout(()=>{
+              getCashOnHandGraphPromiseBased(this.state.past,this.state.future).then((cashOnHandGraphData)=>{
+                console.log("cashOnHand Response Here -------------------- ");
+                console.log(cashOnHandGraphData);
+                console.log("----------------------------------------------------------------");
+                if(cashOnHandGraphData.result == true && cashOnHandGraphData.response.length > 0){
+                  this.setState({ cashOnHandGraph:cashOnHandGraphData.response,isCOHLoadedOnce: true });
+                 }else{
+                  this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
+                 }
+              }).catch((error)=>{
+                
                 this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
-               }
-            }).catch((error)=>{
-              
-              this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
-            });
+              });
+            },1000);
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
             this.props.fetchInsights();
