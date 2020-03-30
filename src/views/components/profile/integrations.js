@@ -25,19 +25,41 @@ class Integration extends Component{
 
         }
     }
-    
+    checkAgainQuickbooksisConnectedOrNot = async () => {
+        console.log("triger for the reload qbs inner");
+
+        const { userData } = this.props.reduxState.userData;
+        console.log("updated for the inte reload - ",userData);
+        const triggerValidPlaidToken = await validPlaidToken();
+        
+            if(userData.qbIntegrationStatus == true && (
+                triggerValidPlaidToken.result == true &&
+                triggerValidPlaidToken.response.IsQuickbookToken == true)){
+                this.setState({ isUserConnectedToQuickBook: true });
+             }
+            
+        
+    }
      isUserConnectedToBank = async () => {
         const { userData } = this.props.reduxState.userData;
+        const triggerValidPlaidToken = await validPlaidToken();
         console.log("Getting user connected to bank");
         console.log(userData);
+        console.log("Valid plait token obj Recieve - ",triggerValidPlaidToken);
         console.log("Getting user connected to bank");
         if(userData.bankIntegrationStatus == false){
-            if(userData.qbIntegrationStatus == true){
+            if(userData.qbIntegrationStatus == true && (
+                triggerValidPlaidToken.result == true &&
+                triggerValidPlaidToken.response.IsQuickbookToken == true)){
                 this.setState({ isUserConnectedToQuickBook: true });
              }
             this.setState({ isSpinner:false,isBodyLoaded:true });
         }else{
-            const triggerValidPlaidToken = await validPlaidToken();
+            if(userData.qbIntegrationStatus == true && 
+                triggerValidPlaidToken.result == true &&
+                triggerValidPlaidToken.response.IsQuickbookToken == true){
+                this.setState({ isUserConnectedToQuickBook: true });
+             }
             if(triggerValidPlaidToken.result == true && triggerValidPlaidToken.response.isValidPlaidToken == true){
                 const userConnectedToBank = await isCheckUserConnectedToBank();
                 if(userConnectedToBank.result == true){
@@ -55,28 +77,14 @@ class Integration extends Component{
             }else{
                 this.setState({ isSpinner:false,isBodyLoaded:true });
             }
-            if(userData.qbIntegrationStatus == true){
-               this.setState({ isUserConnectedToQuickBook: true });
-            }
+            
 
             return false;
-        //     const userConnectedToBank = await isCheckUserConnectedToBank();
-        // // console.log(userConnectedToBank);
-        //     if(userConnectedToBank.result == true){
-        //         this.setState({ userConnectedToBankState:true,bankData:userConnectedToBank.bankConnectedData,isSpinner:false,isBodyLoaded:true });
-        //     }else{
-        //         this.setState({ isSpinner:false,isBodyLoaded:true });
-        // }
+       
          }
         
      }
 
-     checkIsQuickBookConnected = () => {
-        const { userData } = this.props.reduxState.userData;
-        if(userData.qbIntegrationStatus == true){
-            this.setState({ isUserConnectedToQuickBook: true });
-         }
-     }
      componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
         this.isUserConnectedToBank();
@@ -111,7 +119,14 @@ class Integration extends Component{
           <View style={bankConnectedStyle.integrationViewQB}>
           <View style={{ ...bankNotConnectedStyle.innerViews,marginTop: '1%' }}>
            <View style={{flexDirection:"column",width:"64%",height:30}}><Text style={{fontWeight:"bold"}}>QuickBooks</Text></View>
-           <View style={{flexDirection:"column",width:"36%",height:30}}><TouchableOpacity onPress={()=>{ this.props.navigation.navigate("QuickbookIntegration", { reloadDashBoardDataForQb:()=>{ this.props.navigation.getParam("updateSalesChartOnly")(); },comeFromInnerIntegrationOnQB:true } ); }} style={{borderRadius:15,borderColor:"#000000",borderWidth:1}}><Text style={{ paddingLeft:"25%" }}>Connect</Text></TouchableOpacity></View>
+           <View style={{flexDirection:"column",width:"36%",height:30}}>
+           <TouchableOpacity onPress={()=>{ 
+               this.props.navigation.navigate("QuickbookIntegration", { 
+                   reloadDashBoardDataForQb:()=>{ 
+                       this.props.navigation.getParam("updateSalesChartOnly")(); 
+                       //setTimeout(()=>{ this.checkAgainQuickbooksisConnectedOrNot(); },2000);
+                    }
+            ,comeFromInnerIntegrationOnQB:true } ); }} style={{borderRadius:15,borderColor:"#000000",borderWidth:1}}><Text style={{ paddingLeft:"25%" }}>Connect</Text></TouchableOpacity></View>
           </View>
           </View>
         );
@@ -296,10 +311,11 @@ class Integration extends Component{
             isSpinner,
             isUserLinkedToBank,
             isUserUnlinkedToBank,
-            isBodyLoaded
+            isBodyLoaded,
+            isUserConnectedToQuickBook
         } = this.state;
         const { qbIntegrationStatus,bankStatus: onlyForRenderBankStatus } = this.props.reduxState.userData.userData;
-        console.log("Current Qb Integraiton Status - ",qbIntegrationStatus);
+        //console.log("Current Qb Integraiton Status - ",qbIntegrationStatus);
         return(
             <React.Fragment>
                 <Spinner
@@ -322,7 +338,7 @@ class Integration extends Component{
                            
                     }
                     {
-                        qbIntegrationStatus ?
+                        isUserConnectedToQuickBook ?
                         this.quickBookConnectedView() :
                         this.quickBookNotConnectedView()
                     }

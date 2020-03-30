@@ -2,7 +2,7 @@ import { createAppContainer, } from "react-navigation";
 import {createStackNavigator} from 'react-navigation-stack';
 import { createStore, applyMiddleware } from "redux";
 import React, { Component } from "react";
-import { View,Text } from "react-native";
+import { View,Text, Platform } from "react-native";
 import { Provider } from "react-redux";
 import axios from "axios";
 import reducer from "./src/reducers";
@@ -51,9 +51,9 @@ import CategoryScreen from "./src/views/components/profile/categoryscreen";
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
 import SplashScreen from "react-native-splash-screen";
-import messaging from '@react-native-firebase/messaging';
-import firebaseapp from "@react-native-firebase/app";
-
+// import messaging from '@react-native-firebase/messaging';
+// import firebaseapp from "@react-native-firebase/app";
+// import crashlytics from "@react-native-firebase/crashlytics";
 const MainNavigator = createStackNavigator(
   {
     Login: { 
@@ -319,25 +319,31 @@ const NavigationApp = createAppContainer(MainNavigator);
 
 export default class App extends Component {
 
-  async registerAppWithFCM() {
-    await messaging().registerForRemoteNotifications();
-  }
+  // async registerAppWithFCM() {
+  //   await messaging().registerForRemoteNotifications();
+  // }
 
-  async requestPermission() {
-    const granted = messaging().requestPermission();
+  // async requestPermission() {
+  //   const granted = messaging().requestPermission();
    
-    if (granted) {
-      this.registerAppWithFCM();
-    } else {
-      console.log('User declined messaging permissions :(');
-    }
-  }
+  //   if (granted) {
+  //     this.registerAppWithFCM();
+  //   } else {
+  //     console.log('User declined messaging permissions :(');
+  //   }
+  // }
 
   componentDidMount = () => {
-    
+
+      // if(Platform.OS == "android"){
+      //   setTimeout(()=>{
+      //     crashlytics().log('Testing crash');
+      //     crashlytics().crash();
+      //   },10000);
+      // }
       setTimeout(()=>{
         SplashScreen.hide();
-      },400);
+      },450);
     
   }
   

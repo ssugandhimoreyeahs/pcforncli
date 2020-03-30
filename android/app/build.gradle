@@ -1,5 +1,8 @@
 apply plugin: "com.android.application"
-
+apply plugin: 'io.fabric'
+crashlytics {
+  enableNdk true
+}
 import com.android.build.OutputFile
 
 /**
@@ -205,7 +208,7 @@ dependencies {
     implementation project(':react-native-splash-screen')
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "com.facebook.react:react-native:+"  // From node_modules
-  
+    //implementation project(path: ":@react-native-firebase_crashlytics")
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")

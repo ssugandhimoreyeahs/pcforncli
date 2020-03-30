@@ -66,15 +66,21 @@ class QuickbookIntegration extends Component{
 
                         console.log("Connection Establised ");
                 if(this.props.navigation.getParam("createBankIntegration")){
-                     const qbCopyResponse = await triggerQbDataCopyDb();
+                     //const qbCopyResponse = await triggerQbDataCopyDb();
                      // console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
                     this.props.navigation.getParam("createBankIntegration")();
                 }
                 if(this.props.navigation.getParam("reloadDashBoardDataForQb")){
                     console.log("here for reloading qb data");
-                    const qbCopyResponse = await triggerQbDataCopyDb();
-                    console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
+                    //const qbCopyResponse = await triggerQbDataCopyDb();
+                    //console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
+                    // this.props.navigation.getParam("reloadDashBoardDataForQb")();
+
+                    //change here for custom exp
                     this.props.navigation.getParam("reloadDashBoardDataForQb")();
+                    // setTimeout(()=>{
+                     
+                    // });
                 }
                 this.setState({ spinner:false },()=>{
                     this.props.navigation.navigate("QuickbookConnected",{
@@ -83,13 +89,13 @@ class QuickbookIntegration extends Component{
                                 this.props.navigation.navigate("Setup");
                             }
                             if(this.props.navigation.getParam("reloadDashBoardDataForQb")){
-                                this.props.navigation.navigate("Integration");
+                                this.props.navigation.navigate("Contact");
                             }
                         }
                     });
                 })
     
-                    },7000);
+                    },6000);
                 }else{
                     this.setState((prevState)=>{
                         return {

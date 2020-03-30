@@ -71,3 +71,80 @@ export function getHealthScoreCategory(score) {
   if (64 <= score && score <= 100) return "Excellent";
   return "Unknown";
 }
+
+export const CUSTOM_GRADIENT = {
+  "1": [
+      `#087ee1`,
+      `#087ee1`,
+      `#087ee1`,
+      `#087ee1`,
+      `#087ee1`,
+      `#087ee1`,
+      `#087ee1`,
+      `#087ee1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#efaf08`,
+      `#efaf08`,
+      `#efaf08`,
+      `#efaf08`,
+      `#efaf08`,
+      `#efaf08`,
+      `#efaf08`,
+      `#efaf08`
+      
+  ],
+  "3": [
+    `#087ee1`,
+    `#4fccd1`,
+    `#a5d7d4`,
+    `#efaf08`,
+    `#df0c0c`
+  ],
+  "6": [
+    `#087ee1`,
+    `#087ee1`,
+    `#4fccd1`,
+    `#a5d7d4`,
+    `#a5d7d4`,
+    `#efaf08`,
+    `#df0c0c`
+  ],
+  "12": [
+      `#087ee1`,
+      `#087ee1`,
+      `#087ee1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#4fccd1`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#a5d7d4`,
+      `#efaf08`,
+      `#efaf08`,
+      `#efaf08`,
+      `#df0c0c`
+  ]
+}
+
+/*
+  1)  - #087ee1  - 8, 126, 225
+  2)  - #4fccd1  - 79, 204, 209
+  3)  - #a5d7d4  - 165, 215, 212
+  4)  - #efaf08  - 239, 175, 8
+  5)  - #df0c0c  - 223,12,12
+*/
