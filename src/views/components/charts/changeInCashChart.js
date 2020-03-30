@@ -77,6 +77,11 @@ class ChangeInCashChart extends Component {
     // console.log("empty cic data here --- ");
     // console.log(composingDataLevel1);
     // console.log("ends here ----------------");
+    let { cicCurrentRange } = cashInChangeData;
+    let barRatio = cicCurrentRange == 1 ? 0.6 : 
+     cicCurrentRange == 3 ? 0.15 : 
+     cicCurrentRange == 6 ? 0.20 : 
+     cicCurrentRange == 12 ? 0.35 : 0.2; 
     return (
         <View style={{ 
           
@@ -164,7 +169,7 @@ class ChangeInCashChart extends Component {
           
           />
         <VictoryBar
-            barRatio={0.6}
+            barRatio={ barRatio }
             style={{ data: { fill: (items)=>{  if(items.y < 0){return "#FF7B32" }else{ return "#1188DF" }  } } }}
             data={ composingDataLevel1 }
         />

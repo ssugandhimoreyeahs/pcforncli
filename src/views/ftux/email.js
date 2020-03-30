@@ -55,7 +55,7 @@ AntDesign.loadFont();
     this.setState({ isSpinner:true,isButtonEnabled:false });
     //check email first is exist or not
     const isUserExist = await isUserAlreadyExist(this.state.email.trim().toLowerCase());
-    //console.log("Mongo Response ",isUserExist);
+    console.log("is User APi respnse here -  ",isUserExist);
 
     if(isUserExist.result === true){
         this.setState({ isSpinner:false,isUserExistFlag:true });

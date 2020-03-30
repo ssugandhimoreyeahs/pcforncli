@@ -87,7 +87,9 @@ export default class BankIntegration extends Component {
                       setTimeout(()=>{
                         this.props.navigation.getParam("reloadInnerIntegrationScreen")();
                          setTimeout(()=>{
-                          this.props.navigation.navigate("Integration");
+                          //this.props.navigation.navigate("Integration");
+                          //change some flow on 28-mar-2020
+                          this.props.navigation.navigate("Contact");
                          },1000);
                       },1500);
                     },6000);

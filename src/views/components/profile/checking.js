@@ -259,7 +259,7 @@ class Checking extends React.PureComponent{
       this.setState(this.resetState(),()=>{
         setTimeout(()=>{
           this.readyTransactionPage();
-        },500);
+        },100);
       });
 
       

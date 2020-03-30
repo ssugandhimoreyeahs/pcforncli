@@ -86,7 +86,7 @@ class Contact extends Component {
         />
           <View style={styles.first}>
 
-          <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
+          <TouchableOpacity onPress={()=> this.props.navigation.navigate("Dashboard")}>
             <AntDesign color="#fff" name='left' size={25} style={{marginTop:10,marginLeft:10}}/>
             </TouchableOpacity>
               <View style = {{marginTop:10,height:40, width:"100%",flexDirection:"row",justifyContent:"space-between", paddingLeft:18, paddingRight:19,

@@ -7,7 +7,7 @@ import { Defs, LinearGradient, Stop } from "react-native-svg";
 
 import { JS_DATE_INDEX_TO_MONTH_MAP } from "../../../constants/constants";
 import { ALL_MONTHS } from "../../../constants/constants";
-import { getHealthScoreColor } from "../../../utilities/gradient";
+import { getHealthScoreColor, CUSTOM_GRADIENT } from "../../../utilities/gradient";
 import { getOutOfCashDate } from "../../../utilities/cash";
 import { isFloat } from "../../../api/common";
 export default class CashOnHandChart extends PureComponent {
@@ -100,43 +100,95 @@ export default class CashOnHandChart extends PureComponent {
     
     var gradients = [];
     let { cashOnHandGraphData: forGradientData,cohFuture,cohPast } = this.props;
-    var isLogicUtilize = 0;
+    console.log("cohPast = ",cohPast);
+    console.log("cohFuture = ",cohFuture);
+    let precentForCurrentMonth = 3;
+    let percentForThreeMonth = 25;
+    let percentForSixMonth = 20;
+    let percentForTeweleMonth = 7;
     for (var i = 0; i < forGradientData.length; i++) {
       
-      const offset = Math.trunc(((i + 1) / forGradientData.length) * 100);
-      const gradient = getHealthScoreColor(offset);
-
-      if(( cohPast == 3 && cohFuture == 1) || (cohFuture == 3 && cohPast == 3)){
-        let gettingCurentMonth = ALL_MONTHS[new Date().getMonth()];
       
-
-        if(gettingCurentMonth == forGradientData[i].month){
-          isLogicUtilize = 1;
-          gradients.push(
-            <Stop key={i} offset={`${offset}%`} stopColor={`#a9a9a9`} />
-          );
-        }else{
-          if(isLogicUtilize == 1){
+      //const gradient = getHealthScoreColor(offset);
+      if( cohPast == 0 && cohFuture == 0 ){
+        let getAmmount = forGradientData[i].amount;
+        
+        if( i == forGradientData.length - 1 ){
+          if(getAmmount > 0){
             gradients.push(
-              <Stop key={i} offset={`${offset}%`} stopColor={`#a9a9a9`} />
+              <Stop key={i} offset={`${precentForCurrentMonth*i}%`} stopColor={CUSTOM_GRADIENT["1"][i]} />
             );
           }else{
             gradients.push(
-              <Stop key={i} offset={`${offset}%`} stopColor={gradient} />
+              <Stop key={i} offset={`${precentForCurrentMonth*i}%`} stopColor={`#df0c0c`} />
             );
           }
-         
+        }else{
+          gradients.push(
+            <Stop key={i} offset={`${precentForCurrentMonth*i}%`} stopColor={CUSTOM_GRADIENT["1"][i]} />
+          );
         }
+      }else if( cohPast == 3 && cohFuture == 1){
+        let getAmmount = forGradientData[i].amount;
         
-
+        if( i == forGradientData.length - 1 ){
+          if(getAmmount > 0){
+            gradients.push(
+              <Stop key={i} offset={`${percentForThreeMonth*i}%`} stopColor={CUSTOM_GRADIENT["3"][i]} />
+            );
+          }else{
+            gradients.push(
+              <Stop key={i} offset={`${percentForThreeMonth*i}%`} stopColor={CUSTOM_GRADIENT["3"][i+1]} />
+            );
+          }
+        }else{
+          gradients.push(
+            <Stop key={i} offset={`${percentForThreeMonth*i}%`} stopColor={CUSTOM_GRADIENT["3"][i]} />
+          );
+        }
+      }else if( cohPast == 3 && cohFuture == 3 ){
+        let getAmmount = forGradientData[i].amount;
+        
+        if( i == forGradientData.length - 1 ){
+          if(getAmmount > 0){
+            gradients.push(
+              <Stop key={i} offset={`${percentForSixMonth*i}%`} stopColor={CUSTOM_GRADIENT["6"][i]} />
+            );
+          }else{
+            gradients.push(
+              <Stop key={i} offset={`${percentForSixMonth*i}%`} stopColor={CUSTOM_GRADIENT["6"][i+1]} />
+            );
+          }
+        }else{
+          gradients.push(
+            <Stop key={i} offset={`${percentForSixMonth*i}%`} stopColor={CUSTOM_GRADIENT["6"][i]} />
+          );
+        }
       }else{
-        gradients.push(
-          <Stop key={i} offset={`${offset}%`} stopColor={gradient} />
-        );
+        let getAmmount = forGradientData[i].amount;
+        
+        if( i == forGradientData.length - 1 ){
+          if(getAmmount > 0){
+            gradients.push(
+              <Stop key={i} offset={`${percentForTeweleMonth*i}%`} stopColor={CUSTOM_GRADIENT["12"][i]} />
+            );
+          }else{
+            gradients.push(
+              <Stop key={i} offset={`${percentForTeweleMonth*i}%`} stopColor={CUSTOM_GRADIENT["12"][i+1]} />
+            );
+          }
+        }else{
+          gradients.push(
+            <Stop key={i} offset={`${percentForTeweleMonth*i}%`} stopColor={CUSTOM_GRADIENT["12"][i]} />
+          );
+        }
       }
       
     }//end of loop
     const gw=Dimensions.get("window").width;
+    console.log("-----------------------------");
+    console.log("Length Test - ", gradients.length);
+    console.log("------------------------------");
   let customYaxis = [];
   if(applyGraph.length > 0){
           //calculate latest Logic for the Yaxis
@@ -249,7 +301,7 @@ export default class CashOnHandChart extends PureComponent {
         
          >
            <Defs>
-             <LinearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+             <LinearGradient id="gradient" >
                {gradients}
              </LinearGradient>
            </Defs>
