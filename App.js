@@ -51,9 +51,9 @@ import CategoryScreen from "./src/views/components/profile/categoryscreen";
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
 import SplashScreen from "react-native-splash-screen";
-// import messaging from '@react-native-firebase/messaging';
-// import firebaseapp from "@react-native-firebase/app";
-// import crashlytics from "@react-native-firebase/crashlytics";
+import ErrorBoundry from "./src/ErrorBoundry";
+
+
 const MainNavigator = createStackNavigator(
   {
     Login: { 
@@ -319,29 +319,9 @@ const NavigationApp = createAppContainer(MainNavigator);
 
 export default class App extends Component {
 
-  // async registerAppWithFCM() {
-  //   await messaging().registerForRemoteNotifications();
-  // }
-
-  // async requestPermission() {
-  //   const granted = messaging().requestPermission();
-   
-  //   if (granted) {
-  //     this.registerAppWithFCM();
-  //   } else {
-  //     console.log('User declined messaging permissions :(');
-  //   }
-  // }
-
   componentDidMount = () => {
 
-      // if(Platform.OS == "android"){
-      //   setTimeout(()=>{
-      //     crashlytics().log('Testing crash');
-      //     crashlytics().crash();
-      //   },10000);
-      // }
-      setTimeout(()=>{
+     setTimeout(()=>{
         SplashScreen.hide();
       },600);
     
@@ -351,33 +331,12 @@ export default class App extends Component {
     return (
      
       <Provider store={store}>
-        <UserLoginDataProvider value={getUser}>
-        <NavigationApp />
-        </UserLoginDataProvider>
+        <ErrorBoundry>
+          <NavigationApp />
+        </ErrorBoundry>
       </Provider>
       
     );
   }
 }
 
-// export default class App extends Component{
-
-//   componentDidMount(){
-//     SplashScreen.hide();
-//     console.log("sdf");
-//     Axios.get("https://jsonplaceholder.typicode.com/users")
-//     .then((response)=>{
-//       console.log(response.status);
-//     }).catch((error)=>{
-//       console.log(error.status);
-//       console.log(error);
-//     })
-//   }
-//   render(){
-//     return(
-//       <View>
-//         <Text>Hello</Text>
-//       </View>
-//     );
-//   }
-// }
