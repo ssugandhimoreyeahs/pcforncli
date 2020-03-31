@@ -143,20 +143,17 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
     
     this.setState((prevState)=>{
       return {
-        onBoardingData: { ...prevState.onBoardingData,currentPercentage: 100,
-        hasSetupBusinessProfile: false,
-        hasSetupBankingIntegration: false,
-        hasSetupAccountingIntegration: false,
+        onBoardingData: { ...prevState.onBoardingData,currentPercentage: 100
         },
       }
     },()=>{
       setTimeout(()=>{
-        this.setState({ isQuestionOverlayVisible: false },()=>{
-          this.setState({ isSpinner: true },()=>{
+        this.setState({ isSpinner: true,isQuestionOverlayVisible: false },()=>{
+          
             setTimeout(()=>{
               this.props.navigation.navigate("Dashboard");
-            },1000);
-          })
+            },250);
+          
         })
       },300);
     });
@@ -396,7 +393,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
   onSwipeLeft = (gestureState) => {
     
     const { onBoardingData } = this.state;
-    if(onBoardingData.isFetched == true){
+    if(onBoardingData.isFetched == true && this.state.isQuestionOverlayVisible){
       const {
         totalQuestions,
         currentQuestion,
@@ -440,7 +437,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
  
   onSwipeRight = (gestureState) => {
     const { onBoardingData } = this.state;
-    if(onBoardingData.isFetched == true){
+    if(onBoardingData.isFetched == true && this.state.isQuestionOverlayVisible){
       const {
         totalQuestions,
         currentQuestion,
