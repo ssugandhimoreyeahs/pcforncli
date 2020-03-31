@@ -150,12 +150,14 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
       setTimeout(()=>{
         this.setState({ isSpinner: true,isQuestionOverlayVisible: false },()=>{
           
+           this.setState({ isSpinner: false },()=>{
             setTimeout(()=>{
               this.props.navigation.navigate("Dashboard");
-            },100);
+            },150);
+           })
           
         })
-      },300);
+      },500);
     });
   };
 
