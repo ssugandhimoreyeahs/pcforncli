@@ -102,17 +102,17 @@ handleArrowStyle = () => {
 
     let isCOHGraphEmpty = true;
 
-    console.log("------------------------------coh graph data--------------------",this.props.cashOnHandGraphData);
-    console.log("Length - --- ",this.props.cashOnHandGraphData.length);
+    
+    
     for(let i=0;i<this.props.cashOnHandGraphData.length; i++){
-      console.log("----here --- ",this.props.cashOnHandGraphData[i].amount);
+    
       if( this.props.cashOnHandGraphData[i].amount != 0 && this.props.cashOnHandGraphData[i].amount > 0 ){
-        console.log("i am in the true condition");
+    
         isCOHGraphEmpty = false;
         break;
       }
     }
-    console.log("------------------------------------------ isCohGraphEmpty - ",isCOHGraphEmpty);
+    
     return (
       <View style={{alignSelf:'center',marginTop:-20, width:'95%'}}>
         {
