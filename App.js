@@ -303,7 +303,7 @@ const MainNavigator = createStackNavigator(
     }
   },
   {
-    initialRouteName: "Setup"
+    initialRouteName: "ValueProp"
   }
 );
 
@@ -343,7 +343,7 @@ export default class App extends Component {
       // }
       setTimeout(()=>{
         SplashScreen.hide();
-      },450);
+      },600);
     
   }
   

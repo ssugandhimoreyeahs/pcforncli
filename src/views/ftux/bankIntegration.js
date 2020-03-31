@@ -78,15 +78,19 @@ export default class BankIntegration extends Component {
                         // if(this.props.navigation.getParam("reloadInnerIntegrationScreen")){
                         //   this.props.navigation.getParam("reloadInnerIntegrationScreen")();
                         // }
-                         setTimeout(()=>{
-                          //this.props.navigation.navigate("Integration");
-                          //change some flow on 28-mar-2020
-                          this.setState({ isSpinner: false });
-                          this.props.navigation.navigate("Contact");
-                         },1000);
+                        //  setTimeout(()=>{
+                        //   //this.props.navigation.navigate("Integration");
+                        //   //change some flow on 28-mar-2020
+                        //   this.setState({ isSpinner: false });
+                        //   this.props.navigation.navigate("Contact");
+                        //  },1000);
+
+                        this.setState({ isSpinner: false });
+                        this.props.navigation.navigate("Contact");
+
                       },1500);
-                    },6000);
-                  })
+                    },8000);
+                  });
                   
               }
              });

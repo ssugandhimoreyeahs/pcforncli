@@ -20,7 +20,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
       hasSetupBankingIntegration: false,
       hasSetupAccountingIntegration: false,
       isSpinner: false,
-      isQuestionOverlayVisible: true,
+      isQuestionOverlayVisible: false,
       setupUserName:"",
       onBoardingData: { isFetched: false,noneOfTheAbove: false }
 
@@ -64,7 +64,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         onBoardingData.data.push(data);
       }
       this.setState({ onBoardingData });
-
+      console.log("Questions Data Recieved - ",onBoardingData);
     }
   }
   componentDidMount(){
@@ -119,25 +119,47 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
 
   handleFinishSetup = (showOverlay = false) => {
     if(showOverlay){
-
-      this.setState({ isSpinner: true },()=>{
+        if(this.state.onBoardingData.isFetched == true && this.state.onBoardingData.data.length > 0){
+          this.setState({ isSpinner: true });
         setTimeout(()=>{
-          this.setState({ isSpinner: false,isQuestionOverlayVisible: true });
+          this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner,
+            isQuestionOverlayVisible: !prevState.isQuestionOverlayVisible } })
         },1000);
-      })
+        }else{
+          this.props.navigation.navigate("Dashboard");
+        }
       return;
     }
-
-    this.setState({
-      onBoardingData: { ...this.state.onBoardingData,currentPercentage: 100 },
-      isQuestionOverlayVisible: false
+    // this.setState({
+    //   onBoardingData: { ...this.state.onBoardingData,currentPercentage: 100 },
+    //   isQuestionOverlayVisible: false
+    // },()=>{
+    //   setTimeout(()=>{
+    //         this.setState({ isSpinner: false });
+    //         this.props.navigation.navigate("Dashboard");
+    //       },3000);
+    // });
+    // this.setState({ isSpinner: true });
+    
+    this.setState((prevState)=>{
+      return {
+        onBoardingData: { ...prevState.onBoardingData,currentPercentage: 100,
+        hasSetupBusinessProfile: false,
+        hasSetupBankingIntegration: false,
+        hasSetupAccountingIntegration: false,
+        },
+      }
     },()=>{
       setTimeout(()=>{
-            this.setState({ isSpinner: false });
-            this.props.navigation.navigate("Dashboard");
-          },3000);
+        this.setState({ isQuestionOverlayVisible: false },()=>{
+          this.setState({ isSpinner: true },()=>{
+            setTimeout(()=>{
+              this.props.navigation.navigate("Dashboard");
+            },1000);
+          })
+        })
+      },300);
     });
-    this.setState({ isSpinner: true });
   };
 
   chooseSingleAnswers = (currentQuestionIndex,answerIndex) => {
@@ -438,7 +460,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
   render() {
     
     const firstName = this.props.navigation.getParam("firstName", "PocketCFO");
-    const { questionsData,isQuestionOverlayVisible } = this.state;
+    const { questionsData,isQuestionOverlayVisible,isSpinner } = this.state;
     const config = {
       velocityThreshold: 0.3,
       directionalOffsetThreshold: 80
@@ -448,8 +470,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         width: "100%",paddingBottom: 0,
      }}>
         <Spinner
-          visible={this.state.isSpinner}
-          textStyle={styles.spinnerTextStyle}
+          visible={isSpinner}
         />
         <Text h3 style={{marginTop:40,textAlign:"center"}}>{`Welcome, ${firstName}`}</Text>
         { this.state.onBoardingData.isFetched == true && this.state.isQuestionOverlayVisible == true ?
@@ -468,7 +489,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         
         <View style={styles.cardContainer}>
         {this.state.hasSetupBusinessProfile ? (
-                <View style={{flexDirection:"row",alignSelf:"flex-end",flex:1,marginTop:0,position:"relative",zIndex:10 }}>
+                <View style={{flexDirection:"row",alignSelf:"flex-end",flex:1,marginTop:0,position:"absolute",zIndex:10 }}>
                   <Image
                   source={require("../../assets/icon_checked.png")}
                   style={{
@@ -481,7 +502,8 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
                   </View>
               ) : null}
           <TouchableOpacity onPress={this.handlePressCreateBusinessProfile}>
-         
+
+          
             <Card
               containerStyle={styles.cardEnabled}
               onPress={this.handlePress}
@@ -500,8 +522,10 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
             </Card>
           </TouchableOpacity>
 
+          </View>
+          <View style={styles.cardContainer2}>
           {this.state.hasSetupBankingIntegration ? (
-                <View style={{flexDirection:"row",alignSelf:"flex-end",flex:1,marginTop:10,position:"relative",zIndex:10 }}>
+                <View style={{flexDirection:"row",alignSelf:"flex-end",flex:1,marginTop:10,position:"absolute",zIndex:10 }}>
                   <Image
                   source={require("../../assets/icon_checked.png")}
                   style={{
@@ -517,6 +541,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
             onPress={this.handlePressCreateBankIntegration}
             disabled={!this.state.hasSetupBusinessProfile}
           >
+            
             <Card
               containerStyle={
                 this.state.hasSetupBusinessProfile
@@ -538,8 +563,10 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
             </Card>
           </TouchableOpacity>
 
+          </View>
+          <View style={styles.cardContainer2}>
           {this.state.hasSetupAccountingIntegration ? (
-                <View style={{flexDirection:"row",alignSelf:"flex-end",flex:1,marginTop:10,position:"relative",zIndex:10 }}>
+                <View style={{flexDirection:"row",alignSelf:"flex-end",flex:1,marginTop:10,position:"absolute",zIndex:10 }}>
                   <Image
                   source={require("../../assets/icon_checked.png")}
                   style={{
@@ -555,6 +582,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
             onPress={this.handlePressLedgetIntegration}
             disabled={!this.state.hasSetupBankingIntegration}
           >
+            
             <Card
               containerStyle={
                 this.state.hasSetupBankingIntegration
@@ -623,6 +651,11 @@ const styles = StyleSheet.create({
   cardContainer: {
     width: "90%",
     marginTop: "13%",
+    alignSelf:"center"
+  },
+  cardContainer2: {
+    width: "90%",
+    marginTop: 5,
     alignSelf:"center"
   },
   flexRow: { flexDirection: "row", marginLeft: "-5%" },
