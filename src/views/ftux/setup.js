@@ -152,7 +152,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
           
             setTimeout(()=>{
               this.props.navigation.navigate("Dashboard");
-            },250);
+            },100);
           
         })
       },300);
