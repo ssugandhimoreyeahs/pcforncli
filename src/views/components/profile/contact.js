@@ -112,10 +112,11 @@ class Contact extends Component {
                     </View>
               </View> 
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{ this.props.navigation.navigate("Integration",{ ...this.state.userData, updateSalesChartOnly:()=>{ 
-              //this.props.navigation.getParam("updateSalesChartOnly")(); 
-              this.props.navigation.getParam("reloadDashBoardData")();
-              }  ,reloadDashBoardData: () =>{ this.props.navigation.getParam("reloadDashBoardData")(); } }) }}>
+            <TouchableOpacity onPress={()=>{ this.props.navigation.navigate("Integration",
+              { ...this.state.userData, 
+                reloadPlaid:()=>{ this.props.navigation.getParam("reloadPlaid")(); },
+                reloadQuickbooks:()=>{ this.props.navigation.getParam("reloadQuickbooks")(); } 
+              }) }}>
             <View style={{flexDirection:'row',justifyContent:'space-between', backgroundColor: '#FFFFFF',borderBottomColor:'#f1f3f5',borderBottomWidth:1,borderRadius:6,
             height:82}}>
                     <View style={{width:210, height:70, flexDirection:"column",marginTop:22,marginLeft:12}}>

@@ -78,20 +78,138 @@ class Dashboard extends PureComponent {
     this.popupInterval = null;
   }
 
-  updateSalesChartOnly = async () => {
-    this.props.fetchUserDispatch();
-    const salesDataResponse = await getSalesData();
-   // console.log("getting sales chart - ",salesDataResponse);
-    if(salesDataResponse.result == true && salesDataResponse.salesChartData.length > 0 && salesDataResponse.salesChartData[0] != null){
-      this.setState({ salesData:salesDataResponse.salesChartData,salesTotalAmount: salesDataResponse.response.finalAmount });
-    }else{
-      this.setState({ salesData:[] });
-    }
-  }
-  fetchUser = () =>{
+ 
+  resetFlags = () => {
     this.showBankCredentialChangePopupFlag = false;
     this.showBankNotConnectedPopupFlag = false;
     this.showQuickBooksPopupFlag = false;
+  }
+  reloadPlaid = () => {
+    this.resetFlags();
+
+    //reload code only if the user connected to the plaid
+
+    getUserPromise().then((userResponse)=>{
+      console.log("Dashboard user - ",userResponse);
+      if(userResponse.result == true){
+        this.props.updateUserReduxTree(userResponse.userData)
+        if(userResponse.userData.bankIntegrationStatus == false){
+          this.showBankNotConnectedPopupFlag = true;
+          this.setState({ showCOHChartLoader: false, healthScoreIndicator: false },()=>{});
+        }
+        if(userResponse.userData.qbIntegrationStatus == false){
+          this.setState({ salesData:[],showSalesChartLoader:false });
+        }
+  
+        if(userResponse.userData.bankIntegrationStatus == true){
+          this.showBankNotConnectedPopupFlag = false;
+           //Approcahes using promises 
+            
+            getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
+              if(cashOutOfDateResponse.result == true){
+                this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
+              }else{
+                this.setState({ outOfCashDate: 'NA' });
+              }
+            }).catch((error)=>{ 
+              this.setState({ outOfCashDate: 'NA' });
+            });
+            fetchCurrentBalancePromise().then((userBalance)=>{
+              if(userBalance.result == true){
+                this.setState({ userCurrentBalance: userBalance.available_balance,showCOHChartLoader:false });
+              }    
+            }).catch((error)=>{
+                console.log("current Balance promise error - resposne - ",error);
+                this.setState({ userCurrentBalance: 0,showCOHChartLoader:false });
+            })
+            setTimeout(()=>{
+              getCashOnHandGraphPromiseBased(this.state.past,this.state.future).then((cashOnHandGraphData)=>{
+                console.log("cashOnHand Response Here -------------------- ");
+                console.log(cashOnHandGraphData);
+                console.log("----------------------------------------------------------------");
+                if(cashOnHandGraphData.result == true && cashOnHandGraphData.response.length > 0){
+                  this.setState({ cashOnHandGraph:cashOnHandGraphData.response,isCOHLoadedOnce: true });
+                 }else{
+                  this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
+                 }
+              }).catch((error)=>{
+                
+                this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
+              });
+            },1000);
+            this.props.fetchCashInChange(3);
+            this.props.fetchExpenseByCategory(3);
+            this.props.fetchInsights();
+            if( userResponse.userData.qbIntegrationStatus == true  ){
+              getHealthScoreUsingPromise().then((response)=>{
+                  //console.log("health score api response - ",response);
+                  if(response.result == true){
+                    this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
+                  }else{
+                    this.setState({  healthScore :0,healthScoreIndicator: false });
+                  }
+                }).catch((error)=>{
+                    this.setState({  healthScore :0,healthScoreIndicator: false });
+                });
+              }
+            if( userResponse.userData.qbIntegrationStatus == false ){
+  
+              getHealthScoreUsingWithOutQbPromise().then((response)=>{
+                if(response.result == true){
+                  this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
+                }else{
+                  this.setState({  healthScore :0,healthScoreIndicator: false });
+                }
+              }).catch((error) =>{
+                console.log("error on getHealthScoreUsingWithOutQbPromise() - ",error);
+                this.setState({  healthScore :0,healthScoreIndicator: false });
+              })
+              }
+            isValidTokenApiCalled = true;
+            
+        }
+        this.setState({  userData:userResponse.userData },()=>{
+          if(userResponse.userData.bankIntegrationStatus == true){
+            this.props.fetchPlaidCategoryDispatch();
+          }
+        });
+      }else{
+        this.setState({ isSpinner:false,tryAgainScreen: true, isBodyLoaded:true });  
+      }
+    }).catch((error)=>{
+      this.setState({ isSpinner:false,tryAgainScreen: true, isBodyLoaded:true });  
+    });
+  }
+  reloadQuickbooks = () => {
+    this.resetFlags();
+
+    getUserPromise().then((userResponse)=>{
+      console.log("Dashboard user - ",userResponse);
+      if(userResponse.result == true){
+        this.props.updateUserReduxTree(userResponse.userData)
+        if(userResponse.userData.bankIntegrationStatus == false){
+          this.showBankNotConnectedPopupFlag = true;
+          this.setState({ showCOHChartLoader: false, healthScoreIndicator: false },()=>{});
+        }
+        if(userResponse.userData.qbIntegrationStatus == false){
+          this.setState({ salesData:[],showSalesChartLoader:false });
+        }
+        if(userResponse.userData.qbIntegrationStatus == true){
+            this.props.fetchSales();
+            this.props.fetchIncommingAr();
+        }
+        
+  
+        this.setState({  userData:userResponse.userData });
+      }else{
+        this.setState({ isSpinner:false,tryAgainScreen: true, isBodyLoaded:true });  
+      }
+    }).catch((error)=>{
+      this.setState({ isSpinner:false,tryAgainScreen: true, isBodyLoaded:true });  
+    });
+  }
+  fetchUser = () =>{
+    this.resetFlags();
     let isValidTokenApiCalled = false;
 
     getUserPromise().then((userResponse)=>{
@@ -109,31 +227,7 @@ class Dashboard extends PureComponent {
         if(userResponse.userData.bankIntegrationStatus == true){
           this.showBankNotConnectedPopupFlag = false;
            //Approcahes using promises 
-            if(userResponse.userData.bankIntegrationStatus == true && userResponse.userData.qbIntegrationStatus == true){
-            getHealthScoreUsingPromise().then((response)=>{
-              //console.log("health score api response - ",response);
-              if(response.result == true){
-                this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
-              }else{
-                this.setState({  healthScore :0,healthScoreIndicator: false });
-              }
-            }).catch((error)=>{
-                this.setState({  healthScore :0,healthScoreIndicator: false });
-            });
-            }
-            if(userResponse.userData.bankIntegrationStatus == true && userResponse.userData.qbIntegrationStatus == false){
-
-        getHealthScoreUsingWithOutQbPromise().then((response)=>{
-          if(response.result == true){
-            this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
-          }else{
-            this.setState({  healthScore :0,healthScoreIndicator: false });
-          }
-        }).catch((error) =>{
-          console.log("error on getHealthScoreUsingWithOutQbPromise() - ",error);
-          this.setState({  healthScore :0,healthScoreIndicator: false });
-        })
-            }
+            
             getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
               if(cashOutOfDateResponse.result == true){
                 this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
@@ -167,18 +261,46 @@ class Dashboard extends PureComponent {
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
             this.props.fetchInsights();
-            
+            if( userResponse.userData.qbIntegrationStatus == true  ){
+              getHealthScoreUsingPromise().then((response)=>{
+                  //console.log("health score api response - ",response);
+                  if(response.result == true){
+                    this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
+                  }else{
+                    this.setState({  healthScore :0,healthScoreIndicator: false });
+                  }
+                }).catch((error)=>{
+                    this.setState({  healthScore :0,healthScoreIndicator: false });
+                });
+              }
+            if( userResponse.userData.qbIntegrationStatus == false ){
+  
+              getHealthScoreUsingWithOutQbPromise().then((response)=>{
+                if(response.result == true){
+                  this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
+                }else{
+                  this.setState({  healthScore :0,healthScoreIndicator: false });
+                }
+              }).catch((error) =>{
+                console.log("error on getHealthScoreUsingWithOutQbPromise() - ",error);
+                this.setState({  healthScore :0,healthScoreIndicator: false });
+              })
+              }
             isValidTokenApiCalled = true;
             validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
               if(triggerValidPlaidToken.result == true){
                 if(triggerValidPlaidToken.response.isValidPlaidToken == false){
                     //this.showBankCredentialChangePopupFlag = true;
                     let isshowQBPopupFlag = userResponse.userData.qbIntegrationStatus == true && triggerValidPlaidToken.response.IsQuickbookToken == false ? true : false;
-                    this.showBankCredentialChangePopup(isshowQBPopupFlag);
+                    if(this.onDashBoardFocused){
+                      this.showBankCredentialChangePopup(isshowQBPopupFlag);
+                    }
                 }else{
                   if(userResponse.userData.qbIntegrationStatus == true && triggerValidPlaidToken.response.IsQuickbookToken == false){
                     //this.showQuickBooksPopupFlag = true;
-                    this.showQBPopup();
+                    if(this.onDashBoardFocused){
+                      this.showQBPopup();
+                    }
                   }
                 }
               }
@@ -209,19 +331,38 @@ class Dashboard extends PureComponent {
           if(this.state.isCountApiTriggered == false){
               if(userResponse.userData.bankIntegrationStatus == false){
 
-                  validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
-                    if(triggerValidPlaidToken.result == true){
-                      
-                        let isShowQBPopup = userResponse.userData.qbIntegrationStatus == true && 
-                        triggerValidPlaidToken.response.IsQuickbookToken == false ? true : false;
-                        this.showConnectBankPopup(isShowQBPopup);
-
-                    }else{
-                      this.showConnectBankPopup(false);
-                    }
-                  }).catch((error)=>{
-                    this.showConnectBankPopup(false);
-                  }); 
+                  if(userResponse.userData.qbIntegrationStatus == true){
+                    validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
+                      if(triggerValidPlaidToken.result == true){
+                        
+                          let isShowQBPopup = triggerValidPlaidToken.response.IsQuickbookToken == false ? true : false;
+                          setTimeout(()=>{
+                           if(this.onDashBoardFocused){
+                            this.showConnectBankPopup(isShowQBPopup);
+                           }
+                          },300);
+  
+                      }else{
+                        setTimeout(()=>{
+                          if(this.onDashBoardFocused){
+                            this.showConnectBankPopup(false);
+                          }
+                        },300);
+                      }
+                    }).catch((error)=>{
+                      setTimeout(()=>{
+                        if(this.onDashBoardFocused){
+                          this.showConnectBankPopup(false);
+                        }
+                      },300);
+                    }); 
+                  }else{
+                    setTimeout(()=>{
+                      if(this.onDashBoardFocused){
+                        this.showConnectBankPopup(false);
+                      }
+                    },300);
+                  }
               }
               
               this.setState({ isCountApiTriggered: true });
@@ -236,68 +377,68 @@ class Dashboard extends PureComponent {
       }
     }).catch((error)=>{
       this.setState({ isSpinner:false,tryAgainScreen: true, isBodyLoaded:true });  
-    })
+    });
     
   }
 
   showQBPopup = () => {
-    
-      Alert.alert("Message","Somethings went wrong with Quickbooks Please Reconnect Quickbooks",
-                  [
+    Alert.alert("Message","Somethings went wrong with Quickbooks Please Reconnect Quickbooks",[
                     {text: 'Cancel'},
                     {
                       text: 'Connect Here',
-                      //onPress: () => { this.props.navigation.navigate("Integration"); },
-                      onPress: () => { this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); },
-                      updateSalesChartOnly : () => { this.fetchUser(); } 
-                    }) }
-                  
+                      onPress: () => { 
+                        this.props.navigation.navigate("Integration",{ 
+                          reloadPlaid:()=>{ this.reloadPlaid(); },
+                          reloadQuickbooks:()=>{ this.reloadQuickbooks(); }
+                        });
+                      }
                     }
                   ],
                   {cancelable: false}
                   );
-    
   }
   showBankCredentialChangePopup = (isShowQBPopup = false) => {
-
     Alert.alert("Message","Bank Credentials Changed Please Connect to Bank Again",
     [
-      {text: 'Cancel', onPress: () => {
+      { text: 'Cancel', onPress: () => {
         if(isShowQBPopup){
           //this.showQuickBooksPopupFlag = true;
-          this.showQBPopup();
+          setTimeout(()=>{
+            this.showQBPopup();
+          },100);
         }
       }},
-      {
-        text: 'Connect Here',
+      { text: 'Connect Here',
         onPress: () => { 
           if(isShowQBPopup){
             this.showQuickBooksPopupFlag = true;
           }
-          this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) },
-        
-      }
-    ],
-    {cancelable: false}
-    );
-
+          this.props.navigation.navigate("Integration",{ 
+            reloadPlaid:()=>{ this.reloadPlaid(); },
+            reloadQuickbooks:()=>{ this.reloadQuickbooks(); }
+          });
+        }}
+    ],{cancelable: false});
   }
   showConnectBankPopup = (isShowQBPopup = false) => {
-
     Alert.alert("Info","You're Not Connected To The Bank Please Connect To Bank",[ 
       { text:"Cancel", onPress: () => {
         if(isShowQBPopup){
             // this.showQuickBooksPopupFlag = true;
-            this.showQBPopup();
+            setTimeout(()=>{
+              this.showQBPopup();
+            },100);
         }
-      }},
-      { text:"Connect Here", onPress:()=>{ 
+      }},{ text:"Connect Here", onPress:()=>{ 
         if(isShowQBPopup){
             this.showQuickBooksPopupFlag = true;
         }
-        this.props.navigation.navigate("Integration",{ reloadDashBoardData: () => { this.fetchUser(); }    }) } }
+        this.props.navigation.navigate("Integration",{ 
+          reloadPlaid:()=>{ this.reloadPlaid(); },
+          reloadQuickbooks:()=>{ this.reloadQuickbooks(); }
+        });
+      }}
     ]);
-
   }
   componentDidMount = async () => {
     //console.log("State length Test ",this.state.cashOnHandGraph.length);
@@ -430,8 +571,10 @@ class Dashboard extends PureComponent {
                navigation={this.props.navigation} 
                userCurrentBalance={this.state.userCurrentBalance}  
                userData={this.props.reduxUserData.userData}  
-               updateSalesChartOnly = {() => { this.updateSalesChartOnly(); }}  
-               reloadDashBoardData={ () => { this.fetchUser(); }   }/>
+               reloadPlaid = { () => { this.reloadPlaid(); } }
+               reloadQuickbooks = { () => { this.reloadQuickbooks(); } }
+               
+               />
               { bankIntegrationStatus == true ? <CashOnHand healthScoreIndicator={this.state.healthScoreIndicator} isCOHLoadedOnce={this.state.isCOHLoadedOnce} outOfCashDate={this.state.outOfCashDate} isEnableDropDownForSwitchingGraph={ this.state.cashOnHandGraph.length == 0 ? true : false  } showCOHChartLoader={this.state.showCOHChartLoader} handleGraphChangeFunction={this.handleGraphChangeFunction} userCurrentBalance={this.state.userCurrentBalance} historicalFinances={financials.breakdown} navigation={this.props.navigation} cashOnHandGraphData={this.state.cashOnHandGraph} cohPast={this.state.past} cohFuture={this.state.future} /> : null }
               { bankIntegrationStatus == true ? <ChangeInCash historicalFinances={financials.breakdown} navigation={this.props.navigation}/> : null }
               { bankIntegrationStatus == true ? <ExpenseByCategory navigation={this.props.navigation} /> : null }
@@ -489,17 +632,3 @@ const styles = StyleSheet.create({
   }
 });
 
-/*
-garbage data 
-
-// getSalesDataPromise().then((salesDataResponse)=>{
-          //   if(salesDataResponse.result == true && salesDataResponse.salesChartData.length > 0 ){
-          //     this.setState({ isSalesLoadedOnce:true,salesData:salesDataResponse.salesChartData,salesTotalAmount: salesDataResponse.response.finalAmount,showSalesChartLoader:false });
-          //   }else{
-          //     this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
-          //   }
-          // }).catch((error)=>{
-          //   this.setState({ salesData:[],showSalesChartLoader:false,isSalesLoadedOnce:true });
-          // })
-
-          */

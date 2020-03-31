@@ -22,12 +22,19 @@ export default class HealthScore extends Component {
     return (
       <View style={{ backgroundColor: "#090643",alignContent:'center', height:350 }}>
         <View style={{flexDirection:'row', justifyContent:'space-between',width:'100%',height:30,marginTop:20,}}>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate("Contact",{ reloadDashBoardData:()=>{ this.props.reloadDashBoardData(); } , updateSalesChartOnly:()=>{ this.props.updateSalesChartOnly(); } } )}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate("Contact",{ 
+            reloadPlaid:()=>{ this.props.reloadPlaid(); } , 
+            reloadQuickbooks:()=>{ this.props.reloadQuickbooks(); } 
+             } 
+            )}>
             <View style={{height:44,width:50,alignItems:'center',marginLeft:1}}>
               <Image source={require('../../../assets/icon_profile.png')} style={{height:20,width:20}} />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.props.navigation.navigate("Checking",{ userCurrentBalance:this.props.userCurrentBalance,reloadDashBoardData:()=>{ this.props.reloadDashBoardData(); }  })}>
+          <TouchableOpacity onPress={() => this.props.navigation.navigate("Checking",{ 
+            userCurrentBalance:this.props.userCurrentBalance,
+            reloadDashBoardData:()=>{ this.props.reloadPlaid(); }  
+            })}>
             <View style={{height:44,width:50,alignItems:'center',marginRight:1}}>
               <Image source={require('../../../assets/icon_book.png')} style={{resizeMode:'contain',height:20,width:20}} />
             </View>

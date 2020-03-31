@@ -97,7 +97,7 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Added",[ { text:'Ok',onPress:()=>{  this.props.fetchPlaidCategoryDispatch();  } } ],{ cancelable: false });
+                    Alert.alert("Message","Category Successfully Added",[ { text:'Okay',onPress:()=>{  this.props.fetchPlaidCategoryDispatch();  } } ],{ cancelable: false });
                 },100);
             })
         }else if(addCategoryResponse.result == false){
@@ -124,7 +124,7 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Deleted",[ { text:'Ok',onPress: () => { 
+                    Alert.alert("Message","Category Successfully Deleted",[ { text:'Okay',onPress: () => { 
                         this.props.navigation.getParam("resetTransactionScreen")();
                         this.props.fetchExpenseByCategory(3);
                         this.props.fetchPlaidCategoryDispatch();
@@ -134,7 +134,7 @@ class CategoryScreen extends React.Component{
         }else{
             this.setState({ isSpinner: false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Ok" } ],{ cancelable: false });
+                    Alert.alert("Error","Error Try Again!",[ { text:"Okay" } ],{ cancelable: false });
                 },100);
             });
         }
@@ -143,7 +143,7 @@ class CategoryScreen extends React.Component{
         console.log("Category Id to be deleted ",categoryId," ",categoryName);
         Alert.alert("Alert",`Sure Delete Category - ${categoryName}`,[
             { text:'Cancel' },
-            { text:'Ok', onPress: ()=>{ 
+            { text:'Okay', onPress: ()=>{ 
                 //Api Trigers here for deleting the Category Data
                 this.setState({ isSpinner: true },()=>{
                     this.deletePlaidCategory(categoryId);
@@ -268,7 +268,7 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Edit",[ { text:'Ok',onPress:()=>{ 
+                    Alert.alert("Message","Category Successfully Edit",[ { text:'Okay',onPress:()=>{ 
                         //this.props.fetchPlaidCategoryDispatch();  
                     
                         //code change after the edit of the category by user
@@ -281,7 +281,7 @@ class CategoryScreen extends React.Component{
         }else{
             this.setState({ isSpinner: false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Ok" } ],{ cancelable: false });
+                    Alert.alert("Error","Error Try Again!",[ { text:"Okay" } ],{ cancelable: false });
                 },100);
             });
         }
