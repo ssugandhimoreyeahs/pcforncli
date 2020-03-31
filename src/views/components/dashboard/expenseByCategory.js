@@ -210,10 +210,16 @@ class ExpenseByCategory extends Component{
                     <SimpleLineIcons name={this.state.arrowStyle} color="#030538" style={{marginTop:10, marginRight:20,}}/>
             </View>
             <View style={{width:"40%",height:"100%",}}>
-            <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
+            <Button 
+                title="View Insights" 
+                type="solid" 
+                buttonStyle={styles.btnstyle1} 
+                titleStyle={styles.buttontextt1}
                 onPress={()=>{ 
                     Alert.alert("Coming soon",
-            "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
+                        "We are building your personalized Pocket Insights. We will notify you when they are ready.",
+                        [ { text: "Okay"  } ],
+                        false);
                 }}
             />
             </View>
