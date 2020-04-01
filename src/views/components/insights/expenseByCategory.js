@@ -120,5 +120,17 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#FFF"
     }
-})
+});
+
+let staticInsight = [
+    {
+        sequence: 1,
+        data: `Evaluate the highest expenses (non rent) and reduce unnecessary expenses to extend your runway. Identify one time expenses that are unlikely to be monthly expenses going forward.`
+    },
+    {
+        sequence: 2,
+        data: `2) These expenses may be expected as you're growing the business, but keeping an eye on them monthly will help keep them in perspective.`
+    }
+]
+
 export default DetectPlatform(ExpenseByCategoryInsights,styles.container);
