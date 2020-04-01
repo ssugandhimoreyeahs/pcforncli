@@ -6,6 +6,8 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { PieChart } from 'react-native-svg-charts'
 import { Circle, G, Image } from 'react-native-svg'
 
+
+
 FontAwesome.loadFont();
 AntDesign.loadFont();
 
@@ -53,7 +55,7 @@ class ExpenseByCategory extends Component{
         return(
             <View style={{ alignItems:"center" }}>
                     <View style={ styles.categoryCart }>
-                        <View style={{ paddingVertical:35,width: "92%",alignSelf:"center" }}>
+                        <View style={{ paddingVertical:35,width: "91%",alignSelf:"center" }}>
                             <this.renderSingleCategory  />
                             <this.seprator />
                             <this.renderSingleCategory  />
@@ -79,8 +81,7 @@ class ExpenseByCategory extends Component{
     renderSingleCategory = () => {
         
         return(
-            <View style={{ 
-                borderWidth:0,borderColor:"red",
+            <View style={{ borderWidth:0,borderColor:"red",
                 height:45,flexDirection:"row"}}>
 
                 <View style={{ 
@@ -90,12 +91,16 @@ class ExpenseByCategory extends Component{
                     {/* Image View Here */}
                     <View style={{ justifyContent:"center",
                     alignItems:"center",
-                    borderRadius:50,height: 40,width: 40,
+                    borderRadius:50,height: 45,width: 45,
                     backgroundColor:"#FEBC0F" }}
-                    ><Text style={{ color:"#FFF" }}>Icon</Text></View>
+                    >
+                    <Text style={{ color:"#FFF" }}>Icon</Text>
+                    </View>
 
                     <View style={{ marginLeft:10,justifyContent:"space-between" }}>
-                        <Text style={{ color:"#1D1E1F",fontSize:15 }}>Payroll</Text>
+                        <Text style={{ color:"#1D1E1F",fontSize:16 }}>
+                        Payroll
+                        </Text>
                         <View style={{ flexDirection:"row" }}>
                         <FontAwesome name={'arrow-up'} color={"#FF784B"} />
                         <Text style={{ color:"#1D1E1F",fontSize: 10,marginLeft:5 }}>
@@ -110,15 +115,19 @@ class ExpenseByCategory extends Component{
                     borderWidth:0,borderColor:"indigo",
                     flexDirection:"row",width:"30%" }}>
 
-                    <View style={{ width:"72%",justifyContent:"space-between"
+                    <View style={{ width:"68%",justifyContent:"space-between"
                     ,flexDirection:"column",alignItems:"flex-end"
                     }}>
 
-                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize:15 }}>-$6,500</Text>
-                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize: 10 }}>40% of total</Text>
+                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize:16 }}>
+                    -$6,500
+                    </Text>
+                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize: 10 }}>
+                    40% of total
+                    </Text>
                     </View>
                     
-                    <View style={{ width:"26%",justifyContent:"center",alignItems:"flex-end"}}>
+                    <View style={{ width:"30%",justifyContent:"center",alignItems:"flex-end"}}>
                     <TouchableOpacity onPress={()=>{ this.props.navigation.goBack(); }} >
                                 <AntDesign
                                 style={{ opacity: 30 }} 
@@ -190,33 +199,32 @@ class RenderPieChart extends React.PureComponent {
                 key: 1,
                 amount: 35,
                 svg: { fill: '#FBBC10' },
+                image: "../../../assets/CategoryIcon/advertising3.png"
             },
             {
                 key: 2,
                 amount: 30,
-                svg: { fill: '#FB7E01' }
+                svg: { fill: '#FB7E01' },
+                image: "../../../assets/CategoryIcon/advertising3.png"
             },
             {
                 key: 3,
                 amount: 15,
-                svg: { fill: '#A599EC' }
+                svg: { fill: '#A599EC' },
+                image: "../../../assets/CategoryIcon/advertising3.png"
             },
             {
                 key: 4,
                 amount: 10,
-                svg: { fill: '#7785E9' }
-            },
-            {
-                key: 5,
-                amount: 5,
-                svg: { fill: '#EA727A' }
+                svg: { fill: '#7785E9' },
+                image: "../../../assets/CategoryIcon/advertising3.png"
             }
         ]
 
-        const Labels = ({ slices, height, width,data }) => {
-            console.log("data recieved - ",data);
+        const Labels = ({ slices, height, width,data: outerData }) => {
+            
             return slices.map((slice, index) => {
-                if(data[index].amount > 25){
+                if(outerData[index].amount > 25){
                     const { labelCentroid, pieCentroid, data } = slice;
                 return (
                     <G
@@ -224,16 +232,13 @@ class RenderPieChart extends React.PureComponent {
                         x={labelCentroid[ 0 ]}
                         y={labelCentroid[ 1 ]}
                     >
-                        <Circle
-                            r={15}
-                            fill={'white'}
-                        />
+                        
                         <Image
-                            source={{ url: `https://image.shutterstock.com/image-vector/letter-c-negative-space-logo-600w-503463199.jpg` }}
-                            x={-10}
-                            y={10}
-                            width={10}
-                            height={10}
+                            href={require("../../../assets/CategoryIcon/advertising3.png")}
+                            x={-20}
+                            y={-21}
+                            height={40}
+                            width={40}
                             preserveAspectRatio="xMidYMid slice"
                             opacity="1"
                             
@@ -245,20 +250,17 @@ class RenderPieChart extends React.PureComponent {
         }
 
         return (
-            <View style={{  }}>
-                <PieChart
-                style={{ height: 360,marginTop: -45 }}
+            <PieChart
+                style={{ height: 350,marginTop: -45 }}
                 valueAccessor={({ item }) => item.amount}
                 data={data}
                 // spacing={10}
                 outerRadius={'60%'}
-                innerRadius={'50%'}
+                // innerRadius={'50%'}
             >   
-                <Text style={{ position:"relative" }}>hello</Text>
                 <Labels/>
                 
             </PieChart>
-            </View>
         )
     }
 
