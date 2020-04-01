@@ -383,7 +383,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "ExpenseByCategoryInsights"
+    initialRouteName: "ValueProp"
   }
 );
 
