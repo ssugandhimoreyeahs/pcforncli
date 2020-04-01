@@ -58,9 +58,11 @@ import ChangeInCashInsights from "./src/views/components/charts/changeInCashInsi
 import IncomingARInsights from "./src/views/components/charts/incomingArInsights";
 import SalesInsights from "./src/views/components/charts/salesInsights";
 import ExpenseByCategoryInsights from "./src/views/components/insights/expenseByCategory";
+
 //Expense By Category Module
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
+import NewExpenseByCategoryParent from "./src/views/components/expensebycategory/newParentExpenseByCategory";
 
 //App Levels Routes
 import SplashScreen from "react-native-splash-screen";
@@ -332,6 +334,13 @@ const EXPENSEBYCATEGORY = {
       header:null,
       gesturesEnabled:false
     }
+  },
+  NewExpenseByCategoryParent: {
+    screen: NewExpenseByCategoryParent,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
+    }
   }
 }
 
@@ -383,7 +392,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "ValueProp"
+    initialRouteName: "NewExpenseByCategoryParent"
   }
 );
 
