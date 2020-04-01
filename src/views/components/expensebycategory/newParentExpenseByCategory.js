@@ -15,7 +15,38 @@ const deviceWidth = Dimensions.get('window').width
 
 class ExpenseByCategory extends Component{
 
-
+    data = [
+        {
+            key: 1,
+            amount: 40,
+            svg: { fill: '#FBBC10' },
+            image: require("../../../assets/CategoryIcon/vehicle2.png")
+        },
+        {
+            key: 2,
+            amount: 40,
+            svg: { fill: '#E89200' },
+            image: require("../../../assets/CategoryIcon/payroll2.png")
+        },
+        {
+            key: 3,
+            amount: 15,
+            svg: { fill: '#AA9637' },
+            image: require("../../../assets/CategoryIcon/membership2.png")
+        },
+        {
+            key: 4,
+            amount: 8,
+            svg: { fill: '#7785E9' },
+            image: require("../../../assets/CategoryIcon/charitable3.png")
+        },
+         {
+            key: 5,
+            amount: 5,
+            svg: { fill: '#EA727A' },
+            image: require("../../../assets/CategoryIcon/charitable3.png")
+        }
+    ]
     header = () => {
         return(
             <View style={ styles.header }>
@@ -34,18 +65,21 @@ class ExpenseByCategory extends Component{
         );
     }
     expensePie = () => { 
-
         return(
            <Fragment>
                <View style={{ height: 350,backgroundColor:"#FFF" }}>
+                    <this.RenderPieChart />
 
-                    
-                    
-                    <RenderPieChart />
-                    
+                    <View style={{ paddingHorizontal:15,alignItems:"center",borderRadius:10,height:40,backgroundColor:"#E6E6EC",
+                    alignSelf:"center",marginTop: -30,width: 150,flexDirection:"row",justifyContent:"space-between" }}>
+
+                        <TouchableOpacity><AntDesign name={"left"} ></AntDesign></TouchableOpacity>
+                        <Text style={{ color:"#030538",fontSize: 12 }}>This Month</Text>
+                        <TouchableOpacity><AntDesign name={"right"} ></AntDesign></TouchableOpacity>
+
+                    </View>
                </View>
-
-               <this.renderCategory />
+              <this.renderCategory />
            </Fragment>
         );
     }
@@ -145,6 +179,51 @@ class ExpenseByCategory extends Component{
             <View style={ styles.seprator }/>
         );
     }
+    Labels = ({ slices, height, width }) => {
+            return slices.map((slice, index) => {
+                const { labelCentroid, pieCentroid, data } = slice;
+                
+                if(data.amount < 14)
+                    return;
+                
+                
+                return (
+                    <G
+                        key={index}
+                        x={labelCentroid[ 0 ]}
+                        y={labelCentroid[ 1 ]}
+                    >
+                        
+                        <Image
+                            href={data.image}
+                            x={-17}
+                            y={-17}
+                            height={35}
+                            width={35}
+                            preserveAspectRatio="xMidYMid slice"
+                            opacity="1"
+                            
+                        />
+                    </G>
+                )
+                
+            });
+    }
+    RenderPieChart = () => {
+        
+        return(
+            <PieChart
+                style={{ height: 370,marginTop: -53 }}
+                valueAccessor={({ item }) => item.amount}
+                data={this.data}
+                // spacing={10}
+                outerRadius={'57%'}
+                // innerRadius={'50%'}
+            >   
+                <this.Labels/>
+            </PieChart>
+        );
+    }
     render(){
         return(
             <ScrollView>
@@ -163,9 +242,9 @@ const styles = StyleSheet.create({
         height:"100%",width:"100%"
     },
     header: { 
-        elevation:10,
+        elevation:5,
         shadowColor:"#F0F0F0",
-        borderBottomColor:"#F0F0F0",borderBottomWidth: 2,
+        borderBottomColor:"#F0F0F0",borderBottomWidth: 1.5,
         height:70,backgroundColor:"#F8F8F8",flexDirection:"row"
     },
     categoryCart: { 
@@ -188,82 +267,5 @@ export default DetectPlatform(ExpenseByCategory,styles.container);
 
 
 
-
-
-class RenderPieChart extends React.PureComponent {
-
-    render() {
-
-        const data = [
-            {
-                key: 1,
-                amount: 35,
-                svg: { fill: '#FBBC10' },
-                image: "../../../assets/CategoryIcon/advertising3.png"
-            },
-            {
-                key: 2,
-                amount: 30,
-                svg: { fill: '#FB7E01' },
-                image: "../../../assets/CategoryIcon/advertising3.png"
-            },
-            {
-                key: 3,
-                amount: 15,
-                svg: { fill: '#A599EC' },
-                image: "../../../assets/CategoryIcon/advertising3.png"
-            },
-            {
-                key: 4,
-                amount: 10,
-                svg: { fill: '#7785E9' },
-                image: "../../../assets/CategoryIcon/advertising3.png"
-            }
-        ]
-
-        const Labels = ({ slices, height, width,data: outerData }) => {
-            
-            return slices.map((slice, index) => {
-                if(outerData[index].amount > 25){
-                    const { labelCentroid, pieCentroid, data } = slice;
-                return (
-                    <G
-                        key={index}
-                        x={labelCentroid[ 0 ]}
-                        y={labelCentroid[ 1 ]}
-                    >
-                        
-                        <Image
-                            href={require("../../../assets/CategoryIcon/advertising3.png")}
-                            x={-20}
-                            y={-21}
-                            height={40}
-                            width={40}
-                            preserveAspectRatio="xMidYMid slice"
-                            opacity="1"
-                            
-                        />
-                    </G>
-                )
-                }
-            })
-        }
-
-        return (
-            <PieChart
-                style={{ height: 350,marginTop: -45 }}
-                valueAccessor={({ item }) => item.amount}
-                data={data}
-                // spacing={10}
-                outerRadius={'60%'}
-                // innerRadius={'50%'}
-            >   
-                <Labels/>
-                
-            </PieChart>
-        )
-    }
-
-}
 
 
