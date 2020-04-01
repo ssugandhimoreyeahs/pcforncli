@@ -1,16 +1,22 @@
-import React,{ Component } from "react";
-import { Text,View, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import React,{ Component, Fragment } from "react";
+import { Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { PieChart } from 'react-native-svg-charts'
+import { Circle, G, Image } from 'react-native-svg'
 
+FontAwesome.loadFont();
 AntDesign.loadFont();
+
+const deviceWidth = Dimensions.get('window').width
 
 class ExpenseByCategory extends Component{
 
 
     header = () => {
         return(
-            <View style={{ backgroundColor:"rgba(249,249,249,0.94)",height:70,width:"100%",flexDirection:"row"}}>
+            <View style={ styles.header }>
                     <View style={{ flexDirection:"row",width:"100%",marginTop:20 }}>
                         <View style={{ width:"10%",justifyContent:"center",alignItems:"center" }}>
                             <TouchableOpacity  onPress={()=>{ this.props.navigation.goBack(); }} >
@@ -25,12 +31,117 @@ class ExpenseByCategory extends Component{
                 </View> 
         );
     }
+    expensePie = () => { 
+
+        return(
+           <Fragment>
+               <View style={{ height: 350,backgroundColor:"#FFF" }}>
+
+                    
+                    
+                    <RenderPieChart />
+                    
+               </View>
+
+               <this.renderCategory />
+           </Fragment>
+        );
+    }
+
+    renderCategory = () => {
+
+        return(
+            <View style={{ alignItems:"center" }}>
+                    <View style={ styles.categoryCart }>
+                        <View style={{ paddingVertical:35,width: "92%",alignSelf:"center" }}>
+                            <this.renderSingleCategory  />
+                            <this.seprator />
+                            <this.renderSingleCategory  />
+                            <this.seprator />
+                            <this.renderSingleCategory  />
+                            <this.seprator />
+                            <this.renderSingleCategory  />
+                            <this.seprator />
+                            <this.renderSingleCategory  />
+                            <this.seprator />
+                            <this.renderSingleCategory  />
+                            <this.seprator />
+                            <this.renderSingleCategory  />
+                            <this.seprator />
+                            <this.renderSingleCategory  />
+                            
+                            </View>
+                     </View>
+            </View>
+        );
+    }
+
+    renderSingleCategory = () => {
+        
+        return(
+            <View style={{ 
+                borderWidth:0,borderColor:"red",
+                height:45,flexDirection:"row"}}>
+
+                <View style={{ 
+                    borderWidth:0,borderColor:"violet",
+                    flexDirection:"row",width:"69%" }}>
+                    
+                    {/* Image View Here */}
+                    <View style={{ justifyContent:"center",
+                    alignItems:"center",
+                    borderRadius:50,height: 40,width: 40,
+                    backgroundColor:"#FEBC0F" }}
+                    ><Text style={{ color:"#FFF" }}>Icon</Text></View>
+
+                    <View style={{ marginLeft:10,justifyContent:"space-between" }}>
+                        <Text style={{ color:"#1D1E1F",fontSize:15 }}>Payroll</Text>
+                        <View style={{ flexDirection:"row" }}>
+                        <FontAwesome name={'arrow-up'} color={"#FF784B"} />
+                        <Text style={{ color:"#1D1E1F",fontSize: 10,marginLeft:5 }}>
+                            2.7% since previous month
+                        </Text>
+                        </View>
+                    </View>
+
+                </View>
+
+                <View style={{ 
+                    borderWidth:0,borderColor:"indigo",
+                    flexDirection:"row",width:"30%" }}>
+
+                    <View style={{ width:"72%",justifyContent:"space-between"
+                    ,flexDirection:"column",alignItems:"flex-end"
+                    }}>
+
+                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize:15 }}>-$6,500</Text>
+                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize: 10 }}>40% of total</Text>
+                    </View>
+                    
+                    <View style={{ width:"26%",justifyContent:"center",alignItems:"flex-end"}}>
+                    <TouchableOpacity onPress={()=>{ this.props.navigation.goBack(); }} >
+                                <AntDesign
+                                style={{ opacity: 30 }} 
+                                name='right' size={14} color={'#030538'}/>
+                    </TouchableOpacity>
+                    </View>
+                </View>
+
+            </View>
+        );
+    }
+    seprator = () => {
+        
+        return(
+            <View style={ styles.seprator }/>
+        );
+    }
     render(){
         return(
             <ScrollView>
                 <this.header />
-
-
+                <this.expensePie />
+                
             </ScrollView>
         );
     }
@@ -38,57 +149,75 @@ class ExpenseByCategory extends Component{
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor:"#EEEFF1",
+        height:"100%",width:"100%"
+    },
+    header: { 
+        elevation:10,
+        shadowColor:"#F0F0F0",
+        borderBottomColor:"#F0F0F0",borderBottomWidth: 2,
+        height:70,backgroundColor:"#F8F8F8",flexDirection:"row"
+    },
+    categoryCart: { 
+        backgroundColor:"#FFF",borderRadius:5,
+        width:"90%",marginVertical: 25,
+        borderColor:"black",borderWidth:0,
+        shadowColor:"#000",shadowOpacity: 0.3,
+        shadowRadius: 4,shadowOffset: { height:1,width:1 },elevation:5
+    },
+    seprator: { 
+        alignSelf:"center",
+        marginVertical: 25,
+        borderBottomColor:"#1D1E1F",
+        width:"95%",
+        borderBottomWidth: StyleSheet.hairlineWidth
     }
 })
 export default DetectPlatform(ExpenseByCategory,styles.container);
 
 
 
-/*
-
-code here for the svg 
-
-import React from 'react'
-import { PieChart } from 'react-native-svg-charts'
-import { Circle, G, Image } from 'react-native-svg'
 
 
-class PieChartWithCenteredLabels extends React.PureComponent {
+
+class RenderPieChart extends React.PureComponent {
 
     render() {
 
         const data = [
             {
                 key: 1,
-                amount: 50,
-                svg: { fill: '#600080' },
+                amount: 35,
+                svg: { fill: '#FBBC10' },
             },
             {
                 key: 2,
-                amount: 50,
-                svg: { fill: '#9900cc' }
+                amount: 30,
+                svg: { fill: '#FB7E01' }
             },
             {
                 key: 3,
-                amount: 40,
-                svg: { fill: '#c61aff' }
+                amount: 15,
+                svg: { fill: '#A599EC' }
             },
             {
                 key: 4,
-                amount: 95,
-                svg: { fill: '#d966ff' }
+                amount: 10,
+                svg: { fill: '#7785E9' }
             },
             {
                 key: 5,
-                amount: 35,
-                svg: { fill: '#ecb3ff' }
+                amount: 5,
+                svg: { fill: '#EA727A' }
             }
         ]
 
-        const Labels = ({ slices, height, width }) => {
+        const Labels = ({ slices, height, width,data }) => {
+            console.log("data recieved - ",data);
             return slices.map((slice, index) => {
-                const { labelCentroid, pieCentroid, data } = slice;
+                if(data[index].amount > 25){
+                    const { labelCentroid, pieCentroid, data } = slice;
                 return (
                     <G
                         key={index}
@@ -103,31 +232,36 @@ class PieChartWithCenteredLabels extends React.PureComponent {
                             source={{ url: `https://image.shutterstock.com/image-vector/letter-c-negative-space-logo-600w-503463199.jpg` }}
                             x={-10}
                             y={10}
-                            width={20}
-                            height={20}
+                            width={10}
+                            height={10}
                             preserveAspectRatio="xMidYMid slice"
                             opacity="1"
                             
                         />
                     </G>
                 )
+                }
             })
         }
 
         return (
-            <PieChart
-                style={{ height: 200 }}
+            <View style={{  }}>
+                <PieChart
+                style={{ height: 360,marginTop: -45 }}
                 valueAccessor={({ item }) => item.amount}
                 data={data}
-                spacing={0}
-                outerRadius={'75%'}
-            >
+                // spacing={10}
+                outerRadius={'60%'}
+                innerRadius={'50%'}
+            >   
+                <Text style={{ position:"relative" }}>hello</Text>
                 <Labels/>
+                
             </PieChart>
+            </View>
         )
     }
 
 }
 
-export default PieChartWithCenteredLabels
-*/
+
