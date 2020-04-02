@@ -115,60 +115,45 @@ class ExpenseByCategory extends Component{
     renderSingleCategory = () => {
         
         return(
-            <View style={{ borderWidth:0,borderColor:"red",
-                height:45,flexDirection:"row"}}>
+            <View style={{ 
+                //borderWidth:1,borderColor:"#000",
+                flexDirection: "row", justifyContent:"space-between"
+             }}>
 
-                <View style={{ 
-                    borderWidth:0,borderColor:"violet",
-                    flexDirection:"row",width:"69%" }}>
-                    
-                    {/* Image View Here */}
-                    <View style={{ justifyContent:"center",
-                    alignItems:"center",
-                    borderRadius:50,height: 45,width: 45,
-                    backgroundColor:"#FEBC0F" }}
-                    >
-                    <Text style={{ color:"#FFF" }}>Icon</Text>
+             <View style={{ width:"16%",
+                 borderColor: "red",borderWidth: 0
+             }}>
+             <View style={{ height: 50, width: 50, borderRadius: 50,
+                backgroundColor: "#A599EC" 
+             }}></View>
+             </View>
+
+
+                <View style={{ paddingLeft:3,paddingRight:10,width: "80%",justifyContent:"space-between",
+                    borderColor:"#000",borderWidth:0
+                 }}>
+                     <View style={{ flexDirection:"row",justifyContent:"space-between" }}>
+                         <Text style={{ fontWeight:"600",fontSize:15,color: "#1D1E1F" }}>
+                         {'Employee Benefits'} </Text>
+                         <Text style={{ fontSize:15,color: "#1D1E1F" }}>
+                         {'-$4,290.00'}</Text>
                     </View>
 
-                    <View style={{ marginLeft:10,justifyContent:"space-between" }}>
-                        <Text style={{ color:"#1D1E1F",fontSize:16 }}>
-                        Payroll
-                        </Text>
-                        <View style={{ flexDirection:"row" }}>
-                        <FontAwesome name={'arrow-up'} color={"#FF784B"} />
-                        <Text style={{ color:"#1D1E1F",fontSize: 10,marginLeft:5 }}>
-                            2.7% since previous month
-                        </Text>
-                        </View>
+                    <View style={{ flexDirection:"row",justifyContent:"space-between" }}>
+                         <Text style={{ fontSize:10,color: "#1D1E1F" }}>
+                         <FontAwesome name={"arrow-up"} color={"#FF784B"}/>
+                         {' 2.7% since previous month'} </Text>
+                         <Text style={{ fontSize:10,color: "#1D1E1F" }}>
+                         {'33% of total'}</Text>
                     </View>
+                 </View>
+             
 
-                </View>
-
-                <View style={{ 
-                    borderWidth:0,borderColor:"indigo",
-                    flexDirection:"row",width:"30%" }}>
-
-                    <View style={{ width:"68%",justifyContent:"space-between"
-                    ,flexDirection:"column",alignItems:"flex-end"
-                    }}>
-
-                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize:16 }}>
-                    -$6,500
-                    </Text>
-                    <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize: 10 }}>
-                    40% of total
-                    </Text>
-                    </View>
-                    
-                    <View style={{ width:"30%",justifyContent:"center",alignItems:"flex-end"}}>
-                    <TouchableOpacity onPress={()=>{ this.props.navigation.goBack(); }} >
-                                <AntDesign
-                                style={{ opacity: 30 }} 
-                                name='right' size={14} color={'#030538'}/>
-                    </TouchableOpacity>
-                    </View>
-                </View>
+             <TouchableOpacity style={{ justifyContent: "center",width: "4%",
+                borderColor: "red",borderWidth: 0
+             }}>
+                 <AntDesign size={17} name={"right"} color={"#030538"} style={{ opacity: 0.5 }} />
+             </TouchableOpacity>
 
             </View>
         );
@@ -182,18 +167,14 @@ class ExpenseByCategory extends Component{
     Labels = ({ slices, height, width }) => {
             return slices.map((slice, index) => {
                 const { labelCentroid, pieCentroid, data } = slice;
-                
                 if(data.amount < 14)
                     return;
-                
-                
                 return (
                     <G
                         key={index}
                         x={labelCentroid[ 0 ]}
                         y={labelCentroid[ 1 ]}
                     >
-                        
                         <Image
                             href={data.image}
                             x={-17}
@@ -205,8 +186,7 @@ class ExpenseByCategory extends Component{
                             
                         />
                     </G>
-                )
-                
+                );
             });
     }
     RenderPieChart = () => {
