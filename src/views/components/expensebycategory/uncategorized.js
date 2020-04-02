@@ -10,14 +10,10 @@ FontAwesome.loadFont();
 AntDesign.loadFont();
 
 const deviceWidth = Dimensions.get("window").width;
-class ExpenseByCategoryChild extends Component{
+class UncategorizedCategory extends Component{
 
     constructor(props){
         super(props);
-
-        this.state = {
-            showTransaction: true
-        }
     }
     header = () => {
         return(
@@ -30,7 +26,7 @@ class ExpenseByCategoryChild extends Component{
                         </View>
                         <View style={{ width:"80%",justifyContent:"center",alignItems:"center" }}>
                         <Text style={{ fontSize:17,color:"#000",fontWeight: "600" }}>
-                        { `Advertising & Marketing` }
+                        { `Uncategorized` }
                         </Text>
                         </View>
                     </View>
@@ -42,16 +38,10 @@ class ExpenseByCategoryChild extends Component{
             <View style={ styles.seprator }/>
         );
     }
-
-    transactionSeprator = () => {
-        return(
-            <View style={ styles.seprator2 }/>
-        );
-    }
     renderBarChart = () => {
         
-       
-        const fill = 'rgb(134, 65, 244)'
+        const fillLight = '#FABFC3'
+        const fill = '#EA717A'
         const data   = [ -10,-20,-30,-40,-50,-60 ]
         return(
             <View style={{ width: "100%" }}>
@@ -60,7 +50,7 @@ class ExpenseByCategoryChild extends Component{
                 height={270}
                 domainPadding={10}
                 style={{
-                                    parent: { marginLeft: -20 }
+                    parent: { marginLeft: -20 }
                 }}
                 >
                 
@@ -91,13 +81,13 @@ class ExpenseByCategoryChild extends Component{
                                 tickFormat={(value)=>{ return `-$${-value}K`  }}
                                 /> 
                 <VictoryBar
-                    style={{ data: { fill: (data) => {
-                        if(data._y == -3){
-                            return "#A599EC";
+                    style={{ data: { fill: (data) => { 
+                        if(data._x == 7){
+                            return fill;
                         }else{
-                            return "#D9D5EF";
+                            return fillLight;
                         }
-                    } } }}
+                     } } }}
                     data={[
                         { y:-0},
                         { y:-1},
@@ -123,10 +113,7 @@ class ExpenseByCategoryChild extends Component{
                 <View style={{ alignSelf: "center",marginTop: 30 }}>
 
                     <Text style={{ color: "#1D1E1F",fontSize: 22,fontWeight: "bold" }}>-$3,000.00</Text>
-                    <View style={{ marginTop:8,flexDirection:"row",alignSelf:"center" }}>
-                        <FontAwesome name={'arrow-up'} color={"#FF784B"} />
-                        <Text style={{ textAlign:"center",color: "#1D1E1F",fontSize: 10,paddingLeft: 5 }}>12% since last month</Text>
-                    </View>
+                    
                 </View>
 
                 <View style={{ marginTop: 10 }}>
@@ -136,63 +123,30 @@ class ExpenseByCategoryChild extends Component{
             </Fragment>
         );
     }
-    renderTransaction = () => {
+    
+    renderUncategorizedTransaction = () => {
 
         return(
-            
-                
-                <View style={{ width: "85%",alignSelf:"center" }}>
-                <View style={{ flexDirection: "row",justifyContent: "space-between" }}>
+            <View style={{ backgroundColor:"#FFF",width:"90%",alignSelf:"center",
+                borderWidth:0,borderColor:"red",
+             }}>
 
-                <Text style={{ fontSize:15, color:"#1D1E1F" }}>Transaction Title</Text>
-                <Text style={{ fontSize:15, color:"#1D1E1F" }}>-$500</Text>
-                </View>
-                <View style={{ marginLeft:2,flexDirection: "row",justifyContent: "space-between",marginTop:10  }}>
-                <Text style={{ fontSize:11,color:"#1D1E1F",opacity:0.5 }}>Mar 6</Text></View>
-                </View>
-            
-        );
-    }
-    renderSubCategory = () => { 
+                <View style={{ flexDirection:"row",justifyContent:"space-between" }}>
 
-        return(
-            <View style={{ backgroundColor:"#FFF",flexDirection:"column",width:"100%",alignSelf: "center"}}>
-                <View style={{ width: "90%",alignSelf:'center' }}>
-                <View style={{ flexDirection: "row",justifyContent:"space-between" }}>
-                    <View style={{ flexDirection:"row",alignItems:"flex-end" }}>
-                    <TouchableOpacity style={{ flexDirection: "row" }} onPress={()=>{ this.setState({ showTransaction: !this.state.showTransaction }) }}>
-                        <Text style={{ color: "#1D1E1F",fontSize: 15,fontWeight:"600" }}>
-                        Subcategory Name
-                        </Text>
-                        <AntDesign name={ this.state.showTransaction == true ? 'up' : 'down' } size={15} style={{ marginLeft:10,opacity: 0.4 }} color={'#030538'}/>
-                        </TouchableOpacity>
+                    <Text style={{ color:"#1D1E1F",fontSize:15, }}>Transaction Title</Text>
+                    <Text style={{ color:"#1D1E1F",fontSize:15, }}>-$700.00</Text>
+                </View>
+
+                <View style={{ marginTop:12,flexDirection:"row",justifyContent:"space-between",paddingLeft:3 }}>
+
+                    <View style={{ alignItems:"center",justifyContent:"center" }}>
+                        <Text style={{ color:"#1D1E1F",fontSize:11,opacity: 0.5 }}>Mar 15</Text>
                     </View>
-                    <Text style={{ fontSize: 15, color: "#1D1E1F" }}>
-                        -$1,200.00
-                    </Text>
+                    
+                    <TouchableOpacity style={{ justifyContent:"center",alignItems:"center",borderRadius:50,borderWidth:1,borderColor:"#1C1C1D",height:25,width:90 }}>
+                        <Text style={{ fontSize:11,color:"#1D1E1F" }}>+ Category</Text>
+                    </TouchableOpacity>
                 </View>
-                <View style={{ marginTop:12,flexDirection:"row",justifyContent:"space-between" }}>
-                    <View style={{ flexDirection:"row" }}>
-                        <FontAwesome name={"arrow-down"} color={"#FF784B"} size={10} />
-
-                        <Text style={{ color:"#1D1E1F",fontSize:10,paddingLeft:4 }}>2.7% since previous month</Text>
-                    </View>
-                    <Text style={{ color:"#1D1E1F",fontSize:10 }}>
-                    30% of Advertising & Marketing
-                    </Text>
-                </View>
-                </View>
-
-                {/* code for the transactions */}
-                {
-                    this.state.showTransaction == true ?
-                    <View style={{ marginVertical:25,paddingVertical:25,backgroundColor:"#EEEFF1" }}>
-                    <this.renderTransaction />
-                        <this.transactionSeprator />
-                    <this.renderTransaction />
-                    </View>
-                    : <this.seprator />
-                }
 
             </View>
         );
@@ -201,18 +155,14 @@ class ExpenseByCategoryChild extends Component{
 
         return(
             <Fragment>
-
-            <View style={{ height: 25, backgroundColor: "#EEEFF1" }}></View>
-            <View style={{ paddingVertical:30,backgroundColor:"#FFF" }}>
-                            
-                            
-
-                            <this.renderSubCategory />
-                            <this.renderSubCategory />
-                            
-                            
-
-                    </View>
+                <View style={{ height: 25, backgroundColor: "#EEEFF1" }}></View>
+                <View style={{ paddingVertical:30,backgroundColor:"#FFF"}}>
+                    <this.renderUncategorizedTransaction />
+                    <this.seprator />
+                    <this.renderUncategorizedTransaction />
+                    <this.seprator />
+                    <this.renderUncategorizedTransaction />
+                </View>
             </Fragment>
         );
     }
@@ -257,4 +207,4 @@ const styles = StyleSheet.create({
         opacity: 0.2
     }
 });
-export default DetectPlatform(ExpenseByCategoryChild,styles.container);
+export default DetectPlatform(UncategorizedCategory,styles.container);

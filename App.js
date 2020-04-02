@@ -64,6 +64,8 @@ import ExpenseScreenParent from "./src/views/components/expensebycategory/catego
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
 import NewExpenseByCategoryParent from "./src/views/components/expensebycategory/newParentExpenseByCategory";
 import NewExpenseByCategoryChild from "./src/views/components/expensebycategory/newChildExpenseByCategory";
+import UncategorizedExpenseByCategory from "./src/views/components/expensebycategory/uncategorized";
+
 //App Levels Routes
 import SplashScreen from "react-native-splash-screen";
 import ErrorBoundry from "./src/ErrorBoundry";
@@ -344,6 +346,13 @@ const EXPENSEBYCATEGORY = {
   },
   NewExpenseByCategoryChild: {
     screen: NewExpenseByCategoryChild,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
+    }
+  },
+  UncategorizedExpenseByCategory: {
+    screen: UncategorizedExpenseByCategory,
     navigationOptions: {
       header: null,
       gesturesEnabled: false
