@@ -399,7 +399,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "NewExpenseByCategoryParent"
+    initialRouteName: "NewExpenseByCategoryChild"
   }
 );
 
