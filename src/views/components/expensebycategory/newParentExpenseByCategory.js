@@ -70,8 +70,7 @@ class ExpenseByCategory extends Component{
                <View style={{ height: 350,backgroundColor:"#FFF" }}>
                     <this.RenderPieChart />
 
-                    <View style={{ paddingHorizontal:15,alignItems:"center",borderRadius:10,height:40,backgroundColor:"#E6E6EC",
-                    alignSelf:"center",marginTop: -45,width: 150,flexDirection:"row",justifyContent:"space-between" }}>
+                    <View style={ styles.filterButton }>
 
                         <TouchableOpacity><AntDesign color={"#030538"} name={"left"} size={15}></AntDesign></TouchableOpacity>
                         <Text style={{ color:"#030538",fontSize: 12 }}>This Month</Text>
@@ -89,7 +88,7 @@ class ExpenseByCategory extends Component{
         return(
             <View style={{ alignItems:"center" }}>
                     <View style={ styles.categoryCart }>
-                        <View style={{ paddingVertical:35,width: "91%",alignSelf:"center" }}>
+                        <View style={{ paddingVertical:35,width: "92%",alignSelf:"center" }}>
                             <this.renderSingleCategory  />
                             <this.seprator />
                             <this.renderSingleCategory  />
@@ -115,28 +114,20 @@ class ExpenseByCategory extends Component{
     renderSingleCategory = () => {
         
         return(
-            <View style={{ 
-                //borderWidth:1,borderColor:"#000",
-                flexDirection: "row", justifyContent:"space-between"
-             }}>
+            <View style={{ flexDirection: "row", justifyContent:"space-between" }}>
 
-             <View style={{ width:"16%",
-                 borderColor: "red",borderWidth: 0
-             }}>
+             <View style={ styles.categoryIconStyle }>
              <View style={{ height: 50, width: 50, borderRadius: 50,
                 backgroundColor: "#A599EC" 
              }}></View>
              </View>
-
-
-                <View style={{ paddingLeft:3,paddingRight:10,width: "80%",justifyContent:"space-between",
-                    borderColor:"#000",borderWidth:0
-                 }}>
+            
+            <View style={ styles.categoryRenderStyle }>
                      <View style={{ flexDirection:"row",justifyContent:"space-between" }}>
-                         <Text style={{ fontWeight:"600",fontSize:15,color: "#1D1E1F" }}>
+                         <Text style={{ width:"60%",fontWeight:"600",fontSize:15,color: "#1D1E1F" }}>
                          {'Employee Benefits'} </Text>
                          <Text style={{ fontSize:15,color: "#1D1E1F" }}>
-                         {'-$4,290.00'}</Text>
+                         {'-$9,290,256'}</Text>
                     </View>
 
                     <View style={{ flexDirection:"row",justifyContent:"space-between" }}>
@@ -149,9 +140,7 @@ class ExpenseByCategory extends Component{
                  </View>
              
 
-             <TouchableOpacity style={{ justifyContent: "center",width: "4%",
-                borderColor: "red",borderWidth: 0
-             }}>
+             <TouchableOpacity style={ styles.nextButtonStyle }>
                  <AntDesign size={17} name={"right"} color={"#030538"} style={{ opacity: 0.5 }} />
              </TouchableOpacity>
 
@@ -201,21 +190,14 @@ class ExpenseByCategory extends Component{
                 // innerRadius={'50%'}
             >   
                 <this.Labels/>
-                <View style={{
-                    position: 'absolute',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                }}>
-                    <Text style={{ textAlign:"center",color: "#1D1E1F",opacity: 0.5,marginTop:0 }}>{ `Total Spending\nin March` }</Text>
+                <View style={styles.piechartText}>
+                    <Text style={ styles.piechartUpperText }>{ `Total Spending\nin March` }</Text>
 
-                    <Text style={{ color: "#1D1E1F",fontSize: 23,marginVertical:18,fontWeight:"bold" }}>-$52,112.27</Text>
+                    <Text style={ styles.piechartCenterText}>-$52,112.27</Text>
                 
-                    <View style={{ 
-                        borderColor:"blue",borderWidth:0,
-                        flexDirection:"row",
-                        justifyContent:"space-between" }}>
+                    <View style={ styles.piechartButtomTextView }>
                     <FontAwesome name={'arrow-up'} color={"#FF784B"} size={14}/>
-                    <Text style={{ fontSize:12,color:"#1D1E1F",paddingLeft:5 }}>7.21%</Text>
+                    <Text style={{ textAlign:"center",fontSize:12,color:"#1D1E1F",paddingLeft:5 }}>7.21%</Text>
                     </View>
                     <Text style={{ textAlign:"center",color:"#1D1E1F",opacity:0.5 }}>since last month</Text>
                 </View>
@@ -258,8 +240,61 @@ const styles = StyleSheet.create({
         borderBottomColor:"#1D1E1F",
         width:"95%",
         borderBottomWidth: StyleSheet.hairlineWidth
+    },
+    filterButton:{
+        paddingHorizontal:15,
+        alignItems:"center",
+        borderRadius:10,
+        height:40,
+        backgroundColor:"#E6E6EC",
+        alignSelf:"center",
+        marginTop: -50,
+        width: 150,
+        flexDirection:"row",
+        justifyContent:"space-between"
+    },
+    categoryIconStyle:{ 
+        width:"16%",
+        borderColor: "red",
+        borderWidth: 0
+    },
+    categoryRenderStyle: { 
+        paddingLeft:5,paddingRight:3,
+        width: "80%",
+        justifyContent:"space-between",
+        borderColor:"#000",borderWidth:0
+    },
+    nextButtonStyle: { 
+        justifyContent: "center",width: "4%",
+        borderColor: "red",borderWidth: 0
+    },
+    piechartText: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    piechartUpperText: {
+         textAlign:"center",
+         color: "#1D1E1F",
+         opacity: 0.5,
+         marginTop:-5,
+         lineHeight:18 
+    },
+    piechartCenterText: { 
+        textAlign:"center",
+        color: "#1D1E1F",
+        fontSize: 23,
+        marginVertical:18,
+        fontWeight:"bold" 
+    },
+    piechartButtomTextView: { 
+        borderColor:"blue",borderWidth:0,
+        flexDirection:"row",
+        justifyContent:"space-between",paddingVertical:3
     }
 })
+
+
 export default DetectPlatform(ExpenseByCategory,styles.container);
 
 
