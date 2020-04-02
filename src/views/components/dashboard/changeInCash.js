@@ -98,7 +98,7 @@ class ChangeInCash extends Component {
   showAlert() {  
     Alert.alert(  
         'CHANGE IN CASH',  
-        'Term explanation lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna',  
+        'The change in cash is the difference between the inflows (deposits, accounts receivables, equity or debt proceeds) and outflows (debits for bills, etc). ',  
         [  
             {  
                 text: 'Cancel',  
@@ -178,7 +178,7 @@ class ChangeInCash extends Component {
               <Fragment>
 
                 <View style={styles.heading}>
-                          <TouchableOpacity disabled={true} onPress={this.showAlert}>
+                          <TouchableOpacity disabled={false} onPress={this.showAlert}>
                             <View style={{flexDirection:'row'}}>
                               <Text style={{ fontSize: 12 }}>CHANGE IN CASH</Text>
                               <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>

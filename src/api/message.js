@@ -14,3 +14,7 @@ export const ERROR = {
     title: "Something went wrong",
     message: "Please try again."
 }
+
+export const TERMINOLOGY = {
+
+}

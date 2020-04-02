@@ -73,9 +73,9 @@ class ExpenseByCategory extends Component{
                     <View style={{ paddingHorizontal:15,alignItems:"center",borderRadius:10,height:40,backgroundColor:"#E6E6EC",
                     alignSelf:"center",marginTop: -30,width: 150,flexDirection:"row",justifyContent:"space-between" }}>
 
-                        <TouchableOpacity><AntDesign name={"left"} ></AntDesign></TouchableOpacity>
+                        <TouchableOpacity><AntDesign color={"#030538"} name={"left"} size={15}></AntDesign></TouchableOpacity>
                         <Text style={{ color:"#030538",fontSize: 12 }}>This Month</Text>
-                        <TouchableOpacity><AntDesign name={"right"} ></AntDesign></TouchableOpacity>
+                        <TouchableOpacity><AntDesign name={"right"} color={"#030538"} size={15}></AntDesign></TouchableOpacity>
 
                     </View>
                </View>
@@ -221,6 +221,24 @@ class ExpenseByCategory extends Component{
                 // innerRadius={'50%'}
             >   
                 <this.Labels/>
+                <View style={{
+                    position: 'absolute',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}>
+                    <Text style={{ textAlign:"center",color: "#1D1E1F",opacity: 0.5,marginTop:-5 }}>{ `Total Spending\nin March` }</Text>
+
+                    <Text style={{ color: "#1D1E1F",fontSize: 23,marginVertical:20,fontWeight:"bold" }}>-$52,112.27</Text>
+                
+                    <View style={{ 
+                        borderColor:"blue",borderWidth:0,
+                        flexDirection:"row",
+                        justifyContent:"space-between" }}>
+                    <FontAwesome name={'arrow-up'} color={"#FF784B"} size={14}/>
+                    <Text style={{ fontSize:12,color:"#1D1E1F",paddingLeft:5 }}>7.21%</Text>
+                    </View>
+                    <Text style={{ textAlign:"center",color:"#1D1E1F",opacity:0.5 }}>since last month</Text>
+                </View>
             </PieChart>
         );
     }
