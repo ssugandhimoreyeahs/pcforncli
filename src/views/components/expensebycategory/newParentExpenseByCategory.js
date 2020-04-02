@@ -71,7 +71,7 @@ class ExpenseByCategory extends Component{
                     <this.RenderPieChart />
 
                     <View style={{ paddingHorizontal:15,alignItems:"center",borderRadius:10,height:40,backgroundColor:"#E6E6EC",
-                    alignSelf:"center",marginTop: -30,width: 150,flexDirection:"row",justifyContent:"space-between" }}>
+                    alignSelf:"center",marginTop: -45,width: 150,flexDirection:"row",justifyContent:"space-between" }}>
 
                         <TouchableOpacity><AntDesign color={"#030538"} name={"left"} size={15}></AntDesign></TouchableOpacity>
                         <Text style={{ color:"#030538",fontSize: 12 }}>This Month</Text>
@@ -213,7 +213,7 @@ class ExpenseByCategory extends Component{
         
         return(
             <PieChart
-                style={{ height: 370,marginTop: -53 }}
+                style={{ height: 390,marginTop: -65 }}
                 valueAccessor={({ item }) => item.amount}
                 data={this.data}
                 // spacing={10}
@@ -226,9 +226,9 @@ class ExpenseByCategory extends Component{
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}>
-                    <Text style={{ textAlign:"center",color: "#1D1E1F",opacity: 0.5,marginTop:-5 }}>{ `Total Spending\nin March` }</Text>
+                    <Text style={{ textAlign:"center",color: "#1D1E1F",opacity: 0.5,marginTop:0 }}>{ `Total Spending\nin March` }</Text>
 
-                    <Text style={{ color: "#1D1E1F",fontSize: 23,marginVertical:20,fontWeight:"bold" }}>-$52,112.27</Text>
+                    <Text style={{ color: "#1D1E1F",fontSize: 23,marginVertical:18,fontWeight:"bold" }}>-$52,112.27</Text>
                 
                     <View style={{ 
                         borderColor:"blue",borderWidth:0,

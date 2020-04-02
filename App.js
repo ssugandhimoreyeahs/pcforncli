@@ -63,7 +63,7 @@ import ExpenseByCategoryInsights from "./src/views/components/insights/expenseBy
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
 import NewExpenseByCategoryParent from "./src/views/components/expensebycategory/newParentExpenseByCategory";
-
+import NewExpenseByCategoryChild from "./src/views/components/expensebycategory/newChildExpenseByCategory";
 //App Levels Routes
 import SplashScreen from "react-native-splash-screen";
 import ErrorBoundry from "./src/ErrorBoundry";
@@ -341,6 +341,13 @@ const EXPENSEBYCATEGORY = {
       header: null,
       gesturesEnabled: false
     }
+  },
+  NewExpenseByCategoryChild: {
+    screen: NewExpenseByCategoryChild,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
+    }
   }
 }
 
@@ -392,7 +399,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "NewExpenseByCategoryParent"
+    initialRouteName: "NewExpenseByCategoryChild"
   }
 );
 
