@@ -1,14 +1,22 @@
 import React,{ Component,Fragment } from "react";
-import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Image } from "react-native";
+import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Image,ActivityIndicator } from "react-native";
 import  DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import ToggleSwitch from 'toggle-switch-react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import IconImage from "../../../assets/CategoryIcon/advertise3.png"
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { connect } from "react-redux";
+import Spinner from 'react-native-loading-spinner-overlay';
+import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
+import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
+import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction } from "../../../api/api";
 AntDesign.loadFont();
 EvilIcons.loadFont();
+MaterialCommunityIcons.loadFont();
+
 class CategoryScreen extends Component{
 
     constructor(props){
@@ -16,7 +24,7 @@ class CategoryScreen extends Component{
 
         this.state = {
             toggle: false,
-            isEdit: true
+            isEdit: false
         }
     }
     handleHeaderButton = () => {
@@ -28,6 +36,8 @@ class CategoryScreen extends Component{
         }
     }
     header = () => {
+        let { category,error,isFetched,loading } = this.props.categoryReduxData;
+        // error = true;
         const { isEdit } = this.state;
         let antDesignIcon = isEdit == true ? `close` : 'left'
         return(
@@ -43,7 +53,9 @@ class CategoryScreen extends Component{
 
                      <Text style={{ fontSize:17,color:"#000" }}>Select Category</Text>
                     {
-                        isEdit == true ?
+                       error == true ?
+                       <View style={{ width: 35 }}></View> : 
+                       isEdit == true ?
                         <View style={{ width: 35 }}></View> : 
                         <TouchableOpacity style={{ paddingRight:2,width: 35 }} onPress={()=>{ this.setState({ isEdit:true }); }} >
                     
@@ -96,96 +108,164 @@ class CategoryScreen extends Component{
             <View style={ styles.seprator } />
         );
     }
-    renderSingleCategory = () => {
+    renderSingleCategory = ({ categoryData }) => {
+        let executingTransactionDetails = this.props.navigation.getParam("currentExecutingTransaction");
         const { isEdit } = this.state;
+        let { category,error,isFetched,loading } = this.props.categoryReduxData;
+        let { categoryName,index,customcategories } = categoryData;
         return(
             <Fragment>
              {
                  isEdit == false ? 
-                 <TouchableOpacity style={{ flexDirection:"row",justifyContent:"space-between",width:"93%" }}>
+                 <TouchableOpacity style={{ flexDirection:"row",
+                 justifyContent:"space-between",
+                 width:"93%" }}>
+                    
+                    <View style={{ width:"15%" }}><Image source={IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/></View>
 
-                    <Image source={IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/>
+                    <View style={{ width:"79%",
+                        borderWidth:0,borderColor:"red",
+                        justifyContent: "center",paddingLeft:13 }}>
+                        <Text style={{ 
+                            textAlign:"left",
+                            fontSize:12,
+                            color: "#000", 
+                            fontWeight: "600" }}>
+                             { categoryName }
+                        </Text>
+                    </View>
+                    {
+                        categoryName == executingTransactionDetails.category ?
+                        <View style={{ width:"10%",justifyContent:"center",alignItems:"center" }}>
+                            <MaterialIcons name='check' size={20} color={'#000000'}/>
+                        </View>
+                        :
+                        <View style={{ width:"10%",justifyContent:"center",alignItems:"center" }}></View>
+                    }
+                </TouchableOpacity>
+                :
+                <View style={{ flexDirection:"row",justifyContent:"space-between",width:"95%" }}>
 
-                    <View style={{ justifyContent: "center",marginLeft:-35 }}>
-                        <Text style={{ fontSize:12,color: "#000", fontWeight: "600" }}>
-                             Advertising & Marketing
+                <View style={{ width:"15%" }}><Image source={IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/></View>
+
+                    <View style={{ width:"70%",
+                        borderWidth:0,borderColor:"red",
+                        justifyContent: "center",paddingLeft:8 }}>
+                        <Text style={{ 
+                            textAlign:"left",
+                            fontSize:12,
+                            color: "#000", 
+                            fontWeight: "600" }}>
+                             { categoryName }
                         </Text>
                     </View>
 
-                    <View style={{ justifyContent:"center",alignItems:"center" }}><MaterialIcons name='check' size={20} color={'#000000'}/></View>
-                </TouchableOpacity>
-                :
-
-                <View style={{ flexDirection:"row",justifyContent:"space-between",width:"95%" }}>
-
-                    <Image source={IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/>
-
-                    <View style={{ justifyContent: "center",marginLeft:-30 }}>
-                       <Text style={{ fontSize:12,color: "#000", fontWeight: "600" }}>
-                            Advertising & Marketing
-                       </Text>
-                    </View>
-
-                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }}>
+                    <View style={{ width:"15%",
+                        flexDirection:"row",
+                        justifyContent:"center",
+                        alignItems:"center" }}>
                     
-                        <TouchableOpacity style={{ paddingRight:5 }}><EvilIcons name='pencil' size={23} color={'#000'}/></TouchableOpacity>
-
-                        <TouchableOpacity><MaterialIcons name='delete' size={20} color={'#000'}/></TouchableOpacity>
+                        {
+                            customcategories == true ?
+                            <Fragment>
+                                <TouchableOpacity style={{ paddingRight:7 }}>
+                                    <EvilIcons name='pencil' size={23} color={'#000'}/>
+                                </TouchableOpacity>
+                                
+                                <TouchableOpacity>
+                                    <MaterialIcons name='delete' size={23} color={'#000'}/>
+                                </TouchableOpacity>
+                            </Fragment> : null
+                        }
                     </View>
                 
                 </View>
-                
+             }
+             {
+                category.length - 1 > index ?
+                 <this.seprator /> : null
              }
             </Fragment>
         );
     }
     renderCategories = () => {
 
+        let { category,error,isFetched,loading } = this.props.categoryReduxData;
         return(
             <View style={ styles.categoryBlock }>
-
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                <this.seprator />
-                <this.renderSingleCategory />
-                
-
+                {
+                    category.map((singleCategory,index)=>{
+                        return <this.renderSingleCategory 
+                        key={index} 
+                        categoryData={{ ...singleCategory,index }} />
+                    })
+                }
             </View>
         );
     }
-    render(){
+
+    handleReloadCategories = () => {
+
+        this.props.fetchPlaidCategoryDispatch();
+    }
+    errorView = () => {
 
         return(
+            <View style={{ width:"100%",
+                height:"85%",justifyContent:"center",alignSelf:"center",
+                borderColor:"red",borderWidth:2 }}>
+
+            
+            
+            <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+                <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
+                <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
+            </View> 
+            <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+                <TouchableOpacity onPress={()=>{ this.handleReloadCategories(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Reload</Text></View>
+                </TouchableOpacity>
+            
+         </View> 
+            </View>
+        );
+    }
+    renderBody = () => {
+        let { category,error,isFetched,loading } = this.props.categoryReduxData;
+        
+        return(
             <ScrollView>
-                <this.header /> 
-                <this.addCategory />
-                <this.renderCategories />
+                        <this.header /> 
+                        <this.addCategory />
+                        {
+                            loading == false ?
+                            <this.renderCategories />
+                            :
+                            <ActivityIndicator 
+                                style = {{ marginTop:50 }}
+                                animating={true} 
+                                size={"large"}
+                            />
+                        }
             </ScrollView>
+        );
+    }
+    render(){
+        console.log("getting all redux data here -");
+        console.log(this.props.categoryReduxData);
+        console.log("ends here----");
+        let { category,error,isFetched,loading } = this.props.categoryReduxData;
+        
+        return(
+            <Fragment>
+                {
+                    error == true ? <Fragment>
+                        <this.header /> 
+                        <this.errorView />
+                    </Fragment> 
+                    :  <this.renderBody />
+                }
+            </Fragment>
         );
     }
 }
@@ -203,7 +283,7 @@ const styles = StyleSheet.create({
         height:70,backgroundColor:"#F8F8F8"
     },
     seprator: { 
-        marginVertical: 12,
+        marginVertical: 16,
         borderBottomColor:"#1D1E1F",
         opacity:0.2,
         borderBottomWidth: StyleSheet.hairlineWidth
@@ -222,4 +302,19 @@ const styles = StyleSheet.create({
     alignSelf:"center"
     }
 })
-export default DetectPlatform(CategoryScreen,styles.container);
+
+const mapStateToProps = state => {
+    return {
+        categoryReduxData: state.plaidCategoryData
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
+        fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
+        //fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(CategoryScreen,styles.container));
