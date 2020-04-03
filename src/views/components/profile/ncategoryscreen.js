@@ -13,6 +13,8 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
 import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction } from "../../../api/api";
+import { PLAID_CATEGORIES } from "../../../api/common";
+
 AntDesign.loadFont();
 EvilIcons.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -113,15 +115,27 @@ class CategoryScreen extends Component{
         const { isEdit } = this.state;
         let { category,error,isFetched,loading } = this.props.categoryReduxData;
         let { categoryName,index,customcategories } = categoryData;
+        
+        let isIconAvailable = false;
+        let iconPath = null;
+        for(let i=0;i<PLAID_CATEGORIES.length;i++){
+            if(PLAID_CATEGORIES[i].categoryName == categoryName){
+                isIconAvailable = true;
+                iconPath = PLAID_CATEGORIES[i].categoryIcon;
+                break;
+            }
+        }
         return(
             <Fragment>
              {
                  isEdit == false ? 
                  <TouchableOpacity style={{ flexDirection:"row",
                  justifyContent:"space-between",
-                 width:"93%" }}>
+                 width:"93%",paddingLeft:6 }}>
                     
-                    <View style={{ width:"15%" }}><Image source={IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/></View>
+                    <View style={{ width:"15%" }}>
+                            <Image source={ isIconAvailable == true ? iconPath : IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/>
+                    </View>
 
                     <View style={{ width:"79%",
                         borderWidth:0,borderColor:"red",
