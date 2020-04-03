@@ -251,9 +251,9 @@ class CategoryScreen extends Component{
         );
     }
     render(){
-        console.log("getting all redux data here -");
-        console.log(this.props.categoryReduxData);
-        console.log("ends here----");
+        // console.log("getting all redux data here -");
+        // console.log(this.props.categoryReduxData);
+        // console.log("ends here----");
         let { category,error,isFetched,loading } = this.props.categoryReduxData;
         
         return(
