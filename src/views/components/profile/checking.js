@@ -39,7 +39,7 @@ const TransactionComponent = (props) => {
   if(props.fullTransactionObj.category == props.fullTransactionObj.defaultCategory){
     categoryButtonText = `+ Category`;
   }else{
-    categoryButtonText = `Update Category`;
+    categoryButtonText = `${props.fullTransactionObj.category}`;
   }
 
   if(props.transactionTypes == "INFLOW"){
@@ -58,23 +58,37 @@ const TransactionComponent = (props) => {
  
   return(
     <React.Fragment>
-        <View style={{ marginVertical:10 }}>
-        <View style={{ alignSelf:"center",width:"90%"  }}>
-           
-           <View style={{ flexDirection: "row", justifyContent: "space-between", borderWidth:0,borderColor: "black"  }}>
-             <View style={{ width: "65%",borderWidth:0,borderColor:"red",paddingLeft:5,paddingRight:10 }}><Text style={{color:'#1D1E1F',fontSize:13,fontWeight:'bold' }}>{ props.name } </Text></View>
-             <View style={{ width:"35%",borderWidth:0,borderColor:"blue",paddingLeft:5 }}><Text style={{color:'#1D1E1F',fontSize:15 }}>{ readyAmount }</Text></View>
-           </View>
+      <View style={{ marginTop:20,
+        borderWidth:0,borderColor:"red",
+        width: "90%",
+        alignSelf:"center" }}>
 
-           <View style={{ flexDirection: "row", justifyContent: "space-between",marginTop:5  }}>
-              <View style={{ justifyContent:"center",width:"60%",paddingLeft:5 }}><Text style={{color:'#1D1E1F',fontSize:10,}}>{ props.date }</Text></View>
-              <View style={{ width:"40%" }}>
-              <TouchableOpacity style={{ ...styles.btn }}
-                onPress={()=>{
-                  if(userData.bankStatus != "linked"){
-                   setTimeout(()=>{
-                     
-                     Alert.alert(
+        <View style={{ flexDirection:"row",justifyContent:"space-between",
+        
+         }}>
+         <Text style={{ 
+           color:"#1D1E1F",fontSize:15,
+           width: "60%" }}>{ props.name }</Text>
+         <Text style={{ fontSize:17,
+          color:"#1D1E1F",width:"40%",textAlign:"right"
+          }}>{ readyAmount }</Text>
+         </View>
+      
+        <View style={{ marginTop:15,
+          borderWidth:0,borderColor:"blue",
+          flexDirection:"row",
+          justifyContent:"space-between" }} >
+
+          <View style={{ justifyContent:"center",alignItems:"center" }}><Text style={{
+            fontSize:11,opacity:0.5,color:"#1D1E1F"
+          }}>Detail Info</Text></View>
+
+          <TouchableOpacity 
+            onPress={()=>{
+              if(userData.bankStatus == "linked"){
+                props.navigation.navigate("CategoryScreen",{ currentExecutingTransaction:props.fullTransactionObj,resetTransactionScreen: () => { props.resetTransactionScreen(); } });
+              }else{
+                Alert.alert(
                        'Bank Disconnected',
                        `Your bank account has been disconnected. Please reconnect again.`,
                        [
@@ -88,21 +102,29 @@ const TransactionComponent = (props) => {
                        ],
                        {cancelable: false},
                      );
-     
-                   },100);
-                   }else{
-                     props.navigation.navigate("CategoryScreen",{ currentExecutingTransaction:props.fullTransactionObj,resetTransactionScreen: () => { props.resetTransactionScreen(); } });
-                   }
-                  }}
-              >
-                  <Text style={styles.TextStyle}>{ categoryButtonText }</Text>
-              </TouchableOpacity>
-              </View>
-           </View>
+              }
+            }}
+            style={{ backgroundColor: categoryButtonText == "+ Category" ? "#FFF" : "#A599EC",
+            borderColor:"#A599EC",borderWidth:0.3,
+            height: 24,justifyContent:"center",
+            alignItems:'center',
+            paddingHorizontal: 20,
+            borderRadius:50,
+           }}>
 
-       </View>   
-        </View>     
-        <Separator style={styles.separator}/>
+            <Text style={{ fontSize:11,
+              color: categoryButtonText=="+ Category" ? "#1D1E1F" : "#FFF"
+            }}>{ categoryButtonText }</Text>
+
+          </TouchableOpacity>
+
+        </View>
+      </View>
+
+      <View style={{ 
+        borderBottomColor:"#1D1E1F",borderBottomWidth: StyleSheet.hairlineWidth,
+        opacity: 0.2,width:"90%",alignSelf:"center",
+        marginTop: 15 }}></View>
     </React.Fragment>
   );
 }
@@ -1060,7 +1082,9 @@ fetchTransactionsFirstTime = async (userData) => {
                      this.state.seprateDate.map( (singleDate,dateIndex )=> {
                         return <React.Fragment key={dateIndex}>
                           <ShowDateHeadings key={dateIndex} date={singleDate} />
-                          <View style={{marginTop:20,backgroundColor:"#FFFFFF", flexDirection:'column',width:"100%", alignSelf:'center'}}>
+                          <View style={{marginTop:20,
+                          backgroundColor:"#FFFFFF", 
+                          flexDirection:'column',width:"100%", alignSelf:'center'}}>
                         {  this.state.transactions.map( (transaction,transactionIndex) => {
                             if(singleDate === transaction.date){
                             

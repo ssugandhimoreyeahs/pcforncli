@@ -319,7 +319,9 @@ class CategoryScreen extends React.Component{
                  {
                    this.state.isUsefulTouched ? this.FirstViewComponent() : this.SecondViewComponent()
                  }
-                 <DialogInput isDialogVisible={addCategoryDialogVisible}
+                 <DialogInput 
+                    dialogStyle={{ marginTop:-80 }}
+                    isDialogVisible={addCategoryDialogVisible}
                     title={"Add Category"}
                     message={<Fragment><Text>{"Please Add New Category Here..."}</Text>{
                         showPleaseEnterCategory == true ? <Text style={{ color:"red" }}>{`\n\nPlease Enter Category Name`}</Text> : null

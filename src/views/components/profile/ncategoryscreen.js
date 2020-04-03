@@ -112,7 +112,7 @@ class CategoryScreen extends Component{
                         </Text>
                     </View>
 
-                    <View><MaterialIcons name='check' size={20} color={'#000000'}/></View>
+                    <View style={{ justifyContent:"center",alignItems:"center" }}><MaterialIcons name='check' size={20} color={'#000000'}/></View>
                 </TouchableOpacity>
                 :
 
