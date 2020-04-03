@@ -416,7 +416,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "NCategoryScreen"
+    initialRouteName: "ValueProp"
   }
 );
 

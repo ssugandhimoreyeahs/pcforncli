@@ -69,31 +69,7 @@ class ChangeInCash extends Component {
     }
     
   }
-  calculateCurrentMonthChangeInCash(historicalFinances) {
-    // find data for the current month
-    currentMonthKey = Object.keys(historicalFinances).filter(monthKey => {
-      const monthKeyMoment = Moment(monthKey, "YYYY-MM-DD");
-      if (
-        monthKeyMoment.month() === Moment().month() &&
-        monthKeyMoment.year() === Moment().year()
-      ) {
-        return monthKey;
-      }
-    });
-
-    priorMonthKey = Moment(currentMonthKey, "YYYY-MM-DD")
-      .subtract(1, "months")
-      .format("YYYY-MM-DD");
-    if (
-      priorMonthKey in historicalFinances &&
-      currentMonthKey in historicalFinances
-    ) {
-      return (
-        historicalFinances[currentMonthKey].cash -
-        historicalFinances[priorMonthKey].cash
-      );
-    }
-  }
+  
 
   showAlert() {  
     Alert.alert(  
@@ -133,12 +109,7 @@ class ChangeInCash extends Component {
     }
     const { historicalFinances } = this.props;
     
-    // cashInChangeData.error = false;
-    // //cashInChangeData.isFetched = false;
-    // cashInChangeData.masterLoader = false;
-    // cashInChangeData.childLoader = true;
-
-   // console.log("code test here ----------------------------------");
+   
     let isCICGraphEmpty = true;
     if(cashInChangeData.isFetched == true){
       for(let i = 0;i < cashInChangeData.cicData.cash.length; i++ ){
@@ -151,9 +122,6 @@ class ChangeInCash extends Component {
       }
     }
     
-
-    //total = 15000;
-    //console.log("ends here ----------------------------- new here");
     return (
       <View>
         <View style={styles.margins}>

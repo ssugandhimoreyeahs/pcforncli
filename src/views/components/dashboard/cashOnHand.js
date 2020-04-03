@@ -87,23 +87,11 @@ handleArrowStyle = () => {
   }
 }
   render() {
-    const historicalFinances = this.props.historicalFinances;
-
-    const firstOfCurrentMonth = Moment().format("YYYY-MM-01");
-    let currentCashOnHand = 0;
-    let currentExpenses = 0;
-    let currentRevenue = 0;
-    if (historicalFinances[firstOfCurrentMonth]) {
-      currentCashOnHand = historicalFinances[firstOfCurrentMonth]["cash"];
-      currentExpenses = historicalFinances[firstOfCurrentMonth]["expenses"];
-      currentRevenue = historicalFinances[firstOfCurrentMonth]["revenue"];
-    }
+    
     const gw=Dimensions.get("window").width;
 
     let isCOHGraphEmpty = true;
 
-    
-    
     for(let i=0;i<this.props.cashOnHandGraphData.length; i++){
     
       if( this.props.cashOnHandGraphData[i].amount != 0 && this.props.cashOnHandGraphData[i].amount > 0 ){
@@ -129,9 +117,9 @@ handleArrowStyle = () => {
         <View
         style={{
           backgroundColor: this.getRunwayColor(
-            currentCashOnHand,
-            currentExpenses,
-            currentRevenue
+            0,
+            0,
+            0
           ),
           borderRadius:5,
           flexDirection: "row",
@@ -198,7 +186,10 @@ handleArrowStyle = () => {
           :
 
           <View style={{marginTop:"-10%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
-            <CashOnHandChart historicalFinances={this.props.historicalFinances} cashOnHandGraphData={this.props.cashOnHandGraphData} cohPast={this.props.cohPast} cohFuture={this.props.cohFuture} />
+            <CashOnHandChart 
+            cashOnHandGraphData={this.props.cashOnHandGraphData} 
+            cohPast={this.props.cohPast} 
+            cohFuture={this.props.cohFuture} />
           </View>
         }
         
@@ -244,7 +235,7 @@ handleArrowStyle = () => {
 const styles =  StyleSheet.create({
   margins: {
     backgroundColor: "#EEEFF1",
-    marginVertical:8,
+    marginVertical:10,
     
   },
   heading: {

@@ -5,15 +5,12 @@ import { StyleSheet } from "react-native";
 import IncomingAR from "../charts/incomingAR";
 import BottomNavLayout from "../../../controls/bottom-nav-layout";
 import HealthScore from "../charts/healthScore";
-import { HISTORICAL_FINANACES } from "../../../utilities/stub";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
 import CashOnHand from "./cashOnHand";
 import ChangeInCash from "./changeInCash";
 import Sales from "./sales";
-import { listFinancials } from "../../../reducers/financials";
 import { fetchUserAsyncActionCreator,fetchUserSuccess } from "../../../reducers/getUser";
-
 import { 
   getCashOnHandGraph,
   getSalesData,
@@ -575,11 +572,28 @@ class Dashboard extends PureComponent {
                reloadQuickbooks = { () => { this.reloadQuickbooks(); } }
                
                />
-              { bankIntegrationStatus == true ? <CashOnHand healthScoreIndicator={this.state.healthScoreIndicator} isCOHLoadedOnce={this.state.isCOHLoadedOnce} outOfCashDate={this.state.outOfCashDate} isEnableDropDownForSwitchingGraph={ this.state.cashOnHandGraph.length == 0 ? true : false  } showCOHChartLoader={this.state.showCOHChartLoader} handleGraphChangeFunction={this.handleGraphChangeFunction} userCurrentBalance={this.state.userCurrentBalance} historicalFinances={financials.breakdown} navigation={this.props.navigation} cashOnHandGraphData={this.state.cashOnHandGraph} cohPast={this.state.past} cohFuture={this.state.future} /> : null }
-              { bankIntegrationStatus == true ? <ChangeInCash historicalFinances={financials.breakdown} navigation={this.props.navigation}/> : null }
-              { bankIntegrationStatus == true ? <ExpenseByCategory navigation={this.props.navigation} /> : null }
-              { qbIntegrationStatus == true ? <Sales isSalesLoadedOnce={this.state.isSalesLoadedOnce} showSalesChartLoader={this.state.showSalesChartLoader} salesTotalAmount={this.state.salesTotalAmount} historicalFinances={financials.breakdown} navigation={this.props.navigation} salesData={this.state.salesData} /> : null }
-              { qbIntegrationStatus == true ? <IncomingAR style={styles.incomingAR} ar={financials.ar} navigation={this.props.navigation}/> : null }
+              { bankIntegrationStatus == true ? <CashOnHand 
+              healthScoreIndicator={this.state.healthScoreIndicator} 
+              isCOHLoadedOnce={this.state.isCOHLoadedOnce} 
+              outOfCashDate={this.state.outOfCashDate} 
+              isEnableDropDownForSwitchingGraph={ 
+                this.state.cashOnHandGraph.length == 0 ? true : false  
+              } 
+              showCOHChartLoader={this.state.showCOHChartLoader} 
+              handleGraphChangeFunction={this.handleGraphChangeFunction} 
+              userCurrentBalance={this.state.userCurrentBalance} 
+              navigation={this.props.navigation} 
+              cashOnHandGraphData={this.state.cashOnHandGraph} 
+              cohPast={this.state.past} cohFuture={this.state.future} /> : null }
+              { bankIntegrationStatus == true ? <ChangeInCash  
+              navigation={this.props.navigation}/> : null }
+              { bankIntegrationStatus == true ? <ExpenseByCategory 
+              navigation={this.props.navigation} /> : null }
+              { qbIntegrationStatus == true ? <Sales 
+              navigation={this.props.navigation} /> : null }
+              { qbIntegrationStatus == true ? <IncomingAR 
+              style={styles.incomingAR} 
+              navigation={this.props.navigation}/> : null }
           </BottomNavLayout>
           : null
         }
@@ -589,7 +603,6 @@ class Dashboard extends PureComponent {
 }
 const mapStateToProps = state => {
   return {
-    financials: state.financials.financials,
     reduxUserData: state.userData,
     
   };
