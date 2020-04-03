@@ -13,7 +13,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
 import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction } from "../../../api/api";
-import { PLAID_CATEGORIES } from "../../../api/common";
+import { PLAID_CATEGORIES,EXPENSES_COLOR } from "../../../api/common";
 
 AntDesign.loadFont();
 EvilIcons.loadFont();
@@ -134,7 +134,20 @@ class CategoryScreen extends Component{
                  width:"93%",paddingLeft:6 }}>
                     
                     <View style={{ width:"15%" }}>
-                            <Image source={ isIconAvailable == true ? iconPath : IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/>
+                            {
+                                isIconAvailable == true ?
+                                <Image source={ iconPath } height={36} width={36} style={{ height: 36, width: 36 }}/>
+                                : <View style={{ borderRadius:50,
+                                   justifiyContent:"center",
+                                   alignItems:"center",
+                                   width: 36,
+                                   height:36,
+                                   borderColor: "#FFF",
+                                   backgroundColor: EXPENSES_COLOR[Math.floor(Math.random()*EXPENSES_COLOR.length-1)].color
+                                }}></View>
+                                
+                            }
+                            
                     </View>
 
                     <View style={{ width:"79%",
@@ -158,9 +171,14 @@ class CategoryScreen extends Component{
                     }
                 </TouchableOpacity>
                 :
-                <View style={{ flexDirection:"row",justifyContent:"space-between",width:"95%" }}>
+                <View style={{ 
+                    paddingLeft:6, 
+                    flexDirection:"row",
+                    justifyContent:"space-between",width:"95%" }}>
 
-                <View style={{ width:"15%" }}><Image source={IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/></View>
+                <View style={{ width:"15%" }}>
+                            <Image source={ isIconAvailable == true ? iconPath : IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/>
+                </View>
 
                     <View style={{ width:"70%",
                         borderWidth:0,borderColor:"red",

@@ -48,6 +48,53 @@ export function allFirstWordCapital(text) {
 }
 
 
+export const EXPENSES_COLOR = [
+    { color: "#F98361" },
+    { color: "#A599EC" },
+    { color: "#DE84AA" },
+    { color: "#FEBC0F" },
+    { color: "#FE7F00" },
+    { color: "#C42F61" },
+    { color: "#EA727A" },
+    { color: "#DFDB67" },
+    { color: "#E15621" },
+    { color: "#7785E9" },
+    { color: "#B7121A" },
+    { color: "#AA9637" },
+    { color: "#B35E5E" },
+    { color: "#E89200" },
+    { color: "#801365" },
+    { color: "#F04715" },
+    { color: "#DDB785" },
+    { color: "#9C662E" },
+    { color: "#EE8F1C" },
+    { color: "#BB96B7" },
+    { color: "#433688" },
+    { color: "#C98397" },
+    { color: "#6C5BC1" }
+]
+
+export const INCOME_COLOR = [
+    { color: "#4A90E2" },
+    { color: "#1FB7A6" },
+    { color: "#84D5DE" },
+    { color: "#027DF2" },
+    { color: "#5165D6" },
+    { color: "#33C881" },
+    { color: "#508AA9" },
+    { color: "#8EB4C9" },
+    { color: "#6196CD" },
+    { color: "#C5DA2B" },
+    { color: "#215086" },
+    { color: "#498D87" },
+    { color: "#5994B3" },
+    { color: "#7AC32C" },
+    { color: "#407B00" },
+    { color: "#096968" },
+    { color: "#00C051" },
+    { color: "#6F986C" },
+    { color: "#6FB1AB" }
+]
 export const PLAID_CATEGORIES = [
     { 
         categoryName: "Bank Fees",
