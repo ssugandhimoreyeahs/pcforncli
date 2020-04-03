@@ -145,7 +145,7 @@ class CategoryScreen extends Component{
                                    width: 36,
                                    height:36,
                                    borderColor: "#FFF",
-                                   backgroundColor: EXPENSES_COLOR[Math.floor((Math.random()*EXPENSES_COLOR.length)-1)].color
+                                   backgroundColor: EXPENSES_COLOR[parseInt((Math.random()*EXPENSES_COLOR.length)-1)].color
                                 }}>
                                     <Text style={{ color:'#FFF' }}>
                                         {
@@ -184,9 +184,28 @@ class CategoryScreen extends Component{
                     flexDirection:"row",
                     justifyContent:"space-between",width:"95%" }}>
 
-                <View style={{ width:"15%" }}>
-                            <Image source={ isIconAvailable == true ? iconPath : IconImage} height={36} width={36} style={{ height: 36, width: 36 }}/>
-                </View>
+                    <View style={{ width:"15%" }}>
+                            {
+                                isIconAvailable == true ?
+                                <Image source={ iconPath } height={36} width={36} style={{ height: 36, width: 36 }}/>
+                                : <View style={{ borderRadius:50,
+                                   justifyContent:"center",
+                                   alignItems:"center",
+                                   width: 36,
+                                   height:36,
+                                   borderColor: "#FFF",
+                                   backgroundColor: EXPENSES_COLOR[parseInt((Math.random()*EXPENSES_COLOR.length)-1)].color
+                                }}>
+                                    <Text style={{ color:'#FFF' }}>
+                                        {
+                                            getCategoryInitials(categoryName)
+                                        }
+                                    </Text>
+                                </View>
+                                
+                            }
+                            
+                    </View>
 
                     <View style={{ width:"70%",
                         borderWidth:0,borderColor:"red",
