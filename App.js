@@ -51,6 +51,7 @@ import FeedbackSubmission from "./src/views/feedback/feedbackSubmission";
 import ChangePassword from "./src/views/components/profile/changepassword";
 import ForgetPassword from "./src/views/ftux/forgetPassword";
 import CategoryScreen from "./src/views/components/profile/categoryscreen";
+import NCategoryScreen from "./src/views/components/profile/ncategoryscreen";
 
 //insights
 import CashOnHandinsights from "./src/views/components/charts/cashonhandinsights";
@@ -319,6 +320,13 @@ const PROFILE = {
       gesturesEnabled: false
     }
   },
+  NCategoryScreen: {
+    screen: NCategoryScreen,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
+    }
+  }
 }
 
 const EXPENSEBYCATEGORY = {
@@ -408,7 +416,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "NewExpenseByCategoryChild"
+    initialRouteName: "NCategoryScreen"
   }
 );
 

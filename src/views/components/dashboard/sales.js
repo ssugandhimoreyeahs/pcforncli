@@ -125,9 +125,7 @@ class Sales extends Component {
     }
   }
   render() {
-    // console.log("sales testing ------------------");
-    // console.log(this.props.salesData);
-    // console.log("------------------ ends here---");
+    
     let isSalesGraphEmpty = true;
     let { error,salesData:reduxObj,isFetched, masterLoader, childLoader, salesCurrentRange } = this.props.salesRedux;
     let totalSalesAmount = 0;
@@ -157,7 +155,7 @@ class Sales extends Component {
          <View style={{ height:375,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
           <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
               <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
-              <Text style={{ marginLeft:10,alignSelf:"center" }}>Oops Error Try Again!</Text>
+              <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
           </View> 
           <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
               <TouchableOpacity onPress={()=>{ this.handleErrorReloadSales(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
@@ -198,7 +196,7 @@ class Sales extends Component {
             
             isSalesGraphEmpty == true ?  
             <View style={{height:260,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
-              <Text style={{ color:"#070640" }}>No Data Available!</Text>
+              <Text style={{ color:"#070640" }}>You have no sales data this month.</Text>
             </View>
             :
             <SalesChart 
