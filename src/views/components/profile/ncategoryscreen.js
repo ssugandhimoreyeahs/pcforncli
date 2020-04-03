@@ -13,7 +13,7 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
 import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction } from "../../../api/api";
-import { PLAID_CATEGORIES,EXPENSES_COLOR } from "../../../api/common";
+import { PLAID_CATEGORIES,EXPENSES_COLOR,getCategoryInitials } from "../../../api/common";
 
 AntDesign.loadFont();
 EvilIcons.loadFont();
@@ -125,6 +125,8 @@ class CategoryScreen extends Component{
                 break;
             }
         }
+
+        console.log("Test - ",Math.random()*EXPENSES_COLOR.length-2);
         return(
             <Fragment>
              {
@@ -138,13 +140,19 @@ class CategoryScreen extends Component{
                                 isIconAvailable == true ?
                                 <Image source={ iconPath } height={36} width={36} style={{ height: 36, width: 36 }}/>
                                 : <View style={{ borderRadius:50,
-                                   justifiyContent:"center",
+                                   justifyContent:"center",
                                    alignItems:"center",
                                    width: 36,
                                    height:36,
                                    borderColor: "#FFF",
-                                   backgroundColor: EXPENSES_COLOR[Math.floor(Math.random()*EXPENSES_COLOR.length-1)].color
-                                }}></View>
+                                   backgroundColor: EXPENSES_COLOR[Math.floor((Math.random()*EXPENSES_COLOR.length)-1)].color
+                                }}>
+                                    <Text style={{ color:'#FFF' }}>
+                                        {
+                                            getCategoryInitials(categoryName)
+                                        }
+                                    </Text>
+                                </View>
                                 
                             }
                             

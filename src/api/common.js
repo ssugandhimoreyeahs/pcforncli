@@ -132,3 +132,20 @@ export const PLAID_CATEGORIES = [
         categoryColor: "#9C662E"
     }
 ]
+
+export const getCategoryInitials = (str = "") => {
+
+    let splitArray = str.split(' ');
+    let forAcroyn = [];
+    splitArray.map((singleWord)=>{
+        if(singleWord != "and" && singleWord != "And" &&
+        singleWord != "&"){
+        forAcroyn.push(singleWord);
+        }
+    })
+    let initials = '';
+    forAcroyn.map((word)=>{
+    initials += word.charAt(0).toUpperCase();
+    })
+    return initials;
+}
