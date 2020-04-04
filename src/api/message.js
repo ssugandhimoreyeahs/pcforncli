@@ -15,6 +15,13 @@ export const ERROR = {
     message: "Please try again."
 }
 
+export const TERMINOLOGY = {
+    EXPENSEBYCATEGORY : {
+        title : "EXPENSE BY CATEGORY",
+        message : "Your expenses are categorized into these default categories to help you see where you spent the money. You can edit these categories here or connect your ledge to import your categories.",
+        button1: "Okay"
+    }
+}
 export const CHANGECATEGORY = {
     title : "Category Change",
     message : "Are you sure to change this category?",
@@ -35,8 +42,5 @@ export const DELETECATEGORY = {
     message: (categoryName="") => { return `Are you sure to delete category - ${categoryName} of the category?` },
     button1: "Cancel",
     button2: "Delete"
-
-}
-export const TERMINOLOGY = {
 
 }

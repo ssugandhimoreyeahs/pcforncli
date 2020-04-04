@@ -11,6 +11,9 @@ import { fetchExpensesMultipleTimesAsyncCreator } from "../../../reducers/expens
 import { numberWithCommas,firstLetterCapital } from "../../../api/common";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+
+import { TERMINOLOGY } from "../../../api/message";
+
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 const gw=Dimensions.get("window").width;
@@ -59,20 +62,6 @@ class ExpenseByCategory extends Component{
                 this.setState({ expenseCurrentMonth:currentExpenseRange });
         }
         
-    }
-    showAlert() {  
-        Alert.alert(  
-            'EXPENSE BY CATEGORY',  
-            'Your expenses are categorized into these default categories to help you see where you spent the money. You can edit these categories here or connect your ledge to import your categories.',  
-            [  
-                {  
-                    text: 'Cancel',  
-                    onPress: () => console.log('Cancel Pressed'),  
-                    style: 'cancel',
-                      
-                },  
-            ]  
-        );  
     }
     handleReloadExpenseByCategory = () => {
 
@@ -125,74 +114,120 @@ class ExpenseByCategory extends Component{
             </Fragment>
         );
      }
+
+     renderCategoryWithPercentage = ({ percentage,category,price }) => {
+
+        return(
+            <View style={{ flexDirection:"row",paddingBottom:20, }}>
+
+                  <ProgressCircle 
+                            percent={percentage}
+                            radius={24}
+                            borderWidth={2}
+                            color="#FF7B32"
+                            containerStyle={{height:40,width:40}}
+                            shadowColor="#EFEEEE"
+                            bgColor="#FFFFFF" >
+                                <Text style={{ fontSize: 15 ,color:'#151927'}}>{ `${percentage}%` }</Text>
+                    </ProgressCircle>
+
+                    <View style={{ paddingLeft:14 }}>
+                        <Text style={{ textAlign:"left",fontSize:12,color:"#151927" }}>{ `${category}` }</Text>
+                        <Text style={{ paddingTop:7,textAlign:"left",fontSize:15,color:"#151927" }}>{`${price}`}</Text>
+                    </View>
+                  
+                  </View>
+        );
+     }
+     showExpenseByCategoryTerminology = () => {
+        Alert.alert(  
+                TERMINOLOGY.EXPENSEBYCATEGORY.title,  
+                TERMINOLOGY.EXPENSEBYCATEGORY.message,[{  
+                        text: TERMINOLOGY.EXPENSEBYCATEGORY.button1,  
+                        style: 'cancel', }]);  
+     }
      renderExepensesByCategory = () => {
         const { expenseByCategoryRedux:expenseByCategory } = this.props;
         const { expenseCurrentMonth } = this.state;
          return(
             <Fragment>
-            <View style={{ height:350,width:'100%', backgroundColor:'white', alignSelf:'center',elevation:10,shadowColor:'#000' }}>
+            <View style={{ 
+                height:350,
+                width:'100%', 
+                backgroundColor:'white', 
+                alignSelf:'center',
+                elevation:10,
+                shadowColor:'#000',
+                paddingVertical:15,paddingHorizontal:13 }}>
             {
                  expenseByCategory.childLoader == false ? <Fragment>
-                 <View style={styles.heading}>
-                     <TouchableOpacity onPress={this.showAlert}>
-                         <View style={{flexDirection:'row'}}>
-                         <Text style={{ fontSize: 13 }}>EXPENSE BY CATEGORY</Text>
-                         <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>
-                         </View>
-                     </TouchableOpacity>
-                     <TouchableOpacity onPress={()=>{ this.props.navigation.navigate("ExpenseScreenParent"); }}><Text style={{ fontSize: 22, fontWeight: "bold" }}>{ expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}</Text></TouchableOpacity>
-                 </View>
-                 <View style={{ width:"100%",flexDirection:"row",justifyContent:"flex-end",marginTop:-11,marginLeft:-15, }}>
-                     <Text style={{ color:"#1D1E1F",fontSize:12 }}>
-                         {
-                             `Total ${expenseCurrentMonth}`
-                         }
-                     </Text>
-                 </View>
-                 {
-                     expenseByCategory.expense.length > 0 ?
-
-                        <View style={{ height: 177,marginTop:15 }}>
+                  
+                  <View style={{
+                      //borderWidth:1,borderColor:"red",
+                      height: "15%",flexDirection:"row",justifyContent:"space-between"
+                  }}>
+                     <TouchableOpacity onPress={()=>{ this.showExpenseByCategoryTerminology(); }} style={{ flexDirection:"row" }}>
+                        <Text style={{ fontSize:12,color:"#1D1E1F" }}>EXPENSE BY CATEGORY</Text>
+                        <Ionicons 
+                        style={{ paddingTop:1,paddingLeft:3,height:13,width:13,color:"#1D1E1F" }}
+                        name='md-information-circle-outline' />
+                    </TouchableOpacity>
+                  
+                    <View style={{ flexDirection:"column",justifyContent:"space-between" }}>
+                        <Text style={{ textAlign:'right',fontSize:22,color:"#1D1E1F",fontWeight:"600" }}>
+                        { expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}
+                        </Text>
+                        <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize:12 }}>
                             {
-                                expenseByCategory.expense.map( (singleExpense,index,fullArray) => {
-                                    if(index % 2 == 0){
-                                        if(index < 6){
-                                            if( typeof fullArray[index] == "object" && typeof fullArray[index+1] == "object" ){
-                                                return <View key={index} style={{width:"95%",alignSelf:'center',marginVertical:8, }}>
-                                                            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                                            <this.loadProgressCircle percentage={parseInt(fullArray[index].percentage)} category = {firstLetterCapital(fullArray[index].category)} price = {`-$${numberWithCommas(fullArray[index].amount)}`} />
-                                                            <this.loadProgressCircle percentage={parseInt(fullArray[index+1].percentage)} category = {firstLetterCapital(fullArray[index+1].category)} price = {`-$${numberWithCommas(fullArray[index+1].amount)}`} />
-                                                        </View>
-                                                    </View>
-                                            }else if( typeof fullArray[index] == "object" && typeof fullArray[index+1] != "object" ){
-                                                return <View key={index} style={{width:"95%",alignSelf:'center',marginVertical:8, }}>
-                                                            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                                            <this.loadProgressCircle percentage={parseInt(fullArray[index].percentage)} category = {firstLetterCapital(fullArray[index].category)} price = {`-$${numberWithCommas(fullArray[index].amount)}`} />
-                                                        </View>
-                                                </View>
-                                            }else{
-                                                return null
-                                            }
-                                        }else{
-                                            return null
-                                        }
-                                    }
-                                })
+                              `Total ${expenseCurrentMonth}`
                             }
-                        </View>
-                     :
-                     <View style={{ height:177,marginTop:15,justifyContent:"center",alignItems:"center" }}>
-                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
-                     </View>
-                 }
+                        </Text>                    
+                    </View>
+                  </View>
+
+                  <View style={{
+                      justifyContent:"space-between",
+                      flexDirection:"row",
+                      flexWrap:"wrap",
+                      paddingTop:25,
+                      borderWidth:0,borderColor:"red",
+                      height: "73%"
+                  }}>
+
+                    {
+                        expenseByCategory.expense.length > 0 ?
+                        expenseByCategory.expense.map( (singleExpense,index,fullArray) => { 
+                            if(index < 6){
+                            return <this.renderCategoryWithPercentage key={index}
+                                percentage={parseInt(fullArray[index].percentage)} 
+                                category = {firstLetterCapital(fullArray[index].category)} 
+                                price = {`-$${numberWithCommas(fullArray[index].amount)}`} 
+                            />
+                            }else{
+                                return null;
+                            }
+                        })
+                        :
+                        <View style={{ width:"100%",justifyContent:"center",alignItems:"center" }}>
+                             <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
+                         </View>
+                    }
+                    
+                </View>
              
-             </Fragment> :  <View style={{height:252,width:gw,justifyContent:"center",alignSelf:"center"}}>
+             </Fragment> :  <View style={{height:"88%",width:gw,justifyContent:"center",alignSelf:"center"}}>
               <ActivityIndicator size="large" color="#070640" />
             </View>
             }
       
 
-        <View style = {styles.buttonview}>
+        <View style = {{
+                height:"10%",
+                width:'100%',
+                flexDirection:"row",
+                justifyContent:"space-between",
+                alignSelf:'center'
+            }}>
             <View style={styles.Toucha}>
             <Dropdown
                     disabled={false}
@@ -305,7 +340,7 @@ const styles = StyleSheet.create({
       },
       Toucha:{
         width:"40%",
-        height:"100%",
+        height:32,
         borderRadius:10, 
         backgroundColor:"#E6E6EC",
         flexDirection:'row',
