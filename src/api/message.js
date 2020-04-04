@@ -15,6 +15,21 @@ export const ERROR = {
     message: "Please try again."
 }
 
+export const CHANGECATEGORY = {
+    title : "Category Change",
+    message : "Are you sure to change this category?",
+    button1: "Cancel",button2: "Confirm"
+}
+export const ERRORCATEGORY = {
+    title : "Message",
+    message : "Something went wrong!",
+    button1: "Cancel"
+}
+export const ADDEDCATEGORY = {
+    title : "Message",
+    message : "Category Successfully Added",
+    button1: "Okay"
+}
 export const DELETECATEGORY = {
     title: "Delete Category",
     message: (categoryName="") => { return `Are you sure to delete category - ${categoryName} of the category?` },

@@ -16,7 +16,7 @@ import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 //import {SimpleLineIcons,AntDesign, MaterialIcons, EvilIcons} from '@expo/vector-icons';
 
-import { DELETECATEGORY } from "../../../api/message";
+import { DELETECATEGORY,ADDEDCATEGORY,ERRORCATEGORY,CHANGECATEGORY } from "../../../api/message";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -99,19 +99,23 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Added",[ { text:'Okay',onPress:()=>{  this.props.fetchPlaidCategoryDispatch();  } } ],{ cancelable: false });
+                    Alert.alert(ADDEDCATEGORY.title,
+                     ADDEDCATEGORY.message,[ 
+                        { text:ADDEDCATEGORY.button1,onPress:()=>{  
+                            this.props.fetchPlaidCategoryDispatch();  
+                        } } ],{ cancelable: false });
                 },100);
             })
         }else if(addCategoryResponse.result == false){
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message",addCategoryResponse.message,[ { text:'Cancel' } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             })
         }else{
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Error Try Again!",[ { text:'Cancel' } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             })
         }
@@ -136,7 +140,7 @@ class CategoryScreen extends React.Component{
         }else{
             this.setState({ isSpinner: false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Okay" } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             });
         }
@@ -192,7 +196,7 @@ class CategoryScreen extends React.Component{
         }else{
             this.setState({ isSpinner:false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Cancel" } ]);
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             })
         }
@@ -200,9 +204,9 @@ class CategoryScreen extends React.Component{
     }
     handleAddCategoryToTransaction = (categoryId,categoryName) => {
         console.log("change Request name - ",categoryName);
-        Alert.alert("Category Change","Are you sure to change this category?",[
-            { text:"Cancel" },
-            { text:"Confirm",onPress:()=>{
+        Alert.alert(CHANGECATEGORY.title,CHANGECATEGORY.message,[
+            { text:CHANGECATEGORY.button1},
+            { text:CHANGECATEGORY.button2,onPress:()=>{
                 this.setState({ isSpinner:true },()=>{
                     this.triggerAddCategoryToTransaction(categoryId,categoryName);
                 });
@@ -283,7 +287,7 @@ class CategoryScreen extends React.Component{
         }else{
             this.setState({ isSpinner: false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Okay" } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             });
         }
