@@ -14,6 +14,8 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
+import { INSIGHTS,TERMINOLOGY } from "../../../api/message";
+
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 AntDesign.loadFont();
@@ -72,18 +74,8 @@ class ChangeInCash extends Component {
   
 
   showAlert() {  
-    Alert.alert(  
-        'CHANGE IN CASH',  
-        'The change in cash is the difference between the inflows (deposits, accounts receivables, equity or debt proceeds) and outflows (debits for bills, etc). ',  
-        [  
-            {  
-                text: 'Cancel',  
-                onPress: () => console.log('Cancel Pressed'),  
-                style: 'cancel',
-                  
-            },  
-        ]  
-    );  
+    Alert.alert( TERMINOLOGY.CHANGEINCASH.title,TERMINOLOGY.CHANGEINCASH.message,[  
+            { text: TERMINOLOGY.CHANGEINCASH.button1,style: 'cancel' }]);  
   }
 
   handleArrowStyle = () => {
@@ -126,7 +118,12 @@ class ChangeInCash extends Component {
       <View>
         <View style={styles.margins}>
         </View>
-      <View style={{ height:375,width:'95%', backgroundColor:'white', alignSelf:'center',elevation:10,shadowColor:'#000' }}>
+      <View style={{ 
+        height:375,width:'95%', 
+        backgroundColor:'#FFF', 
+        alignSelf:'center',
+        elevation:10,
+        shadowColor:'#000',paddingVertical:20 }}>
         {
           cashInChangeData.error == true ?  <View style={{ height:375,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
           <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
@@ -143,7 +140,7 @@ class ChangeInCash extends Component {
           <Fragment>
             {
               cashInChangeData.childLoader == false ?
-              <Fragment>
+              <View style={{ height: "90%" }}>
 
                 <View style={styles.heading}>
                           <TouchableOpacity disabled={false} onPress={this.showAlert}>
@@ -158,7 +155,7 @@ class ChangeInCash extends Component {
                           </Text>
                         </View>
                         <View style={{ width:"100%",flexDirection:"row",justifyContent:"flex-end",marginTop:-11,marginLeft:-15, }}>
-                     <Text style={{ color:"#1D1E1F",fontSize:12 }}>
+                     <Text style={{ paddingTop:15,color:"#1D1E1F",fontSize:12 }}>
                          {
                             
                             this.state.cocMonths
@@ -167,17 +164,17 @@ class ChangeInCash extends Component {
                  </View>
                  {
                    isCICGraphEmpty == true ?
-                    <View style={{height:238,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
+                    <View style={{height:"66%",justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
                     </View>
                    :
                    
-                   <View style={{marginTop:"-5%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
+                   <View style={{marginTop:"-4%",marginLeft:"4%"}} accessible={true} pointerEvents="none">
                     <ChangeInCashChart historicalFinances={historicalFinances} />
                    </View>
                  }
                         
-              </Fragment> : <View style={{height:298,width:gw,justifyContent:"center",alignSelf:"center"}}>
+              </View> : <View style={{height:"90%",width:gw,justifyContent:"center",alignSelf:"center"}}>
               <ActivityIndicator size="large" color="#070640" />
             </View>
             }
@@ -203,11 +200,7 @@ class ChangeInCash extends Component {
           <View style={{width:"40%",height:"100%",}}>
           <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
             //onPress={()=>this.props.navigation.navigate("ChangeInCashInsights")}
-            onPress={()=>{ 
-              Alert.alert("Coming soon",
-              "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
-              }
-              }
+            onPress={()=>{ Alert.alert(INSIGHTS.title,INSIGHTS.message,[ { text: INSIGHTS.button1  } ],false); }}
             
             />
           </View>
@@ -232,16 +225,15 @@ const styles = {
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 15,
     paddingHorizontal: 15
   },
   buttonview:{
     height:"10%",
-    width:'90%',
+    width:'100%',
     flexDirection:"row",
     justifyContent:"space-between",
     alignSelf:"center",
-    marginTop:18
+    paddingHorizontal: 15
   },
   Toucha:{
     width:"40%",

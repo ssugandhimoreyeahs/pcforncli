@@ -174,9 +174,11 @@ class ExpenseByCategory extends Component{
                     </TouchableOpacity>
                   
                     <View style={{ flexDirection:"column",justifyContent:"space-between" }}>
+                        <TouchableOpacity onPress={()=>{ this.props.navigation.navigate("ExpenseScreenParent"); }}>
                         <Text style={{ textAlign:'right',fontSize:22,color:"#1D1E1F",fontWeight:"600" }}>
                         { expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}
                         </Text>
+                        </TouchableOpacity>
                         <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize:12 }}>
                             {
                               `Total ${expenseCurrentMonth}`

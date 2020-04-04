@@ -11,6 +11,8 @@ import { Dropdown } from 'react-native-material-dropdown';
 import {Button_Months} from "../../../constants/constants";
 import { Button } from "react-native-elements";
 import { numberWithCommas } from "../../../api/common";
+import { TERMINOLOGY,INSIGHTS } from "../../../api/message";
+
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 export default class CashOnHand extends PureComponent {
@@ -43,17 +45,9 @@ export default class CashOnHand extends PureComponent {
 
   showAlert1() {  
     Alert.alert(  
-        'OUT OF CASH DATE',  
-        `Out-of-Cash Date is the date at which your company will run out of money based on your current cash on hand and burn rate. The duration of time from now to your out-of-cash date is called runway.`,  
-        [  
-            {  
-                text: 'Cancel',  
-                onPress: () => console.log('Cancel Pressed'),  
-                style: 'cancel',
-                  
-            },  
-        ]  
-    );  
+        TERMINOLOGY.OUTOFCASHDATE.title,  
+        TERMINOLOGY.OUTOFCASHDATE.message,[{  
+                text: TERMINOLOGY.OUTOFCASHDATE.button1,style:"cancel" }]);  
 }  
 handleSelectShowGraphDropDown = (recieveText) => { 
   //console.log("Receiving Text  ",recieveText);
@@ -67,17 +61,10 @@ handleSelectShowGraphDropDown = (recieveText) => {
 }
 showAlert2() {  
   Alert.alert(  
-      'CASH ON HAND',  
-      'Cash on Hand is the money in your bank that is immediately available to your business.',  
-      [  
-          {  
-              text: 'Cancel',  
-              onPress: () => console.log('Cancel Pressed'),  
-              style: 'cancel',
-                
-          },  
-      ]  
-  );  
+      TERMINOLOGY.CASHONHAND.title,  
+      TERMINOLOGY.CASHONHAND.message,[{  
+              text: TERMINOLOGY.CASHONHAND.button1,  
+              style: 'cancel'}]);  
 } 
 handleArrowStyle = () => {
   if(this.state.arrowStyle == "arrow-down"){
@@ -152,19 +139,25 @@ handleArrowStyle = () => {
       <View style={styles.margins}/>
         {
           this.props.isCOHLoadedOnce == false ?
-          <View style={{height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
+          <View style={{ height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
             <ActivityIndicator size="large" color="#070640" />
           </View>
           :
 
-        <View style={{height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000'}}>
+        <View style={{ 
+          height:340,
+          width:'100%',
+          backgroundColor:'#FFF',
+          elevation:10,
+          shadowColor:'#000',
+          paddingVertical:20}}>
         {
           this.props.showCOHChartLoader == true ?
-          <View style={{height:277,width:'100%',justifyContent:"center",alignItems:"center"}}>
+          <View style={{height:"90%",width:'100%',justifyContent:"center",alignItems:"center"}}>
             <ActivityIndicator size="large" color="#070640" />
           </View>
           :
-          <View>
+          <View style={{ height: "90%" }}>
             <View style={styles.heading}>
           <TouchableOpacity onPress={this.showAlert2}>
           <View style={{flexDirection:'row'}}>
@@ -172,20 +165,20 @@ handleArrowStyle = () => {
             <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>
           </View>
           </TouchableOpacity>
-          <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+          <Text style={{ textAlign:"right",fontSize: 22, fontWeight: "bold" }}>
             {`$${ numberWithCommas(this.props.userCurrentBalance) || 0.0}`}
           </Text>
         </View>
         {
           isCOHGraphEmpty == true ?
 
-          <View style={{height:220,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
+          <View style={{height:"66%",justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
            <Text style={{ color:"#070640" }}>No Data Available!</Text>
           </View>
 
           :
 
-          <View style={{marginTop:"-10%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
+          <View style={{marginTop:"-4.9%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
             <CashOnHandChart 
             cashOnHandGraphData={this.props.cashOnHandGraphData} 
             cohPast={this.props.cohPast} 
@@ -218,8 +211,7 @@ handleArrowStyle = () => {
           <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
            onPress={()=>{
             // this.props.navigation.navigate("CashOnHandinsights")
-            Alert.alert("Coming soon",
-            "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
+            Alert.alert(INSIGHTS.title,INSIGHTS.message,[ { text: INSIGHTS.button1  } ],false);
            }
             }/>
           </View>
@@ -239,21 +231,22 @@ const styles =  StyleSheet.create({
     
   },
   heading: {
+    width:"100%",
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 15,
-    paddingHorizontal: 15,
+    paddingHorizontal: 15
   },
   buttonview:{
     height:"10%",
-    width:'90%',
+    width:'100%',
     flexDirection:"row",
     justifyContent:"space-between",
     alignSelf:"center",
+    paddingHorizontal:15
   },
   Toucha:{
     width:"40%",
-    height:"100%",
+    height:32,
     borderRadius:10, 
     backgroundColor:"#E6E6EC",
     flexDirection:'row',
@@ -261,6 +254,7 @@ const styles =  StyleSheet.create({
   
   },
   dropdown: {
+    
     width:"71%",
     marginLeft:22,
     marginTop:-25,
