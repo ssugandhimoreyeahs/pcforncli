@@ -15,6 +15,13 @@ export const ERROR = {
     message: "Please try again."
 }
 
+export const DELETECATEGORY = {
+    title: "Delete Category",
+    message: (categoryName="") => { return `Are you sure to delete category - ${categoryName} of the category?` },
+    button1: "Cancel",
+    button2: "Delete"
+
+}
 export const TERMINOLOGY = {
 
 }

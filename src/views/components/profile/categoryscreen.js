@@ -15,6 +15,8 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 //import {SimpleLineIcons,AntDesign, MaterialIcons, EvilIcons} from '@expo/vector-icons';
+
+import { DELETECATEGORY } from "../../../api/message";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -124,11 +126,11 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Deleted",[ { text:'Okay',onPress: () => { 
+                    
                         this.props.navigation.getParam("resetTransactionScreen")();
                         this.props.fetchExpenseByCategory(3);
                         this.props.fetchPlaidCategoryDispatch();
-                      } } ],{ cancelable: false });
+                      
                 },500);
             })
         }else{
@@ -141,9 +143,9 @@ class CategoryScreen extends React.Component{
     }
     handleCategoryDataDelete = (categoryId,categoryName) => {
         console.log("Category Id to be deleted ",categoryId," ",categoryName);
-        Alert.alert("Alert",`Sure Delete Category - ${categoryName}`,[
-            { text:'Cancel' },
-            { text:'Okay', onPress: ()=>{ 
+        Alert.alert(DELETECATEGORY.title,DELETECATEGORY.message(categoryName),[
+            { text:DELETECATEGORY.button1 },
+            { text:DELETECATEGORY.button2, onPress: ()=>{ 
                 //Api Trigers here for deleting the Category Data
                 this.setState({ isSpinner: true },()=>{
                     this.deletePlaidCategory(categoryId);
@@ -268,14 +270,14 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Edit",[ { text:'Okay',onPress:()=>{ 
+                    
                         //this.props.fetchPlaidCategoryDispatch();  
                     
                         //code change after the edit of the category by user
                         this.props.navigation.getParam("resetTransactionScreen")();
                         this.props.fetchExpenseByCategory(3);
                         this.props.fetchPlaidCategoryDispatch();
-                    } } ],{ cancelable: false });
+                    
                 },500);
             })
         }else{
