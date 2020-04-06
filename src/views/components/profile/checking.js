@@ -86,7 +86,7 @@ const TransactionComponent = (props) => {
           <TouchableOpacity 
             onPress={()=>{
               if(userData.bankStatus == "linked"){
-                props.navigation.navigate("CategoryScreen",{ currentExecutingTransaction:props.fullTransactionObj,resetTransactionScreen: () => { props.resetTransactionScreen(); } });
+                props.navigation.navigate("NCategoryScreen",{ currentExecutingTransaction:props.fullTransactionObj,resetTransactionScreen: () => { props.resetTransactionScreen(); } });
               }else{
                 Alert.alert(
                        'Bank Disconnected',

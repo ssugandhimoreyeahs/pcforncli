@@ -95,41 +95,143 @@ export const INCOME_COLOR = [
     { color: "#6F986C" },
     { color: "#6FB1AB" }
 ]
+
+const EXPENSE_ICONS = {
+    advertising_and_marketing:{
+        categoryIcon: require('../assets/CategoryIcon/advertising_and_marketing3.png'),
+        categoryColor: '##F98361'
+    },
+    business_insurance: {
+        categoryIcon: require('../assets/CategoryIcon/business_insurance3.png'),
+        categoryColor: '##A599EC'
+    },
+    charitable_contributions: {
+        categoryIcon: require('../assets/CategoryIcon/charitable_contributions3.png'),
+        categoryColor: '#FE7F00'
+    },
+    education_and_training: {
+        categoryIcon: require('../assets/CategoryIcon/education_and_training3.png'),
+        categoryColor: '#C42F61'
+    },
+    entertainment: {
+        categoryIcon: require('../assets/CategoryIcon/entertainment3.png'),
+        categoryColor: '#EA727A'
+    },
+    employee_benefits: {
+        categoryIcon: require('../assets/CategoryIcon/employee_benefits3.png'),
+        categoryColor: '#DFDB67'
+    },
+    furniture_and_equipment: {
+        categoryIcon: require('../assets/CategoryIcon/furniture_and_equpment3.png'),
+        categoryColor: '#E15621'
+    },
+    interest_and_bank_fees: {
+        categoryIcon: require('../assets/CategoryIcon/interest_and_bank_fees3.png'),
+        categoryColor: '#7785E9'
+    },
+    licenses_and_permits: {
+        categoryIcon: require('../assets/CategoryIcon/licenses_and_permits3.png'),
+        categoryColor: '#DE84AA'
+    },
+    meals: {
+        categoryIcon: require('../assets/CategoryIcon/meals3.png'),
+        categoryColor: '#B7121A'
+    },
+    membership_fees: {
+        categoryIcon: require('../assets/CategoryIcon/membership_fees3.png'),
+        categoryColor: '#AA9637'
+    },
+    office_and_postage: {
+        categoryIcon: require('../assets/CategoryIcon/office_and_postage3.png'),
+        categoryColor: '#B35E5E'
+    },
+    payroll: {
+        categoryIcon: require('../assets/CategoryIcon/payroll3.png'),
+        categoryColor: '#E89200'
+    },
+    professional_services: {
+        categoryIcon: require('../assets/CategoryIcon/payroll3.png'),
+        categoryColor: '#801365'
+    },
+    repair_and_maintanence: {
+        categoryIcon: require('../assets/CategoryIcon/repair_and_maintanence3.png'),
+        categoryColor: '#F04715'
+    },
+    rent_or_lease: {
+        categoryIcon: require('../assets/CategoryIcon/rent_or_lease3.png'),
+        categoryColor: '#DDB785'
+    },
+    travel: {
+        categoryIcon: require('../assets/CategoryIcon/travel3.png'),
+        categoryColor: '#9C662E'
+    },
+    utilities: {
+        categoryIcon: require('../assets/CategoryIcon/utiilities3.png'),
+        categoryColor: '#EE8F1C'
+    },
+    vehicle: {
+        categoryIcon: require('../assets/CategoryIcon/vehicle3.png'),
+        categoryColor: '#FEBC0F'
+    },
+    website_and_software: {
+        categoryIcon: require('../assets/CategoryIcon/website_and_software3.png'),
+        categoryColor: '#BB96B7'
+    },
+    taxes: {
+        categoryIcon: require('../assets/CategoryIcon/taxes3.png'),
+        categoryColor: '#433688'
+    },
+    miscellaneous: {
+        categoryIcon: require('../assets/CategoryIcon/miscellaneous3.png'),
+        categoryColor: '#C98397'
+    },
+    uncategorized: {
+        categoryIcon: require('../assets/CategoryIcon/uncategorized3.png'),
+        categoryColor: '#6C5BC1'
+    }
+}
+ 
 export const PLAID_CATEGORIES = [
     { 
         categoryName: "Bank Fees",
-        categoryIcon: require("../assets/CategoryIcon/bank_fees3.png"),
-        categoryColor: "#7785E9"
+        ...EXPENSE_ICONS.interest_and_bank_fees
     },
     { 
         categoryName: "Food and Drink",
-        categoryIcon: require("../assets/CategoryIcon/food_and_drink3.png"),
-        categoryColor: "#B7121A"
+        ...EXPENSE_ICONS.meals
     },
     { 
         categoryName: "Healthcare",
-        categoryIcon: require("../assets/CategoryIcon/healthcare3.png"),
-        categoryColor: "#A599EC"
+        ...EXPENSE_ICONS.business_insurance
     },
     { 
         categoryName: "Interest",
-        categoryIcon: require("../assets/CategoryIcon/bank_fees3.png"),
-        categoryColor: "#7785E9"
+        ...EXPENSE_ICONS.interest_and_bank_fees
     },
     { 
         categoryName: "Service",
-        categoryIcon: require("../assets/CategoryIcon/service3.png"),
-        categoryColor: "#5165D6"
+        ...EXPENSE_ICONS.professional_services
     },
     { 
         categoryName: "Tax",
-        categoryIcon: require("../assets/CategoryIcon/tax3.png"),
-        categoryColor: "#433688"
+        ...EXPENSE_ICONS.taxes
     },
     { 
         categoryName: "Travel",
-        categoryIcon: require("../assets/CategoryIcon/travel3.png"),
-        categoryColor: "#9C662E"
+        ...EXPENSE_ICONS.travel
+    },
+    {
+        categoryName: "Community",
+        ...EXPENSE_ICONS.miscellaneous
+    },
+    {
+        categoryName: "Transfer",
+        ...EXPENSE_ICONS.uncategorized
+        
+    },
+    {
+        categoryName: "Shops",
+        ...EXPENSE_ICONS.miscellaneous
     }
 ]
 
