@@ -96,10 +96,42 @@ export const INCOME_COLOR = [
     { color: "#6FB1AB" }
 ]
 
+const INCOME_ICONS = {
+    discounds_or_refunds: {
+        categoryIcon: require('../assets/IncomeCategoryIcon/discounts_or_refund3.png'),
+        categoryColor: '#4A90E2'
+    },
+    interest: {
+        categoryIcon: require('../assets/IncomeCategoryIcon/interest3.png'),
+        categoryColor: '#1FB7A6'
+    },
+    investment: {
+        categoryIcon: require('../assets/IncomeCategoryIcon/investment3.png'),
+        categoryColor: '#84D5DE'
+    },
+    product_revenue: {
+        categoryIcon: require('../assets/IncomeCategoryIcon/product_revenue3.png'),
+        categoryColor: '#027DF2'
+    },
+    service_revenue: {
+        categoryIcon: require('../assets/IncomeCategoryIcon/service_revenue3.png'),
+        categoryColor: '#5165D6'
+    },
+    miscellaneous: {
+        categoryIcon: require('../assets/IncomeCategoryIcon/miscellaneous3.png'),
+        categoryColor: '#33C881'
+    },
+    uncategorized: {
+        categoryIcon: require('../assets/IncomeCategoryIcon/uncategorized3.png'),
+        categoryColor: '#508AA9'
+    }
+    
+}
+
 const EXPENSE_ICONS = {
     advertising_and_marketing:{
         categoryIcon: require('../assets/CategoryIcon/advertising_and_marketing3.png'),
-        categoryColor: '##F98361'
+        categoryColor: '#F98361'
     },
     business_insurance: {
         categoryIcon: require('../assets/CategoryIcon/business_insurance3.png'),
