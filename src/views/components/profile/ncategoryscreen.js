@@ -5,7 +5,6 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import ToggleSwitch from 'toggle-switch-react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import EvilIcons from "react-native-vector-icons/EvilIcons";
-import IconImage from "../../../assets/CategoryIcon/advertise3.png"
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { connect } from "react-redux";

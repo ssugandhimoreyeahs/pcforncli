@@ -32,19 +32,19 @@ class ExpenseByCategory extends Component{
             key: 3,
             amount: 15,
             svg: { fill: '#AA9637' },
-            image: require("../../../assets/CategoryIcon/membership2.png")
+            image: require("../../../assets/CategoryIcon/membership_fees2.png")
         },
         {
             key: 4,
             amount: 8,
             svg: { fill: '#7785E9' },
-            image: require("../../../assets/CategoryIcon/charitable3.png")
+            image: require("../../../assets/CategoryIcon/charitable_contributions2.png")
         },
          {
             key: 5,
             amount: 5,
             svg: { fill: '#EA727A' },
-            image: require("../../../assets/CategoryIcon/charitable3.png")
+            image: require("../../../assets/CategoryIcon/charitable_contributions2.png")
         }
     ]
     header = () => {

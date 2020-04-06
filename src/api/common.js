@@ -264,6 +264,10 @@ export const PLAID_CATEGORIES = [
     {
         categoryName: "Shops",
         ...EXPENSE_ICONS.miscellaneous
+    },
+    {
+        categoryName: "Payment",
+        ...EXPENSE_ICONS.interest_and_bank_fees
     }
 ]
 
