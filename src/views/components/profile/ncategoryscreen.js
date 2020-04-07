@@ -444,15 +444,15 @@ class CategoryScreen extends Component{
         );
     }
 
-    addNewCategory = async (categoryInput) => {
-        if(categoryInput != ""){
-            this.setState({ addCategoryDialogVisible:false,isSpinner:true });
-           
+    addNewCategory = (categoryInput) => {
+        
+            this.setState({ addCategoryDialogVisible:false,isSpinner:true }, async ()=>{
+
             const addCategoryResponse = await addPlaidCategory(allFirstWordCapital(categoryInput));
             if(addCategoryResponse.result == true){
                 
                 setTimeout(()=>{
-                    this.setState({ isSpinner:false },()=>{
+                    this.setState({ isSpinner:false,showPleaseEnterCategory:false },()=>{
                         setTimeout(()=>{
                             Alert.alert(ADDEDCATEGORY.title,
                             ADDEDCATEGORY.message,[ 
@@ -466,39 +466,47 @@ class CategoryScreen extends Component{
                 },1300);
 
             }else if(addCategoryResponse.result == false){
-                this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
-                    setTimeout(()=>{
-                        Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
-                    },100);
-                })
+                
+                setTimeout(()=>{
+                    this.setState({ isSpinner: false,showPleaseEnterCategory:false },()=>{
+                        setTimeout(()=>{
+                            Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
+                        },100);
+                    });
+                },1300);
             }else{
-                this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
-                    setTimeout(()=>{
-                        Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
-                    },100);
-                })
+                
+                setTimeout(()=>{
+                    this.setState({ isSpinner: false,showPleaseEnterCategory:false },()=>{
+                        setTimeout(()=>{
+                            Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
+                        },100);
+                    });
+                },1300);
             }
+            });
+           
+            
 
-        }else{
-            this.setState({ showPleaseEnterCategory: true });
-        }
+        
       }
 
-      handleEditPlaidCategoryApi = async (category) => {
+      handleEditPlaidCategoryApi = (category) => {
         
-        const editPlaidCategoryResponse = await editPlaidCategory(this.state.editInitDialogId,category);
+        this.setState({ isSpinner: true,editCategoryDialogVisible: false }, async ()=>{
+            const editPlaidCategoryResponse = await editPlaidCategory(this.state.editInitDialogId,category);
         if(editPlaidCategoryResponse.result == true){
             
             setTimeout(()=>{
-                this.setState({ isSpinner: false },()=>{
+                this.setState({ isSpinner: false }, ()=>{
                     setTimeout(()=>{
                         
                             //this.props.fetchPlaidCategoryDispatch();  
                         
                             //code change after the edit of the category by user
-                            this.setState({ isEdit: false },()=>{
+                            // this.setState({ isEdit: false },()=>{
                                 this.props.fetchPlaidCategoryDispatch();
-                            });
+                            // });
                             setTimeout(()=>{
                                 this.props.navigation.getParam("resetTransactionScreen")();
                             },500);
@@ -515,8 +523,46 @@ class CategoryScreen extends Component{
                 },100);
             });
         }
+        })
     }
+    isCategoryAlreadyExistOnClient = (categoryInput,actionType) => {
+        if(categoryInput == "" && actionType == "add"){
+            this.setState({ showPleaseEnterCategory: true });
+            return true;
+        }
+        if(categoryInput == "" && actionType == "edit"){
+            this.setState({ showPleaseEnterCategory: true });
+            return true;
+        }
+        let { category,error,isFetched,loading } = this.props.categoryReduxData;
+        let isCategoryAlreadyPresent = false;
+        for(let i=0;i<category.length;i++){
+            if(categoryInput.toLowerCase() == category[i].categoryName.toLowerCase()){
+                isCategoryAlreadyPresent = true;
+                break;
+            }
+        }
+        
+        if(isCategoryAlreadyPresent){
+            this.setState({ isSpinner:true,editCategoryDialogVisible:false,addCategoryDialogVisible:false,showPleaseEnterCategory: false },()=>{
+                setTimeout(()=>{
+                    this.setState({ isSpinner: false },()=>{
+                        setTimeout(()=>{
+                            Alert.alert(
+                                "Message",
+                                "Category Already Exist",[
+                                    { text: "Okay" }
+                                ],{ cancelable: false });
+                        },100);
+                    })
+                },900);
+            });
+            return true;
+        }else{
+            return isCategoryAlreadyPresent;
+        }
 
+    }
     renderBody = () => {
         let { category,error,isFetched,loading } = this.props.categoryReduxData;
         //loading = true;
@@ -537,12 +583,16 @@ class CategoryScreen extends Component{
                     }</Fragment>}
                     hintInput ={"Name of the Category"}
                     submitInput={ (categoryInput) => {
-                        
-                        this.addNewCategory(categoryInput);
+                        let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(categoryInput,"add");
+                        if(!isCategoryAlreadyExist){
+                            this.addNewCategory(categoryInput);
+                        }
                     }}
                     closeDialog={ () => {
-                        
-                        this.setState({ addCategoryDialogVisible:false,showPleaseEnterCategory:false });
+                        this.setState({ 
+                            addCategoryDialogVisible:false,
+                            showPleaseEnterCategory:false 
+                        });
                     }}
                     >
                 </DialogInput>
@@ -552,12 +602,19 @@ class CategoryScreen extends Component{
                     isDialogVisible={editCategoryDialogVisible}
                     initValueTextInput={editInitDialogValue}
                     title={"Edit Category"}
-                    message={"Please Edit Category Here..."}
+                    message={<Fragment><Text>{"Please Edit Category Here..."}</Text>{
+                            showPleaseEnterCategory == true ? <Text style={{ color:"red" }}>{`\n\nPlease Enter Category Name`}</Text> : null
+                    }</Fragment>}
                     hintInput ={"Name of the Category"}
                     submitInput={ (editInitDialogNewValue) => {
                      
+                    let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(editInitDialogNewValue,"edit");
+                    if(!isCategoryAlreadyExist){
+                        this.handleEditPlaidCategoryApi(editInitDialogNewValue); 
+                    }
+                    return false;
                      this.setState({ isSpinner: true,editCategoryDialogVisible:false },()=>{
-                        
+
                             this.handleEditPlaidCategoryApi(editInitDialogNewValue); 
                         
                      });
