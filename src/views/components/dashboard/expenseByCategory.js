@@ -152,7 +152,7 @@ class ExpenseByCategory extends Component{
          return(
             <Fragment>
             <View style={{ 
-                height:350,
+                height:360,
                 width:'100%', 
                 backgroundColor:'white', 
                 alignSelf:'center',
@@ -164,18 +164,20 @@ class ExpenseByCategory extends Component{
                   
                   <View style={{
                       //borderWidth:1,borderColor:"red",
-                      height: "15%",flexDirection:"row",justifyContent:"space-between"
+                      height: "17%",flexDirection:"row",justifyContent:"space-between"
                   }}>
                      <TouchableOpacity onPress={()=>{ this.showExpenseByCategoryTerminology(); }} style={{ flexDirection:"row" }}>
                         <Text style={{ fontSize:12,color:"#1D1E1F" }}>EXPENSE BY CATEGORY</Text>
                         <Ionicons 
-                        style={{ paddingTop:1,paddingLeft:3,height:13,width:13,color:"#1D1E1F" }}
+                        style={{ margin:2,height:13,width:13,color:"#1D1E1F" }}
                         name='md-information-circle-outline' />
                     </TouchableOpacity>
                   
                     <View style={{ flexDirection:"column",justifyContent:"space-between" }}>
-                        <TouchableOpacity onPress={()=>{ this.props.navigation.navigate("ExpenseScreenParent"); }}>
-                        <Text style={{ textAlign:'right',fontSize:22,color:"#1D1E1F",fontWeight:"600" }}>
+                        <TouchableOpacity 
+                        style={{ alignSelf:"flex-end",borderBottomColor:"#000",borderBottomWidth:1 }}
+                        onPress={()=>{ this.props.navigation.navigate("ExpenseScreenParent"); }}>
+                        <Text style={{ paddingBottom:3,textAlign:'right',fontSize:22,color:"#1D1E1F",fontWeight:"600" }}>
                         { expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}
                         </Text>
                         </TouchableOpacity>
@@ -217,7 +219,7 @@ class ExpenseByCategory extends Component{
                     
                 </View>
              
-             </Fragment> :  <View style={{height:"88%",width:gw,justifyContent:"center",alignSelf:"center"}}>
+             </Fragment> :  <View style={{height:"90%",width:gw,justifyContent:"center",alignSelf:"center"}}>
               <ActivityIndicator size="large" color="#070640" />
             </View>
             }
@@ -266,9 +268,7 @@ class ExpenseByCategory extends Component{
          );
      }
 render(){
-        // console.log("-----------------------------------------Render Exepense By Category ------------------------------");
-        // console.log(this.props.expenseByCategoryRedux);
-        // console.log("-----------------------------------------Render Exepense By Category ------------------------------");
+       
         const { expenseByCategoryRedux:expenseByCategory } = this.props;
         
         return(
