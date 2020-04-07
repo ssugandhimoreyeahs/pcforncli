@@ -333,7 +333,7 @@ class CategoryScreen extends Component{
                                    width: 36,
                                    height:36,
                                    borderColor: "#FFF",
-                                   backgroundColor: EXPENSES_COLOR[parseInt((Math.random()*EXPENSES_COLOR.length)-1)].color
+                                   backgroundColor: categoryBackgroundColor
                                 }}>
                                     <Text style={{ color:'#FFF' }}>
                                         {
@@ -452,15 +452,14 @@ class CategoryScreen extends Component{
             if(addCategoryResponse.result == true){
                 
                 setTimeout(()=>{
-                    this.setState((prevState)=>{ return { 
-                        isSpinner: !prevState.isSpinner 
-                    }
-                    },()=>{
+                    this.setState({ isSpinner:false },()=>{
                         setTimeout(()=>{
                             Alert.alert(ADDEDCATEGORY.title,
                             ADDEDCATEGORY.message,[ 
                                 { text:ADDEDCATEGORY.button1,onPress:()=>{  
-                                    this.props.fetchPlaidCategoryDispatch();  
+                                    this.setState({ isEdit: false },()=>{
+                                        this.props.fetchPlaidCategoryDispatch();  
+                                    });
                                 } } ],{ cancelable: false });
                         },100);
                     });
@@ -497,7 +496,9 @@ class CategoryScreen extends Component{
                             //this.props.fetchPlaidCategoryDispatch();  
                         
                             //code change after the edit of the category by user
-                            this.props.fetchPlaidCategoryDispatch();
+                            this.setState({ isEdit: false },()=>{
+                                this.props.fetchPlaidCategoryDispatch();
+                            });
                             setTimeout(()=>{
                                 this.props.navigation.getParam("resetTransactionScreen")();
                             },500);
