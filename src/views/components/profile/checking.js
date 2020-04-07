@@ -120,8 +120,9 @@ const TransactionComponent = (props) => {
                      );
               }
             }}
-            style={{ backgroundColor: categoryBackgroundColor,
-            borderColor: categoryBackgroundColor,borderWidth:0.3,
+            style={{ backgroundColor: categoryButtonText == "+ Category" ? "#FFF" : categoryBackgroundColor,
+            borderColor: categoryButtonText == "+ Category" ? "#000" : categoryBackgroundColor,
+            borderWidth:0.3,
             height: 24,justifyContent:"center",
             alignItems:'center',
             paddingHorizontal: 20,
@@ -129,7 +130,7 @@ const TransactionComponent = (props) => {
            }}>
 
             <Text style={{ fontSize:11,
-              color: "#FFF"
+              color: categoryButtonText == "+ Category" ? "#000" : "#FFF"
             }}>{ categoryButtonText }</Text>
 
           </TouchableOpacity>
