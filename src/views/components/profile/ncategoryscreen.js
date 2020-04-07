@@ -1,6 +1,6 @@
 import React,{ Component,Fragment } from "react";
 import { Alert,Text,View,TouchableOpacity,StyleSheet,ScrollView,Image,ActivityIndicator } from "react-native";
-import  DetectPlatform from "../../../DetectPlatform";
+import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import ToggleSwitch from 'toggle-switch-react-native';
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -32,8 +32,13 @@ class CategoryScreen extends Component{
             addCategoryDialogVisible: false,
             showPleaseEnterCategory: false,
             editInitDialogValue:'',
-            editCategoryDialogVisible: false
+            editCategoryDialogVisible: false,
+            pointIconToDefaultCategory: false
         }
+    }
+    componentDidMount(){
+        let recievedData = this.props.navigation.getParam("currentExecutingTransaction");
+        console.log("Again Component Mount for the category Screen - ");
     }
     handleHeaderButton = () => {
         const { isEdit } = this.state;
@@ -123,11 +128,11 @@ class CategoryScreen extends Component{
 
     handleChangeCategory = async (categoryId,categoryName) => {
         const { _id } = this.props.navigation.getParam("currentExecutingTransaction");
-        console.log("Change plaid category request - ",_id,"  ",categoryId);
+        
         let changePlaidCategoryResponse = await addCategoryToTransaction(_id,categoryId);
-        //changePlaidCategoryResponse.result = false;
-        //console.log("Testing for the changing category responses ----------------------------");
-        //console.log(changePlaidCategoryResponse);
+        
+        
+        
         if(changePlaidCategoryResponse.result == true){
 
             this.setState({ handleCategoryChangeValue: categoryName,isSpinner:false },()=>{
@@ -163,7 +168,7 @@ class CategoryScreen extends Component{
     }
 
     handleChangeCategoryAlert = (categoryId,categoryName) => {
-        console.log("change Request name - ",categoryName);
+        
         Alert.alert(CHANGECATEGORY.title,CHANGECATEGORY.message,[
             { text:CHANGECATEGORY.button1},
             { text:CHANGECATEGORY.button2,onPress:()=>{
@@ -208,7 +213,7 @@ class CategoryScreen extends Component{
             //     },500);
             // })
         }else{
-            this.setState({ isSpinner: false },()=>{
+            this.setState({ isSpinner: false,pointIconToDefaultCategory: false },()=>{
                 setTimeout(()=>{
                     Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
@@ -217,12 +222,17 @@ class CategoryScreen extends Component{
     }
 
     handleCategoryDataDelete = (categoryId,categoryName) => {
-        console.log("Category Id to be deleted ",categoryId," ",categoryName);
+        
         Alert.alert(DELETECATEGORY.title,DELETECATEGORY.message(categoryName),[
             { text:DELETECATEGORY.button1 },
             { text:DELETECATEGORY.button2, onPress: ()=>{ 
                 //Api Trigers here for deleting the Category Data
-                this.setState({ isSpinner: true },()=>{
+                let { category } = this.props.navigation.getParam("currentExecutingTransaction");
+                let pointIconToDefaultCategory = false;
+                if(categoryName == category){
+                    pointIconToDefaultCategory = true;
+                }
+                this.setState({ isSpinner: true,pointIconToDefaultCategory },()=>{
                     this.deletePlaidCategory(categoryId);
                 });
 
@@ -233,12 +243,15 @@ class CategoryScreen extends Component{
     }
     renderSingleCategory = ({ categoryData }) => {
         let executingTransactionDetails = this.props.navigation.getParam("currentExecutingTransaction");
-        const { isEdit } = this.state;
+        const { isEdit,pointIconToDefaultCategory } = this.state;
         let { category,error,isFetched,loading } = this.props.categoryReduxData;
         let { categoryName,index,customcategories,id } = categoryData;
-        let showCheckIcon  = categoryName == executingTransactionDetails.category ? true : false;
+        let showCheckIcon  = pointIconToDefaultCategory == true ?
+        categoryName == executingTransactionDetails.defaultCategory ? true : false :
+        categoryName == executingTransactionDetails.category ? true : false;
         let isIconAvailable = false;
         let iconPath = null;
+        let categoryBackgroundColor = `#F98361`;
         for(let i=0;i<PLAID_EXPENSE_CATEGORIES.length;i++){
             if(PLAID_EXPENSE_CATEGORIES[i].categoryName == categoryName){
                 isIconAvailable = true;
@@ -247,7 +260,7 @@ class CategoryScreen extends Component{
             }
         }
 
-        console.log(categoryData);
+        
         return(
             <Fragment>
              {
@@ -271,7 +284,7 @@ class CategoryScreen extends Component{
                                    width: 36,
                                    height:36,
                                    borderColor: "#FFF",
-                                   backgroundColor: EXPENSES_COLOR[parseInt((Math.random()*EXPENSES_COLOR.length)-1)].color
+                                   backgroundColor: categoryBackgroundColor
                                 }}>
                                     <Text style={{ color:'#FFF' }}>
                                         {
@@ -434,7 +447,7 @@ class CategoryScreen extends Component{
     addNewCategory = async (categoryInput) => {
         if(categoryInput != ""){
             this.setState({ addCategoryDialogVisible:false,isSpinner:true });
-            console.log("Category before added - ",allFirstWordCapital(categoryInput));
+           
             const addCategoryResponse = await addPlaidCategory(allFirstWordCapital(categoryInput));
             if(addCategoryResponse.result == true){
                 
@@ -473,7 +486,7 @@ class CategoryScreen extends Component{
       }
 
       handleEditPlaidCategoryApi = async (category) => {
-        console.log("Trigger edit category option  - ",category);
+        
         const editPlaidCategoryResponse = await editPlaidCategory(this.state.editInitDialogId,category);
         if(editPlaidCategoryResponse.result == true){
             
@@ -523,11 +536,11 @@ class CategoryScreen extends Component{
                     }</Fragment>}
                     hintInput ={"Name of the Category"}
                     submitInput={ (categoryInput) => {
-                        console.log("User entered new category - ",categoryInput);
+                        
                         this.addNewCategory(categoryInput);
                     }}
                     closeDialog={ () => {
-                        console.log("Cancle Pressed.....")
+                        
                         this.setState({ addCategoryDialogVisible:false,showPleaseEnterCategory:false });
                     }}
                     >
@@ -568,9 +581,7 @@ class CategoryScreen extends Component{
         );
     }
     render(){
-        // console.log("getting all redux data here -");
-        // console.log(this.props.categoryReduxData);
-        // console.log("ends here----");
+        
         let { category,error,isFetched,loading } = this.props.categoryReduxData;
         
         return(
