@@ -340,7 +340,8 @@ class CategoryScreen extends React.Component{
                     closeDialog={ () => {
                     console.log("Cancle Pressed.....")
                     this.setState({addCategoryDialogVisible:false,showPleaseEnterCategory:false
-                    })}}
+                    })
+                    }}
                     >
                 </DialogInput>
 

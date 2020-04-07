@@ -15,10 +15,12 @@ import Timeout from "./timeout";
 import { SafeAreaView } from "react-navigation";
 //import { getUser } from "../../../api/api";
 import DetectPlatform from "../../../DetectPlatform";
-import { numberWithCommas,firstLetterCapital } from "../../../api/common";
+import { numberWithCommas,firstLetterCapital,PLAID_EXPENSE_CATEGORIES } from "../../../api/common";
 import { connect } from "react-redux";
 import { fetchCurrentBalancePromise } from "../../../api/api";
 import { ALL_MONTHS } from "../../../constants/constants";
+import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
+import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
 
 SimpleLineIcons.loadFont();
 AntDesign.loadFont();
@@ -34,11 +36,13 @@ const TransactionComponent = (props) => {
   let readyAmount = ``;
   let categoryButtonText = ``;
   let amount = Math.abs(props.price);
-
+  let detailInfo = ``;
   //add category button text
   if(props.fullTransactionObj.category == props.fullTransactionObj.defaultCategory){
     categoryButtonText = `+ Category`;
+    detailInfo = props.fullTransactionObj.category;
   }else{
+    detailInfo = `Detail Info`;
     categoryButtonText = `${props.fullTransactionObj.category}`;
   }
 
@@ -55,7 +59,14 @@ const TransactionComponent = (props) => {
     }
 
   }
- 
+  let categoryBackgroundColor = `#F98361`;
+  for(let i=0; i<PLAID_EXPENSE_CATEGORIES.length; i++){
+    if(props.fullTransactionObj.category == PLAID_EXPENSE_CATEGORIES[i].categoryName){
+      categoryBackgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
+      break;
+    }
+  }
+  
   return(
     <React.Fragment>
       <View style={{ marginTop:20,
@@ -81,12 +92,17 @@ const TransactionComponent = (props) => {
 
           <View style={{ justifyContent:"center",alignItems:"center" }}><Text style={{
             fontSize:11,opacity:0.5,color:"#1D1E1F"
-          }}>Detail Info</Text></View>
+          }}>{ detailInfo }</Text></View>
 
           <TouchableOpacity 
             onPress={()=>{
               if(userData.bankStatus == "linked"){
-                props.navigation.navigate("NCategoryScreen",{ currentExecutingTransaction:props.fullTransactionObj,resetTransactionScreen: () => { props.resetTransactionScreen(); } });
+                console.log("Full transaction obj - ",props.fullTransactionObj);
+                props.navigation.navigate("NCategoryScreen",{ 
+                  currentExecutingTransaction:props.fullTransactionObj,
+                  resetTransactionScreen: () => { 
+                    props.resetTransactionScreen(); 
+                  }});
               }else{
                 Alert.alert(
                        'Bank Disconnected',
@@ -104,8 +120,8 @@ const TransactionComponent = (props) => {
                      );
               }
             }}
-            style={{ backgroundColor: categoryButtonText == "+ Category" ? "#FFF" : "#A599EC",
-            borderColor:"#A599EC",borderWidth:0.3,
+            style={{ backgroundColor: categoryBackgroundColor,
+            borderColor: categoryBackgroundColor,borderWidth:0.3,
             height: 24,justifyContent:"center",
             alignItems:'center',
             paddingHorizontal: 20,
@@ -113,7 +129,7 @@ const TransactionComponent = (props) => {
            }}>
 
             <Text style={{ fontSize:11,
-              color: categoryButtonText=="+ Category" ? "#1D1E1F" : "#FFF"
+              color: "#FFF"
             }}>{ categoryButtonText }</Text>
 
           </TouchableOpacity>
@@ -281,6 +297,7 @@ class Checking extends React.PureComponent{
       this.setState(this.resetState(),()=>{
         setTimeout(()=>{
           this.readyTransactionPage();
+          setTimeout(()=>{ this.props.fetchExpenseByCategory(3); },500);
         },100);
       });
 
@@ -1250,5 +1267,20 @@ const styles = StyleSheet.create({
       },
     });
 
-    const mapStateToProps = state =>  ({ reduxState:state });
-    export default connect(mapStateToProps,null)(DetectPlatform(Checking,styles.margins));
+    //const mapStateToProps = state =>  ({ reduxState:state });
+
+    const mapStateToProps = state => {
+      return {
+          reduxState:state,
+          categoryReduxData: state.plaidCategoryData
+      }
+  }
+  
+  const mapDispatchToProps = dispatch => {
+      return {
+          fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
+          fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
+          //fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) }
+      }
+  }
+    export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(Checking,styles.margins));

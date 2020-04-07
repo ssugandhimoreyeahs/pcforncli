@@ -223,7 +223,7 @@ const EXPENSE_ICONS = {
     }
 }
  
-export const PLAID_CATEGORIES = [
+export const PLAID_EXPENSE_CATEGORIES = [
     { 
         categoryName: "Bank Fees",
         ...EXPENSE_ICONS.interest_and_bank_fees
@@ -280,10 +280,14 @@ export const getCategoryInitials = (str = "") => {
         singleWord != "&"){
         forAcroyn.push(singleWord);
         }
-    })
+    });
     let initials = '';
+    let mapRunningAlong = 0;
     forAcroyn.map((word)=>{
-    initials += word.charAt(0).toUpperCase();
-    })
+        if(mapRunningAlong < 2){
+            mapRunningAlong++;
+            initials += word.charAt(0).toUpperCase();
+        }
+    });
     return initials;
 }
