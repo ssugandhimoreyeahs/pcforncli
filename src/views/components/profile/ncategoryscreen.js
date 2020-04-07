@@ -685,7 +685,7 @@ const styles = StyleSheet.create({
     paddingLeft:18,
     paddingRight:15,
     paddingTop:20,
-    paddingBottom: 30,
+    paddingBottom: 20,
     alignSelf:"center"
     }
 })
