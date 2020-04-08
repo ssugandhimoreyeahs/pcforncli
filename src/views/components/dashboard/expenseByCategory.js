@@ -118,7 +118,9 @@ class ExpenseByCategory extends Component{
      renderCategoryWithPercentage = ({ percentage,category,price }) => {
 
         return(
-            <View style={{ flexDirection:"row",paddingBottom:20, }}>
+            <View style={{ 
+                borderWidth:0,borderColor:"orange",
+                flexDirection:"row",paddingBottom:20,width:"50%" }}>
 
                   <ProgressCircle 
                             percent={percentage}
@@ -131,7 +133,9 @@ class ExpenseByCategory extends Component{
                                 <Text style={{ fontSize: 15 ,color:'#151927'}}>{ `${percentage}%` }</Text>
                     </ProgressCircle>
 
-                    <View style={{ paddingLeft:14 }}>
+                    <View style={{ 
+                        borderWidth:0,borderColor:"#000",
+                        paddingLeft:11 }}>
                         <Text style={{ textAlign:"left",fontSize:12,color:"#151927" }}>{ `${category}` }</Text>
                         <Text style={{ paddingTop:7,textAlign:"left",fontSize:15,color:"#151927" }}>{`${price}`}</Text>
                     </View>
