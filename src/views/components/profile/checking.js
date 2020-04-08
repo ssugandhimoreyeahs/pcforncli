@@ -97,7 +97,7 @@ const TransactionComponent = (props) => {
           <TouchableOpacity 
             onPress={()=>{
               if(userData.bankStatus == "linked"){
-                console.log("Full transaction obj - ",props.fullTransactionObj);
+                //console.log("Full transaction obj - ",props.fullTransactionObj);
                 props.navigation.navigate("NCategoryScreen",{ 
                   currentExecutingTransaction:props.fullTransactionObj,
                   resetTransactionScreen: () => { 
@@ -146,10 +146,10 @@ const TransactionComponent = (props) => {
   );
 }
 const ShowDateHeadings = ({date}) => {
-  //console.log("Date Recieved in Transactions - ",date);
+  ////console.log("Date Recieved in Transactions - ",date);
   //let currentTransactionDateObj = new Date(date);
   let currentTransactionDateObj = date.split("-");
-  console.log("Test here - ",currentTransactionDateObj);
+  //console.log("Test here - ",currentTransactionDateObj);
   // return(
   // <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[currentTransactionDateObj.getMonth()]} ${currentTransactionDateObj.getDate()}, ${currentTransactionDateObj.getFullYear()}`}</Text>
   // );
@@ -336,14 +336,14 @@ showUserIsNotConnectedToBankAlert = () => {
 fetchTransactionsOnEachScroll = async (isDisableActivityIndicator = false,isDisableSearch = false) => {
   if(isDisableSearch == false){
     const userTransactions = await  getUserTransactions(this.state.skipPoint,this.state.limitPoint);
-      //console.log(userTransactions.transactions.allTransactions.transactions[0]);
+      ////console.log(userTransactions.transactions.allTransactions.transactions[0]);
       if(userTransactions.result == true){
         const seprateDates = [];
       userTransactions.transactions.map( res => {
           seprateDates.push(res.date);
       });
       const seprateDate = this.getUnique([...seprateDates]);
-      //console.log("Current Slot ",this.state.currentSlot);
+      ////console.log("Current Slot ",this.state.currentSlot);
       this.setState({ seprateDate:[...this.state.seprateDate,...seprateDate],transactions:[...this.state.transactions,...userTransactions.transactions] },()=>{
         if(isDisableActivityIndicator == true){
           this.setState({ isShowActivityIndicator: false });
@@ -354,7 +354,7 @@ fetchTransactionsOnEachScroll = async (isDisableActivityIndicator = false,isDisa
 }
 fetchTransactionsFirstTime = async (userData) => {
       const userTransactions = await  getUserTransactions(this.state.skipPoint,this.state.limitPoint);
-      //console.log(userTransactions.transactions.allTransactions.transactions[0]);
+      ////console.log(userTransactions.transactions.allTransactions.transactions[0]);
       if(userTransactions.result == true){
         if(userTransactions.accountType != undefined && userTransactions.accountType != null && userTransactions.accountType != ""){
           this.setState({ userAccountType: userTransactions.accountType });
@@ -386,7 +386,7 @@ fetchTransactionsFirstTime = async (userData) => {
                 seprateDates.push(res.date);
             });
             const seprateDate = this.getUnique(seprateDates);
-            // console.log("Total slots to be covering ",totalSlotsForCovering);
+            // //console.log("Total slots to be covering ",totalSlotsForCovering);
             this.setState({ isShowActivityIndicator:false,allowStartSearch:false,seprateDate,transactions:userTransactions.transactions,totalNumOfTransactions:userTransactions.totalTransactions,isSpinner:false,isUserLinkedWithBank: true,isBodyLoaded:true },()=>{
 
           //code for showing alert that the user is not connected to the bank
@@ -406,7 +406,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
       const totalSlotsForCovering = parseInt(userTransactions.totalTransactions / this.state.fetchTransactionsPerScroll);
       const remaningTransactions = parseInt(userTransactions.totalTransactions % this.state.fetchTransactionsPerScroll);
-      //console.log("Total slots to be covering ",totalSlotsForCovering);
+      ////console.log("Total slots to be covering ",totalSlotsForCovering);
       this.setState({ seprateDate,transactions:userTransactions.transactions,totalSlotsForCovering,remaningTransactions,totalNumOfTransactions:userTransactions.totalTransactions,isSpinner:false,isUserLinkedWithBank: true,isBodyLoaded:true },()=>{
 
           //code for showing alert that the user is not connected to the bank
@@ -447,7 +447,7 @@ fetchTransactionsFirstTime = async (userData) => {
           this.setState({ currentBalance: userBalance.available_balance });
         }    
       }).catch((error)=>{
-          console.log("current Balance promise error - on the checking transaction page resposne - ",error);
+          //console.log("current Balance promise error - on the checking transaction page resposne - ",error);
           this.setState({ currentBalance: 0 });
       })
 
@@ -478,20 +478,20 @@ fetchTransactionsFirstTime = async (userData) => {
       return false;
     }else{
       nav.goBack();
-      //console.log("Transaction")
+      ////console.log("Transaction")
       return true;
     }
   }
   handleScroll = (event) => {
-     // console.log(event.nativeEvent.contentOffset.y);
+     // //console.log(event.nativeEvent.contentOffset.y);
      
   }
   isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    console.log("---------------------------------------onScroll testing-----------------------------");
-    console.log(layoutMeasurement.height);
-    console.log(contentOffset.y);
-    console.log(contentSize.height);
-    console.log("--------------------------------------------------------------------------------------");
+    //console.log("---------------------------------------onScroll testing-----------------------------");
+    //console.log(layoutMeasurement.height);
+    //console.log(contentOffset.y);
+    //console.log(contentSize.height);
+    //console.log("--------------------------------------------------------------------------------------");
     return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
   };
 
@@ -505,7 +505,7 @@ fetchTransactionsFirstTime = async (userData) => {
         }
       })
     }else if(currentAction == 'Outflow'){
-      console.log("Triggering outflow 1st Time");
+      //console.log("Triggering outflow 1st Time");
       if(this.state.outflowinflowstate.outflowData.isFetchedFirstTime == false){
         const outflowResponse = await getUserOutFlowTransactions(this.state.outflowinflowstate.outflowData.skipPoint,this.state.outflowinflowstate.outflowData.limitPoint);
         
@@ -533,7 +533,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           if(outflowResponse.outflowTransactions.totalTransactions <= this.state.fetchTransactionsPerScroll){
 
-            console.log("outflow total transaction length triggered less than or equal to 25- ",outflowResponse.outflowTransactions.totalTransactions);
+            //console.log("outflow total transaction length triggered less than or equal to 25- ",outflowResponse.outflowTransactions.totalTransactions);
             let seprateOutflowDates = []
           outflowResponse.outflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -576,7 +576,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           }else{
 
-            console.log("outflow total transaction length triggered more than 25- ",outflowResponse.outflowTransactions.totalTransactions);
+            //console.log("outflow total transaction length triggered more than 25- ",outflowResponse.outflowTransactions.totalTransactions);
             let seprateOutflowDates = []
           outflowResponse.outflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -640,7 +640,7 @@ fetchTransactionsFirstTime = async (userData) => {
      
       //code here for the inflow transactions to be fetched from the api once time
 
-      console.log("Triggering inflow transactions 1st Time");
+      //console.log("Triggering inflow transactions 1st Time");
       if(this.state.outflowinflowstate.inflowData.isFetchedFirstTime == false){
         const inflowResponse = await getUserInflowTransactions(this.state.outflowinflowstate.inflowData.skipPoint,this.state.outflowinflowstate.inflowData.limitPoint);
         
@@ -667,7 +667,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           if(inflowResponse.inflowTransactions.totalTransactions <= this.state.fetchTransactionsPerScroll){
 
-            console.log("inflow total transaction length triggered less than or equal to 25- ",inflowResponse.inflowTransactions.totalTransactions);
+            //console.log("inflow total transaction length triggered less than or equal to 25- ",inflowResponse.inflowTransactions.totalTransactions);
             let seprateOutflowDates = []
             inflowResponse.inflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -710,7 +710,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           }else{
 
-            console.log("inflow total transaction length triggered more than 25- ",inflowResponse.inflowTransactions.totalTransactions);
+            //console.log("inflow total transaction length triggered more than 25- ",inflowResponse.inflowTransactions.totalTransactions);
             let seprateOutflowDates = []
             inflowResponse.inflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -869,11 +869,11 @@ fetchTransactionsFirstTime = async (userData) => {
     const appendStateData =  isAllLoaded == true ? {  isAllActionCompleted:true,outflowIndicator: false } : {};
     
     const outflowResponse = await getUserOutFlowTransactions(this.state.outflowinflowstate.outflowData.skipPoint,this.state.outflowinflowstate.outflowData.limitPoint);
-   // console.log("outflow responses - ",outflowResponse.result);
+   // //console.log("outflow responses - ",outflowResponse.result);
     if(outflowResponse.result == true){
       
       if(outflowResponse.outflowTransactions.transactions.length > 0){
-          console.log("Getting outflow transactions on each scroll length - ",outflowResponse.outflowTransactions.transactions.length);
+          //console.log("Getting outflow transactions on each scroll length - ",outflowResponse.outflowTransactions.transactions.length);
           let seprateOutflowDates = []
           outflowResponse.outflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -979,7 +979,7 @@ fetchTransactionsFirstTime = async (userData) => {
               if(outflowData.isAllActionCompleted == false){
                   
                   if(outflowData.currentExecutingSlot < outflowData.totalTransactionSlotsToBeCovered){
-                    console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
+                    //console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {
@@ -995,7 +995,7 @@ fetchTransactionsFirstTime = async (userData) => {
                       this.fetchOutFlowTransactionsOnEachScroll(false);
                     })
                   }else{
-                    console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
+                    //console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {
@@ -1023,7 +1023,7 @@ fetchTransactionsFirstTime = async (userData) => {
               if(inflowData.isAllActionCompleted == false){
                   
                   if(inflowData.currentExecutingSlot < inflowData.totalTransactionSlotsToBeCovered){
-                   // console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
+                   // //console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {
@@ -1039,7 +1039,7 @@ fetchTransactionsFirstTime = async (userData) => {
                       this.fetchInflowTransactionsOnEachScroll(false);
                     })
                   }else{
-                    //console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
+                    ////console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {

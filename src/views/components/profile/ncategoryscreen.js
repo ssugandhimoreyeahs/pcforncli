@@ -135,28 +135,16 @@ class CategoryScreen extends Component{
         
         if(changePlaidCategoryResponse.result == true){
 
-            this.setState({ handleCategoryChangeValue: categoryName,isSpinner:false },()=>{
+           setTimeout(()=>{
+            this.setState({  isSpinner:false },()=>{
                
                 this.props.navigation.getParam("resetTransactionScreen")();
                 setTimeout(()=>{
                      this.props.navigation.goBack();
-                },500);
-                // this.props.navigation.getParam("resetTransactionScreen")();
-                // this.props.fetchExpenseByCategory(3);
-                //this.props.fetchMainExepenseByCategory();
-                // setTimeout(()=>{
-                //     // Alert.alert("Message","Transaction Category Successfully Changed",[
-                //     //     { text:"Ok",onPress:()=>{ 
-                //             //this.props.navigation.dispatch(resetAction); 
-                //             this.props.navigation.getParam("resetTransactionScreen")();
-                //             setTimeout(()=>{
-                //                 this.props.navigation.goBack();
-                //             },500);
-                            
-                //     //     }}
-                //     // ])
-                // },100);
+                },1000);
+                
             });
+           },500);
 
         }else{
             this.setState({ isSpinner:false },()=>{
