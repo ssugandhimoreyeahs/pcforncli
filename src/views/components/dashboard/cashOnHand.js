@@ -139,12 +139,13 @@ handleArrowStyle = () => {
       <View style={styles.margins}/>
         {
           this.props.isCOHLoadedOnce == false ?
-          <View style={{ height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
+          <View style={{ marginVertical:10,height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
             <ActivityIndicator size="large" color="#070640" />
           </View>
           :
 
-        <View style={{ 
+        <View style={{
+          marginVertical:8, 
           height:340,
           width:'100%',
           backgroundColor:'#FFF',
@@ -227,7 +228,7 @@ handleArrowStyle = () => {
 const styles =  StyleSheet.create({
   margins: {
     backgroundColor: "#EEEFF1",
-    marginVertical:10,
+    marginTop:10,
     
   },
   heading: {

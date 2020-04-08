@@ -147,9 +147,8 @@ class Sales extends Component {
     return (
       <View style={{
         borderWidth:0,borderColor:"red",
-        width:'95%', alignSelf:'center' }}>
-        <View style={styles.margins}>
-        </View>
+        width:'95%', alignSelf:'center',...styles.margins }}>
+        
        {
          masterLoader == true ?
          <View style={{height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>

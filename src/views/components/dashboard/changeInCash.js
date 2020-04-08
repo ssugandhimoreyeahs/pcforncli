@@ -115,10 +115,11 @@ class ChangeInCash extends Component {
     }
     
     return (
-      <View>
-        <View style={styles.margins}>
-        </View>
+      
+        
       <View style={{ 
+        borderColor:"red",borderWidth:0,
+        marginVertical:8,
         height:375,width:'95%', 
         backgroundColor:'#FFF', 
         alignSelf:'center',
@@ -212,7 +213,7 @@ class ChangeInCash extends Component {
         }
         
        </View>
-      </View>
+      
     );
   }
 }

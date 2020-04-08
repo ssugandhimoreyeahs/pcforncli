@@ -277,8 +277,8 @@ render(){
         
         return(
         
-         <View style={{width:'95%', alignSelf:'center' }}>
-            <View style={styles.margins}></View>
+         <View style={ styles.containerStyle }>
+            
 
             {
                 expenseByCategory.error == true ?
@@ -324,10 +324,11 @@ const mapDispatchToProps = (dispatch) => {
 }
 export default connect(mapStateToProps,mapDispatchToProps)(ExpenseByCategory);
 const styles = StyleSheet.create({
-    margins: {
+    containerStyle: {
         backgroundColor: "#EEEFF1",
-        marginVertical:8
-       
+        marginVertical:8,
+        width:'95%', 
+        alignSelf:'center'
       },
       heading: {
         flexDirection: "row",
