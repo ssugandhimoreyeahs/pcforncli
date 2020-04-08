@@ -91,17 +91,17 @@ class CategoryScreen extends Component{
                         isEdit == false ? 
                         <Fragment>
                                 <View
-                            style={{ width:"77%",flexDirection:"column",justifyContent:"space-between" }}
+                            style={{ flexDirection:"column",justifyContent:"space-between" }}
                             ><Text style={{ fontSize:11,color:"#000",fontWeight:"600" }}>
                                 Apply change to all similar transactions
                             </Text>
                             <Text style={{ fontSize:10,color:"#000" }}>Name of Recipient</Text>
                             </View>
 
-                            <View style={{ width:"25%" }}>
+                            <View>
 
                             <ToggleSwitch
-                                    isOn={this.state.toggle}
+                                    isOn={false}
                                     onColor="limegreen"
                                     offColor="#999"
                                     size="large"
