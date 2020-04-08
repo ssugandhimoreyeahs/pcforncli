@@ -8,10 +8,10 @@ const NETWORKINSTANCE = {
   NGROK : "https://e46c6c78.ngrok.io/v0.1"
 }
 const APIENDPOINT = {
-  endPoint: NETWORKINSTANCE.SANDBOXINSTANCE,
+  endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
   isQuickBookProduction:true,
-  isPlaidProduction: false,
-  //isPlaidProduction: true
+  //isPlaidProduction: false,
+  isPlaidProduction: true
 }
 
 const USERDATAAPIS = {

@@ -93,7 +93,7 @@ export default class CashOnHandChart extends PureComponent {
     
     let precentForCurrentMonth = 3;
     let percentForThreeMonth = 25;
-    let percentForSixMonth = 20;
+    let percentForSixMonth = 15;
     let percentForTeweleMonth = 7;
     for (var i = 0; i < forGradientData.length; i++) {
       
@@ -118,41 +118,29 @@ export default class CashOnHandChart extends PureComponent {
           );
         }
       }else if( cohPast == 3 && cohFuture == 1){
-        let getAmmount = forGradientData[i].amount;
         
-        if( i == forGradientData.length - 1 ){
-          if(getAmmount > 0){
-            gradients.push(
-              <Stop key={i} offset={`${percentForThreeMonth*i}%`} stopColor={CUSTOM_GRADIENT["3"][i]} />
-            );
-          }else{
-            gradients.push(
-              <Stop key={i} offset={`${percentForThreeMonth*i}%`} stopColor={CUSTOM_GRADIENT["3"][i+1]} />
-            );
-          }
+        if(i > 2){
+          gradients.push(
+            <Stop key={i} offset={`${percentForThreeMonth*i}%`} stopColor={`#C8C8C8`} />
+          );
         }else{
           gradients.push(
             <Stop key={i} offset={`${percentForThreeMonth*i}%`} stopColor={CUSTOM_GRADIENT["3"][i]} />
           );
         }
-      }else if( cohPast == 3 && cohFuture == 3 ){
-        let getAmmount = forGradientData[i].amount;
         
-        if( i == forGradientData.length - 1 ){
-          if(getAmmount > 0){
-            gradients.push(
-              <Stop key={i} offset={`${percentForSixMonth*i}%`} stopColor={CUSTOM_GRADIENT["6"][i]} />
-            );
-          }else{
-            gradients.push(
-              <Stop key={i} offset={`${percentForSixMonth*i}%`} stopColor={CUSTOM_GRADIENT["6"][i+1]} />
-            );
-          }
+      }else if( cohPast == 3 && cohFuture == 3 ){
+        
+        if(i > 2){
+          gradients.push(
+            <Stop key={i} offset={`${percentForSixMonth*i}%`} stopColor={`#C8C8C8`} />
+          );
         }else{
           gradients.push(
             <Stop key={i} offset={`${percentForSixMonth*i}%`} stopColor={CUSTOM_GRADIENT["6"][i]} />
           );
         }
+        
       }else{
         let getAmmount = forGradientData[i].amount;
         

@@ -86,11 +86,11 @@ class ChangeInCashChart extends Component {
         <View style={{ 
           
           alignItems:'flex-start',width:gw,
-          marginLeft:15
+          marginLeft:24
           }}>
           <VictoryChart  
           style={{
-            parent: { marginLeft: -55 }
+            parent: { marginLeft: -50 }
           }}
           height={270} width={gw} 
           domainPadding={{ x: cashInChangeData.cicCurrentRange == 1 ? 7 : 20 }}

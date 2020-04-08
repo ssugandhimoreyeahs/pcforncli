@@ -135,7 +135,7 @@ const EXPENSE_ICONS = {
     },
     business_insurance: {
         categoryIcon: require('../assets/CategoryIcon/business_insurance3.png'),
-        categoryColor: '##A599EC'
+        categoryColor: '#A599EC'
     },
     charitable_contributions: {
         categoryIcon: require('../assets/CategoryIcon/charitable_contributions3.png'),
