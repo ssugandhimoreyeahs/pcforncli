@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { View, Text,TouchableOpacity,Alert, Keyboard, StyleSheet,ActivityIndicator,Dimensions } from "react-native";
-// import {Ionicons, SimpleLineIcons} from '@expo/vector-icons';
+
 import { Dropdown } from "react-native-material-dropdown";
 import {Button_Months} from "../../.././constants/constants";
 import { Button } from "react-native-elements";
@@ -29,9 +29,9 @@ class ExpenseByCategory extends Component{
 
     static getDerivedStateFromProps(props, state){
 
-        //code here
+
         const { expenseCurrentRange } = props.expenseByCategoryRedux;
-        //console.log("testing here inside static getDerivedStatefromprops--------------------------------------");
+
         let renderButton;
         if(expenseCurrentRange == 1){
             renderButton = "This Month";
@@ -42,13 +42,12 @@ class ExpenseByCategory extends Component{
         }else{
             renderButton = "12 Months"
         }
-        //console.log(renderButton);
-        //console.log("Ends Here")
+
         return { expenseCurrentMonth: renderButton };
     }
     handleExpenseRangeSelection = (currentExpenseRange) => {
         const { expenseCurrentMonth:currentRange } = this.state;
-        //console.log("User select expense by category filter - ",currentExpenseRange);
+
         if(currentRange != currentExpenseRange){
                 if(currentExpenseRange == "This Month"){
                     this.props.fetchExpenseMultipleTimesByCategory(1);
@@ -77,10 +76,6 @@ class ExpenseByCategory extends Component{
                 }else if(currentExpenseRange == "12 Months"){
                     this.props.fetchExpenseMultipleTimesByCategory(12);
                 }
-        
-        
-
-        
     }
       handleArrowStyle = () => {
         if(this.state.arrowStyle == "arrow-down"){
@@ -118,9 +113,7 @@ class ExpenseByCategory extends Component{
      renderCategoryWithPercentage = ({ percentage,category,price }) => {
 
         return(
-            <View style={{ 
-                borderWidth:0,borderColor:"orange",
-                flexDirection:"row",paddingBottom:20,width:"50%" }}>
+            <View style={ styles.renderSingleCategory }>
 
                   <ProgressCircle 
                             percent={percentage}
@@ -136,8 +129,8 @@ class ExpenseByCategory extends Component{
                     <View style={{ 
                         borderWidth:0,borderColor:"#000",
                         paddingLeft:11 }}>
-                        <Text style={{ textAlign:"left",fontSize:12,color:"#151927" }}>{ `${category}` }</Text>
-                        <Text style={{ paddingTop:7,textAlign:"left",fontSize:15,color:"#151927" }}>{`${price}`}</Text>
+                        <Text style={ styles.renderCategoryNameStyle }>{ `${category}` }</Text>
+                        <Text style={ styles.renderCategoryPriceStyle }>{`${price}`}</Text>
                     </View>
                   
                   </View>
@@ -155,21 +148,11 @@ class ExpenseByCategory extends Component{
         const { expenseCurrentMonth } = this.state;
          return(
             <Fragment>
-            <View style={{ 
-                height:360,
-                width:'100%', 
-                backgroundColor:'white', 
-                alignSelf:'center',
-                elevation:10,
-                shadowColor:'#000',
-                paddingVertical:15,paddingHorizontal:13 }}>
+            <View style={ styles.categoryCart }>
             {
                  expenseByCategory.childLoader == false ? <Fragment>
                   
-                  <View style={{
-                      //borderWidth:1,borderColor:"red",
-                      height: "17%",flexDirection:"row",justifyContent:"space-between"
-                  }}>
+                  <View style={ styles.expenseHeader }>
                      <TouchableOpacity onPress={()=>{ this.showExpenseByCategoryTerminology(); }} style={{ flexDirection:"row" }}>
                         <Text style={{ fontSize:12,color:"#1D1E1F" }}>EXPENSE BY CATEGORY</Text>
                         <Ionicons 
@@ -181,11 +164,11 @@ class ExpenseByCategory extends Component{
                         <TouchableOpacity 
                         style={{ alignSelf:"flex-end",borderBottomColor:"#000",borderBottomWidth:1 }}
                         onPress={()=>{ this.props.navigation.navigate("ExpenseScreenParent"); }}>
-                        <Text style={{ paddingBottom:3,textAlign:'right',fontSize:22,color:"#1D1E1F",fontWeight:"600" }}>
+                        <Text style={ styles.expenseTotalCurrency }>
                         { expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}
                         </Text>
                         </TouchableOpacity>
-                        <Text style={{ textAlign:"right",color:"#1D1E1F",fontSize:12 }}>
+                        <Text style={ styles.expenseTotalMonth }>
                             {
                               `Total ${expenseCurrentMonth}`
                             }
@@ -193,14 +176,7 @@ class ExpenseByCategory extends Component{
                     </View>
                   </View>
 
-                  <View style={{
-                      justifyContent:"space-between",
-                      flexDirection:"row",
-                      flexWrap:"wrap",
-                      paddingTop:25,
-                      borderWidth:0,borderColor:"red",
-                      height: "73%"
-                  }}>
+                  <View style={ styles.expenseCategoryCart }>
 
                     {
                         expenseByCategory.expense.length > 0 ?
@@ -216,26 +192,20 @@ class ExpenseByCategory extends Component{
                             }
                         })
                         :
-                        <View style={{ width:"100%",justifyContent:"center",alignItems:"center" }}>
+                        <View style={ styles.expenseEmptyCart }>
                              <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
                          </View>
                     }
                     
                 </View>
              
-             </Fragment> :  <View style={{height:"90%",width:gw,justifyContent:"center",alignSelf:"center"}}>
+             </Fragment> :  <View style={ styles.expenseLoading }>
               <ActivityIndicator size="large" color="#070640" />
             </View>
             }
       
 
-        <View style = {{
-                height:"10%",
-                width:'100%',
-                flexDirection:"row",
-                justifyContent:"space-between",
-                alignSelf:'center'
-            }}>
+        <View style = { styles.expenseFooter }>
             <View style={styles.Toucha}>
             <Dropdown
                     disabled={false}
@@ -268,34 +238,31 @@ class ExpenseByCategory extends Component{
             </View>
         </View>
         </View>
-            </Fragment> 
+        </Fragment> 
          );
      }
 render(){
-       
-        const { expenseByCategoryRedux:expenseByCategory } = this.props;
-        
-        return(
-        
-         <View style={ styles.containerStyle }>
-            
+       let { expenseByCategoryRedux:expenseByCategory } = this.props;
 
+       
+     return(
+        <View style={ styles.mainContainerStyle }>
             {
                 expenseByCategory.error == true ?
-                <View style={{ height:350,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
-                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+                <View style={ styles.expenseByCategoryError }>
+                    <View style={ styles.expenseByCategoryErrorChild } >
                         <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
                         <Text style={{ marginLeft:10,alignSelf:"center" }}>Oops Error Try Again!</Text>
                     </View> 
-                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+                    <View style={ styles.expenseByCategoryErrorChild2 }>
                         <TouchableOpacity onPress={()=>{ this.handleReloadExpenseByCategory(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
-                            <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
+                            <View style={ styles.expenseByCategoryErrorChild } ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
                         </TouchableOpacity>
                     </View>
                 </View> 
                 :
                 expenseByCategory.loading == true ?
-                <View style={{ height:350,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
+                <View style={ styles.expenseByCategoryLoading }>
                     <ActivityIndicator size="large" color="#070640" />
                 </View> 
                 :
@@ -303,11 +270,7 @@ render(){
                 this.renderExepensesByCategory() : null
 
             }
-                
-
-          
       </View> 
-     
       )
     }
 }
@@ -324,8 +287,8 @@ const mapDispatchToProps = (dispatch) => {
 }
 export default connect(mapStateToProps,mapDispatchToProps)(ExpenseByCategory);
 const styles = StyleSheet.create({
-    containerStyle: {
-        backgroundColor: "#EEEFF1",
+    mainContainerStyle: {
+        backgroundColor: "#FFF",
         marginVertical:8,
         width:'95%', 
         alignSelf:'center'
@@ -379,6 +342,104 @@ const styles = StyleSheet.create({
         width:12,
         margin:6,
       },
-
-
+      expenseByCategoryError: { 
+          height:350,
+          width:'100%', 
+          backgroundColor:'white', 
+          alignSelf:'center',
+          justifyContent:"center",
+          elevation:10,
+          shadowColor:'#000' 
+    },
+      expenseByCategoryErrorChild: { 
+          flexDirection:"row",
+          justifyContent:"center",
+          alignItems:"center" 
+    },
+      expenseByCategoryLoading: { 
+          height:350,
+          width:'100%', 
+          backgroundColor:'white', 
+          alignSelf:'center',
+          justifyContent:"center",
+          elevation:10,
+          shadowColor:'#000' 
+      },
+      expenseByCategoryErrorChild2: { 
+          flexDirection:"row",
+          justifyContent:"center",
+          alignItems:"center",
+          marginTop:15 
+        },
+      categoryCart: { 
+        height:360,
+        width:'100%', 
+        backgroundColor:'#FFF', 
+        alignSelf:'center',
+        elevation:10,
+        shadowColor:'#000',
+        paddingVertical:15,paddingHorizontal:13 
+    },
+    expenseHeader: {
+        height: "17%",
+        flexDirection:"row",
+        justifyContent:"space-between",
+        backgroundColor:"#FFF"
+    },
+    expenseTotalCurrency:{
+        paddingBottom:3,
+        textAlign:'right',
+        fontSize:22,
+        color:"#1D1E1F",
+        fontWeight:"600" 
+    },
+    expenseTotalMonth: { 
+        textAlign:"right",
+        color:"#1D1E1F",
+        fontSize:12 
+    },
+    expenseCategoryCart: {
+        justifyContent:"space-between",
+        flexDirection:"row",
+        flexWrap:"wrap",
+        paddingTop:25,
+        borderWidth:0,borderColor:"red",
+        height: "73%"
+    },
+    expenseEmptyCart: { 
+        width:"100%",
+        justifyContent:"center",
+        alignItems:"center" 
+    },
+    expenseLoading: {
+        height:"90%",
+        width:gw,
+        justifyContent:"center",
+        alignSelf:"center"
+    },
+    expenseFooter: {
+        height:"10%",
+        width:'100%',
+        flexDirection:"row",
+        justifyContent:"space-between",
+        alignSelf:'center'
+    },
+    renderSingleCategory: { 
+        borderWidth:0,
+        borderColor:"orange",
+        flexDirection:"row",
+        paddingBottom:20,
+        width:"50%" 
+    },
+    renderCategoryNameStyle: { 
+        textAlign:"left",
+        fontSize:12,
+        color:"#151927" 
+    },
+    renderCategoryPriceStyle: { 
+        paddingTop:7,
+        textAlign:"left",
+        fontSize:15,
+        color:"#151927" 
+    }
 })

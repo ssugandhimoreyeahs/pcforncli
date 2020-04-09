@@ -308,16 +308,7 @@ class Dashboard extends PureComponent {
         if(userResponse.userData.qbIntegrationStatus == true){
             this.props.fetchSales();
             this.props.fetchIncommingAr();
-            // if(userResponse.userData.bankIntegrationStatus == true && 
-            //   isValidTokenApiCalled == false){
-            //   validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
-            //     if( triggerValidPlaidToken.result == true && triggerValidPlaidToken.response.IsQuickbookToken == false){
-            //           this.isshowQBPopup();
-            //     }
-            //   }).catch((error)=>{
-            //     console.log("Validate Plaid Token Promise error 2 - ",error);
-            //   });
-            // }
+            
         }
         
   

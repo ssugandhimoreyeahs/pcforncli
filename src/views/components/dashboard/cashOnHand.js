@@ -25,17 +25,7 @@ export default class CashOnHand extends PureComponent {
     }
     this.dropdownRef = React.createRef();
   }
-  getOutOfCashDateLabel(cash, expenses, sales) {
-    const rate = sales - expenses;
-    if (rate === 0) {
-      return "Cash Flow Neutral";
-    } else if (rate > 0) {
-      return "Cash Flow Positive";
-    } else {
-      const ooc = getOutOfCashDate(cash, expenses, sales);
-      return ooc.format("MMM D, YYYY");
-    }
-  }
+ 
 
   getRunwayColor(cash, expenses, sales) {
     const oocDate = getOutOfCashDate(cash, expenses, sales);
@@ -93,30 +83,14 @@ handleArrowStyle = () => {
         {
           this.props.healthScoreIndicator == true ?
           <View
-          style={{
-            borderRadius:5,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingVertical: 15,
-            paddingHorizontal: 15,
-            height:48,width:'100%',
-            }}></View> :
+          style={ styles.offOutOfCashDate }></View> :
         <View
         style={{
           backgroundColor: this.getRunwayColor(
             0,
             0,
             0
-          ),
-          borderRadius:5,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingVertical: 15,
-          paddingHorizontal: 15,
-          height:48,width:'100%',
-          elevation:10,shadowColor:'#000',
-          backgroundColor:'#FF7749',
-
+          ),...styles.outOfCashDateDateStyle
         }}>
          <TouchableOpacity onPress={this.showAlert1} >
           <View style={{flexDirection:'row'}}>
@@ -127,11 +101,7 @@ handleArrowStyle = () => {
           </View>
           </TouchableOpacity>
         <Text style={{ fontSize: 14, fontWeight: "bold", color: "#FFF" }}>
-          {/* {`${this.getOutOfCashDateLabel(
-            currentCashOnHand,
-            currentExpenses,
-            currentRevenue
-          ) || ""}`} */}{ `${this.props.outOfCashDate}` }
+          { `${this.props.outOfCashDate}` }
         </Text>
      </View> 
         }
@@ -144,14 +114,7 @@ handleArrowStyle = () => {
           </View>
           :
 
-        <View style={{
-          marginVertical:8, 
-          height:340,
-          width:'100%',
-          backgroundColor:'#FFF',
-          elevation:10,
-          shadowColor:'#000',
-          paddingVertical:20}}>
+        <View style={ styles.cashOnHandCart }>
         {
           this.props.showCOHChartLoader == true ?
           <View style={{height:"90%",width:'100%',justifyContent:"center",alignItems:"center"}}>
@@ -231,11 +194,38 @@ const styles =  StyleSheet.create({
     marginTop:10,
     
   },
+  offOutOfCashDate: {
+    borderRadius:5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    height:48,width:'100%',
+    },
+    outOfCashDateDateStyle: {
+    borderRadius:5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    height:48,width:'100%',
+    elevation:10,shadowColor:'#000',
+    backgroundColor:'#FF7749',
+  },
   heading: {
     width:"100%",
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 15
+  },
+  cashOnHandCart: {
+    marginVertical:8, 
+    height:340,
+    width:'100%',
+    backgroundColor:'#FFF',
+    elevation:10,
+    shadowColor:'#000',
+    paddingVertical:20
   },
   buttonview:{
     height:"10%",

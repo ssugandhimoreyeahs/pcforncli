@@ -34,10 +34,9 @@ class ChangeInCash extends Component {
 
   static getDerivedStateFromProps(props, state){
 
-    //code here
+    
     const { cicCurrentRange } = props.cashInChangeData;
-    // //console.log("testing here inside static getDerivedStatefromprops--------------------------------------");
-    // console.log("getting cic Current range here ---------------",cicCurrentRange);
+    
     let renderButton;
     if(cicCurrentRange == 1){
         renderButton = "This Month";
@@ -48,8 +47,7 @@ class ChangeInCash extends Component {
     }else{
         renderButton = "12 Months"
     }
-    // console.log("render button ----------------------",renderButton);
-    //console.log("Ends Here")
+    
     return { cocMonths: renderButton };
 }
 
@@ -88,7 +86,7 @@ class ChangeInCash extends Component {
   
   handleReloadChangeInCash = () => {
 
-    //fetchCashInChange: () => { dispatch(cicAsynCreator()) }
+    
     this.props.fetchCashInChange();
   }
   render() {
@@ -117,21 +115,15 @@ class ChangeInCash extends Component {
     return (
       
         
-      <View style={{ 
-        borderColor:"red",borderWidth:0,
-        marginVertical:8,
-        height:375,width:'95%', 
-        backgroundColor:'#FFF', 
-        alignSelf:'center',
-        elevation:10,
-        shadowColor:'#000',paddingVertical:20 }}>
+      <View style={ styles.cicCharts }>
         {
-          cashInChangeData.error == true ?  <View style={{ height:375,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
-          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+          cashInChangeData.error == true ?  
+          <View style={ styles.cicErrorMain }>
+            <View style={ styles.cicErrorSub } >
               <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
               <Text style={{ marginLeft:10,alignSelf:"center" }}>Oops Error Try Again!</Text>
           </View> 
-          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+          <View style={ styles.cicErrorButton }>
               <TouchableOpacity onPress={()=>{ this.handleReloadChangeInCash(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
                   <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
               </TouchableOpacity>
@@ -165,7 +157,7 @@ class ChangeInCash extends Component {
                  </View>
                  {
                    isCICGraphEmpty == true ?
-                    <View style={{height:"66%",justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
+                    <View style={ styles.cicGraphEmpty } accessible={true} pointerEvents="none">
                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
                     </View>
                    :
@@ -207,9 +199,7 @@ class ChangeInCash extends Component {
           </View>
         </View>
           </Fragment>
-          :  <View style={{ height:375,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
-            <ActivityIndicator size="large" color="#070640" />
-         </View> 
+          : <View style={ styles.cicMasterLoader }><ActivityIndicator size="large" color="#070640" /></View>  
         }
         
        </View>
@@ -222,6 +212,15 @@ const styles = {
   margins: {
     backgroundColor: "#EEEFF1",
     marginVertical: 8
+  },
+  cicCharts: { 
+    borderColor:"red",borderWidth:0,
+    marginVertical:8,
+    height:375,width:'95%', 
+    backgroundColor:'#FFF', 
+    alignSelf:'center',
+    elevation:10,
+    shadowColor:'#000',paddingVertical:20 
   },
   heading: {
     flexDirection: "row",
@@ -269,6 +268,11 @@ const styles = {
     width:12,
     margin:6,
   },
+  cicErrorMain: { height:375,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' },
+  cicErrorSub: { flexDirection:"row",justifyContent:"center",alignItems:"center" },
+  cicErrorButton: { flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 },
+  cicGraphEmpty: {height:"66%",justifyContent:"center",alignItems:"center"},
+  cicMasterLoader : { height:"100%",width:'100%',justifyContent:"center"   }
 };
 
 const mapStateToProps = (state) => {
