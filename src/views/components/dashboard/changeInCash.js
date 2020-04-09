@@ -162,7 +162,7 @@ class ChangeInCash extends Component {
                     </View>
                    :
                    
-                   <View style={{ marginTop:"-4%" }} accessible={true} pointerEvents="none">
+                   <View style={{ marginTop:"-5.5%" }} accessible={true} pointerEvents="none">
                     <ChangeInCashChart historicalFinances={historicalFinances} />
                    </View>
                  }
