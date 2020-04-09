@@ -6,14 +6,17 @@ import {Button_Months} from "../../.././constants/constants";
 import { Button } from "react-native-elements";
 import ProgressCircle from 'react-native-progress-circle'
 import { connect } from "react-redux";
-import { AntDesign,MaterialCommunityIcons } from '@expo/vector-icons';
+// import { AntDesign,MaterialCommunityIcons } from '@expo/vector-icons';
 import { fetchExpensesMultipleTimesAsyncCreator } from "../../../reducers/expensecategory";
 import { numberWithCommas,firstLetterCapital } from "../../../api/common";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
 import { TERMINOLOGY } from "../../../api/message";
 
+MaterialCommunityIcons.loadFont();
+AntDesign.loadFont();
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 const gw=Dimensions.get("window").width;
@@ -66,7 +69,7 @@ class ExpenseByCategory extends Component{
 
         const { expenseCurrentMonth:currentExpenseRange } = this.state;
         
-        
+            // console.log("Current Expense Ragne - ",currentExpenseRange);
                 if(currentExpenseRange == "This Month"){
                     this.props.fetchExpenseMultipleTimesByCategory(1);
                 }else if(currentExpenseRange == "3 Months"){
@@ -252,7 +255,7 @@ render(){
                 <View style={ styles.expenseByCategoryError }>
                     <View style={ styles.expenseByCategoryErrorChild } >
                         <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
-                        <Text style={{ marginLeft:10,alignSelf:"center" }}>Oops Error Try Again!</Text>
+                        <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
                     </View> 
                     <View style={ styles.expenseByCategoryErrorChild2 }>
                         <TouchableOpacity onPress={()=>{ this.handleReloadExpenseByCategory(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
