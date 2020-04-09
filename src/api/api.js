@@ -46,7 +46,8 @@ export {
   addCategoryToTransaction,
   getSubCategories,
   getSubCategoryTransactions,
-  getChangeInCash
+  getChangeInCash,
+  changeAllSimilarTransaction
 } from "./Apis/plaid";
 
 //QuickBooks Api's

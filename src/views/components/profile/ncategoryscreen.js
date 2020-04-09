@@ -12,7 +12,7 @@ import { allFirstWordCapital } from "../../../api/common";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
-import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction } from "../../../api/api";
+import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction,changeAllSimilarTransaction } from "../../../api/api";
 import { PLAID_EXPENSE_CATEGORIES,EXPENSES_COLOR,getCategoryInitials } from "../../../api/common";
 import { CHANGECATEGORY,ERRORCATEGORY,ADDEDCATEGORY,DELETECATEGORY } from "../../../api/message";
 AntDesign.loadFont();
@@ -70,7 +70,7 @@ class CategoryScreen extends Component{
                        <View style={{ width: 35 }}></View> : 
                        isEdit == true ?
                         <View style={{ width: 35 }}></View> : 
-                        <TouchableOpacity style={{ paddingRight:2,width: 35 }} onPress={()=>{ this.setState({ isEdit:true }); }} >
+                        <TouchableOpacity style={{ paddingRight:2,width: 35 }} onPress={()=>{ this.setState({ isEdit:true,toggle: false }); }} >
                     
                                 <Text style={{ color:"#4A90E2",fontSize:17 }}>Edit</Text>
                         </TouchableOpacity>
@@ -82,7 +82,7 @@ class CategoryScreen extends Component{
     }
 
     addCategory = () => {
-        const { isEdit } = this.state;
+        const { isEdit,toggle } = this.state;
         return(
             <View style={{ paddingHorizontal:10,paddingVertical:17,marginTop: 25,height: 70, backgroundColor: "#FFF",width:"90%",alignSelf:"center"
                 ,borderRadius: 5,flexDirection:"row",justifyContent:"space-between"
@@ -101,11 +101,11 @@ class CategoryScreen extends Component{
                             <View>
 
                             <ToggleSwitch
-                                    isOn={false}
+                                    isOn={toggle}
                                     onColor="limegreen"
                                     offColor="#999"
                                     size="large"
-                                    onToggle={ isOn => { this.setState({ toggle: !this.state.toggle }) } }
+                                    onToggle={ isOn => { this.setState({ toggle: !toggle }) } }
                             />
                             </View>
                         </Fragment> : 
@@ -127,31 +127,61 @@ class CategoryScreen extends Component{
     }
 
     handleChangeCategory = async (categoryId,categoryName) => {
+        
+        if(this.state.toggle){
+            let axiosBody = {};
+            axiosBody.oldCategoryId = "";
+            axiosBody.updateCategoryId = "";
+            let { category: reduxCategory,error,isFetched,loading } = this.props.categoryReduxData;
+            const { category:transactionCategory } = this.props.navigation.getParam("currentExecutingTransaction");
+            
+            for(let i=0;i < reduxCategory.length; i++){
+                if(reduxCategory[i].categoryName == transactionCategory){
+                    axiosBody.oldCategoryId = reduxCategory[i].id;
+                }   
+                if(reduxCategory[i].categoryName == categoryName){
+                    axiosBody.updateCategoryId = reduxCategory[i].id;
+                }
+            }
+            changeAllSimilarTransaction(axiosBody)
+                .then((response)=>{
+                    console.log("All Thing Work Fine - ",response);
+                    setTimeout(()=>{
+                        this.setState({  isSpinner:false },()=>{
+                           this.props.navigation.getParam("resetTransactionScreen")();
+                            setTimeout(()=>{
+                                 this.props.navigation.goBack();
+                            },800);
+                        });
+                       },1000);
+                })
+                .catch((error)=>{
+                    this.setState({ isSpinner:false },()=>{
+                        setTimeout(()=>{
+                            Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
+                        },100);
+                    });
+                });
+        }else{
         const { _id } = this.props.navigation.getParam("currentExecutingTransaction");
-        
         let changePlaidCategoryResponse = await addCategoryToTransaction(_id,categoryId);
-        
-        
-        
         if(changePlaidCategoryResponse.result == true){
-
-           setTimeout(()=>{
+        setTimeout(()=>{
             this.setState({  isSpinner:false },()=>{
                
                 this.props.navigation.getParam("resetTransactionScreen")();
                 setTimeout(()=>{
                      this.props.navigation.goBack();
                 },1000);
-                
             });
            },500);
-
         }else{
             this.setState({ isSpinner:false },()=>{
                 setTimeout(()=>{
                     Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             });
+        }
         }
     }
 
