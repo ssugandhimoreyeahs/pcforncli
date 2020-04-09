@@ -131,7 +131,7 @@ class CategoryScreen extends Component{
         if(this.state.toggle){
             let axiosBody = {};
             axiosBody.oldCategoryId = "";
-            axiosBody.updateCategoryId = "";
+            axiosBody.updateCategorId = "";
             let { category: reduxCategory,error,isFetched,loading } = this.props.categoryReduxData;
             const { category:transactionCategory } = this.props.navigation.getParam("currentExecutingTransaction");
             
@@ -140,7 +140,7 @@ class CategoryScreen extends Component{
                     axiosBody.oldCategoryId = reduxCategory[i].id;
                 }   
                 if(reduxCategory[i].categoryName == categoryName){
-                    axiosBody.updateCategoryId = reduxCategory[i].id;
+                    axiosBody.updateCategorId = reduxCategory[i].id;
                 }
             }
             changeAllSimilarTransaction(axiosBody)
