@@ -136,7 +136,7 @@ class Dashboard extends PureComponent {
             },1000);
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
-            this.props.fetchInsights();
+            // this.props.fetchInsights();
             if( userResponse.userData.qbIntegrationStatus == true  ){
               getHealthScoreUsingPromise().then((response)=>{
                   //console.log("health score api response - ",response);
@@ -257,7 +257,7 @@ class Dashboard extends PureComponent {
             });
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
-            this.props.fetchInsights();
+            // this.props.fetchInsights();
             if( userResponse.userData.qbIntegrationStatus == true  ){
               getHealthScoreUsingPromise().then((response)=>{
                   //console.log("health score api response - ",response);
