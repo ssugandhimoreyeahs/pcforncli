@@ -131,7 +131,7 @@ class ExpenseByCategory extends Component{
 
                     <View style={{ 
                         borderWidth:0,borderColor:"#000",
-                        paddingLeft:11 }}>
+                        paddingLeft: 9 }}>
                         <Text style={ styles.renderCategoryNameStyle }>{ `${category}` }</Text>
                         <Text style={ styles.renderCategoryPriceStyle }>{`${price}`}</Text>
                     </View>
