@@ -1,7 +1,8 @@
 import React,{ Component, Fragment } from "react";
-import { Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image as RNImage } from "react-native";
+import { ActivityIndicator,Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image as RNImage } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { PieChart } from 'react-native-svg-charts'
 import { Circle, G, Image } from 'react-native-svg'
@@ -13,6 +14,7 @@ import { numberWithCommas,firstLetterCapital,PLAID_EXPENSE_CATEGORIES,getCategor
 
 FontAwesome.loadFont();
 AntDesign.loadFont();
+MaterialCommunityIcons.loadFont();
 
 const deviceWidth = Dimensions.get('window').width
 
@@ -41,7 +43,7 @@ class ExpenseByCategory extends Component{
             let categoryIcon = {
                 key: 0,
                 amount: 0,
-                svg: { fill: '#F98361' },
+                svg: { fill: '#6C5BC1' },
                 image: null,
                 isIcon: false
             }
@@ -63,8 +65,6 @@ class ExpenseByCategory extends Component{
 
         });
 
-        console.log("Graph array here -");
-        console.log(graphArray);
         return graphArray;
 
         
@@ -102,6 +102,7 @@ class ExpenseByCategory extends Component{
         let { current,maximum,minimum } = requestType;
         if( current >= minimum ){
             requestType.current = requestType.current-1;
+            this.props.fetchMainExepenseByCategory(requestType.current);
             this.setState({ requestType });
         }
 
@@ -112,6 +113,7 @@ class ExpenseByCategory extends Component{
         let { current,maximum,minimum } = requestType;
         if( current < maximum ){
             requestType.current = requestType.current+1;
+            this.props.fetchMainExepenseByCategory(requestType.current);
             this.setState({ requestType });
         }
         
@@ -119,20 +121,27 @@ class ExpenseByCategory extends Component{
     expensePie = () => { 
         const { requestType } = this.state;
         const { current,maximum,minimum } = requestType;
+        const { expensesData } = this.props.mainExpenseByCategoryRedux;
+        let { ExpenseByCategory } = expensesData;
+        //ExpenseByCategory = [];
         return(
            <Fragment>
                <View style={{ height: 350,backgroundColor:"#FFF" }}>
-                    
-                    <this.RenderPieChart />
-
+                    {
+                        ExpenseByCategory.length > 0 ?
+                        <this.RenderPieChart /> : 
+                        <View style={{ height:335,width:"100%",justifyContent:"center",alignItems:"center" }}> 
+                        <Text style={{ color:"#070640",fontWeight:"500" }}>You have not spent anything this month.</Text>
+                        </View>
+                    }
                     <View style={ styles.filterButton }>
-
                         <TouchableOpacity
                         onPress={() => {
                             this.switchExpensePrevRequest();
                         }}
                         disabled = { current == maximum }
-                        style={{ opacity: current == maximum ? 0 : 1,justifyContent:"center",
+                        style={{ opacity: current == maximum ? 0 : 1,
+                            justifyContent:"center",
                             borderColor:"red",borderWidth:0 }}
                         ><AntDesign color={"#030538"} name={"left"} size={15}></AntDesign></TouchableOpacity>
                         <Text style={{ alignSelf:"center",color:"#030538",fontSize: 12 }}>
@@ -151,7 +160,7 @@ class ExpenseByCategory extends Component{
                         </TouchableOpacity>
                         
                     </View>
-                    <Text style={{ textAlign:"center" }}>{ `\n${current}` }</Text>
+                    {/* <Text style={{ textAlign:"center" }}>{ `\n${current}` }</Text> */}
                </View>
               <this.renderCategory />
            </Fragment>
@@ -162,15 +171,20 @@ class ExpenseByCategory extends Component{
         const { expensesData } = this.props.mainExpenseByCategoryRedux;
         const { ExpenseByCategory } = expensesData;
         return(
-                <View style={ styles.categoryCart }>
-                    <View style={ styles.categoryCartChild1 }>
-                        {
-                            ExpenseByCategory.map((singleCategory,index)=>{
-                              return <this.renderSingleCategory key={index} currentIndex={index} item={singleCategory} />
-                            })
-                        }
-                    </View>
-                </View>
+            <Fragment>
+                {
+                    ExpenseByCategory.length > 0 ?
+                        <View style={ styles.categoryCart }>
+                            <View style={ styles.categoryCartChild1 }>
+                              {
+                                ExpenseByCategory.map((singleCategory,index)=>{
+                                      return <this.renderSingleCategory key={index} currentIndex={index} item={singleCategory} />
+                                })
+                              }
+                            </View>
+                        </View> : null
+                }
+                </Fragment>
         );
     }
 
@@ -368,14 +382,60 @@ class ExpenseByCategory extends Component{
             </PieChart>
         );
     }
-    render(){
-        const { error,loader,isFetched } = this.props.mainExpenseByCategoryRedux;
+    handleReloadMainExpenseByCategory = () => {
+        const { requestType } = this.state;
+        this.props.fetchMainExepenseByCategory(requestType.current);
+    }
+    errorView = () => {
+
+        return(
+            <View style={{ flex : 1  }}>
+                <this.header />
+                <View style={{ flex:0.9,justifyContent:"center",alignItems:"center" }}>
+                         <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+                        <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
+                        <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
+                    </View> 
+                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+                        <TouchableOpacity onPress={()=>{ this.handleReloadMainExpenseByCategory(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                            <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
+                        </TouchableOpacity>
+                    </View>
+            </View>
+            </View>
+        );
+    }
+    loaderView = () => {
+
+        return(
+            <View style={{ flex: 1 }}>
+                <this.header /> 
+                <View style={{ flex:0.9,justifyContent:"center" }}>
+                    <ActivityIndicator animating={true} size={"large"} color={`#070640`} />
+                </View>
+            </View>
+        );
+    }
+    loadExpenseScreen = () => {
         return(
             <ScrollView style={{ flex:1 }}>
                 <this.header />
                 <this.expensePie />
-                
             </ScrollView>
+        );
+    }
+    render(){
+        let { error,loader,isFetched } = this.props.mainExpenseByCategoryRedux;
+        
+        return(
+            <Fragment>
+                {
+                    error == true ? <this.errorView /> 
+                    : loader == true ? <this.loaderView />
+                    : isFetched == true ? <this.loadExpenseScreen />
+                    : null
+                }
+            </Fragment>
         );
     }
 }
@@ -411,7 +471,7 @@ const styles = StyleSheet.create({
     categoryCart: { 
         backgroundColor:"#FFF",
         borderRadius:5,
-        width:"92%",
+        width:"90%",
         marginVertical: 25,
         borderColor:"#000",borderWidth:0,
         shadowColor:"#000",
@@ -446,7 +506,7 @@ const styles = StyleSheet.create({
     },
     categoryRenderStyle: { 
         paddingRight:5,
-        paddingLeft:5,
+        paddingLeft:9,
         width: "80%",
         justifyContent:"space-between",
         borderColor:"#000",borderWidth:0
@@ -492,7 +552,7 @@ const styles = StyleSheet.create({
     categoryText: { 
         width:"60%",
         fontWeight:"600",
-        fontSize:15,
+        fontSize:14,
         color: "#1D1E1F" 
     },
     categoryHikeStyle: { 
@@ -501,7 +561,8 @@ const styles = StyleSheet.create({
     },
     categoryAmount: { 
         fontSize:15,
-        color: "#1D1E1F" 
+        color: "#1D1E1F",
+        fontWeight:"500" 
     },
     pieChartParent: { 
         borderWidth:0,borderColor:"red",
