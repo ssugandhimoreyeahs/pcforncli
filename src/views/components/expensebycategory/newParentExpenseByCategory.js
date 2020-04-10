@@ -141,7 +141,7 @@ class ExpenseByCategory extends Component{
         //ExpenseByCategory = [];
         return(
            <Fragment>
-               <View style={{ height: 350,backgroundColor:"#FFF" }}>
+               <View style={{ height: 365,backgroundColor:"#FFF" }}>
                     {
                         ExpenseByCategory.length > 0 ?
                         <this.RenderPieChart /> : 
@@ -501,7 +501,8 @@ const styles = StyleSheet.create({
         marginVertical: 22,
         borderBottomColor:"#1D1E1F",
         width:"95%",
-        borderBottomWidth: StyleSheet.hairlineWidth
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        opacity: 0.2
     },
     filterButton:{
         paddingHorizontal:12,
@@ -509,7 +510,7 @@ const styles = StyleSheet.create({
         height:40,
         backgroundColor:"#E6E6EC",
         alignSelf:"center",
-        marginTop: -50,
+        marginTop: -40,
         width: 160,
         flexDirection:"row",
         justifyContent:"space-between"
