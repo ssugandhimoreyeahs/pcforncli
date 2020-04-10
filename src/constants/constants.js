@@ -62,6 +62,7 @@ const PLAIDAPIS = {
   expenseByCategoryPastThreeMonth: APIENDPOINT.endPoint+"/plaid/ExpenseByCategory?pastThreeMonth=true",
   expenseByCategoryPastSixMonth: APIENDPOINT.endPoint+"/plaid/ExpenseByCategory?pastSixMonth=true",
   expenseByCategoryPastTweleMonth: APIENDPOINT.endPoint+"/plaid/ExpenseByCategory?pastTwelveMonth=true",
+  expenseByCategoryScreen: past => APIENDPOINT.endPoint+`/plaid/ExpenseByCategoryScreen?past=${past}`,
   //change in cash api
   changeInCash: APIENDPOINT.endPoint+"/parcentage/changeIncash"
 }
@@ -236,30 +237,19 @@ export const STATE_OF_INCORP_OPTIONS = [
   { value: "Wisconsin" },
   { value: "Wyoming" }
 ];
+const calculateYear = () => {
 
-export const YEAR_FOUNDED_OPTIONS = [
-  { value: 2020 },
-  { value: 2019 },
-  { value: 2018 },
-  { value: 2017 },
-  { value: 2016 },
-  { value: 2015 },
-  { value: 2014 },
-  { value: 2013 },
-  { value: 2012 },
-  { value: 2011 },
-  { value: 2010 },
-  { value: 2009 },
-  { value: 2008 },
-  { value: 2007 },
-  { value: 2006 },
-  { value: 2005 },
-  { value: 2004 },
-  { value: 2003 },
-  { value: 2002 },
-  { value: 2001 },
-  { value: 2000 }
-];
+  let currentYear = new Date().getFullYear();
+  let YEARS_VALUE = [];
+  for(let i=2000;i<=currentYear;i++){
+      let obj = {
+        value: i
+      }
+      YEARS_VALUE.push(obj);
+  }
+  return YEARS_VALUE;
+}
+export const YEAR_FOUNDED_OPTIONS = calculateYear();
 
 export const JS_DATE_INDEX_TO_MONTH_MAP = {
   0: "Jan",
@@ -343,4 +333,5 @@ function getLast6Months(currentMonth){
   }
 }
 
+export const FULL_MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 export const EXPENSES_COLOR_CODE = ["#DFDF67", "#5994B3", "#80C871", "#7785E9", "#EA727A","#a11997","#273c33","#bb9c69","#66bbe5","#d330ba","#868f6a","#74a69e","#e7c159","#36ea78","#ca763f","#9147c1","#cb85b2","#119728" ]

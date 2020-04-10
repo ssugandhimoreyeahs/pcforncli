@@ -53,3 +53,29 @@ export function getExpenseByCategoryPromise( fetchExpenseTypes = 1 ){
       
    
   }
+
+
+  export function getExpenseByCategoryScreenPromise( fetchExpenseTypes = 0 ){
+    return new Promise((resolve,reject)=>{
+      AsyncStorage.getItem("authToken").then( (token) =>{
+        console.log("Before request Trigger - ",APINETWORK.expenseByCategoryScreen(fetchExpenseTypes));
+        axios.get(APINETWORK.expenseByCategoryScreen(1),{
+              headers: { Authorization: token,"Content-Type": "application/json" },
+              timeout
+            }).then((response)=>{
+                if(response.status == 200 && response.data.success == true){
+                  resolve({ result:true,expensesData: response.data });
+                }else{
+                  reject({ result:false,expensesData:response.data });
+                }
+
+            }).catch((error)=>{
+              console.log("inside getExpenseByCategoryPromise() axios catch - ",error);
+              reject({ result:false,error });
+            })
+      }).catch((error)=>{
+          console.log("inside getExpenseByCategoryPromise() token catch - ",error);
+          reject({ result:false,error });
+      });
+    });
+}

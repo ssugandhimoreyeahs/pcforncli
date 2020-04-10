@@ -5,8 +5,10 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { PieChart } from 'react-native-svg-charts'
 import { Circle, G, Image } from 'react-native-svg'
-
-
+import { connect } from "react-redux";
+import { ALL_MONTHS,FULL_MONTH } from "../../../constants/constants";
+import CategoryFactory from "./categoryFactory";
+import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 
 FontAwesome.loadFont();
 AntDesign.loadFont();
@@ -15,6 +17,18 @@ const deviceWidth = Dimensions.get('window').width
 
 class ExpenseByCategory extends Component{
 
+    constructor(props){
+        super(props);
+
+        this.state = {
+
+            requestType:{
+                current: 0,
+                maximum: 5,
+                minimum: 0
+            }
+        }
+    }
     data = [
         {
             key: 1,
@@ -47,6 +61,15 @@ class ExpenseByCategory extends Component{
             image: require("../../../assets/CategoryIcon/charitable_contributions2.png")
         }
     ]
+    getDynamicMonth = () => {
+        let { requestType } = this.state;
+        let currentDateObj = new Date();
+        currentDateObj.setMonth( currentDateObj.getMonth() - requestType.current);
+        return currentDateObj.getMonth();
+    }   
+    componentDidMount = () => {
+        
+    }
     header = () => {
         return(
             <View style={ styles.header }>
@@ -64,19 +87,63 @@ class ExpenseByCategory extends Component{
                 </View> 
         );
     }
+
+    switchExpenseNextRequest = () => {
+
+        let { requestType } = this.state;
+        let { current,maximum,minimum } = requestType;
+        if( current >= minimum ){
+            requestType.current = requestType.current-1;
+            this.setState({ requestType });
+        }
+
+    }
+    switchExpensePrevRequest = () => {
+
+        let { requestType } = this.state;
+        let { current,maximum,minimum } = requestType;
+        if( current < maximum ){
+            requestType.current = requestType.current+1;
+            this.setState({ requestType });
+        }
+        
+    }
     expensePie = () => { 
+        const { requestType } = this.state;
+        const { current,maximum,minimum } = requestType;
         return(
            <Fragment>
                <View style={{ height: 350,backgroundColor:"#FFF" }}>
+                    
                     <this.RenderPieChart />
 
                     <View style={ styles.filterButton }>
 
-                        <TouchableOpacity><AntDesign color={"#030538"} name={"left"} size={15}></AntDesign></TouchableOpacity>
-                        <Text style={{ color:"#030538",fontSize: 12 }}>This Month</Text>
-                        <TouchableOpacity><AntDesign name={"right"} color={"#030538"} size={15}></AntDesign></TouchableOpacity>
-
+                        <TouchableOpacity
+                        onPress={() => {
+                            this.switchExpensePrevRequest();
+                        }}
+                        disabled = { current == maximum }
+                        style={{ opacity: current == maximum ? 0 : 1,justifyContent:"center",
+                            borderColor:"red",borderWidth:0 }}
+                        ><AntDesign color={"#030538"} name={"left"} size={15}></AntDesign></TouchableOpacity>
+                        <Text style={{ alignSelf:"center",color:"#030538",fontSize: 12 }}>
+                        {
+                            current == 0 ? "This Month" : ALL_MONTHS[this.getDynamicMonth()]
+                        }
+                        </Text>
+                        <TouchableOpacity
+                        onPress={() => {
+                            this.switchExpenseNextRequest();
+                        }}
+                        disabled = { current == minimum }
+                        style={{ opacity: current == 0 ? 0 : 1,justifyContent:"center",
+                            borderColor: "red", borderWidth:0 }}
+                        ><AntDesign name={"right"} color={"#030538"} size={15}></AntDesign>
+                        </TouchableOpacity>
+                        
                     </View>
+                    <Text style={{ textAlign:"center" }}>{ `\n${current}` }</Text>
                </View>
               <this.renderCategory />
            </Fragment>
@@ -86,28 +153,12 @@ class ExpenseByCategory extends Component{
     renderCategory = () => {
 
         return(
-            
-                    <View style={ styles.categoryCart }>
-                        <View style={ styles.categoryCartChild1 }>
-                            <this.renderSingleCategory  />
-                            <this.seprator />
-                            <this.renderSingleCategory  />
-                            <this.seprator />
-                            <this.renderSingleCategory  />
-                            <this.seprator />
-                            <this.renderSingleCategory  />
-                            <this.seprator />
-                            <this.renderSingleCategory  />
-                            <this.seprator />
-                            <this.renderSingleCategory  />
-                            <this.seprator />
-                            <this.renderSingleCategory  />
-                            <this.seprator />
-                            <this.renderSingleCategory  />
-                            
-                            </View>
-                     </View>
-            
+                <View style={ styles.categoryCart }>
+                    <View style={ styles.categoryCartChild1 }>
+                        <this.renderSingleCategory  />
+                        <this.seprator />
+                    </View>
+                </View>
         );
     }
 
@@ -191,8 +242,9 @@ class ExpenseByCategory extends Component{
             >   
                 <this.Labels/>
                 <View style={styles.piechartText}>
-                    <Text style={ styles.piechartUpperText }>{ `Total Spending\nin March` }</Text>
-
+                    <Text style={ styles.piechartUpperText }>
+                        { `Total Spending\nin ${FULL_MONTH[this.getDynamicMonth()]}` }
+                    </Text>
                     <Text style={ styles.piechartCenterText}>-$52,112.27</Text>
                 
                     <View style={ styles.piechartButtomTextView }>
@@ -205,6 +257,8 @@ class ExpenseByCategory extends Component{
         );
     }
     render(){
+        console.log("------here - ");
+        console.log(this.props.mainExpenseByCategoryRedux);
         return(
             <ScrollView style={{ flex:1 }}>
                 <this.header />
@@ -251,14 +305,13 @@ const styles = StyleSheet.create({
         borderBottomWidth: StyleSheet.hairlineWidth
     },
     filterButton:{
-        paddingHorizontal:15,
-        alignItems:"center",
+        paddingHorizontal:12,
         borderRadius:10,
         height:40,
         backgroundColor:"#E6E6EC",
         alignSelf:"center",
         marginTop: -50,
-        width: 150,
+        width: 160,
         flexDirection:"row",
         justifyContent:"space-between"
     },
@@ -327,8 +380,22 @@ const styles = StyleSheet.create({
     }
 })
 
+const mapStateToProps = (state) => {
+    return {
+        //expenseByCategoryRedux: state.expenseByCategory,
+        categoryReduxData: state.plaidCategoryData,
+        mainExpenseByCategoryRedux: state.mainExpenseByCategory
+    }
+}
 
-export default DetectPlatform(ExpenseByCategory,styles.container);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchMainExepenseByCategory: (type = 0) => { dispatch(fetchMainExpenseAsyncCreator(type)) },
+        //staggingData: (staggingDataParam) => { dispatch(staggingDataParam); }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(ExpenseByCategory,styles.container));
 
 
 

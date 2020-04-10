@@ -166,7 +166,7 @@ class ExpenseByCategory extends Component{
                     <View style={{ flexDirection:"column",justifyContent:"space-between" }}>
                         <TouchableOpacity 
                         style={{ alignSelf:"flex-end",borderBottomColor:"#000",borderBottomWidth:1 }}
-                        onPress={()=>{ this.props.navigation.navigate("ExpenseScreenParent"); }}>
+                        onPress={()=>{ this.props.navigation.navigate("NewExpenseByCategoryParent"); }}>
                         <Text style={ styles.expenseTotalCurrency }>
                         { expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}
                         </Text>

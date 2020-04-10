@@ -101,7 +101,7 @@ class Dashboard extends PureComponent {
         if(userResponse.userData.bankIntegrationStatus == true){
           this.showBankNotConnectedPopupFlag = false;
            //Approcahes using promises 
-            
+           this.props.fetchPlaidCategoryDispatch();
             getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
               if(cashOutOfDateResponse.result == true){
                 this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
@@ -136,6 +136,7 @@ class Dashboard extends PureComponent {
             },1000);
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
+            this.props.fetchMainExepenseByCategory(0);
             // this.props.fetchInsights();
             if( userResponse.userData.qbIntegrationStatus == true  ){
               getHealthScoreUsingPromise().then((response)=>{
@@ -167,7 +168,7 @@ class Dashboard extends PureComponent {
         }
         this.setState({  userData:userResponse.userData },()=>{
           if(userResponse.userData.bankIntegrationStatus == true){
-            this.props.fetchPlaidCategoryDispatch();
+            // this.props.fetchPlaidCategoryDispatch();
           }
         });
       }else{
@@ -224,7 +225,7 @@ class Dashboard extends PureComponent {
         if(userResponse.userData.bankIntegrationStatus == true){
           this.showBankNotConnectedPopupFlag = false;
            //Approcahes using promises 
-            
+           this.props.fetchPlaidCategoryDispatch();
             getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
               if(cashOutOfDateResponse.result == true){
                 this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
@@ -257,6 +258,7 @@ class Dashboard extends PureComponent {
             });
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
+            this.props.fetchMainExepenseByCategory(0);
             // this.props.fetchInsights();
             if( userResponse.userData.qbIntegrationStatus == true  ){
               getHealthScoreUsingPromise().then((response)=>{
@@ -314,7 +316,7 @@ class Dashboard extends PureComponent {
   
         this.setState({  userData:userResponse.userData,isSpinner:false,tryAgainScreen:false,isBodyLoaded:true },()=>{
           if(userResponse.userData.bankIntegrationStatus == true){
-            this.props.fetchPlaidCategoryDispatch();
+            // this.props.fetchPlaidCategoryDispatch();
           }
           if(this.state.isCountApiTriggered == false){
               if(userResponse.userData.bankIntegrationStatus == false){
@@ -606,7 +608,7 @@ const mapDispatchToProps = dispatch => {
   fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
   updateUserReduxTree: (userData) => { dispatch(fetchUserSuccess(userData)) },
   fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
-  fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) },
+  fetchMainExepenseByCategory: (type = 0) => { dispatch(fetchMainExpenseAsyncCreator(type)) },
   fetchCashInChange: ( cicCurrentRange = 0 ) => { dispatch(cicAsynCreator(cicCurrentRange)) },
   fetchIncommingAr: () => { dispatch(fetchArAsyncCreator()); },
   fetchInsights: () => { dispatch(fetchInsightsAsyncCreator()); },

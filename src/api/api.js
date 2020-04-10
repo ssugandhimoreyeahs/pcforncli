@@ -74,7 +74,8 @@ export {
 
 //all expense by category api's
 export {
-  getExpenseByCategoryPromise
+  getExpenseByCategoryPromise,
+  getExpenseByCategoryScreenPromise
 } from "./Apis/expensecategory";
 
 export {

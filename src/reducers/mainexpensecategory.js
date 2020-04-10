@@ -4,24 +4,24 @@ export const MAIN_EXPENSE_CATEGORY_REQUEST = "MAIN_EXPENSE_CATEGORY_REQUEST";
 export const MAIN_EXPENSE_CATEGORY_SUCCESS = "MAIN_EXPENSE_CATEGORY_SUCCESS";
 export const MAIN_EXPENSE_CATEGORY_ERROR  = "MAIN_EXPENSE_CATEGORY_ERROR";
 
-import { getExpenseByCategoryPromise } from "../api/api";
+import { getExpenseByCategoryScreenPromise } from "../api/api";
 
 const initialState = {
 
-    error:false,
-    errorMsg:"",
-    mainExpenses:[],
-    isFetched:false,
-    loading:false,
-    mainExpenseType:0,
-    totalMainExpense:0
+   error: false,
+   errorMsg: '',
+   masterLoader: false,
+   childLoader: false,
+   expensesData:{},
+   expenseType:0,
+   isFetched: false
 
 }
 
 export const mainExpenseCategoryRequest = (action) => {
     return{
         type: MAIN_EXPENSE_CATEGORY_REQUEST,
-        mainExpenseType: action.mainExpenseType,
+        expenseType: action.expenseType,
 
     }
 }
@@ -29,17 +29,16 @@ export const mainExpenseCategoryRequest = (action) => {
 export const mainExpenseCategorySuccess = (action) => {
     return {
         type: MAIN_EXPENSE_CATEGORY_SUCCESS,
-        mainExpenses: action.ExpenseByCategory,
-        mainExpenseType: action.currentMainExpenseType,
-        totalMainExpense: action.amount
-
+        expensesData: action.expensesData,
+        expenseType: action.expenseType
     }
 }
 
 export const mainExpenseCategoryError = (error) => {
     return {
         type: MAIN_EXPENSE_CATEGORY_ERROR,
-        payload:error.msg,
+        errorMsg: action.errorMsg,
+        expenseType: action.expenseType
         
     }
 }
@@ -50,35 +49,32 @@ export const mainExpenseReducer = ( state = initialState, action ) => {
 
         case MAIN_EXPENSE_CATEGORY_REQUEST: return {
 
-            error:false,
-            errorMsg:"",
-            mainExpenses:[],
-            isFetched:false,
-            loading:true,
-            mainExpenseType:action.mainExpenseType,
-            totalMainExpense:0
+            error: false,
+            errorMsg: '',
+            loader: true,
+            expensesData:{},
+            expenseType: action.expenseType,
+            isFetched: false
 
         }
         case MAIN_EXPENSE_CATEGORY_SUCCESS: return {
 
-            error:false,
-            errorMsg:"",
-            mainExpenses:action.mainExpenses,
-            isFetched:true,
-            loading:false,
-            mainExpenseType:action.mainExpenseType,
-            totalMainExpense: action.totalMainExpense
+            error: false,
+            errorMsg: '',
+            loader: false,
+            expensesData: action.expensesData,
+            expenseType: action.expenseType,
+            isFetched: true
 
         }
         case MAIN_EXPENSE_CATEGORY_ERROR: return {
 
-            error:true,
-            errorMsg:action.payload,
-            mainExpenses:[],
-            isFetched:false,
-            loading:false,
-            mainExpenseType:0,
-            totalMainExpense: 0
+            error: true,
+            errorMsg: action.errorMsg,
+            loader: false,
+            expensesData:{},
+            expenseType: action.expenseType,
+            isFetched: false
 
         }
         default: return state;
@@ -86,20 +82,26 @@ export const mainExpenseReducer = ( state = initialState, action ) => {
 }
 
 
-export const fetchMainExpenseAsyncCreator = ( mainExpenseType = 1 ) => {
+export const fetchMainExpenseAsyncCreator = ( expenseType = 0 ) => {
     return (dispatch) => {
-        dispatch(mainExpenseCategoryRequest({ mainExpenseType }));
-        getExpenseByCategoryPromise(mainExpenseType).then((response)=>{
+        dispatch(mainExpenseCategoryRequest({ expenseType }));
+        getExpenseByCategoryScreenPromise(1).then((response)=>{
             if(response.result == true){
-                
-                response.expenseByCategoryResponse.currentMainExpenseType = mainExpenseType;
-                //console.log("Main expense by category response - ",response);
-                dispatch(mainExpenseCategorySuccess(response.expenseByCategoryResponse));
+                dispatch(mainExpenseCategorySuccess({
+                    expensesData: response.expensesData,
+                    expenseType
+                }));
             }else{
-                dispatch(mainExpenseCategoryError("Error While Fetching Expenses Try Again!"));
+                dispatch(mainExpenseCategoryError({
+                    errorMsg: "Something went wrong!",
+                    expenseType
+                }));
             }
         }).catch((error)=>{
-            dispatch(mainExpenseCategoryError("Error While Fetching Expenses Try Again!"));
+            dispatch(mainExpenseCategoryError({
+                errorMsg: "Something went wrong!",
+                expenseType
+            }));
         })
 
     }
