@@ -32,6 +32,15 @@ class ExpenseByCategory extends Component{
             }
         }
     }
+    static getDerivedStateFromProps(props){
+        let currentRange = props.mainExpenseByCategoryRedux.expenseType;
+       
+        return { requestType:{
+            current: currentRange,
+            maximum: 5,
+            minimum: 0
+        }};
+    }
     readyGraphData = () => {
 
         const { expensesData } = this.props.mainExpenseByCategoryRedux;
@@ -75,7 +84,7 @@ class ExpenseByCategory extends Component{
         let currentDateObj = new Date();
         currentDateObj.setMonth( currentDateObj.getMonth() - requestType.current);
         return currentDateObj.getMonth();
-    }   
+    }  
     componentDidMount = () => {
         
     }
@@ -121,7 +130,13 @@ class ExpenseByCategory extends Component{
     expensePie = () => { 
         const { requestType } = this.state;
         const { current,maximum,minimum } = requestType;
-        const { expensesData } = this.props.mainExpenseByCategoryRedux;
+        const { expensesData,isFetched } = this.props.mainExpenseByCategoryRedux;
+        if(this.props.mainExpenseByCategoryRedux.expensesData == undefined){
+            return ;
+        }
+        if(this.props.mainExpenseByCategoryRedux.expensesData.ExpenseByCategory == undefined){
+            return ;
+        }
         let { ExpenseByCategory } = expensesData;
         //ExpenseByCategory = [];
         return(
@@ -461,7 +476,7 @@ const styles = StyleSheet.create({
         marginTop:20 
     },
     headerBack: { 
-        paddingLeft:4,
+        paddingLeft:8,
         borderWidth:0,
         borderColor:"red",
         width:"10%",
