@@ -137,7 +137,7 @@ class CategoryScreen extends Component{
             axiosBody.updateCategorId = CategoryFactory.getCategoryId(categoryName);
 
             console.log("Axios Body Before Send - ",axiosBody);
-            
+
             changeAllSimilarTransaction(axiosBody)
                 .then((response)=>{
                     
@@ -547,14 +547,9 @@ class CategoryScreen extends Component{
             this.setState({ showPleaseEnterCategory: true });
             return true;
         }
-        let { category,error,isFetched,loading } = this.props.categoryReduxData;
         let isCategoryAlreadyPresent = false;
-        for(let i=0;i<category.length;i++){
-            if(categoryInput.toLowerCase() == category[i].categoryName.toLowerCase()){
-                isCategoryAlreadyPresent = true;
-                break;
-            }
-        }
+        isCategoryAlreadyPresent = CategoryFactory.isCategoryExist(categoryInput);
+        
         
         if(isCategoryAlreadyPresent){
             this.setState({ isSpinner:true,editCategoryDialogVisible:false,addCategoryDialogVisible:false,showPleaseEnterCategory: false },()=>{
@@ -568,7 +563,7 @@ class CategoryScreen extends Component{
                                 ],{ cancelable: false });
                         },100);
                     })
-                },900);
+                },700);
             });
             return true;
         }else{

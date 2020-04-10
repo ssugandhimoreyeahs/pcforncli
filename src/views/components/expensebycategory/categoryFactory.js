@@ -34,6 +34,20 @@ class CategoryFactory{
     getPlaidCategories= () => {
         return this.plaidCategories;
     }
+    isCategoryExist = ( CategoryName = "" ) => {
+
+        const { plaidCategories } = this;
+        let isCategoryExistFlag = false;
+        for(let i=0;i < plaidCategories.length; i++){
+            if(plaidCategories[i].categoryName.toLowerCase() === CategoryName.toLowerCase()){
+                isCategoryExistFlag = true;
+                break;
+            }  
+        }
+
+        return isCategoryExistFlag;
+
+    }
 }
 
 export default new CategoryFactory;
