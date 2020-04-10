@@ -86,9 +86,9 @@ class ExpenseByCategory extends Component{
     renderCategory = () => {
 
         return(
-            <View style={{ alignItems:"center" }}>
+            
                     <View style={ styles.categoryCart }>
-                        <View style={{ paddingVertical:35,width: "92%",alignSelf:"center" }}>
+                        <View style={ styles.categoryCartChild1 }>
                             <this.renderSingleCategory  />
                             <this.seprator />
                             <this.renderSingleCategory  />
@@ -107,7 +107,7 @@ class ExpenseByCategory extends Component{
                             
                             </View>
                      </View>
-            </View>
+            
         );
     }
 
@@ -123,18 +123,18 @@ class ExpenseByCategory extends Component{
              </View>
             
             <View style={ styles.categoryRenderStyle }>
-                     <View style={{ flexDirection:"row",justifyContent:"space-between" }}>
-                         <Text style={{ width:"60%",fontWeight:"600",fontSize:15,color: "#1D1E1F" }}>
+                     <View style={ styles.categoryTitleAmount }>
+                         <Text style={ styles.categoryText }>
                          {'Employee Benefits'} </Text>
-                         <Text style={{ fontSize:15,color: "#1D1E1F" }}>
+                         <Text style={ styles.categoryAmount }>
                          {'-$9,290,256'}</Text>
                     </View>
 
-                    <View style={{ flexDirection:"row",justifyContent:"space-between" }}>
-                         <Text style={{ fontSize:10,color: "#1D1E1F" }}>
+                    <View style={ styles.categoryTitleAmount }>
+                         <Text style={ styles.categoryHikeStyle }>
                          <FontAwesome name={"arrow-up"} color={"#FF784B"}/>
                          {' 2.7% since previous month'} </Text>
-                         <Text style={{ fontSize:10,color: "#1D1E1F" }}>
+                         <Text style={ styles.categoryHikeStyle }>
                          {'33% of total'}</Text>
                     </View>
                  </View>
@@ -206,7 +206,7 @@ class ExpenseByCategory extends Component{
     }
     render(){
         return(
-            <ScrollView>
+            <ScrollView style={{ flex:1 }}>
                 <this.header />
                 <this.expensePie />
                 
@@ -224,15 +224,24 @@ const styles = StyleSheet.create({
     header: { 
         elevation:5,
         shadowColor:"#F0F0F0",
-        borderBottomColor:"#F0F0F0",borderBottomWidth: 1.5,
-        height:70,backgroundColor:"#F8F8F8",flexDirection:"row"
+        borderBottomColor:"#F0F0F0",
+        borderBottomWidth: 1.5,
+        height:70,
+        backgroundColor:"#F8F8F8",
+        flexDirection:"row"
     },
     categoryCart: { 
-        backgroundColor:"#FFF",borderRadius:5,
-        width:"90%",marginVertical: 25,
-        borderColor:"black",borderWidth:0,
-        shadowColor:"#000",shadowOpacity: 0.3,
-        shadowRadius: 4,shadowOffset: { height:1,width:1 },elevation:5
+        backgroundColor:"#FFF",
+        borderRadius:5,
+        width:"93%",
+        marginVertical: 25,
+        borderColor:"#000",borderWidth:0,
+        shadowColor:"#000",
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        shadowOffset: { height:1,width:1 },
+        elevation:5,
+        alignSelf:"center"
     },
     seprator: { 
         alignSelf:"center",
@@ -259,13 +268,14 @@ const styles = StyleSheet.create({
         borderWidth: 0
     },
     categoryRenderStyle: { 
-        paddingLeft:5,paddingRight:3,
-        width: "80%",
+        paddingHorizontal:3,
+        width: "76%",
         justifyContent:"space-between",
         borderColor:"#000",borderWidth:0
     },
     nextButtonStyle: { 
-        justifyContent: "center",width: "4%",
+        justifyContent: "center",
+        width: "5%",
         borderColor: "red",borderWidth: 0
     },
     piechartText: {
@@ -291,6 +301,29 @@ const styles = StyleSheet.create({
         borderColor:"blue",borderWidth:0,
         flexDirection:"row",
         justifyContent:"space-between",paddingVertical:3
+    },
+    categoryCartChild1: { 
+        paddingVertical:30,
+        width: "93%",
+        alignSelf:"center" 
+    },
+    categoryTitleAmount: { 
+        flexDirection:"row",
+        justifyContent:"space-between" 
+    },
+    categoryText: { 
+        width:"60%",
+        fontWeight:"600",
+        fontSize:15,
+        color: "#1D1E1F" 
+    },
+    categoryHikeStyle: { 
+        fontSize:10,
+        color: "#1D1E1F" 
+    },
+    categoryAmount: { 
+        fontSize:15,
+        color: "#1D1E1F" 
     }
 })
 
