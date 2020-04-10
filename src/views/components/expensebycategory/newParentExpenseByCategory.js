@@ -192,6 +192,23 @@ class ExpenseByCategory extends Component{
             break;
             }
         }
+
+        let isShowUpDownIcon = {};
+        isShowUpDownIcon.isShow = false;
+        isShowUpDownIcon.iconType = ``;
+        isShowUpDownIcon.text = ``;
+        isShowUpDownIcon.iconColor = ``;
+        if(item.isUp != null && item.isDown == null){
+            isShowUpDownIcon.isShow = true;
+            isShowUpDownIcon.iconType = `arrow-up`;
+            isShowUpDownIcon.text = item.isUp;
+            isShowUpDownIcon.iconColor = `#FF784B`;
+        }else if(item.isUp == null && item.isDown != null){
+            isShowUpDownIcon.isShow = true;
+            isShowUpDownIcon.iconType = `arrow-down`;
+            isShowUpDownIcon.text = item.isDown;
+            isShowUpDownIcon.iconColor = `#1188DF`;
+        }
         return(
            <Fragment>
                 <View style={ styles.categoryRenderCart }>
@@ -225,12 +242,26 @@ class ExpenseByCategory extends Component{
                         </View>
 
                         <View style={ styles.categoryTitleAmount }>
-                            <Text style={ styles.categoryHikeStyle }>
-                                <FontAwesome 
-                                name={"arrow-up"} color={"#FF784B"} />
-                                    {' 2.7% since previous month'} 
+                            <Text style={{ ...styles.categoryHikeStyle,
+                                borderWidth:0,borderColor:"red",
+                                width:"70%",textAlign:"left"
+                            }}>
+                                {
+                                    isShowUpDownIcon.isShow == true ?
+                                    <FontAwesome 
+                                    name={`${isShowUpDownIcon.iconType}`} 
+                                    color={`${isShowUpDownIcon.iconColor}`} />
+                                    : null    
+                                }
+                                {
+                                    isShowUpDownIcon.isShow == true ?
+                                    ` ${isShowUpDownIcon.text} since previous month`  : null
+                                }
                                 </Text>
-                                <Text style={ styles.categoryHikeStyle }>
+                                <Text style={{ ...styles.categoryHikeStyle,
+                                textAlign:"right",
+                                borderWidth:0,borderColor:"red",width:"30%"
+                                }}>
                                     {`${item.percentage}% of total`}
                             </Text>
                         </View>
@@ -280,7 +311,25 @@ class ExpenseByCategory extends Component{
             });
     }
     RenderPieChart = () => {
-        
+        const { expensesData } = this.props.mainExpenseByCategoryRedux;
+        let isShowUpDownIcon = {};
+        isShowUpDownIcon.isShow = false;
+        isShowUpDownIcon.iconType = ``;
+        isShowUpDownIcon.text = ``;
+        isShowUpDownIcon.iconColor = ``;
+        if(expensesData.isUp != null && expensesData.isDown == null){
+            isShowUpDownIcon.isShow = true;
+            isShowUpDownIcon.iconType = `arrow-up`;
+            isShowUpDownIcon.text = expensesData.isUp;
+            isShowUpDownIcon.iconColor = `#FF784B`;
+        }else if(expensesData.isUp == null && expensesData.isDown != null){
+            isShowUpDownIcon.isShow = true;
+            isShowUpDownIcon.iconType = `arrow-down`;
+            isShowUpDownIcon.text = expensesData.isDown;
+            isShowUpDownIcon.iconColor = `#1188DF`;
+        }
+
+        //isShowUpDownIcon.isShow = true;
         return(
             <PieChart
                 style={ styles.pieChartParent }
@@ -295,13 +344,26 @@ class ExpenseByCategory extends Component{
                     <Text style={ styles.piechartUpperText }>
                         { `Total Spending\nin ${FULL_MONTH[this.getDynamicMonth()]}` }
                     </Text>
-                    <Text style={ styles.piechartCenterText}>-$52,112.27</Text>
+                    <Text style={ styles.piechartCenterText}>
+                        { `-$${numberWithCommas(expensesData.amount)}` }
+                    </Text>
                 
-                    <View style={ styles.piechartButtomTextView }>
-                    <FontAwesome name={'arrow-up'} color={"#FF784B"} size={14}/>
-                    <Text style={{ textAlign:"center",fontSize:12,color:"#1D1E1F",paddingLeft:5 }}>7.21%</Text>
-                    </View>
-                    <Text style={{ textAlign:"center",color:"#1D1E1F",opacity:0.5 }}>since last month</Text>
+                    {
+                        isShowUpDownIcon.isShow == false ? 
+                        <View style={{ marginTop:31 }}/> :
+                        <Fragment>
+                            <View style={ styles.piechartButtomTextView }>
+                            <FontAwesome name={`${isShowUpDownIcon.iconType}`} 
+                            color={`${isShowUpDownIcon.iconColor}`} size={14}/>
+                            <Text style={{ textAlign:"center",fontSize:12,color:"#1D1E1F",paddingLeft:5 }}>
+                                `${isShowUpDownIcon.text}`
+                            </Text>
+                            </View>
+                            <Text style={{ textAlign:"center",color:"#1D1E1F",opacity:0.5 }}>
+                                since last month
+                            </Text>
+                        </Fragment>
+                    }
                 </View>
             </PieChart>
         );
@@ -384,7 +446,7 @@ const styles = StyleSheet.create({
     },
     categoryRenderStyle: { 
         paddingRight:5,
-        paddingLeft:3,
+        paddingLeft:5,
         width: "80%",
         justifyContent:"space-between",
         borderColor:"#000",borderWidth:0
@@ -445,7 +507,7 @@ const styles = StyleSheet.create({
         borderWidth:0,borderColor:"red",
         marginHorizontal:24,
         height: 390,
-        marginTop: -61 
+        marginTop: -55 
     },
     categoryRenderCart: { 
         flexDirection: "row", 
