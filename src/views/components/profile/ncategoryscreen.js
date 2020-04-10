@@ -15,6 +15,8 @@ import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
 import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction,changeAllSimilarTransaction } from "../../../api/api";
 import { PLAID_EXPENSE_CATEGORIES,EXPENSES_COLOR,getCategoryInitials } from "../../../api/common";
 import { CHANGECATEGORY,ERRORCATEGORY,ADDEDCATEGORY,DELETECATEGORY } from "../../../api/message";
+import CategoryFactory from "../expensebycategory/categoryFactory";
+
 AntDesign.loadFont();
 EvilIcons.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -38,7 +40,7 @@ class CategoryScreen extends Component{
     }
     componentDidMount(){
         let recievedData = this.props.navigation.getParam("currentExecutingTransaction");
-        console.log("Again Component Mount for the category Screen - ");
+        
     }
     handleHeaderButton = () => {
         const { isEdit } = this.state;
@@ -129,23 +131,16 @@ class CategoryScreen extends Component{
     handleChangeCategory = async (categoryId,categoryName) => {
         
         if(this.state.toggle){
-            let axiosBody = {};
-            axiosBody.oldCategoryId = "";
-            axiosBody.updateCategorId = "";
-            let { category: reduxCategory,error,isFetched,loading } = this.props.categoryReduxData;
             const { category:transactionCategory } = this.props.navigation.getParam("currentExecutingTransaction");
+            let axiosBody = {};
+            axiosBody.oldCategoryId = CategoryFactory.getCategoryId(transactionCategory);
+            axiosBody.updateCategorId = CategoryFactory.getCategoryId(categoryName);
+
+            console.log("Axios Body Before Send - ",axiosBody);
             
-            for(let i=0;i < reduxCategory.length; i++){
-                if(reduxCategory[i].categoryName == transactionCategory){
-                    axiosBody.oldCategoryId = reduxCategory[i].id;
-                }   
-                if(reduxCategory[i].categoryName == categoryName){
-                    axiosBody.updateCategorId = reduxCategory[i].id;
-                }
-            }
             changeAllSimilarTransaction(axiosBody)
                 .then((response)=>{
-                    console.log("All Thing Work Fine - ",response);
+                    
                     setTimeout(()=>{
                         this.setState({  isSpinner:false },()=>{
                            this.props.navigation.getParam("resetTransactionScreen")();

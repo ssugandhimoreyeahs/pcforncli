@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { createAppContainer, } from "react-navigation";
 import {createStackNavigator} from 'react-navigation-stack';
-import { createStore, applyMiddleware } from "redux";
-import ReduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
-import reducer from "./src/reducers";
-import axios from "axios";
-import { network } from "./src/constants/constants";
+import Store from "./src/reducers/store";
 
 //Home Screen 
 import Legal from "./src/views/legal/legal";
@@ -420,7 +416,7 @@ const MainNavigator = createStackNavigator(
   }
 );
 
-const store = createStore(reducer,applyMiddleware(ReduxThunk));
+
 
 const NavigationApp = createAppContainer(MainNavigator);
 
@@ -437,7 +433,7 @@ export default class App extends Component {
   render() {
     return (
      
-      <Provider store={store}>
+      <Provider store={Store}>
         <ErrorBoundry>
           <NavigationApp />
         </ErrorBoundry>
