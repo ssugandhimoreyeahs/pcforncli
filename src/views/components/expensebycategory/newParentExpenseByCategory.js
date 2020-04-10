@@ -1,5 +1,5 @@
 import React,{ Component, Fragment } from "react";
-import { Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from "react-native";
+import { Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image as RNImage } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { ALL_MONTHS,FULL_MONTH } from "../../../constants/constants";
 import CategoryFactory from "./categoryFactory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
+import { numberWithCommas,firstLetterCapital,PLAID_EXPENSE_CATEGORIES } from "../../../api/common";
 
 FontAwesome.loadFont();
 AntDesign.loadFont();
@@ -150,55 +151,93 @@ class ExpenseByCategory extends Component{
     }
 
     renderCategory = () => {
-
+        const { expensesData } = this.props.mainExpenseByCategoryRedux;
+        const { ExpenseByCategory } = expensesData;
         return(
                 <View style={ styles.categoryCart }>
                     <View style={ styles.categoryCartChild1 }>
-                        <this.renderSingleCategory  />
-                        <this.seprator />
+                        {
+                            ExpenseByCategory.map((singleCategory,index)=>{
+                              return <this.renderSingleCategory key={index} currentIndex={index} item={singleCategory} />
+                            })
+                        }
                     </View>
                 </View>
         );
     }
 
-    renderSingleCategory = () => {
+    renderSingleCategory = ({ currentIndex,item }) => {
+        const { expensesData } = this.props.mainExpenseByCategoryRedux;
+        const { ExpenseByCategory } = expensesData;
         
+        //let categoryBackgroundColor = `#F98361`;
+        let categoryIcon = {
+            backgroundColor: `#F98361`,
+            isIcon: false,
+            iconPath: null
+        }
+        for(let i=0; i<PLAID_EXPENSE_CATEGORIES.length; i++){
+            if(item.category.toLowerCase() == PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()){
+            categoryIcon.backgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
+            categoryIcon.isIcon = true;
+            categoryIcon.iconPath = PLAID_EXPENSE_CATEGORIES[i].categoryIcon;
+            break;
+            }
+        }
         return(
-            <View style={{ flexDirection: "row", justifyContent:"space-between" }}>
+           <Fragment>
+                <View style={ styles.categoryRenderCart }>
+                    <View style={ styles.categoryIconStyle }>
+                    {
+                        categoryIcon.isIcon == true ?
+                          <RNImage 
+                          style={{ height: 40, width: 40 }}
+                          source={ categoryIcon.iconPath }/>
+                        :
+                        <View style={{ borderRadius:50,borderColor: categoryIcon.backgroundColor,
+                            height: 40, width: 40,backgroundColor: categoryIcon.backgroundColor }}>
 
-             <View style={ styles.categoryIconStyle }>
-             <View style={{ height: 50, width: 50, borderRadius: 50,
-                backgroundColor: "#A599EC" 
-             }}></View>
-             </View>
-            
-            <View style={ styles.categoryRenderStyle }>
-                     <View style={ styles.categoryTitleAmount }>
-                         <Text style={ styles.categoryText }>
-                         {'Employee Benefits'} </Text>
-                         <Text style={ styles.categoryAmount }>
-                         {'-$9,290,256'}</Text>
+                        </View>
+                    }
                     </View>
 
-                    <View style={ styles.categoryTitleAmount }>
-                         <Text style={ styles.categoryHikeStyle }>
-                         <FontAwesome name={"arrow-up"} color={"#FF784B"}/>
-                         {' 2.7% since previous month'} </Text>
-                         <Text style={ styles.categoryHikeStyle }>
-                         {'33% of total'}</Text>
+                    <View style={ styles.categoryRenderStyle }>
+                        <View style={ styles.categoryTitleAmount }>
+                            <Text style={ styles.categoryText }>
+                                {`${firstLetterCapital(item.category)}`} 
+                                {/* {`${CategoryFactory.getCategoryName(item.categoryId)}`} */}
+                            </Text>
+                            <Text style={ styles.categoryAmount }>
+                                {`-$${numberWithCommas(item.amount)}`}
+                            </Text>
+                        </View>
+
+                        <View style={ styles.categoryTitleAmount }>
+                            <Text style={ styles.categoryHikeStyle }>
+                                <FontAwesome 
+                                name={"arrow-up"} color={"#FF784B"} />
+                                    {' 2.7% since previous month'} 
+                                </Text>
+                                <Text style={ styles.categoryHikeStyle }>
+                                    {`${item.percentage}% of total`}
+                            </Text>
+                        </View>
+                        </View>
+
+
+                    <TouchableOpacity style={ styles.nextButtonStyle }>
+                        <AntDesign size={17} name={"right"} color={"#030538"} style={{ opacity: 0.5 }} />
+                    </TouchableOpacity>
+
                     </View>
-                 </View>
-             
-
-             <TouchableOpacity style={ styles.nextButtonStyle }>
-                 <AntDesign size={17} name={"right"} color={"#030538"} style={{ opacity: 0.5 }} />
-             </TouchableOpacity>
-
-            </View>
+                    {
+                        currentIndex < ExpenseByCategory.length - 1 ?
+                        <this.seprator /> : null
+                    }
+           </Fragment>
         );
     }
     seprator = () => {
-        
         return(
             <View style={ styles.seprator }/>
         );
@@ -310,7 +349,7 @@ const styles = StyleSheet.create({
     },
     seprator: { 
         alignSelf:"center",
-        marginVertical: 25,
+        marginVertical: 22,
         borderBottomColor:"#1D1E1F",
         width:"95%",
         borderBottomWidth: StyleSheet.hairlineWidth
@@ -327,13 +366,14 @@ const styles = StyleSheet.create({
         justifyContent:"space-between"
     },
     categoryIconStyle:{ 
-        width:"16%",
+        width:"14%",
         borderColor: "red",
         borderWidth: 0
     },
     categoryRenderStyle: { 
-        paddingHorizontal:3,
-        width: "76%",
+        paddingRight:5,
+        paddingLeft:3,
+        width: "80%",
         justifyContent:"space-between",
         borderColor:"#000",borderWidth:0
     },
@@ -368,7 +408,7 @@ const styles = StyleSheet.create({
     },
     categoryCartChild1: { 
         paddingVertical:30,
-        width: "93%",
+        width: "90%",
         alignSelf:"center" 
     },
     categoryTitleAmount: { 
@@ -394,6 +434,10 @@ const styles = StyleSheet.create({
         marginHorizontal:24,
         height: 390,
         marginTop: -61 
+    },
+    categoryRenderCart: { 
+        flexDirection: "row", 
+        justifyContent:"space-between" 
     }
 })
 
