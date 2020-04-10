@@ -73,12 +73,11 @@ class ExpenseByCategory extends Component{
     header = () => {
         return(
             <View style={ styles.header }>
-                    <View style={{ flexDirection:"row",width:"100%",marginTop:20 }}>
-                        <View style={{ width:"10%",justifyContent:"center",alignItems:"center" }}>
-                            <TouchableOpacity  onPress={()=>{ this.props.navigation.goBack(); }} >
-                                <AntDesign name='left' size={22} color={'#000000'}/>
-                            </TouchableOpacity>
-                        </View>
+                    <View style={ styles.headerChild }>
+                        <TouchableOpacity onPress={()=>{ this.props.navigation.goBack(); }} 
+                        style={ styles.headerBack }>
+                            <AntDesign name='left' size={22} color={'#000000'}/>
+                        </TouchableOpacity>
                         <View style={{ width:"80%",justifyContent:"center",alignItems:"center" }}>
                         <Text style={{ fontSize:17,color:"#000",fontWeight: "600" }}>{ `Expense by Category` }</Text>
                             
@@ -233,12 +232,12 @@ class ExpenseByCategory extends Component{
         
         return(
             <PieChart
-                style={{ height: 390,marginTop: -65 }}
+                style={ styles.pieChartParent }
                 valueAccessor={({ item }) => item.amount}
                 data={this.data}
                 // spacing={10}
-                outerRadius={'57%'}
-                // innerRadius={'50%'}
+                outerRadius={'72%'}
+                innerRadius={'63%'}
             >   
                 <this.Labels/>
                 <View style={styles.piechartText}>
@@ -257,8 +256,7 @@ class ExpenseByCategory extends Component{
         );
     }
     render(){
-        console.log("------here - ");
-        console.log(this.props.mainExpenseByCategoryRedux);
+        const { error,loader,isFetched } = this.props.mainExpenseByCategoryRedux;
         return(
             <ScrollView style={{ flex:1 }}>
                 <this.header />
@@ -283,6 +281,19 @@ const styles = StyleSheet.create({
         height:70,
         backgroundColor:"#F8F8F8",
         flexDirection:"row"
+    },
+    headerChild: { 
+        flexDirection:"row",
+        width:"100%",
+        marginTop:20 
+    },
+    headerBack: { 
+        paddingLeft:4,
+        borderWidth:0,
+        borderColor:"red",
+        width:"10%",
+        justifyContent:"center",
+        alignItems:"flex-start" 
     },
     categoryCart: { 
         backgroundColor:"#FFF",
@@ -377,6 +388,12 @@ const styles = StyleSheet.create({
     categoryAmount: { 
         fontSize:15,
         color: "#1D1E1F" 
+    },
+    pieChartParent: { 
+        borderWidth:0,borderColor:"red",
+        marginHorizontal:24,
+        height: 390,
+        marginTop: -61 
     }
 })
 

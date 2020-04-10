@@ -83,9 +83,10 @@ export const mainExpenseReducer = ( state = initialState, action ) => {
 
 
 export const fetchMainExpenseAsyncCreator = ( expenseType = 0 ) => {
+    expenseType = 1;
     return (dispatch) => {
         dispatch(mainExpenseCategoryRequest({ expenseType }));
-        getExpenseByCategoryScreenPromise(1).then((response)=>{
+        getExpenseByCategoryScreenPromise(expenseType).then((response)=>{
             if(response.result == true){
                 dispatch(mainExpenseCategorySuccess({
                     expensesData: response.expensesData,
