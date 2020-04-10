@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { ALL_MONTHS,FULL_MONTH } from "../../../constants/constants";
 import CategoryFactory from "./categoryFactory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
-import { numberWithCommas,firstLetterCapital,PLAID_EXPENSE_CATEGORIES } from "../../../api/common";
+import { numberWithCommas,firstLetterCapital,PLAID_EXPENSE_CATEGORIES,getCategoryInitials } from "../../../api/common";
 
 FontAwesome.loadFont();
 AntDesign.loadFont();
@@ -30,38 +30,46 @@ class ExpenseByCategory extends Component{
             }
         }
     }
-    data = [
-        {
-            key: 1,
-            amount: 40,
-            svg: { fill: '#FBBC10' },
-            image: require("../../../assets/CategoryIcon/vehicle2.png")
-        },
-        {
-            key: 2,
-            amount: 40,
-            svg: { fill: '#E89200' },
-            image: require("../../../assets/CategoryIcon/payroll2.png")
-        },
-        {
-            key: 3,
-            amount: 15,
-            svg: { fill: '#AA9637' },
-            image: require("../../../assets/CategoryIcon/membership_fees2.png")
-        },
-        {
-            key: 4,
-            amount: 8,
-            svg: { fill: '#7785E9' },
-            image: require("../../../assets/CategoryIcon/charitable_contributions2.png")
-        },
-         {
-            key: 5,
-            amount: 5,
-            svg: { fill: '#EA727A' },
-            image: require("../../../assets/CategoryIcon/charitable_contributions2.png")
-        }
-    ]
+    readyGraphData = () => {
+
+        const { expensesData } = this.props.mainExpenseByCategoryRedux;
+        const { ExpenseByCategory } = expensesData;
+
+        let graphArray = [];
+        
+        ExpenseByCategory.map((item,index)=>{
+            let categoryIcon = {
+                key: 0,
+                amount: 0,
+                svg: { fill: '#F98361' },
+                image: null,
+                isIcon: false
+            }
+            categoryIcon.key = index;
+            categoryIcon.amount = item.amount;
+            for(let i=0; i<PLAID_EXPENSE_CATEGORIES.length; i++){
+                if(item.category.toLowerCase() === PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()){
+                    categoryIcon.svg.fill = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
+                    categoryIcon.image = PLAID_EXPENSE_CATEGORIES[i].categoryIcon;
+                    categoryIcon.isIcon = true;
+                    break;
+                }
+            }
+            if(!categoryIcon.isIcon){
+                categoryIcon.image = require("../../../assets/CategoryIcon/uncategorized3.png");
+                //categoryIcon.amount = 25;
+            }
+            graphArray.push(categoryIcon);
+
+        });
+
+        console.log("Graph array here -");
+        console.log(graphArray);
+        return graphArray;
+
+        
+    }
+    
     getDynamicMonth = () => {
         let { requestType } = this.state;
         let currentDateObj = new Date();
@@ -177,7 +185,7 @@ class ExpenseByCategory extends Component{
             iconPath: null
         }
         for(let i=0; i<PLAID_EXPENSE_CATEGORIES.length; i++){
-            if(item.category.toLowerCase() == PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()){
+            if(item.category.toLowerCase() === PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()){
             categoryIcon.backgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
             categoryIcon.isIcon = true;
             categoryIcon.iconPath = PLAID_EXPENSE_CATEGORIES[i].categoryIcon;
@@ -195,8 +203,12 @@ class ExpenseByCategory extends Component{
                           source={ categoryIcon.iconPath }/>
                         :
                         <View style={{ borderRadius:50,borderColor: categoryIcon.backgroundColor,
-                            height: 40, width: 40,backgroundColor: categoryIcon.backgroundColor }}>
-
+                            justifyContent:"center",alignItems:"center",height: 40, width: 40,backgroundColor: categoryIcon.backgroundColor }}>
+                            <Text style={{ color:'#FFF',fontSize:18 }}>
+                                        {
+                                            getCategoryInitials(item.category)
+                                        }
+                            </Text>
                         </View>
                     }
                     </View>
@@ -245,8 +257,8 @@ class ExpenseByCategory extends Component{
     Labels = ({ slices, height, width }) => {
             return slices.map((slice, index) => {
                 const { labelCentroid, pieCentroid, data } = slice;
-                if(data.amount < 14)
-                    return;
+                if(index > 2)
+                    return false;
                 return (
                     <G
                         key={index}
@@ -273,7 +285,7 @@ class ExpenseByCategory extends Component{
             <PieChart
                 style={ styles.pieChartParent }
                 valueAccessor={({ item }) => item.amount}
-                data={this.data}
+                data={this.readyGraphData()}
                 // spacing={10}
                 outerRadius={'72%'}
                 innerRadius={'63%'}
@@ -337,7 +349,7 @@ const styles = StyleSheet.create({
     categoryCart: { 
         backgroundColor:"#FFF",
         borderRadius:5,
-        width:"93%",
+        width:"92%",
         marginVertical: 25,
         borderColor:"#000",borderWidth:0,
         shadowColor:"#000",
@@ -463,3 +475,35 @@ export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(Expens
 
 
 
+// return data = [
+//     {
+//         key: 1,
+//         amount: 40,
+//         svg: { fill: '#FBBC10' },
+//         image: require("../../../assets/CategoryIcon/vehicle2.png")
+//     },
+//     {
+//         key: 2,
+//         amount: 40,
+//         svg: { fill: '#E89200' },
+//         image: require("../../../assets/CategoryIcon/payroll2.png")
+//     },
+//     {
+//         key: 3,
+//         amount: 15,
+//         svg: { fill: '#AA9637' },
+//         image: require("../../../assets/CategoryIcon/membership_fees2.png")
+//     },
+//     {
+//         key: 4,
+//         amount: 8,
+//         svg: { fill: '#7785E9' },
+//         image: require("../../../assets/CategoryIcon/charitable_contributions2.png")
+//     },
+//      {
+//         key: 5,
+//         amount: 5,
+//         svg: { fill: '#EA727A' },
+//         image: require("../../../assets/CategoryIcon/charitable_contributions2.png")
+//     }
+// ]

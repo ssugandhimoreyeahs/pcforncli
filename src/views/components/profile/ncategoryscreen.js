@@ -266,7 +266,7 @@ class CategoryScreen extends Component{
         let iconPath = null;
         let categoryBackgroundColor = `#F98361`;
         for(let i=0;i<PLAID_EXPENSE_CATEGORIES.length;i++){
-            if(PLAID_EXPENSE_CATEGORIES[i].categoryName == categoryName){
+            if(PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase() === categoryName.toLowerCase()){
                 isIconAvailable = true;
                 iconPath = PLAID_EXPENSE_CATEGORIES[i].categoryIcon;
                 break;
