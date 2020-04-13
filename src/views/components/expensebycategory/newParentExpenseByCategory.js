@@ -131,12 +131,12 @@ class ExpenseByCategory extends Component{
         const { requestType } = this.state;
         const { current,maximum,minimum } = requestType;
         const { expensesData,isFetched } = this.props.mainExpenseByCategoryRedux;
-        if(this.props.mainExpenseByCategoryRedux.expensesData == undefined){
-            return ;
-        }
-        if(this.props.mainExpenseByCategoryRedux.expensesData.ExpenseByCategory == undefined){
-            return ;
-        }
+        // if(this.props.mainExpenseByCategoryRedux.expensesData == undefined){
+        //     return null;
+        // }
+        // if(this.props.mainExpenseByCategoryRedux.expensesData.ExpenseByCategory == undefined){
+        //     return null;
+        // }
         let { ExpenseByCategory } = expensesData;
         //ExpenseByCategory = [];
         return(

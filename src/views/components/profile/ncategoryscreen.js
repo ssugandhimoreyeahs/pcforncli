@@ -16,6 +16,7 @@ import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToT
 import { PLAID_EXPENSE_CATEGORIES,EXPENSES_COLOR,getCategoryInitials } from "../../../api/common";
 import { CHANGECATEGORY,ERRORCATEGORY,ADDEDCATEGORY,DELETECATEGORY } from "../../../api/message";
 import CategoryFactory from "../expensebycategory/categoryFactory";
+import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 
 AntDesign.loadFont();
 EvilIcons.loadFont();
@@ -148,7 +149,7 @@ class CategoryScreen extends Component{
                                  this.props.navigation.goBack();
                             },800);
                         });
-                       },1000);
+                       },500);
                 })
                 .catch((error)=>{
                     this.setState({ isSpinner:false },()=>{
@@ -167,7 +168,7 @@ class CategoryScreen extends Component{
                 this.props.navigation.getParam("resetTransactionScreen")();
                 setTimeout(()=>{
                      this.props.navigation.goBack();
-                },1000);
+                },800);
             });
            },500);
         }else{
@@ -211,11 +212,12 @@ class CategoryScreen extends Component{
                                 this.props.navigation.getParam("resetTransactionScreen")();
                             },500);
                             setTimeout(()=>{
+                                this.props.fetchMainExpenseAsyncCreator(0);
                                 this.props.fetchExpenseByCategory(3);
                             },1500);
                     },500);
                 });
-            },1000);
+            },500);
             // this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
             //     setTimeout(()=>{
                     
@@ -708,7 +710,7 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
         fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
-        //fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) }
+        fetchMainExepenseByCategory: (type = 0) => { dispatch(fetchMainExpenseAsyncCreator(type)) }
     }
 }
 

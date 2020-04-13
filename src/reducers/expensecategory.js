@@ -6,8 +6,8 @@ export const FETCH_EXPENSE_ERROR = "FETCH_EXPENSE_ERROR";
 export const FETCH_EXPENSE_REQUEST_MULTIPLE = "FETCH_EXPENSE_REQUEST_MULTIPLE";
 export const FETCH_EXPENSE_REQUEST_MULTIPLE_SUCCESS = "FETCH_EXPENSE_REQUEST_MULTIPLE_SUCCESS";
 import { getExpenseByCategoryPromise } from "../api/api";
-import { fetchCategorySuccess } from "./plaidCategory";
-import { MAIN_EXPENSE_CATEGORY_SUCCESS,MAIN_EXPENSE_CATEGORY_REQUEST,MAIN_EXPENSE_CATEGORY_ERROR } from "./mainexpensecategory";
+// import { fetchCategorySuccess } from "./plaidCategory";
+// import { MAIN_EXPENSE_CATEGORY_SUCCESS,MAIN_EXPENSE_CATEGORY_REQUEST,MAIN_EXPENSE_CATEGORY_ERROR } from "./mainexpensecategory";
 const initialExpense = {
     errorMsg:'',
     error:false,
@@ -107,90 +107,31 @@ export const ExpenseReducer = (state = initialExpense, action) => {
 export const fetchExpensesAsyncCreator = ( expenseType = 1 ) => {
         return (dispatch) => {
             dispatch(fetchExpenseRequest());
-
-            //for inner expense screen 
-            dispatch({
-                type: MAIN_EXPENSE_CATEGORY_REQUEST,
-                mainExpenseType: expenseType,
-        
-            });
             getExpenseByCategoryPromise(expenseType).then((response)=>{
                 if(response.result == true){
-                    //console.log("Fetching only current month expenses - ",response);
-                    //1 Dispatch action for the dashboard
                     dispatch(fetchExpenseSuccess(response.expenseByCategoryResponse));
-
-                    //2 Dispatch action for the inner category screen
-                    dispatch({
-                        type: MAIN_EXPENSE_CATEGORY_SUCCESS,
-                        mainExpenses: response.expenseByCategoryResponse.ExpenseByCategory,
-                        mainExpenseType: expenseType,
-                        totalMainExpense: response.expenseByCategoryResponse.amount
-                
-                    });
                 }else{
                     dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
-
-                    dispatch({
-                        type: MAIN_EXPENSE_CATEGORY_ERROR,
-                        payload: "Error While Fetching Expenses Try Again!"
-                        
-                    });
                 }
             }).catch((error)=>{
                 dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
-
-                dispatch({
-                    type: MAIN_EXPENSE_CATEGORY_ERROR,
-                    payload: "Error While Fetching Expenses Try Again!"
-                    
-                });
-            })
-
+            });
         }
 }
 
 export const fetchExpensesMultipleTimesAsyncCreator = ( expenseType ) => {
     return (dispatch) => {
         dispatch(fetchExpenseRequestMultiple());
-
-        //for inner screen
-        dispatch({
-            type: MAIN_EXPENSE_CATEGORY_REQUEST,
-            mainExpenseType: expenseType,
-    
-        });
         getExpenseByCategoryPromise(expenseType).then((response)=>{
             if(response.result == true){
                // console.log("Fetching Response with differnt Months - ",response);
                 response.expenseByCategoryResponse.currentExpenseRange = expenseType;
                 dispatch(fetchExpenseRequestMultipleSuccess(response.expenseByCategoryResponse));
-
-                dispatch({
-                    type: MAIN_EXPENSE_CATEGORY_SUCCESS,
-                    mainExpenses: response.expenseByCategoryResponse.ExpenseByCategory,
-                    mainExpenseType: expenseType,
-                    totalMainExpense: response.expenseByCategoryResponse.amount
-            
-                });
             }else{
                 dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
-
-                dispatch({
-                    type: MAIN_EXPENSE_CATEGORY_ERROR,
-                    payload: "Error While Fetching Expenses Try Again!"
-                    
-                });
             }
         }).catch((error)=>{
             dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
-
-            dispatch({
-                type: MAIN_EXPENSE_CATEGORY_ERROR,
-                payload: "Error While Fetching Expenses Try Again!"
-                
-            });
         })
-
     }
 }

@@ -21,6 +21,7 @@ import { fetchCurrentBalancePromise } from "../../../api/api";
 import { ALL_MONTHS } from "../../../constants/constants";
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
+import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 
 SimpleLineIcons.loadFont();
 AntDesign.loadFont();
@@ -298,7 +299,10 @@ class Checking extends React.PureComponent{
       this.setState(this.resetState(),()=>{
         setTimeout(()=>{
           this.readyTransactionPage();
-          setTimeout(()=>{ this.props.fetchExpenseByCategory(3); },500);
+          setTimeout(()=>{ this.props.fetchExpenseByCategory(3);
+            //for the expenses inner screen
+            this.props.fetchMainExepenseByCategory(0);
+          },500);
         },100);
       });
 
@@ -1281,7 +1285,7 @@ const styles = StyleSheet.create({
       return {
           fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
           fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
-          //fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) }
+          fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) }
       }
   }
     export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(Checking,styles.margins));
