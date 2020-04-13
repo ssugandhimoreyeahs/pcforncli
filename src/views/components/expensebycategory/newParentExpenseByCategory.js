@@ -1,5 +1,5 @@
 import React,{ Component, Fragment } from "react";
-import { ActivityIndicator,Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image as RNImage } from "react-native";
+import { ActivityIndicator,Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image as RNImage, Platform } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -131,17 +131,11 @@ class ExpenseByCategory extends Component{
         const { requestType } = this.state;
         const { current,maximum,minimum } = requestType;
         const { expensesData,isFetched } = this.props.mainExpenseByCategoryRedux;
-        // if(this.props.mainExpenseByCategoryRedux.expensesData == undefined){
-        //     return null;
-        // }
-        // if(this.props.mainExpenseByCategoryRedux.expensesData.ExpenseByCategory == undefined){
-        //     return null;
-        // }
         let { ExpenseByCategory } = expensesData;
-        //ExpenseByCategory = [];
+        
         return(
            <Fragment>
-               <View style={{ height: 365,backgroundColor:"#FFF" }}>
+               <View style={{ height: 370,backgroundColor:"#FFF" }}>
                     {
                         ExpenseByCategory.length > 0 ?
                         <this.RenderPieChart /> : 
@@ -365,8 +359,8 @@ class ExpenseByCategory extends Component{
                 valueAccessor={({ item }) => item.amount}
                 data={this.readyGraphData()}
                 // spacing={10}
-                outerRadius={'72%'}
-                innerRadius={'63%'}
+                outerRadius={'65%'}
+                innerRadius={'55%'}
             >   
                 <this.Labels/>
                 <View style={styles.piechartText}>
@@ -584,7 +578,7 @@ const styles = StyleSheet.create({
         borderWidth:0,borderColor:"red",
         marginHorizontal:24,
         height: 390,
-        marginTop: -55 
+        marginTop: Platform.OS == "ios" ? -60 : -45 
     },
     categoryRenderCart: { 
         flexDirection: "row", 
