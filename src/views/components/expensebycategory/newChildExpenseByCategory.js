@@ -23,11 +23,25 @@ class ExpenseByCategoryChild extends Component{
             currentExpenseCategory: {},
             error: false,
             loading: true,
-            subExepenseByCategory: {}
+            subExepenseByCategory: {},
+            currentExpenseType: 0
         }
     }
+    getDynamicMonth = () => {
+        let arrayForMonth = [];
+        for(let i=0;i<6;i++){
+            let objectToPush = {};
+            let currentDateObj = new Date();
+            currentDateObj.setMonth( currentDateObj.getMonth() - i);
+            objectToPush.renderValue = ALL_MONTHS[currentDateObj.getMonth()];
+            objectToPush.apiValue = i;
+            arrayForMonth.push(objectToPush);
+        }
+        return arrayForMonth.reverse();
+    } 
     triggerExpenseSubCategoryServer = () => {
-        const { expenseType,categoryId } = this.state.currentExpenseCategory;
+        const { categoryId } = this.state.currentExpenseCategory;
+        const { currentExpenseType: expenseType } = this.state;
         getExpenseByCategorySubScreenPromise(expenseType,categoryId)
         .then((response)=>{
             
@@ -46,10 +60,17 @@ class ExpenseByCategoryChild extends Component{
             });
         });
     }
+    getCurrentExecutingMonthString = () => {
+        const { currentExpenseCategory } = this.state;
+        const date = new Date();
+        date.setMonth(date.getMonth() - currentExpenseCategory.expenseType);
+        return ALL_MONTHS[date.getMonth()];
+    }
     componentDidMount = () => {
         const currentExpenseCategory = this.props.navigation.getParam("currentExpenseCategory");
-        this.setState({ currentExpenseCategory },()=>{
-            this.triggerExpenseSubCategoryServer();
+        
+        this.setState({ currentExpenseCategory,currentExpenseType:currentExpenseCategory.expenseType },()=>{
+           this.triggerExpenseSubCategoryServer();
         });
         
     }
@@ -76,7 +97,64 @@ class ExpenseByCategoryChild extends Component{
             <View style={ styles.seprator }/>
         );
     }
+    getCurrentExecutingMonth = () => {
+        const { currentExpenseType } = this.state;
+        const date = new Date();
+        date.setMonth( date.getMonth() - currentExpenseType);
+        return date.getMonth();
+    }
+    changeSubCategory = ( actionType = "prev") => {
+        const maximumExpense = 5;
+        const minimumExpense = 0;
+        const { currentExpenseType } = this.state;
+        
+        if(actionType == "prev"){
+            if(currentExpenseType <= maximumExpense){
+                this.setState({ currentExpenseType:
+                    currentExpenseType + 1,loading: true
+                },()=>{
+                    this.triggerExpenseSubCategoryServer();
+                })
+            }
+        }else{
+            if(currentExpenseType >= minimumExpense){
+                this.setState({ currentExpenseType:
+                    currentExpenseType - 1,loading: true
+                },()=>{
+                    this.triggerExpenseSubCategoryServer();
+                })
+            }
+        }
+    }
+    renderCurrentButton = () => {
 
+        return(
+            <View style={{  paddingHorizontal:7,alignItems:"center",         
+                borderWidth:0,borderColor:"red",height:35,
+                backgroundColor:"#E6E6EC",borderRadius:8,
+                width: 130,alignSelf:"center",
+                justifyContent:"space-between",flexDirection:"row" }}>
+
+                <TouchableOpacity 
+                style={{ opacity: this.state.currentExpenseType == 5 ? 0 : 1 }}
+                disabled={this.state.currentExpenseType == 5 ? true : false}
+                onPress={()=>{
+                    this.changeSubCategory("prev");
+                }}>
+                    <AntDesign name={"left"} size={17} />
+                </TouchableOpacity>
+                <Text>{ `${ALL_MONTHS[this.getCurrentExecutingMonth()]}` }</Text>
+                <TouchableOpacity 
+                style={{ opacity: this.state.currentExpenseType == 0 ? 0 : 1 }}
+                disabled={this.state.currentExpenseType == 0 ? true : false}
+                onPress={()=>{
+                    this.changeSubCategory("next");
+                }}>
+                    <AntDesign name={"right"} size={17}/>
+                </TouchableOpacity>
+            </View>
+        );
+    }
     transactionSeprator = () => {
         return(
             <View style={ styles.seprator2 }/>
@@ -94,19 +172,12 @@ class ExpenseByCategoryChild extends Component{
                 domainPadding={10}
                 style={{ parent: { marginLeft: -20 } }} >
                 <VictoryAxis 
-                    tickValues={[ 
-                        'Sep',
-                        'Oct',
-                        'Nov',
-                        'Dec',
-                        'Jan',
-                        'Feb','Mar' ]}
                     
                     offsetY={255}
                     style={{
                         axis: { stroke: '#ffffff' },
                         tickLabels: { fontSize: 12,fill: (data) => {
-                            return data == "Mar" ? `#1D1E1F` : `#8E8E93`;
+                            return data == this.getCurrentExecutingMonthString() ? `#1D1E1F` : `#8E8E93`;
                         } 
                         },
                     }} />
@@ -122,8 +193,7 @@ class ExpenseByCategoryChild extends Component{
                                 /> 
                 <VictoryBar
                     style={{ data: { fill,opacity: (data) => {
-                        console.log("-----");
-                        console.log(data);
+                        
                         if(data._y == -3){
                             return 1;
                         }else{
@@ -131,15 +201,33 @@ class ExpenseByCategoryChild extends Component{
                         }
                     } } }}
                     data={[
-                        { y:-0},
-                        { y:-1},
-                        { y:-1.4},
-                        { y:-1.5},
-                        { y:-2.2},
-                        { y:-2.15},
-                        { y:-2.5},
-                        { y:-3},
+                        { x:1,y:-1.4},
+                        { x:2,y:-1.5},
+                        { x:3,y:-2.2},
+                        { x:4,y:-2.15},
+                        { x:5,y:-2.5},
+                        { x:6,y:-3},
                     ]}
+
+                    events={[{
+                    target: "data",
+                    eventHandlers: {
+                        onPress: () => {
+                        return [
+                            {
+                            target: "data",
+                            mutation: (props) => {
+                                console.log("------Props here ------");
+                                console.log(props.datum);
+                                
+                                // const fill = props.style && props.style.fill;
+                                // return fill === "black" ? null : { style: { fill: "black" } };
+                            }
+                            }
+                        ];
+                        }
+                    }
+                    }]}
                 />
                 </VictoryChart>
             </View>
@@ -147,6 +235,7 @@ class ExpenseByCategoryChild extends Component{
     }
     bodyChart = () => {
         const { subExepenseByCategory } = this.state;
+        const { ExpenseSubCategory } = subExepenseByCategory;
         let iconObj = {};
         iconObj.visible = false;
         iconObj.type = ``;
@@ -163,11 +252,14 @@ class ExpenseByCategoryChild extends Component{
             iconObj.color = `#1188DF`;
             iconObj.text = subExepenseByCategory.isDown;
         }
+        let isSubCategoryEmpty = ExpenseSubCategory.length == 0 ? true : false;
         return(
             <Fragment>
                 <View style={{ height: 380,backgroundColor: "#FFF",
                     borderWidth:0,borderColor:"red" }} >
-                <View style={{ alignSelf: "center",marginTop: 30 }}>
+                {
+                    isSubCategoryEmpty == false ?
+                    <View style={{ height:250,alignSelf: "center",marginTop: 30 }}>
                     <Text style={{ textAlign:"center",color: "#1D1E1F",fontSize: 22,fontWeight: "bold" }}>
                         { `-$${numberWithCommas(subExepenseByCategory.totalAmount)}` }
                     </Text>
@@ -180,34 +272,53 @@ class ExpenseByCategoryChild extends Component{
                         </Text>
                         </View> : <View style={{ marginTop: 8 }} />
                     }
-                </View>
+                    </View> : <View
+                    style = {{
+                        borderWidth:0, borderColor:"red",
+                        height:280,justifyContent:"center",alignItems:"center"
+                    }}
+                    >
+                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
+                    </View>
+                }
                 <View style={{ marginTop: 10 }}>
-                    <this.renderBarChart />
+                    {/* <this.renderBarChart /> */}
+                    <this.renderCurrentButton />
                 </View>
                 </View>
             </Fragment>
         );
     }
-    renderTransaction = () => {
-
+    renderTransaction = ({ transaction,index,totalIndex }) => {
+        //console.log("Total Index - ",totalIndex," inde - ",index);
+        let currentTransactionDateObj = transaction.date.split("-");
         return(
-            
-                
-                <View style={{ width: "85%",alignSelf:"center" }}>
+            <Fragment>
+                 <View style={{ width: "85%",alignSelf:"center" }}>
                 <View style={{ flexDirection: "row",justifyContent: "space-between" }}>
 
-                <Text style={{ fontSize:15, color:"#1D1E1F" }}>Transaction Title</Text>
-                <Text style={{ fontSize:15, color:"#1D1E1F" }}>-$500</Text>
+                <Text style={{ fontSize:15, color:"#1D1E1F" }}>
+                    {`${transaction.name}`}
+                </Text>
+                <Text style={{ fontSize:15, color:"#1D1E1F" }}>
+                    {`-$${numberWithCommas(transaction.amount)}`}
+                </Text>
                 </View>
                 <View style={{ marginLeft:2,flexDirection: "row",justifyContent: "space-between",marginTop:10  }}>
-                <Text style={{ fontSize:11,color:"#1D1E1F",opacity:0.5 }}>Mar 6</Text></View>
+                <Text style={{ fontSize:11,color:"#1D1E1F",opacity:0.5 }}>
+                {`${ALL_MONTHS[ parseInt(currentTransactionDateObj[1]) - 1 ]} ${currentTransactionDateObj[2]}, ${currentTransactionDateObj[0]}`}
+                </Text></View>
                 </View>
-            
+                {
+                    index < totalIndex - 1  ?
+                    <this.transactionSeprator /> : null
+                }
+            </Fragment>
         );
     }
 
     triggerSubCategoryClick = (index) => {
-        console.log("Trigger here for the sub tra - ",index);
+        
         const { subExepenseByCategory } = this.state;
         let { ExpenseSubCategory } = subExepenseByCategory;
         ExpenseSubCategory[index].isVisible = !ExpenseSubCategory[index].isVisible;
@@ -311,6 +422,7 @@ class ExpenseByCategoryChild extends Component{
                             <this.renderTransaction 
                                 transaction={{ ...singleTransaction }}
                                 index={index}
+                                totalIndex={transaction.length}
                             />
                             </Fragment>
                         })
@@ -383,12 +495,15 @@ class ExpenseByCategoryChild extends Component{
         );
     }
     renderBody = () => {
-
+        const { ExpenseSubCategory } = this.state.subExepenseByCategory;
         return(
             <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
                 <this.header />
                 <this.bodyChart />
-                <this.bodyTransaction />
+                {
+                    ExpenseSubCategory.length > 0 ?
+                    <this.bodyTransaction /> : <View style={{ height: 25, backgroundColor: "#EEEFF1" }}></View>
+                }
             </ScrollView>
         );
     }
