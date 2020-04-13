@@ -4,7 +4,7 @@ import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { ALL_MONTHS } from "../../../constants/constants";
-
+import { numberWithCommas,firstLetterCapital } from "../../../api/common";
 import { VictoryBar,VictoryAxis,VictoryChart,VictoryTheme } from "victory-native";
 FontAwesome.loadFont();
 AntDesign.loadFont();
@@ -16,21 +16,25 @@ class ExpenseByCategoryChild extends Component{
         super(props);
 
         this.state = {
-            showTransaction: true
+            showTransaction: false
         }
     }
+    componentDidMount = () => {
+        const { category } = this.props.navigation.getParam("currentExpenseCategory");
+        
+    }
     header = () => {
+        const { category } = this.props.navigation.getParam("currentExpenseCategory");
         return(
             <View style={ styles.header }>
-                    <View style={{ flexDirection:"row",width:"100%",marginTop:20 }}>
-                        <View style={{ width:"10%",justifyContent:"center",alignItems:"center" }}>
-                            <TouchableOpacity  onPress={()=>{ this.props.navigation.goBack(); }} >
-                                <AntDesign name='left' size={22} color={'#000000'}/>
-                            </TouchableOpacity>
-                        </View>
+                    <View style={ styles.headerChild }>
+                        <TouchableOpacity onPress={()=>{ this.props.navigation.goBack(); }} 
+                        style={ styles.headerBack }>
+                            <AntDesign name='left' size={22} color={'#000000'}/>
+                        </TouchableOpacity>
                         <View style={{ width:"80%",justifyContent:"center",alignItems:"center" }}>
-                        <Text style={{ fontSize:17,color:"#000",fontWeight: "600" }}>
-                        { `Advertising & Marketing` }
+                        <Text style={{ fontSize: 18,color:"#000",fontWeight: "600" }}>
+                            { `${firstLetterCapital(category)}` }
                         </Text>
                         </View>
                     </View>
@@ -219,7 +223,7 @@ class ExpenseByCategoryChild extends Component{
     render(){
 
         return(
-            <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
+            <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
                 <this.header />
                 <this.bodyChart />
                 <this.bodyTransaction />
@@ -237,8 +241,24 @@ const styles = StyleSheet.create({
     header: { 
         elevation:5,
         shadowColor:"#F0F0F0",
-        borderBottomColor:"#F0F0F0",borderBottomWidth: 1.5,
-        height:70,backgroundColor:"#F8F8F8",flexDirection:"row"
+        borderBottomColor:"#F0F0F0",
+        borderBottomWidth: 0.9,
+        height:70,
+        backgroundColor:"#F8F8F8",
+        flexDirection:"row"
+    },
+    headerChild: { 
+        flexDirection:"row",
+        width:"100%",
+        marginTop:20 
+    },
+    headerBack: { 
+        paddingLeft:15,
+        borderWidth:0,
+        borderColor:"red",
+        width:"10%",
+        justifyContent:"center",
+        alignItems:"flex-start" 
     },
     seprator: { 
         alignSelf:"center",

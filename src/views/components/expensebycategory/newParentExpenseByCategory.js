@@ -100,7 +100,7 @@ class ExpenseByCategory extends Component{
                             <AntDesign name='left' size={22} color={'#000000'}/>
                         </TouchableOpacity>
                         <View style={{ width:"80%",justifyContent:"center",alignItems:"center" }}>
-                        <Text style={{ fontSize:17,color:"#000",fontWeight: "600" }}>{ `Expense by Category` }</Text>
+                        <Text style={{ fontSize:18,color:"#000",fontWeight: "600" }}>{ `Expense by Category` }</Text>
                             
                         </View>
                     </View>
@@ -201,7 +201,7 @@ class ExpenseByCategory extends Component{
     }
 
     renderSingleCategory = ({ currentIndex,item }) => {
-        const { expensesData } = this.props.mainExpenseByCategoryRedux;
+        const { expensesData,expenseType } = this.props.mainExpenseByCategoryRedux;
         const { ExpenseByCategory } = expensesData;
         
         //let categoryBackgroundColor = `#F98361`;
@@ -294,8 +294,18 @@ class ExpenseByCategory extends Component{
                         </View>
 
 
-                    <TouchableOpacity style={ styles.nextButtonStyle }>
-                        <AntDesign size={17} name={"right"} color={"#030538"} style={{ opacity: 0.5 }} />
+                    <TouchableOpacity 
+                    onPress={()=>{
+                        this.props.navigation.navigate("NewExpenseByCategoryChild",{
+                            currentExpenseCategory: {
+                                ...item,
+                                ...categoryIcon,
+                                expenseType
+                            }
+                        });
+                    }}
+                    style={ styles.nextButtonStyle }>
+                        <AntDesign size={16} name={"right"} color={"#030538"} style={{ opacity: 0.5 }} />
                     </TouchableOpacity>
 
                     </View>
@@ -464,7 +474,7 @@ const styles = StyleSheet.create({
         elevation:5,
         shadowColor:"#F0F0F0",
         borderBottomColor:"#F0F0F0",
-        borderBottomWidth: 1.5,
+        borderBottomWidth: 0.9,
         height:70,
         backgroundColor:"#F8F8F8",
         flexDirection:"row"
@@ -475,7 +485,7 @@ const styles = StyleSheet.create({
         marginTop:20 
     },
     headerBack: { 
-        paddingLeft:8,
+        paddingLeft:15,
         borderWidth:0,
         borderColor:"red",
         width:"10%",
