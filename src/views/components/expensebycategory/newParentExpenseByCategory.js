@@ -54,10 +54,13 @@ class ExpenseByCategory extends Component{
                 amount: 0,
                 svg: { fill: '#6C5BC1' },
                 image: null,
-                isIcon: false
+                isIcon: false,
+                percentage: 0
             }
             categoryIcon.key = index;
             categoryIcon.amount = item.amount;
+            categoryIcon.percentage = item.percentage;
+            // console.log("I am getting successfully percantage here - ",item.percentage);
             for(let i=0; i<PLAID_EXPENSE_CATEGORIES.length; i++){
                 if(item.category.toLowerCase() === PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()){
                     categoryIcon.svg.fill = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
@@ -311,7 +314,9 @@ class ExpenseByCategory extends Component{
     Labels = ({ slices, height, width }) => {
             return slices.map((slice, index) => {
                 const { labelCentroid, pieCentroid, data } = slice;
-                if(index > 2)
+                //code to check that the percentage is greater than 30
+                //for rendering the image
+                if(data.percentage < 30)
                     return false;
                 return (
                     <G
@@ -321,8 +326,8 @@ class ExpenseByCategory extends Component{
                     >
                         <Image
                             href={data.image}
-                            x={-17}
-                            y={-17}
+                            x={-18}
+                            y={-18}
                             height={35}
                             width={35}
                             preserveAspectRatio="xMidYMid slice"
@@ -360,7 +365,7 @@ class ExpenseByCategory extends Component{
                 data={this.readyGraphData()}
                 // spacing={10}
                 outerRadius={'65%'}
-                innerRadius={'55%'}
+                innerRadius={'59%'}
             >   
                 <this.Labels/>
                 <View style={styles.piechartText}>
