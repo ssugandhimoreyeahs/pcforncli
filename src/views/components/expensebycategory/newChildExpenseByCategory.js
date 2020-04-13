@@ -33,7 +33,7 @@ class ExpenseByCategoryChild extends Component{
                             <AntDesign name='left' size={22} color={'#000000'}/>
                         </TouchableOpacity>
                         <View style={{ width:"80%",justifyContent:"center",alignItems:"center" }}>
-                        <Text style={{ fontSize: 18,color:"#000",fontWeight: "600" }}>
+                        <Text style={{ fontSize: 19,color:"#000",fontWeight: "600" }}>
                             { `${firstLetterCapital(category)}` }
                         </Text>
                         </View>
@@ -53,21 +53,16 @@ class ExpenseByCategoryChild extends Component{
         );
     }
     renderBarChart = () => {
-        
+        const { backgroundColor: graphFillColor } = this.props.navigation.getParam("currentExpenseCategory");
        
-        const fill = 'rgb(134, 65, 244)'
+        const fill = graphFillColor;
         const data   = [ -10,-20,-30,-40,-50,-60 ]
         return(
             <View style={{ width: "100%" }}>
-                <VictoryChart
-                width={deviceWidth - 5}
+                <VictoryChart width={deviceWidth - 5}
                 height={270}
                 domainPadding={10}
-                style={{
-                                    parent: { marginLeft: -20 }
-                }}
-                >
-                
+                style={{ parent: { marginLeft: -20 } }} >
                 <VictoryAxis 
                     tickValues={[ 
                         'Sep',
@@ -80,10 +75,11 @@ class ExpenseByCategoryChild extends Component{
                     offsetY={255}
                     style={{
                         axis: { stroke: '#ffffff' },
-                        tickLabels: { fontSize: 12,fill: "#8E8E93" },
-                    }}
-
-                />
+                        tickLabels: { fontSize: 12,fill: (data) => {
+                            return data == "Mar" ? `#1D1E1F` : `#8E8E93`;
+                        } 
+                        },
+                    }} />
                 <VictoryAxis dependentAxis
                                 offsetX={deviceWidth+2}
                                 style={{ 
@@ -95,11 +91,13 @@ class ExpenseByCategoryChild extends Component{
                                 tickFormat={(value)=>{ return `-$${-value}K`  }}
                                 /> 
                 <VictoryBar
-                    style={{ data: { fill: (data) => {
+                    style={{ data: { fill,opacity: (data) => {
+                        console.log("-----");
+                        console.log(data);
                         if(data._y == -3){
-                            return "#A599EC";
+                            return 1;
                         }else{
-                            return "#D9D5EF";
+                            return 0.3;
                         }
                     } } }}
                     data={[
