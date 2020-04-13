@@ -226,7 +226,7 @@ class ExpenseByCategoryChild extends Component{
             isUp,
             isDown,
             isVisible,
-            ExpenseSubCategory
+            transaction
         } = category;
         const currentExpenseCategory = this.state.currentExpenseCategory;
         
@@ -246,20 +246,26 @@ class ExpenseByCategoryChild extends Component{
             iconObj.color = `#1188DF`;
             iconObj.text = isDown;
         }
-        //iconObj.visible = false;
+        
         return(
             <View style={{ backgroundColor:"#FFF",flexDirection:"column",width:"100%",alignSelf: "center"}}>
                 <View style={{ width: "90%",alignSelf:'center' }}>
                 <View style={{ flexDirection: "row",justifyContent:"space-between" }}>
                     <View style={{ flexDirection:"row",alignItems:"flex-end" }}>
-                    <TouchableOpacity style={{ flexDirection: "row" }} 
+                    <TouchableOpacity 
+                      disabled={ transaction.length > 0 ? false : true }
+                      style={{ flexDirection: "row" }} 
                       onPress={()=>{ 
                           this.triggerSubCategoryClick(index);
                         }}>
                         <Text style={{ color: "#1D1E1F",fontSize: 15,fontWeight:"600" }}>
                         {`${firstLetterCapital(subCategory)}`}
                         </Text>
-                        <AntDesign name={ isVisible == true ? 'up' : 'down' } size={15} style={{ marginLeft:10,opacity: 0.4 }} color={'#030538'}/>
+                        {
+                            transaction.length > 0 ?
+                            <AntDesign name={ isVisible == true ? 'up' : 'down' } size={15} style={{ marginLeft:10,opacity: 0.4 }} color={'#030538'}/>
+                            : null
+                        }
                         </TouchableOpacity>
                     </View>
                     <Text style={{ fontSize: 15, color: "#1D1E1F" }}>
@@ -299,9 +305,16 @@ class ExpenseByCategoryChild extends Component{
                         paddingVertical:25,
                         backgroundColor:"#EEEFF1" 
                     }}>
-                    <this.renderTransaction />
-                        <this.transactionSeprator />
-                    <this.renderTransaction />
+                    {
+                        transaction.map((singleTransaction,index)=>{
+                            return <Fragment>
+                            <this.renderTransaction 
+                                transaction={{ ...singleTransaction }}
+                                index={index}
+                            />
+                            </Fragment>
+                        })
+                    }
                     </View>
                     : <this.seprator />
                 }
