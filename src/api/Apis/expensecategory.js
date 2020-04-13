@@ -79,3 +79,29 @@ export function getExpenseByCategoryPromise( fetchExpenseTypes = 1 ){
       });
     });
 }
+
+
+export function getExpenseByCategorySubScreenPromise( past = 0,categoryId = ""){
+  return new Promise((resolve,reject)=>{
+    AsyncStorage.getItem("authToken").then( (token) =>{
+      console.log("params recieve here - ",past,"  - ",categoryId);
+      console.log("subScreen End point - ",APINETWORK.expenseByCategorySubScreen(past));
+      axios.post(APINETWORK.expenseByCategorySubScreen(past),{ categoryId },{
+            headers: { Authorization: token,"Content-Type": "application/json" },
+            timeout
+          }).then((response)=>{
+              if(response.status == 200 && response.data.success == true){
+                return resolve({ result:true,subCategoryExpenseData: response.data });
+              }else{
+                return reject({ result:false,subCategoryExpenseData:response.data });
+              }
+          }).catch((error)=>{
+            console.log("inside getExpenseByCategoryPromise() axios catch - ",error);
+            return reject({ result:false,error });
+          })
+    }).catch((error)=>{
+        console.log("inside getExpenseByCategoryPromise() token catch - ",error);
+        return reject({ result:false,error });
+    });
+  });
+}

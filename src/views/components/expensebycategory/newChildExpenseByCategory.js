@@ -1,13 +1,16 @@
 import React,{ Component,Fragment } from "react";
-import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions } from "react-native";
+import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions,ActivityIndicator } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ALL_MONTHS } from "../../../constants/constants";
 import { numberWithCommas,firstLetterCapital } from "../../../api/common";
 import { VictoryBar,VictoryAxis,VictoryChart,VictoryTheme } from "victory-native";
+import { getExpenseByCategorySubScreenPromise } from "../../../api/api";
 FontAwesome.loadFont();
 AntDesign.loadFont();
+MaterialCommunityIcons.loadFont();
 
 const deviceWidth = Dimensions.get("window").width;
 class ExpenseByCategoryChild extends Component{
@@ -16,11 +19,38 @@ class ExpenseByCategoryChild extends Component{
         super(props);
 
         this.state = {
-            showTransaction: false
+            showTransaction: false,
+            currentExpenseCategory: {},
+            error: false,
+            loading: true,
+            subExepenseByCategory: {}
         }
     }
+    triggerExpenseSubCategoryServer = () => {
+        const { expenseType,categoryId } = this.state.currentExpenseCategory;
+        getExpenseByCategorySubScreenPromise(expenseType,categoryId)
+        .then((response)=>{
+            console.log("Trigger the sub response - ",JSON.stringify(response));
+            this.setState({
+                error: false,
+                loading: false,
+                subExepenseByCategory: response.subCategoryExpenseData
+            });
+        })
+        .catch((error)=>{
+            console.log("Error here - ",error);
+            this.setState({
+                error: true,
+                loading: false,
+                subExepenseByCategory: {}
+            });
+        });
+    }
     componentDidMount = () => {
-        const { category } = this.props.navigation.getParam("currentExpenseCategory");
+        const currentExpenseCategory = this.props.navigation.getParam("currentExpenseCategory");
+        this.setState({ currentExpenseCategory },()=>{
+            this.triggerExpenseSubCategoryServer();
+        });
         
     }
     header = () => {
@@ -218,7 +248,49 @@ class ExpenseByCategoryChild extends Component{
             </Fragment>
         );
     }
-    render(){
+    handleReloadSubScreen = () => {
+        this.setState({
+            loading: true,
+            error: false,
+        },()=>{
+            setTimeout(()=>{
+                this.triggerExpenseSubCategoryServer();
+            },500);
+        });
+    }
+    loadingView = () => {
+
+        return(
+            <View style={{ flex: 1 }}>
+                <this.header /> 
+                <View style={{ flex:0.9,justifyContent:"center" }}>
+                    <ActivityIndicator animating={true} size={"large"} color={`#070640`} />
+                </View>
+            </View>
+        );
+    }
+    errorView = () => {
+
+        return(
+            <View style={{ flex : 1  }}>
+                <this.header />
+                <View style={{ flex:0.9,justifyContent:"center",alignItems:"center" }}>
+                         <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+                        <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
+                        <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
+                    </View> 
+                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+                        <TouchableOpacity onPress={()=>{ 
+                            this.handleReloadSubScreen(); 
+                            }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                            <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
+                        </TouchableOpacity>
+                    </View>
+            </View>
+            </View>
+        );
+    }
+    renderBody = () => {
 
         return(
             <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
@@ -226,6 +298,18 @@ class ExpenseByCategoryChild extends Component{
                 <this.bodyChart />
                 <this.bodyTransaction />
             </ScrollView>
+        );
+    }
+    render(){
+        let { loading,error } = this.state;
+        
+        return(
+            <Fragment>
+                {
+                    error == true ? <this.errorView /> :
+                    loading == true ? <this.loadingView /> : <this.renderBody /> 
+                }
+            </Fragment>
         );
     }
 }
