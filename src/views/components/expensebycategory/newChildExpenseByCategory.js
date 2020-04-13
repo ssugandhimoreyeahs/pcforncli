@@ -30,7 +30,7 @@ class ExpenseByCategoryChild extends Component{
         const { expenseType,categoryId } = this.state.currentExpenseCategory;
         getExpenseByCategorySubScreenPromise(expenseType,categoryId)
         .then((response)=>{
-            console.log("Trigger the sub response - ",JSON.stringify(response));
+            
             this.setState({
                 error: false,
                 loading: false,
@@ -38,7 +38,7 @@ class ExpenseByCategoryChild extends Component{
             });
         })
         .catch((error)=>{
-            console.log("Error here - ",error);
+            
             this.setState({
                 error: true,
                 loading: false,
@@ -146,21 +146,41 @@ class ExpenseByCategoryChild extends Component{
         );
     }
     bodyChart = () => {
-        
+        const { subExepenseByCategory } = this.state;
+        let iconObj = {};
+        iconObj.visible = false;
+        iconObj.type = ``;
+        iconObj.color = ``;
+        iconObj.text = ``;
+        if(subExepenseByCategory.isUp != null && subExepenseByCategory.isDown == null){
+            iconObj.visible = true;
+            iconObj.type = `arrow-up`;
+            iconObj.color = `#FF784B`;
+            iconObj.text = subExepenseByCategory.isUp;
+        }else if(subExepenseByCategory.isUp == null && subExepenseByCategory.isDown != null){
+            iconObj.visible = true;
+            iconObj.type = `arrow-down`;
+            iconObj.color = `#1188DF`;
+            iconObj.text = subExepenseByCategory.isDown;
+        }
         return(
             <Fragment>
                 <View style={{ height: 380,backgroundColor: "#FFF",
                     borderWidth:0,borderColor:"red" }} >
-
                 <View style={{ alignSelf: "center",marginTop: 30 }}>
-
-                    <Text style={{ color: "#1D1E1F",fontSize: 22,fontWeight: "bold" }}>-$3,000.00</Text>
-                    <View style={{ marginTop:8,flexDirection:"row",alignSelf:"center" }}>
-                        <FontAwesome name={'arrow-up'} color={"#FF784B"} />
-                        <Text style={{ textAlign:"center",color: "#1D1E1F",fontSize: 10,paddingLeft: 5 }}>12% since last month</Text>
-                    </View>
+                    <Text style={{ textAlign:"center",color: "#1D1E1F",fontSize: 22,fontWeight: "bold" }}>
+                        { `-$${numberWithCommas(subExepenseByCategory.totalAmount)}` }
+                    </Text>
+                    {
+                        iconObj.visible == true ?
+                        <View style={{ marginTop:8,flexDirection:"row",alignSelf:"center" }}>
+                        <FontAwesome name={`${iconObj.type}`} color={`${iconObj.color}`} />
+                        <Text style={{ textAlign:"center",color: "#1D1E1F",fontSize: 10,paddingLeft: 5 }}>
+                            { `${iconObj.text} since last month` }
+                        </Text>
+                        </View> : <View style={{ marginTop: 8 }} />
+                    }
                 </View>
-
                 <View style={{ marginTop: 10 }}>
                     <this.renderBarChart />
                 </View>
@@ -185,40 +205,100 @@ class ExpenseByCategoryChild extends Component{
             
         );
     }
-    renderSubCategory = () => { 
 
+    triggerSubCategoryClick = (index) => {
+        console.log("Trigger here for the sub tra - ",index);
+        const { subExepenseByCategory } = this.state;
+        let { ExpenseSubCategory } = subExepenseByCategory;
+        ExpenseSubCategory[index].isVisible = !ExpenseSubCategory[index].isVisible;
+        this.setState({
+            subExepenseByCategory: {
+                ...subExepenseByCategory,
+                ExpenseSubCategory
+            }
+        });
+    }
+    renderSubCategory = ({ category,index }) => { 
+        const {
+            subCategory,
+            total,
+            percentage,
+            isUp,
+            isDown,
+            isVisible,
+            ExpenseSubCategory
+        } = category;
+        const currentExpenseCategory = this.state.currentExpenseCategory;
+        
+        let iconObj = {};
+        iconObj.visible = false;
+        iconObj.type = ``;
+        iconObj.color = ``;
+        iconObj.text = ``;
+        if(isUp != null && isDown == null){
+            iconObj.visible = true;
+            iconObj.type = `arrow-up`;
+            iconObj.color = `#FF784B`;
+            iconObj.text = isUp;
+        }else if(isUp == null && isDown != null){
+            iconObj.visible = true;
+            iconObj.type = `arrow-down`;
+            iconObj.color = `#1188DF`;
+            iconObj.text = isDown;
+        }
+        //iconObj.visible = false;
         return(
             <View style={{ backgroundColor:"#FFF",flexDirection:"column",width:"100%",alignSelf: "center"}}>
                 <View style={{ width: "90%",alignSelf:'center' }}>
                 <View style={{ flexDirection: "row",justifyContent:"space-between" }}>
                     <View style={{ flexDirection:"row",alignItems:"flex-end" }}>
-                    <TouchableOpacity style={{ flexDirection: "row" }} onPress={()=>{ this.setState({ showTransaction: !this.state.showTransaction }) }}>
+                    <TouchableOpacity style={{ flexDirection: "row" }} 
+                      onPress={()=>{ 
+                          this.triggerSubCategoryClick(index);
+                        }}>
                         <Text style={{ color: "#1D1E1F",fontSize: 15,fontWeight:"600" }}>
-                        Subcategory Name
+                        {`${firstLetterCapital(subCategory)}`}
                         </Text>
-                        <AntDesign name={ this.state.showTransaction == true ? 'up' : 'down' } size={15} style={{ marginLeft:10,opacity: 0.4 }} color={'#030538'}/>
+                        <AntDesign name={ isVisible == true ? 'up' : 'down' } size={15} style={{ marginLeft:10,opacity: 0.4 }} color={'#030538'}/>
                         </TouchableOpacity>
                     </View>
                     <Text style={{ fontSize: 15, color: "#1D1E1F" }}>
-                        -$1,200.00
+                        {`-$${numberWithCommas(total)}`}
                     </Text>
                 </View>
                 <View style={{ marginTop:12,flexDirection:"row",justifyContent:"space-between" }}>
-                    <View style={{ flexDirection:"row" }}>
-                        <FontAwesome name={"arrow-down"} color={"#FF784B"} size={10} />
-
-                        <Text style={{ color:"#1D1E1F",fontSize:10,paddingLeft:4 }}>2.7% since previous month</Text>
+                    <View style={{ 
+                        width:"55%",
+                        borderWidth:0,borderColor:"red",flexDirection:"row" }}>
+                        {
+                            iconObj.visible == true ?
+                            <Fragment>
+                            <FontAwesome size={10}
+                            name={`${iconObj.type}`} 
+                            color={`${iconObj.color}`} />
+                            <Text style={{ color:"#1D1E1F",fontSize:10,paddingLeft:4 }}>
+                                 { `${iconObj.text}% since previous month` }
+                            </Text>
+                            </Fragment> : null
+                        }
                     </View>
-                    <Text style={{ color:"#1D1E1F",fontSize:10 }}>
-                    30% of Advertising & Marketing
+                    <Text style={{ 
+                        textAlign:'right',
+                        borderColor:"red",borderWidth:0,
+                        color:"#1D1E1F",fontSize:10,width:"45%", }}>
+                     { `${percentage}% of ${firstLetterCapital(currentExpenseCategory.category)}` }
                     </Text>
                 </View>
                 </View>
 
                 {/* code for the transactions */}
                 {
-                    this.state.showTransaction == true ?
-                    <View style={{ marginVertical:25,paddingVertical:25,backgroundColor:"#EEEFF1" }}>
+                    isVisible == true ?
+                    <View style={{ 
+                        marginVertical:25,
+                        paddingVertical:25,
+                        backgroundColor:"#EEEFF1" 
+                    }}>
                     <this.renderTransaction />
                         <this.transactionSeprator />
                     <this.renderTransaction />
@@ -230,21 +310,20 @@ class ExpenseByCategoryChild extends Component{
         );
     }
     bodyTransaction = () => {
-
+        const { subExepenseByCategory } = this.state;
+        const { ExpenseSubCategory } = subExepenseByCategory;
         return(
             <Fragment>
-
             <View style={{ height: 25, backgroundColor: "#EEEFF1" }}></View>
             <View style={{ paddingVertical:30,backgroundColor:"#FFF" }}>
-                            
-                            
-
-                            <this.renderSubCategory />
-                            <this.renderSubCategory />
-                            
-                            
-
-                    </View>
+                 {
+                    ExpenseSubCategory.map((singleCategory,index)=>{
+                        return <this.renderSubCategory index={index}
+                            category={{ ...singleCategory }}
+                        />
+                    })
+                 }
+                </View>
             </Fragment>
         );
     }

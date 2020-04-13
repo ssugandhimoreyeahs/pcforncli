@@ -91,7 +91,7 @@ class ExpenseByCategory extends Component{
      loadProgressCircle = (props) => {
         return(
             <Fragment>
-                <View style={{flexDirection:'row',justifyContent:'space-evenly', width:154, height:43}}>
+                <View style={{flexDirection:'row',justifyContent:'space-between', width:154, height:43}}>
                         <View style={{ height:25,width:40}}>
                             <ProgressCircle 
                             percent={props.percentage}

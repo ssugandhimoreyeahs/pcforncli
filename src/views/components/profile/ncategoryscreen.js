@@ -266,7 +266,7 @@ class CategoryScreen extends Component{
         categoryName == executingTransactionDetails.category ? true : false;
         let isIconAvailable = false;
         let iconPath = null;
-        let categoryBackgroundColor = `#F98361`;
+        let categoryBackgroundColor = `#6C5BC1`;
         for(let i=0;i<PLAID_EXPENSE_CATEGORIES.length;i++){
             if(PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase() === categoryName.toLowerCase()){
                 isIconAvailable = true;

@@ -206,7 +206,7 @@ class ExpenseByCategory extends Component{
         
         //let categoryBackgroundColor = `#F98361`;
         let categoryIcon = {
-            backgroundColor: `#F98361`,
+            backgroundColor: `#6C5BC1`,
             isIcon: false,
             iconPath: null
         }

@@ -60,7 +60,7 @@ const TransactionComponent = (props) => {
     }
 
   }
-  let categoryBackgroundColor = `#F98361`;
+  let categoryBackgroundColor = `#6C5BC1`;
   for(let i=0; i<PLAID_EXPENSE_CATEGORIES.length; i++){
     if(props.fullTransactionObj.category.toLowerCase() === PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()){
       categoryBackgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;

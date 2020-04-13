@@ -96,7 +96,6 @@ export function getExpenseByCategorySubScreenPromise( past = 0,categoryId = ""){
                 return reject({ result:false,subCategoryExpenseData:response.data });
               }
           }).catch((error)=>{
-            console.log("inside getExpenseByCategoryPromise() axios catch - ",error);
             return reject({ result:false,error });
           })
     }).catch((error)=>{
