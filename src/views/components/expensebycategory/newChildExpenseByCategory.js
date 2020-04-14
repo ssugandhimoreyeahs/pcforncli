@@ -1,5 +1,5 @@
 import React,{ Component,Fragment } from "react";
-import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions,ActivityIndicator } from "react-native";
+import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions,ActivityIndicator, Platform } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -8,6 +8,7 @@ import { ALL_MONTHS } from "../../../constants/constants";
 import { numberWithCommas,firstLetterCapital,isFloat } from "../../../api/common";
 import { VictoryBar,VictoryAxis,VictoryChart,VictoryTheme } from "victory-native";
 import { getExpenseByCategorySubScreenPromise,getExpenseBySubCategoryGraphPromise } from "../../../api/api";
+import SVG from "react-native-svg";
 FontAwesome.loadFont();
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -36,6 +37,21 @@ class ExpenseByCategoryChild extends Component{
             subExepenseByCategory: {},
             
         }
+    }
+    triggerDataOnTouchableOpacity = (index) => {
+        console.log("Ready for switching data on touch - ",index);
+        
+        const { subCategoryRequestType } = this.state;
+        const { maximum,current } = subCategoryRequestType;
+        let actionType = maximum - index;
+        console.log("Action Type here - ",actionType);
+        if(actionType != current){
+            subCategoryRequestType.current = actionType;
+            this.setState({ loading:true,subCategoryRequestType },()=>{
+                this.triggerExpenseSubCategoryServer();
+            });
+        }
+        
     }
     triggerDataOnBarClick = (datum) => {
         let { _x } = datum;
@@ -229,18 +245,23 @@ class ExpenseByCategoryChild extends Component{
         const [ graphDataArray,yAxisLabels ] = this.graphAxis();
         
         const fill = graphFillColor;
+        const BarWraper = Platform.select({
+            ios: TouchableOpacity,
+            android: SVG
+          });
         return(
-            <View style={{ width: "100%",borderColor:"red",borderWidth:0 }}>
+            <Fragment>
+            <BarWraper>
                 <VictoryChart width={deviceWidth - 5}
                 height={270}
                 domainPadding={10}
                 style={{ parent: { marginLeft: -20 } }} >
-                <VictoryAxis 
+                {/* <VictoryAxis 
                     
                     events={[{
                     target: "tickLabels",
                     eventHandlers: {
-                        onPress: () => {
+                        onPressIn: () => {
                         return [
                             {
                             target: "tickLabels",
@@ -263,7 +284,7 @@ class ExpenseByCategoryChild extends Component{
                             return data == ALL_MONTHS[this.currentMonthString()] ? `#1D1E1F` : `#8E8E93`;
                         } 
                         },
-                    }} />
+                    }} /> */}
                 <VictoryAxis dependentAxis
                                 offsetX={deviceWidth+2}
                                 style={{ 
@@ -318,7 +339,7 @@ class ExpenseByCategoryChild extends Component{
                     events={[{
                     target: "data",
                     eventHandlers: {
-                        onPress: () => {
+                        onPressIn: () => {
                         return [
                             {
                             target: "data",
@@ -333,7 +354,29 @@ class ExpenseByCategoryChild extends Component{
                     }]}
                 />
                 </VictoryChart>
-            </View>
+                </BarWraper>
+                <View style={{ marginTop: -35,marginLeft:27,
+                    width: deviceWidth-95,justifyContent:"space-between",
+                    borderWidth:0,borderColor:"red",
+                    flexDirection:"row",marginBottom:40 }}>
+                {
+                    graphDataArray.map((singleMonth,index)=>{
+                        return <TouchableOpacity key={index} onPress={()=>{
+                            this.triggerDataOnTouchableOpacity(index);
+                        }}>
+                            <Text style={{
+                                fontWeight: "500",
+                                fontSize: 11,
+                                color: singleMonth.x == ALL_MONTHS[this.currentMonthString()] ? `#1D1E1F` : "#8E8E93"
+                            }}>
+                                { `${singleMonth.x}` }
+                            </Text>
+                        </TouchableOpacity>
+                    })
+                }
+                </View>
+                </Fragment>
+            
         );
     }
     bodyChart = () => {
