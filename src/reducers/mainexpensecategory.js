@@ -37,8 +37,8 @@ export const mainExpenseCategorySuccess = (action) => {
 export const mainExpenseCategoryError = (error) => {
     return {
         type: MAIN_EXPENSE_CATEGORY_ERROR,
-        errorMsg: action.errorMsg,
-        expenseType: action.expenseType
+        errorMsg: error.errorMsg,
+        expenseType: error.expenseType
         
     }
 }

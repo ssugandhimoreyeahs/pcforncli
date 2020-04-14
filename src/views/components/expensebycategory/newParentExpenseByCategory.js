@@ -112,7 +112,7 @@ class ExpenseByCategory extends Component{
 
         let { requestType } = this.state;
         let { current,maximum,minimum } = requestType;
-        if( current >= minimum ){
+        if( current > minimum ){
             requestType.current = requestType.current-1;
             this.props.fetchMainExepenseByCategory(requestType.current);
             this.setState({ requestType });
@@ -152,7 +152,8 @@ class ExpenseByCategory extends Component{
                             this.switchExpensePrevRequest();
                         }}
                         disabled = { current == maximum }
-                        style={{ opacity: current == maximum ? 0 : 1,
+                        style={{ 
+                            opacity: current == maximum ? 0.3 : 1,
                             justifyContent:"center",
                             borderColor:"red",borderWidth:0 }}
                         ><AntDesign color={"#030538"} name={"left"} size={15}></AntDesign></TouchableOpacity>
@@ -161,13 +162,13 @@ class ExpenseByCategory extends Component{
                             current == 0 ? "This Month" : ALL_MONTHS[this.getDynamicMonth()]
                         }
                         </Text>
-                        <TouchableOpacity
-                        onPress={() => {
+                        <TouchableOpacity onPress={() => {
                             this.switchExpenseNextRequest();
                         }}
                         disabled = { current == minimum }
-                        style={{ opacity: current == 0 ? 0 : 1,justifyContent:"center",
-                            borderColor: "red", borderWidth:0 }}
+                        style={{ opacity: current == 0 ? 0.3 : 1,
+                        justifyContent:"center",
+                        borderColor: "red", borderWidth:0 }}
                         ><AntDesign name={"right"} color={"#030538"} size={15}></AntDesign>
                         </TouchableOpacity>
                         
