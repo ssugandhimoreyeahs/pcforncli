@@ -29,7 +29,7 @@
 		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* pocket_cfoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = pocket_cfoTests.m; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* PCFO-3.1.22-ST-1.1.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PCFO-3.1.22-ST-1.1.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B07F961A680F5B00A75B9A /* PCFO-3.1.22-ST-1.2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PCFO-3.1.22-ST-1.2.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = pocket_cfo/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = pocket_cfo/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB21A68108700A75B9A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -142,7 +142,7 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* PCFO-3.1.22-ST-1.1.app */,
+				13B07F961A680F5B00A75B9A /* PCFO-3.1.22-ST-1.2.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -183,7 +183,7 @@
 			);
 			name = pocket_cfo;
 			productName = pocket_cfo;
-			productReference = 13B07F961A680F5B00A75B9A /* PCFO-3.1.22-ST-1.1.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* PCFO-3.1.22-ST-1.2.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -496,7 +496,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
-				PRODUCT_NAME = "PCFO-3.1.22-ST-1.1";
+				PRODUCT_NAME = "PCFO-3.1.22-ST-1.2";
 				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -565,7 +565,7 @@
 					"-lc++",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
-				PRODUCT_NAME = "PCFO-3.1.22-ST-1.1";
+				PRODUCT_NAME = "PCFO-3.1.22-ST-1.2";
 				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
