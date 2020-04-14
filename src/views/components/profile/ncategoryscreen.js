@@ -15,7 +15,12 @@ import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
 import { addPlaidCategory, deletePlaidCategory, editPlaidCategory,addCategoryToTransaction,changeAllSimilarTransaction } from "../../../api/api";
 import { PLAID_EXPENSE_CATEGORIES,EXPENSES_COLOR,getCategoryInitials } from "../../../api/common";
 import { CHANGECATEGORY,ERRORCATEGORY,ADDEDCATEGORY,DELETECATEGORY } from "../../../api/message";
-import CategoryFactory from "../expensebycategory/categoryFactory";
+import { 
+    getCategoryId,
+    getCategoryName,
+    getPlaidCategories,
+    isCategoryExist
+} from "../expensebycategory/categoryFactory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 
 AntDesign.loadFont();
@@ -134,8 +139,8 @@ class CategoryScreen extends Component{
         if(this.state.toggle){
             const { category:transactionCategory } = this.props.navigation.getParam("currentExecutingTransaction");
             let axiosBody = {};
-            axiosBody.oldCategoryId = CategoryFactory.getCategoryId(transactionCategory);
-            axiosBody.updateCategorId = CategoryFactory.getCategoryId(categoryName);
+            axiosBody.oldCategoryId = getCategoryId(transactionCategory);
+            axiosBody.updateCategoryId = getCategoryId(categoryName);
 
             console.log("Axios Body Before Send - ",axiosBody);
 
@@ -550,7 +555,7 @@ class CategoryScreen extends Component{
             return true;
         }
         let isCategoryAlreadyPresent = false;
-        isCategoryAlreadyPresent = CategoryFactory.isCategoryExist(categoryInput);
+        isCategoryAlreadyPresent = isCategoryExist(categoryInput);
         
         
         if(isCategoryAlreadyPresent){
