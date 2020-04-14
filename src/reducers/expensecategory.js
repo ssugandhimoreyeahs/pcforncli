@@ -19,9 +19,10 @@ const initialExpense = {
     expenseCurrentRange:3
 }
 
-export const fetchExpenseRequest = () => {
+export const fetchExpenseRequest = (action) => {
     return {
-        type: FETCH_EXPENSE_REQUEST
+        type: FETCH_EXPENSE_REQUEST,
+        expenseCurrentRange: action.expenseCurrentRange
     }
 }
 
@@ -30,20 +31,23 @@ export const fetchExpenseSuccess = (response) => {
         type:FETCH_EXPENSE_SUCCESS,
         dashboardExpense: response.ExpenseByCategory,
         dashboardTotalExpense: response.amount,
-        currentExpenseRange: 3
+        expenseCurrentRange: response.expenseCurrentRange
     }
 }
 
 export const fetchExpenseError = (error) => {
     return{
         type: FETCH_EXPENSE_ERROR,
-        errorMsg: error
+        errorMsg: error.msg,
+        expenseCurrentRange: error.expenseCurrentRange
+
     }
 }
 
-export const fetchExpenseRequestMultiple = () => {
+export const fetchExpenseRequestMultiple = (error) => {
     return {
-        type: FETCH_EXPENSE_REQUEST_MULTIPLE
+        type: FETCH_EXPENSE_REQUEST_MULTIPLE,
+        expenseCurrentRange: error.expenseCurrentRange
     }
 }
 export const fetchExpenseRequestMultipleSuccess = (response) => {
@@ -51,7 +55,7 @@ export const fetchExpenseRequestMultipleSuccess = (response) => {
         type: FETCH_EXPENSE_REQUEST_MULTIPLE_SUCCESS,
         dashboardExpense: response.ExpenseByCategory,
         dashboardTotalExpense: response.amount,
-        currentExpenseRange: response.currentExpenseRange
+        expenseCurrentRange: response.expenseCurrentRange
 
     }
 }
@@ -61,7 +65,7 @@ export const ExpenseReducer = (state = initialExpense, action) => {
         case FETCH_EXPENSE_REQUEST: return {
             ...state,
             loading:true,
-            expenseCurrentRange:1
+            expenseCurrentRange: action.expenseCurrentRange
         }
 
         case FETCH_EXPENSE_SUCCESS: return {
@@ -70,24 +74,29 @@ export const ExpenseReducer = (state = initialExpense, action) => {
             isFetched:true,
             expense:action.dashboardExpense,
             totalExpense:action.dashboardTotalExpense,
-            expenseCurrentRange:action.currentExpenseRange,
+            expenseCurrentRange:action.expenseCurrentRange,
             childLoader:false
 
         }
 
         case FETCH_EXPENSE_ERROR: return {
-            ...state,
             errorMsg: action.errorMsg,
             error:true,
             loading:false,
-            childLoader:false
-            
-            
+            expense:[],
+            totalExpense:0,
+            isFetched:false,
+            childLoader:false,
+            expenseCurrentRange: action.expenseCurrentRange
         }
 
         case FETCH_EXPENSE_REQUEST_MULTIPLE: return {
             ...state,
             childLoader:true,
+            isFetched: true,
+            error: false,
+            errorMsg: '',
+            expenseCurrentRange: action.expenseCurrentRange
         }
 
         case FETCH_EXPENSE_REQUEST_MULTIPLE_SUCCESS: return {
@@ -98,7 +107,7 @@ export const ExpenseReducer = (state = initialExpense, action) => {
             totalExpense:action.dashboardTotalExpense,
             isFetched:true,
             childLoader:false,
-            expenseCurrentRange:action.currentExpenseRange
+            expenseCurrentRange:action.expenseCurrentRange
         }
         default: return state;
     }
@@ -106,32 +115,45 @@ export const ExpenseReducer = (state = initialExpense, action) => {
 
 export const fetchExpensesAsyncCreator = ( expenseType = 1 ) => {
         return (dispatch) => {
-            dispatch(fetchExpenseRequest());
+            dispatch(fetchExpenseRequest({ expenseCurrentRange: expenseType }));
             getExpenseByCategoryPromise(expenseType).then((response)=>{
                 if(response.result == true){
+                    response.expenseCurrentRange = expenseType;
                     dispatch(fetchExpenseSuccess(response.expenseByCategoryResponse));
                 }else{
-                    dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
+                    dispatch(fetchExpenseError({
+                        msg: "Error While Fetching Expenses Try Again!",
+                        expenseCurrentRange: expenseType
+                    }));
                 }
             }).catch((error)=>{
-                dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
+                dispatch(fetchExpenseError({
+                    msg: "Error While Fetching Expenses Try Again!",
+                    expenseCurrentRange: expenseType
+                }));
             });
         }
 }
 
 export const fetchExpensesMultipleTimesAsyncCreator = ( expenseType ) => {
     return (dispatch) => {
-        dispatch(fetchExpenseRequestMultiple());
+        dispatch(fetchExpenseRequestMultiple({ expenseCurrentRange: expenseType }));
         getExpenseByCategoryPromise(expenseType).then((response)=>{
             if(response.result == true){
                // console.log("Fetching Response with differnt Months - ",response);
-                response.expenseByCategoryResponse.currentExpenseRange = expenseType;
+                response.expenseByCategoryResponse.expenseCurrentRange = expenseType;
                 dispatch(fetchExpenseRequestMultipleSuccess(response.expenseByCategoryResponse));
             }else{
-                dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
+                dispatch(fetchExpenseError({
+                    msg: "Error While Fetching Expenses Try Again!",
+                    expenseCurrentRange: expenseType
+                }));
             }
         }).catch((error)=>{
-            dispatch(fetchExpenseError("Error While Fetching Expenses Try Again!"));
+            dispatch(fetchExpenseError({
+                msg: "Error While Fetching Expenses Try Again!",
+                expenseCurrentRange: expenseType
+            }));
         })
     }
 }
