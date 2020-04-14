@@ -8,7 +8,7 @@ import { PieChart } from 'react-native-svg-charts'
 import { Circle, G, Image } from 'react-native-svg'
 import { connect } from "react-redux";
 import { ALL_MONTHS,FULL_MONTH } from "../../../constants/constants";
-import CategoryFactory from "./categoryFactory";
+
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 import { numberWithCommas,firstLetterCapital,PLAID_EXPENSE_CATEGORIES,getCategoryInitials } from "../../../api/common";
 
@@ -260,7 +260,7 @@ class ExpenseByCategory extends Component{
                         <View style={ styles.categoryTitleAmount }>
                             <Text style={ styles.categoryText }>
                                 {`${firstLetterCapital(item.category)}`} 
-                                {/* {`${CategoryFactory.getCategoryName(item.categoryId)}`} */}
+                                
                             </Text>
                             <Text style={ styles.categoryAmount }>
                                 {`-$${numberWithCommas(item.amount)}`}
