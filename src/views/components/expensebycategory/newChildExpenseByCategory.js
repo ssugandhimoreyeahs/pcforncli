@@ -376,7 +376,10 @@ class ExpenseByCategoryChild extends Component{
                         </Text>
                         </View> : <View style={{ marginTop: 8 }} />
                     }
-                    </View> : null
+                    </View> : <View
+                     style={{ height: 100,justifyContent:"center",alignItems:"center" }}>
+                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
+                     </View>
                 }
                 {
                     barError == true ?
@@ -708,7 +711,7 @@ class ExpenseByCategoryChild extends Component{
     renderBody = () => {
         const { ExpenseSubCategory } = this.state.subExepenseByCategory;
         return(
-            <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+            <ScrollView  keyboardShouldPersistTaps='always' contentContainerStyle={{ paddingBottom: 20 }}>
                 <this.header />
                 <this.bodyChart />
                 {
