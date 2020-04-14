@@ -76,7 +76,8 @@ export {
 export {
   getExpenseByCategoryPromise,
   getExpenseByCategoryScreenPromise,
-  getExpenseByCategorySubScreenPromise
+  getExpenseByCategorySubScreenPromise,
+  getExpenseBySubCategoryGraphPromise
 } from "./Apis/expensecategory";
 
 export {

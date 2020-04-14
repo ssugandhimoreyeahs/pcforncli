@@ -64,6 +64,7 @@ const PLAIDAPIS = {
   expenseByCategoryPastTweleMonth: APIENDPOINT.endPoint+"/plaid/ExpenseByCategory?pastTwelveMonth=true",
   expenseByCategoryScreen: past => APIENDPOINT.endPoint+`/plaid/ExpenseByCategoryScreen?past=${past}`,
   expenseByCategorySubScreen: past => APIENDPOINT.endPoint+`/category/getSubCategoryScreen?past=${past}`,
+  expenseByCategorySubScreenGrpah: APIENDPOINT.endPoint+`/category/getSubCategoryScreen/graph`,
   //change in cash api
   changeInCash: APIENDPOINT.endPoint+"/parcentage/changeIncash"
 }

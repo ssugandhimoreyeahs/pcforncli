@@ -5,9 +5,9 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ALL_MONTHS } from "../../../constants/constants";
-import { numberWithCommas,firstLetterCapital } from "../../../api/common";
+import { numberWithCommas,firstLetterCapital,isFloat } from "../../../api/common";
 import { VictoryBar,VictoryAxis,VictoryChart,VictoryTheme } from "victory-native";
-import { getExpenseByCategorySubScreenPromise } from "../../../api/api";
+import { getExpenseByCategorySubScreenPromise,getExpenseBySubCategoryGraphPromise } from "../../../api/api";
 FontAwesome.loadFont();
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -25,14 +25,59 @@ class ExpenseByCategoryChild extends Component{
                 maximum: 5,
                 minimum: 0
             },
+            barDataTree: {
+                barLoader: true,
+                barError: false,
+                barData:{}
+            },
             currentExpenseCategory: {},
             error: false,
             loading: true,
             subExepenseByCategory: {},
-            currentExpenseType: 0
+            
         }
     }
-    
+    triggerDataOnBarClick = (datum) => {
+        let { _x } = datum;
+        const { subCategoryRequestType } = this.state;
+        const { maximum,current } = subCategoryRequestType;
+        if(current != _x){
+            let changeCurrent = Math.abs( (maximum+1) - _x );
+            subCategoryRequestType.current = changeCurrent;
+            this.setState({ loading:true,subCategoryRequestType },()=>{
+                this.triggerExpenseSubCategoryServer();
+            })
+        }
+    }
+    triggerDataOnTextLabelClick = (datum) => {
+        console.log("inside function = ",datum);
+        
+        const { subCategoryRequestType } = this.state;
+        const { maximum,current } = subCategoryRequestType;
+        if(current != datum){
+            let changeCurrent = Math.abs( (maximum+1) - datum );
+            subCategoryRequestType.current = changeCurrent;
+            this.setState({ loading:true,subCategoryRequestType },()=>{
+                this.triggerExpenseSubCategoryServer();
+            })
+        }
+    }
+    triggerExpenseSubCategoryGraphServer = () => {
+        const { categoryId } = this.state.currentExpenseCategory;
+        getExpenseBySubCategoryGraphPromise(categoryId).then((response)=>{
+            let { barDataTree } = this.state;
+            barDataTree.barLoader = false;
+            barDataTree.barError =  false;
+            barDataTree.barData = response.subExpenseGraph;
+            this.setState({ barDataTree });
+        }).catch((error)=>{
+            let { barDataTree } = this.state;
+            barDataTree.barLoader = false;
+            barDataTree.barError =  true;
+            barDataTree.barData = {};
+            this.setState({ barDataTree });
+        });
+    }
     triggerExpenseSubCategoryServer = () => {
         const { categoryId } = this.state.currentExpenseCategory;
         const { subCategoryRequestType } = this.state;
@@ -55,19 +100,20 @@ class ExpenseByCategoryChild extends Component{
             });
         });
     }
-    getCurrentExecutingMonthString = () => {
-        const { currentExpenseCategory } = this.state;
-        const date = new Date();
-        date.setMonth(date.getMonth() - currentExpenseCategory.expenseType);
-        return ALL_MONTHS[date.getMonth()];
+    currentMonthString = () => {
+        let { current } = this.state.subCategoryRequestType;
+        let newDate = new Date();
+        newDate.setMonth(newDate.getMonth() - current);
+        return newDate.getMonth();
     }
     componentDidMount = () => {
         
         const currentExpenseCategory = this.props.navigation.getParam("currentExpenseCategory");
         let { subCategoryRequestType } = this.state;
         subCategoryRequestType.current = currentExpenseCategory.expenseType;
-        this.setState({ currentExpenseCategory,subCategoryRequestType,currentExpenseType:currentExpenseCategory.expenseType },()=>{
+        this.setState({ currentExpenseCategory,subCategoryRequestType  },()=>{
            this.triggerExpenseSubCategoryServer();
+           this.triggerExpenseSubCategoryGraphServer();
         });
         
     }
@@ -128,11 +174,7 @@ class ExpenseByCategoryChild extends Component{
         const { subCategoryRequestType } = this.state;
         const { current,maximum,minimum } = subCategoryRequestType;
         return(
-            <View style={{  paddingHorizontal:7,alignItems:"center",         
-                borderWidth:0,borderColor:"red",height:35,
-                backgroundColor:"#E6E6EC",borderRadius:8,
-                width: 130,alignSelf:"center",
-                justifyContent:"space-between",flexDirection:"row" }}>
+            <View style={ styles.renderCurrentButton }>
 
                 <TouchableOpacity 
                 style={{ opacity: current == maximum ? 0.3 : 1 }}
@@ -159,24 +201,66 @@ class ExpenseByCategoryChild extends Component{
             <View style={ styles.seprator2 }/>
         );
     }
+    graphAxis = () => {
+        const { barDataTree } = this.state;
+        const { barData } = barDataTree;
+        
+        let graphDataArray = [];
+        barData.graphData.map((singleGraph,index)=>{
+            let obj = {};
+            obj.x = singleGraph.month;
+            obj.y = parseFloat(singleGraph.amount);
+            graphDataArray.push(obj);
+        });
+        
+        let maxYAxis = Math.max(...graphDataArray.map(item=>item.y));
+        let add10PercentToYaxis = ( maxYAxis + parseInt(maxYAxis/10) ) / 4;
+        
+        let yAxisLabels = [];
+        for(let i=0;i<5;i++){
+            let amount = i == 0 ? add10PercentToYaxis * i : add10PercentToYaxis * (-i);
+            yAxisLabels.push(amount);
+        }
+        
+        return [ graphDataArray,yAxisLabels ];
+    }
     renderBarChart = () => {
         const { backgroundColor: graphFillColor } = this.props.navigation.getParam("currentExpenseCategory");
-       
+        const [ graphDataArray,yAxisLabels ] = this.graphAxis();
+        
         const fill = graphFillColor;
-        const data   = [ -10,-20,-30,-40,-50,-60 ]
         return(
-            <View style={{ width: "100%" }}>
+            <View style={{ width: "100%",borderColor:"red",borderWidth:0 }}>
                 <VictoryChart width={deviceWidth - 5}
                 height={270}
                 domainPadding={10}
                 style={{ parent: { marginLeft: -20 } }} >
                 <VictoryAxis 
                     
+                    events={[{
+                    target: "tickLabels",
+                    eventHandlers: {
+                        onPress: () => {
+                        return [
+                            {
+                            target: "tickLabels",
+                            mutation: (props) => {
+                               //console.log("datum recieve on axis - ",props.datum);
+                                this.triggerDataOnTextLabelClick(props.datum);
+                            }
+                            }
+                        ];
+                        }
+                    }
+                    }]}
+
+                    tickValues={[ ...graphDataArray.map(item => item.x)]}
                     offsetY={255}
                     style={{
                         axis: { stroke: '#ffffff' },
                         tickLabels: { fontSize: 12,fill: (data) => {
-                            return data == this.getCurrentExecutingMonthString() ? `#1D1E1F` : `#8E8E93`;
+                            
+                            return data == ALL_MONTHS[this.currentMonthString()] ? `#1D1E1F` : `#8E8E93`;
                         } 
                         },
                     }} />
@@ -187,26 +271,49 @@ class ExpenseByCategoryChild extends Component{
                                     axis: { stroke: '#ffffff' },
                                     tickLabels: { fontSize: 12,fill: "#8E8E93" },
                                     }}
-                                tickValues= {[ -0,-1,-2,-3,-4 ]}
-                                tickFormat={(value)=>{ return `-$${-value}K`  }}
+                                tickValues= {[ ...yAxisLabels ]}
+                                tickFormat={y => {
+                                    
+                                    if(y <= -1000){
+
+                                    let returnValue = (y/1000);
+                                    if(isFloat(returnValue)){
+                                        return `${returnValue.toFixed(1)}K`;
+                                    }else{
+                                        return `${returnValue}K`;
+                                    }
+                                    // //let returnValue = (y/1000).toFixed(1);
+                                    // let returnValue = parseInt(y/1000);
+                                    // return `${returnValue}K`;
+                                    }else if(y <= -1000000){
+
+                                    let returnValue = (y/1000000);
+                                    if(isFloat(returnValue)){
+                                        return `${returnValue.toFixed(1)}M`;
+                                    }else{
+                                        return `${returnValue}M`;
+                                    }
+
+                                    // let returnValue = y/1000000;
+                                    // return `${returnValue}M`;
+                                    }else{
+                                    return y;
+                                    }
+                                }}
                                 /> 
                 <VictoryBar
                     style={{ data: { fill,opacity: (data) => {
                         
-                        if(data._y == -3){
+                        if(data.xName == ALL_MONTHS[this.currentMonthString()]){
                             return 1;
                         }else{
                             return 0.3;
                         }
                     } } }}
-                    data={[
-                        { x:1,y:-1.4},
-                        { x:2,y:-1.5},
-                        { x:3,y:-2.2},
-                        { x:4,y:-2.15},
-                        { x:5,y:-2.5},
-                        { x:6,y:-3},
-                    ]}
+                    data={graphDataArray.map(singleItem => {
+                        singleItem.y = singleItem.y * -1;
+                        return singleItem;
+                    })}
 
                     events={[{
                     target: "data",
@@ -216,11 +323,8 @@ class ExpenseByCategoryChild extends Component{
                             {
                             target: "data",
                             mutation: (props) => {
-                                console.log("------Props here ------");
-                                console.log(props.datum);
-                                
-                                // const fill = props.style && props.style.fill;
-                                // return fill === "black" ? null : { style: { fill: "black" } };
+                               
+                                this.triggerDataOnBarClick(props.datum);
                             }
                             }
                         ];
@@ -233,7 +337,9 @@ class ExpenseByCategoryChild extends Component{
         );
     }
     bodyChart = () => {
-        const { subExepenseByCategory } = this.state;
+        const { subExepenseByCategory,barDataTree } = this.state;
+        let { barLoader,barError } = barDataTree;
+        
         const { ExpenseSubCategory } = subExepenseByCategory;
         let iconObj = {};
         iconObj.visible = false;
@@ -254,42 +360,43 @@ class ExpenseByCategoryChild extends Component{
         let isSubCategoryEmpty = ExpenseSubCategory.length == 0 ? true : false;
         return(
             <Fragment>
-                <View style={{ height: 380,backgroundColor: "#FFF",
-                    borderWidth:0,borderColor:"red" }} >
+                <View style={ styles.upperView } >
                 {
                     isSubCategoryEmpty == false ?
-                    <View style={{ height:250,alignSelf: "center",marginTop: 30 }}>
-                    <Text style={{ textAlign:"center",color: "#1D1E1F",fontSize: 22,fontWeight: "bold" }}>
+                    <View style={{ ...styles.upperTotalAmountView }}>
+                    <Text style={ styles.upperTotalAmountText }>
                         { `-$${numberWithCommas(subExepenseByCategory.totalAmount)}` }
                     </Text>
                     {
                         iconObj.visible == true ?
-                        <View style={{ marginTop:8,flexDirection:"row",alignSelf:"center" }}>
+                        <View style={ styles.upperIconView }>
                         <FontAwesome name={`${iconObj.type}`} color={`${iconObj.color}`} />
-                        <Text style={{ textAlign:"center",color: "#1D1E1F",fontSize: 10,paddingLeft: 5 }}>
+                        <Text style={ styles.upperIconHikeText}>
                             { `${iconObj.text} since last month` }
                         </Text>
                         </View> : <View style={{ marginTop: 8 }} />
                     }
-                    </View> : <View
-                    style = {{
-                        borderWidth:0, borderColor:"red",
-                        height:280,justifyContent:"center",alignItems:"center"
-                    }}
-                    >
-                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
-                    </View>
+                    </View> : null
                 }
-                <View style={{ marginTop: 10 }}>
-                    {/* <this.renderBarChart /> */}
-                    <this.renderCurrentButton />
-                </View>
+                {
+                    barError == true ?
+                    <View style={{ height: 270,justifyContent:"center",alignItems:"center" }}>
+                        <this.graphErrorView />
+                    </View> :
+                    barLoader == true ?
+                    <View style={{ height:270,justifyContent:"center",alignItems:"center" }}>
+                        <ActivityIndicator animating={true} size={"large"} color={`#070640`} />
+                    </View> :
+                    <this.renderBarChart />
+                }
+                    
+                
                 </View>
             </Fragment>
         );
     }
     renderTransaction = ({ transaction,index,totalIndex }) => {
-        //console.log("Total Index - ",totalIndex," inde - ",index);
+        
         let currentTransactionDateObj = transaction.date.split("-");
         return(
             <Fragment>
@@ -418,8 +525,9 @@ class ExpenseByCategoryChild extends Component{
                     }}>
                     {
                         transaction.map((singleTransaction,index)=>{
-                            return <Fragment>
+                            return <Fragment key={index}>
                             <this.renderTransaction 
+                                key={index}
                                 transaction={{ ...singleTransaction }}
                                 index={index}
                                 totalIndex={transaction.length}
@@ -545,6 +653,37 @@ class ExpenseByCategoryChild extends Component{
             </View>
         );
     }
+    reloadGraphDataOnly = () => {
+        let { barDataTree } = this.state;
+        //let { barData,barLoader,barError } = barDataTree;
+        // barDataTree: {
+        //     barLoader: true,
+        //     barError: false,
+        //     barData:{}
+        // }
+        barDataTree.barLoader = true;
+        barDataTree.barError = false;
+        barDataTree.barData = {};
+        this.setState({ barDataTree },()=>{
+            this.triggerExpenseSubCategoryGraphServer();
+        });
+    }
+    graphErrorView = () => {
+        
+        return(
+            <View style={{ justifyContent:"center",alignItems:"center" }}>
+                         <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+                        <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
+                        <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
+                    </View> 
+                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+                        <TouchableOpacity onPress={()=>{ this.reloadGraphDataOnly(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                            <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
+                        </TouchableOpacity>
+                    </View>
+            </View>
+        );
+    }
     errorView = () => {
 
         return(
@@ -636,6 +775,45 @@ const styles = StyleSheet.create({
         width:"90%",
         borderBottomWidth: StyleSheet.hairlineWidth,
         opacity: 0.2
+    },
+    renderCurrentButton: {  
+        paddingHorizontal:7,
+        alignItems:"center",         
+        borderWidth:0,
+        borderColor:"red",
+        height:35,
+        backgroundColor:"#E6E6EC",
+        borderRadius:8,
+        width: 130,
+        alignSelf:"center",
+        justifyContent:"space-between",
+        flexDirection:"row" 
+    },
+    upperView: { 
+        backgroundColor: "#FFF",
+        borderWidth:0,
+        borderColor:"red" 
+    },
+    upperTotalAmountView: { 
+        alignSelf: "center",
+        marginTop: 30 
+    },
+    upperTotalAmountText: { 
+        textAlign:"center",
+        color: "#1D1E1F",
+        fontSize: 22,
+        fontWeight: "bold" 
+    },
+    upperIconView: { 
+        marginTop:8,
+        flexDirection:"row",
+        alignSelf:"center" 
+    },
+    upperIconHikeText: { 
+        textAlign:"center",
+        color: "#1D1E1F",
+        fontSize: 10,
+        paddingLeft: 5 
     }
 });
 export default DetectPlatform(ExpenseByCategoryChild,styles.container);

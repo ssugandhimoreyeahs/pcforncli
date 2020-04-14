@@ -104,3 +104,26 @@ export function getExpenseByCategorySubScreenPromise( past = 0,categoryId = ""){
     });
   });
 }
+
+
+export function getExpenseBySubCategoryGraphPromise( categoryId = ""){
+  return new Promise((resolve,reject)=>{
+    AsyncStorage.getItem("authToken").then( (token) =>{
+      console.log("Sub Expense Graph Api Trigger Here ",APINETWORK.expenseByCategorySubScreenGrpah);
+      axios.post(APINETWORK.expenseByCategorySubScreenGrpah,{ categoryId },{
+            headers: { Authorization: token,"Content-Type": "application/json" },
+            timeout
+          }).then((response)=>{
+              if(response.status == 200 && response.data.success == true){
+                return resolve({ result:true,subExpenseGraph: response.data });
+              }else{
+                return reject({ result:false,subExpenseGraph:response.data });
+              }
+          }).catch((error)=>{
+            return reject({ result:false,error });
+          })
+    }).catch((error)=>{
+        return reject({ result:false,error });
+    });
+  });
+}
