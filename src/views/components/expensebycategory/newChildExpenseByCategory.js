@@ -19,7 +19,12 @@ class ExpenseByCategoryChild extends Component{
         super(props);
 
         this.state = {
-            showTransaction: false,
+
+            subCategoryRequestType: {
+                current: 0,
+                maximum: 5,
+                minimum: 0
+            },
             currentExpenseCategory: {},
             error: false,
             loading: true,
@@ -27,22 +32,12 @@ class ExpenseByCategoryChild extends Component{
             currentExpenseType: 0
         }
     }
-    getDynamicMonth = () => {
-        let arrayForMonth = [];
-        for(let i=0;i<6;i++){
-            let objectToPush = {};
-            let currentDateObj = new Date();
-            currentDateObj.setMonth( currentDateObj.getMonth() - i);
-            objectToPush.renderValue = ALL_MONTHS[currentDateObj.getMonth()];
-            objectToPush.apiValue = i;
-            arrayForMonth.push(objectToPush);
-        }
-        return arrayForMonth.reverse();
-    } 
+    
     triggerExpenseSubCategoryServer = () => {
         const { categoryId } = this.state.currentExpenseCategory;
-        const { currentExpenseType: expenseType } = this.state;
-        getExpenseByCategorySubScreenPromise(expenseType,categoryId)
+        const { subCategoryRequestType } = this.state;
+        const { current } = subCategoryRequestType;
+        getExpenseByCategorySubScreenPromise(current,categoryId)
         .then((response)=>{
             
             this.setState({
@@ -67,9 +62,11 @@ class ExpenseByCategoryChild extends Component{
         return ALL_MONTHS[date.getMonth()];
     }
     componentDidMount = () => {
-        const currentExpenseCategory = this.props.navigation.getParam("currentExpenseCategory");
         
-        this.setState({ currentExpenseCategory,currentExpenseType:currentExpenseCategory.expenseType },()=>{
+        const currentExpenseCategory = this.props.navigation.getParam("currentExpenseCategory");
+        let { subCategoryRequestType } = this.state;
+        subCategoryRequestType.current = currentExpenseCategory.expenseType;
+        this.setState({ currentExpenseCategory,subCategoryRequestType,currentExpenseType:currentExpenseCategory.expenseType },()=>{
            this.triggerExpenseSubCategoryServer();
         });
         
@@ -98,36 +95,38 @@ class ExpenseByCategoryChild extends Component{
         );
     }
     getCurrentExecutingMonth = () => {
-        const { currentExpenseType } = this.state;
+        const { current } = this.state.subCategoryRequestType;
         const date = new Date();
-        date.setMonth( date.getMonth() - currentExpenseType);
+        date.setMonth( date.getMonth() - current);
         return date.getMonth();
     }
     changeSubCategory = ( actionType = "prev") => {
-        const maximumExpense = 5;
-        const minimumExpense = 0;
-        const { currentExpenseType } = this.state;
-        
+        let { subCategoryRequestType } = this.state;
+        let { 
+            current,maximum,minimum
+         } = subCategoryRequestType;
+
         if(actionType == "prev"){
-            if(currentExpenseType <= maximumExpense){
-                this.setState({ currentExpenseType:
-                    currentExpenseType + 1,loading: true
-                },()=>{
+            if(current < maximum){
+                subCategoryRequestType.current = current + 1;
+                this.setState({ subCategoryRequestType,
+                loading: true },()=>{
                     this.triggerExpenseSubCategoryServer();
-                })
+                });
             }
         }else{
-            if(currentExpenseType >= minimumExpense){
-                this.setState({ currentExpenseType:
-                    currentExpenseType - 1,loading: true
-                },()=>{
+            if(current > minimum){
+                subCategoryRequestType.current = current - 1;
+                this.setState({ subCategoryRequestType,
+                loading: true },()=>{
                     this.triggerExpenseSubCategoryServer();
-                })
+                });
             }
         }
     }
     renderCurrentButton = () => {
-
+        const { subCategoryRequestType } = this.state;
+        const { current,maximum,minimum } = subCategoryRequestType;
         return(
             <View style={{  paddingHorizontal:7,alignItems:"center",         
                 borderWidth:0,borderColor:"red",height:35,
@@ -136,8 +135,8 @@ class ExpenseByCategoryChild extends Component{
                 justifyContent:"space-between",flexDirection:"row" }}>
 
                 <TouchableOpacity 
-                style={{ opacity: this.state.currentExpenseType == 5 ? 0 : 1 }}
-                disabled={this.state.currentExpenseType == 5 ? true : false}
+                style={{ opacity: current == maximum ? 0.3 : 1 }}
+                disabled={ current == maximum ? true : false}
                 onPress={()=>{
                     this.changeSubCategory("prev");
                 }}>
@@ -145,8 +144,8 @@ class ExpenseByCategoryChild extends Component{
                 </TouchableOpacity>
                 <Text>{ `${ALL_MONTHS[this.getCurrentExecutingMonth()]}` }</Text>
                 <TouchableOpacity 
-                style={{ opacity: this.state.currentExpenseType == 0 ? 0 : 1 }}
-                disabled={this.state.currentExpenseType == 0 ? true : false}
+                style={{ opacity: current == minimum ? 0.3 : 1 }}
+                disabled={ current == minimum ? true : false}
                 onPress={()=>{
                     this.changeSubCategory("next");
                 }}>
@@ -359,7 +358,8 @@ class ExpenseByCategoryChild extends Component{
         }
         
         return(
-            <View style={{ backgroundColor:"#FFF",flexDirection:"column",width:"100%",alignSelf: "center"}}>
+            <View style={{ backgroundColor:"#FFF",
+            flexDirection:"column",width:"100%",alignSelf: "center"}}>
                 <View style={{ width: "90%",alignSelf:'center' }}>
                 <View style={{ flexDirection: "row",justifyContent:"space-between" }}>
                     <View style={{ flexDirection:"row",alignItems:"flex-end" }}>
@@ -374,7 +374,7 @@ class ExpenseByCategoryChild extends Component{
                         </Text>
                         {
                             transaction.length > 0 ?
-                            <AntDesign name={ isVisible == true ? 'up' : 'down' } size={15} style={{ marginLeft:10,opacity: 0.4 }} color={'#030538'}/>
+                            <AntDesign name={ isVisible == true ? 'up' : 'down' } size={15} style={{ marginLeft:5,marginTop:2,opacity: 0.4 }} color={'#030538'}/>
                             : null
                         }
                         </TouchableOpacity>
@@ -434,6 +434,70 @@ class ExpenseByCategoryChild extends Component{
             </View>
         );
     }
+    renderNoCategoryTransaction = ({ singleTransaction,index }) => {
+        let currentTransactionDateObj = singleTransaction.date.split("-");
+        return(
+            <Fragment>
+                <View style={{ flexDirection:"row",
+                justifyContent:"space-between" }}>
+                    <Text style={{ 
+                        borderWidth:0,
+                        borderColor:"yellow",
+                        color: "#1D1E1F",
+                        fontSize: 15,
+                        textAlign: "left",
+                        width: "70%"
+                    }}>{`${singleTransaction.name}`}</Text>
+                    <Text style={{
+                        borderWidth:0,
+                        borderColor:"yellow",
+                        color: "#1D1E1F",
+                        fontSize: 15,
+                        textAlign: "right",
+                        width: "30%"
+                    }}
+                    >{`-$${numberWithCommas(singleTransaction.amount)}`}</Text>
+                </View>
+
+                <View style={{ marginTop:8,flexDirection:"row",
+                justifyContent:"space-between" }}>
+                    <Text style={{ color: "#1D1E1F",
+                        opacity: 0.5,fontSize:11,textAlign:"left"
+                     }}>
+                         {`${ALL_MONTHS[ parseInt(currentTransactionDateObj[1]) - 1 ]} ${currentTransactionDateObj[2]}, ${currentTransactionDateObj[0]}`}
+                     </Text>
+                </View>
+                <this.seprator />
+            </Fragment>
+        );
+    }
+    renderWhenNoSubCategory = ({ category, index }) => {
+        const {
+            transaction
+        } = category;
+        if(transaction.length == 0){
+            return null;
+        }
+        return(
+            <View style={{
+                borderColor:"red",
+                borderWidth:0,
+                alignSelf:"center",
+                width:"90%",
+                backgroundColor:"#FFF"
+            }}>
+                {
+                    transaction.map((singleTransaction,index)=>{
+                        return <this.renderNoCategoryTransaction 
+                                singleTransaction={{ ...singleTransaction }}
+                                key={index}
+                                index={index}
+                        />
+                    })
+                }
+            </View>
+        );
+    }
     bodyTransaction = () => {
         const { subExepenseByCategory } = this.state;
         const { ExpenseSubCategory } = subExepenseByCategory;
@@ -443,7 +507,15 @@ class ExpenseByCategoryChild extends Component{
             <View style={{ paddingVertical:30,backgroundColor:"#FFF" }}>
                  {
                     ExpenseSubCategory.map((singleCategory,index)=>{
-                        return <this.renderSubCategory index={index}
+
+                        if(singleCategory.subCategory.toLowerCase() === "subcategory unavailable"){
+                            return <this.renderWhenNoSubCategory 
+                                category={{ ...singleCategory }}
+                                index={index}
+                                key={index}
+                            />
+                        }
+                        return <this.renderSubCategory key={index} index={index}
                             category={{ ...singleCategory }}
                         />
                     })
