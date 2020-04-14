@@ -1,5 +1,5 @@
 import React,{ Component, Fragment } from "react";
-import { ActivityIndicator,Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, Image as RNImage, Platform } from "react-native";
+import { ActivityIndicator,Text,View, StyleSheet, ScrollView, TouchableOpacity, Dimensions, BackHandler,Image as RNImage, Platform } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -88,8 +88,20 @@ class ExpenseByCategory extends Component{
         currentDateObj.setMonth( currentDateObj.getMonth() - requestType.current);
         return currentDateObj.getMonth();
     }  
+    handleBackButton=(nav)=> {
+        if(!nav.isFocused()) {
+          BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+          return false;
+        }else{
+          nav.goBack();
+          return true;
+        }
+      }
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+    }
     componentDidMount = () => {
-        
+        BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
     }
     header = () => {
         return(

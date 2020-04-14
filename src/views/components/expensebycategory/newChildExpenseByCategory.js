@@ -1,5 +1,5 @@
 import React,{ Component,Fragment } from "react";
-import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions,ActivityIndicator, Platform } from "react-native";
+import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions,ActivityIndicator, Platform,BackHandler } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -57,8 +57,10 @@ class ExpenseByCategoryChild extends Component{
         let { _x } = datum;
         const { subCategoryRequestType } = this.state;
         const { maximum,current } = subCategoryRequestType;
-        if(current != _x){
-            let changeCurrent = Math.abs( (maximum+1) - _x );
+        let changeCurrent = Math.abs( (maximum+1) - _x );
+        console.log("Current VALUE - ",current, "Change - ",changeCurrent);
+        if(current != changeCurrent){
+            //let changeCurrent = Math.abs( (maximum+1) - _x );
             subCategoryRequestType.current = changeCurrent;
             this.setState({ loading:true,subCategoryRequestType },()=>{
                 this.triggerExpenseSubCategoryServer();
@@ -122,8 +124,20 @@ class ExpenseByCategoryChild extends Component{
         newDate.setMonth(newDate.getMonth() - current);
         return newDate.getMonth();
     }
+    handleBackButton=(nav)=> {
+        if(!nav.isFocused()) {
+          BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+          return false;
+        }else{
+          nav.goBack();
+          return true;
+        }
+      }
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+    }
     componentDidMount = () => {
-        
+        BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
         const currentExpenseCategory = this.props.navigation.getParam("currentExpenseCategory");
         let { subCategoryRequestType } = this.state;
         subCategoryRequestType.current = currentExpenseCategory.expenseType;
@@ -251,11 +265,12 @@ class ExpenseByCategoryChild extends Component{
           });
         return(
             <Fragment>
-            <BarWraper>
+            <BarWraper style={{ marginLeft: -15 }}>  
                 <VictoryChart width={deviceWidth - 5}
                 height={270}
                 domainPadding={10}
-                style={{ parent: { marginLeft: -20 } }} >
+                //style={{ parent: { marginLeft: -20 } }} 
+                >
                 {/* <VictoryAxis 
                     
                     events={[{
@@ -344,7 +359,7 @@ class ExpenseByCategoryChild extends Component{
                             {
                             target: "data",
                             mutation: (props) => {
-                               
+                                
                                 this.triggerDataOnBarClick(props.datum);
                             }
                             }
@@ -355,8 +370,8 @@ class ExpenseByCategoryChild extends Component{
                 />
                 </VictoryChart>
                 </BarWraper>
-                <View style={{ marginTop: -35,marginLeft:27,
-                    width: deviceWidth-95,justifyContent:"space-between",
+                <View style={{ marginTop: -35,marginLeft:35,
+                    width: deviceWidth-105,justifyContent:"space-between",
                     borderWidth:0,borderColor:"red",
                     flexDirection:"row",marginBottom:40 }}>
                 {
