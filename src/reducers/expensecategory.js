@@ -27,6 +27,7 @@ export const fetchExpenseRequest = (action) => {
 }
 
 export const fetchExpenseSuccess = (response) => {
+    console.log("Is getting final Output here - ",response.expenseCurrentRange);
     return{
         type:FETCH_EXPENSE_SUCCESS,
         dashboardExpense: response.ExpenseByCategory,
@@ -118,8 +119,11 @@ export const fetchExpensesAsyncCreator = ( expenseType = 1 ) => {
             dispatch(fetchExpenseRequest({ expenseCurrentRange: expenseType }));
             getExpenseByCategoryPromise(expenseType).then((response)=>{
                 if(response.result == true){
-                    response.expenseCurrentRange = expenseType;
-                    dispatch(fetchExpenseSuccess(response.expenseByCategoryResponse));
+                    
+                    dispatch(fetchExpenseSuccess({
+                        ...response.expenseByCategoryResponse,
+                        expenseCurrentRange: expenseType
+                    }));
                 }else{
                     dispatch(fetchExpenseError({
                         msg: "Error While Fetching Expenses Try Again!",
