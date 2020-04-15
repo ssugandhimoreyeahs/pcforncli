@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 
-import financials from "./financials";
+
 
 import { userReducer } from "./getUser";
 import { plaidCategoryReducer } from "./plaidCategory";
@@ -13,7 +13,7 @@ import { forecastReducer } from "./forecast";
 import { salesReducer } from "./sales";
 
 export default combineReducers({
-  financials,
+
   userData: userReducer,
   plaidCategoryData : plaidCategoryReducer,
   expenseByCategory: ExpenseReducer,

@@ -15,10 +15,13 @@ import Timeout from "./timeout";
 import { SafeAreaView } from "react-navigation";
 //import { getUser } from "../../../api/api";
 import DetectPlatform from "../../../DetectPlatform";
-import { numberWithCommas,firstLetterCapital } from "../../../api/common";
+import { numberWithCommas,firstLetterCapital,PLAID_EXPENSE_CATEGORIES } from "../../../api/common";
 import { connect } from "react-redux";
 import { fetchCurrentBalancePromise } from "../../../api/api";
 import { ALL_MONTHS } from "../../../constants/constants";
+import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
+import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
+import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 
 SimpleLineIcons.loadFont();
 AntDesign.loadFont();
@@ -34,12 +37,14 @@ const TransactionComponent = (props) => {
   let readyAmount = ``;
   let categoryButtonText = ``;
   let amount = Math.abs(props.price);
-
+  let detailInfo = ``;
   //add category button text
   if(props.fullTransactionObj.category == props.fullTransactionObj.defaultCategory){
     categoryButtonText = `+ Category`;
+    detailInfo = props.fullTransactionObj.category;
   }else{
-    categoryButtonText = `Update Category`;
+    detailInfo = `Detail Info`;
+    categoryButtonText = `${props.fullTransactionObj.category}`;
   }
 
   if(props.transactionTypes == "INFLOW"){
@@ -55,26 +60,52 @@ const TransactionComponent = (props) => {
     }
 
   }
- 
+  let categoryBackgroundColor = `#6C5BC1`;
+  for(let i=0; i<PLAID_EXPENSE_CATEGORIES.length; i++){
+    if(props.fullTransactionObj.category.toLowerCase() === PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()){
+      categoryBackgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
+      break;
+    }
+  }
+  
   return(
     <React.Fragment>
-        <View style={{ marginVertical:10 }}>
-        <View style={{ alignSelf:"center",width:"90%"  }}>
-           
-           <View style={{ flexDirection: "row", justifyContent: "space-between", borderWidth:0,borderColor: "black"  }}>
-             <View style={{ width: "65%",borderWidth:0,borderColor:"red",paddingLeft:5,paddingRight:10 }}><Text style={{color:'#1D1E1F',fontSize:13,fontWeight:'bold' }}>{ props.name } </Text></View>
-             <View style={{ width:"35%",borderWidth:0,borderColor:"blue",paddingLeft:5 }}><Text style={{color:'#1D1E1F',fontSize:15 }}>{ readyAmount }</Text></View>
-           </View>
+      <View style={{ marginTop:20,
+        borderWidth:0,borderColor:"red",
+        width: "90%",
+        alignSelf:"center" }}>
 
-           <View style={{ flexDirection: "row", justifyContent: "space-between",marginTop:5  }}>
-              <View style={{ justifyContent:"center",width:"60%",paddingLeft:5 }}><Text style={{color:'#1D1E1F',fontSize:10,}}>{ props.date }</Text></View>
-              <View style={{ width:"40%" }}>
-              <TouchableOpacity style={{ ...styles.btn }}
-                onPress={()=>{
-                  if(userData.bankStatus != "linked"){
-                   setTimeout(()=>{
-                     
-                     Alert.alert(
+        <View style={{ flexDirection:"row",justifyContent:"space-between",
+        
+         }}>
+         <Text style={{ 
+           color:"#1D1E1F",fontSize:15,
+           width: "60%" }}>{ props.name }</Text>
+         <Text style={{ fontSize:17,
+          color:"#1D1E1F",width:"40%",textAlign:"right"
+          }}>{ readyAmount }</Text>
+         </View>
+      
+        <View style={{ marginTop:15,
+          borderWidth:0,borderColor:"blue",
+          flexDirection:"row",
+          justifyContent:"space-between" }} >
+
+          <View style={{ justifyContent:"center",alignItems:"center" }}><Text style={{
+            fontSize:11,opacity:0.5,color:"#1D1E1F"
+          }}>{ detailInfo }</Text></View>
+
+          <TouchableOpacity 
+            onPress={()=>{
+              if(userData.bankStatus == "linked"){
+                //console.log("Full transaction obj - ",props.fullTransactionObj);
+                props.navigation.navigate("NCategoryScreen",{ 
+                  currentExecutingTransaction:props.fullTransactionObj,
+                  resetTransactionScreen: () => { 
+                    props.resetTransactionScreen(); 
+                  }});
+              }else{
+                Alert.alert(
                        'Bank Disconnected',
                        `Your bank account has been disconnected. Please reconnect again.`,
                        [
@@ -88,29 +119,38 @@ const TransactionComponent = (props) => {
                        ],
                        {cancelable: false},
                      );
-     
-                   },100);
-                   }else{
-                     props.navigation.navigate("CategoryScreen",{ currentExecutingTransaction:props.fullTransactionObj,resetTransactionScreen: () => { props.resetTransactionScreen(); } });
-                   }
-                  }}
-              >
-                  <Text style={styles.TextStyle}>{ categoryButtonText }</Text>
-              </TouchableOpacity>
-              </View>
-           </View>
+              }
+            }}
+            style={{ backgroundColor: categoryButtonText == "+ Category" ? "#FFF" : categoryBackgroundColor,
+            borderColor: categoryButtonText == "+ Category" ? "#000" : categoryBackgroundColor,
+            borderWidth:0.3,
+            height: 24,justifyContent:"center",
+            alignItems:'center',
+            paddingHorizontal: 20,
+            borderRadius:50,
+           }}>
 
-       </View>   
-        </View>     
-        <Separator style={styles.separator}/>
+            <Text style={{ fontSize:11,
+              color: categoryButtonText == "+ Category" ? "#000" : "#FFF"
+            }}>{ firstLetterCapital(categoryButtonText) }</Text>
+
+          </TouchableOpacity>
+
+        </View>
+      </View>
+
+      <View style={{ 
+        borderBottomColor:"#1D1E1F",borderBottomWidth: StyleSheet.hairlineWidth,
+        opacity: 0.2,width:"90%",alignSelf:"center",
+        marginTop: 15 }}></View>
     </React.Fragment>
   );
 }
 const ShowDateHeadings = ({date}) => {
-  //console.log("Date Recieved in Transactions - ",date);
+  ////console.log("Date Recieved in Transactions - ",date);
   //let currentTransactionDateObj = new Date(date);
   let currentTransactionDateObj = date.split("-");
-  console.log("Test here - ",currentTransactionDateObj);
+  //console.log("Test here - ",currentTransactionDateObj);
   // return(
   // <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[currentTransactionDateObj.getMonth()]} ${currentTransactionDateObj.getDate()}, ${currentTransactionDateObj.getFullYear()}`}</Text>
   // );
@@ -259,6 +299,10 @@ class Checking extends React.PureComponent{
       this.setState(this.resetState(),()=>{
         setTimeout(()=>{
           this.readyTransactionPage();
+          setTimeout(()=>{ this.props.fetchExpenseByCategory(3);
+            //for the expenses inner screen
+            this.props.fetchMainExepenseByCategory(0);
+          },500);
         },100);
       });
 
@@ -296,14 +340,14 @@ showUserIsNotConnectedToBankAlert = () => {
 fetchTransactionsOnEachScroll = async (isDisableActivityIndicator = false,isDisableSearch = false) => {
   if(isDisableSearch == false){
     const userTransactions = await  getUserTransactions(this.state.skipPoint,this.state.limitPoint);
-      //console.log(userTransactions.transactions.allTransactions.transactions[0]);
+      ////console.log(userTransactions.transactions.allTransactions.transactions[0]);
       if(userTransactions.result == true){
         const seprateDates = [];
       userTransactions.transactions.map( res => {
           seprateDates.push(res.date);
       });
       const seprateDate = this.getUnique([...seprateDates]);
-      //console.log("Current Slot ",this.state.currentSlot);
+      ////console.log("Current Slot ",this.state.currentSlot);
       this.setState({ seprateDate:[...this.state.seprateDate,...seprateDate],transactions:[...this.state.transactions,...userTransactions.transactions] },()=>{
         if(isDisableActivityIndicator == true){
           this.setState({ isShowActivityIndicator: false });
@@ -314,7 +358,7 @@ fetchTransactionsOnEachScroll = async (isDisableActivityIndicator = false,isDisa
 }
 fetchTransactionsFirstTime = async (userData) => {
       const userTransactions = await  getUserTransactions(this.state.skipPoint,this.state.limitPoint);
-      //console.log(userTransactions.transactions.allTransactions.transactions[0]);
+      ////console.log(userTransactions.transactions.allTransactions.transactions[0]);
       if(userTransactions.result == true){
         if(userTransactions.accountType != undefined && userTransactions.accountType != null && userTransactions.accountType != ""){
           this.setState({ userAccountType: userTransactions.accountType });
@@ -346,7 +390,7 @@ fetchTransactionsFirstTime = async (userData) => {
                 seprateDates.push(res.date);
             });
             const seprateDate = this.getUnique(seprateDates);
-            // console.log("Total slots to be covering ",totalSlotsForCovering);
+            // //console.log("Total slots to be covering ",totalSlotsForCovering);
             this.setState({ isShowActivityIndicator:false,allowStartSearch:false,seprateDate,transactions:userTransactions.transactions,totalNumOfTransactions:userTransactions.totalTransactions,isSpinner:false,isUserLinkedWithBank: true,isBodyLoaded:true },()=>{
 
           //code for showing alert that the user is not connected to the bank
@@ -366,7 +410,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
       const totalSlotsForCovering = parseInt(userTransactions.totalTransactions / this.state.fetchTransactionsPerScroll);
       const remaningTransactions = parseInt(userTransactions.totalTransactions % this.state.fetchTransactionsPerScroll);
-      //console.log("Total slots to be covering ",totalSlotsForCovering);
+      ////console.log("Total slots to be covering ",totalSlotsForCovering);
       this.setState({ seprateDate,transactions:userTransactions.transactions,totalSlotsForCovering,remaningTransactions,totalNumOfTransactions:userTransactions.totalTransactions,isSpinner:false,isUserLinkedWithBank: true,isBodyLoaded:true },()=>{
 
           //code for showing alert that the user is not connected to the bank
@@ -407,7 +451,7 @@ fetchTransactionsFirstTime = async (userData) => {
           this.setState({ currentBalance: userBalance.available_balance });
         }    
       }).catch((error)=>{
-          console.log("current Balance promise error - on the checking transaction page resposne - ",error);
+          //console.log("current Balance promise error - on the checking transaction page resposne - ",error);
           this.setState({ currentBalance: 0 });
       })
 
@@ -438,20 +482,20 @@ fetchTransactionsFirstTime = async (userData) => {
       return false;
     }else{
       nav.goBack();
-      //console.log("Transaction")
+      ////console.log("Transaction")
       return true;
     }
   }
   handleScroll = (event) => {
-     // console.log(event.nativeEvent.contentOffset.y);
+     // //console.log(event.nativeEvent.contentOffset.y);
      
   }
   isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    console.log("---------------------------------------onScroll testing-----------------------------");
-    console.log(layoutMeasurement.height);
-    console.log(contentOffset.y);
-    console.log(contentSize.height);
-    console.log("--------------------------------------------------------------------------------------");
+    //console.log("---------------------------------------onScroll testing-----------------------------");
+    //console.log(layoutMeasurement.height);
+    //console.log(contentOffset.y);
+    //console.log(contentSize.height);
+    //console.log("--------------------------------------------------------------------------------------");
     return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
   };
 
@@ -465,7 +509,7 @@ fetchTransactionsFirstTime = async (userData) => {
         }
       })
     }else if(currentAction == 'Outflow'){
-      console.log("Triggering outflow 1st Time");
+      //console.log("Triggering outflow 1st Time");
       if(this.state.outflowinflowstate.outflowData.isFetchedFirstTime == false){
         const outflowResponse = await getUserOutFlowTransactions(this.state.outflowinflowstate.outflowData.skipPoint,this.state.outflowinflowstate.outflowData.limitPoint);
         
@@ -493,7 +537,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           if(outflowResponse.outflowTransactions.totalTransactions <= this.state.fetchTransactionsPerScroll){
 
-            console.log("outflow total transaction length triggered less than or equal to 25- ",outflowResponse.outflowTransactions.totalTransactions);
+            //console.log("outflow total transaction length triggered less than or equal to 25- ",outflowResponse.outflowTransactions.totalTransactions);
             let seprateOutflowDates = []
           outflowResponse.outflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -536,7 +580,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           }else{
 
-            console.log("outflow total transaction length triggered more than 25- ",outflowResponse.outflowTransactions.totalTransactions);
+            //console.log("outflow total transaction length triggered more than 25- ",outflowResponse.outflowTransactions.totalTransactions);
             let seprateOutflowDates = []
           outflowResponse.outflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -600,7 +644,7 @@ fetchTransactionsFirstTime = async (userData) => {
      
       //code here for the inflow transactions to be fetched from the api once time
 
-      console.log("Triggering inflow transactions 1st Time");
+      //console.log("Triggering inflow transactions 1st Time");
       if(this.state.outflowinflowstate.inflowData.isFetchedFirstTime == false){
         const inflowResponse = await getUserInflowTransactions(this.state.outflowinflowstate.inflowData.skipPoint,this.state.outflowinflowstate.inflowData.limitPoint);
         
@@ -627,7 +671,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           if(inflowResponse.inflowTransactions.totalTransactions <= this.state.fetchTransactionsPerScroll){
 
-            console.log("inflow total transaction length triggered less than or equal to 25- ",inflowResponse.inflowTransactions.totalTransactions);
+            //console.log("inflow total transaction length triggered less than or equal to 25- ",inflowResponse.inflowTransactions.totalTransactions);
             let seprateOutflowDates = []
             inflowResponse.inflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -670,7 +714,7 @@ fetchTransactionsFirstTime = async (userData) => {
 
           }else{
 
-            console.log("inflow total transaction length triggered more than 25- ",inflowResponse.inflowTransactions.totalTransactions);
+            //console.log("inflow total transaction length triggered more than 25- ",inflowResponse.inflowTransactions.totalTransactions);
             let seprateOutflowDates = []
             inflowResponse.inflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -829,11 +873,11 @@ fetchTransactionsFirstTime = async (userData) => {
     const appendStateData =  isAllLoaded == true ? {  isAllActionCompleted:true,outflowIndicator: false } : {};
     
     const outflowResponse = await getUserOutFlowTransactions(this.state.outflowinflowstate.outflowData.skipPoint,this.state.outflowinflowstate.outflowData.limitPoint);
-   // console.log("outflow responses - ",outflowResponse.result);
+   // //console.log("outflow responses - ",outflowResponse.result);
     if(outflowResponse.result == true){
       
       if(outflowResponse.outflowTransactions.transactions.length > 0){
-          console.log("Getting outflow transactions on each scroll length - ",outflowResponse.outflowTransactions.transactions.length);
+          //console.log("Getting outflow transactions on each scroll length - ",outflowResponse.outflowTransactions.transactions.length);
           let seprateOutflowDates = []
           outflowResponse.outflowTransactions.transactions.map( singleOutflowTransaction => {
               seprateOutflowDates.push(singleOutflowTransaction.date);
@@ -939,7 +983,7 @@ fetchTransactionsFirstTime = async (userData) => {
               if(outflowData.isAllActionCompleted == false){
                   
                   if(outflowData.currentExecutingSlot < outflowData.totalTransactionSlotsToBeCovered){
-                    console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
+                    //console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {
@@ -955,7 +999,7 @@ fetchTransactionsFirstTime = async (userData) => {
                       this.fetchOutFlowTransactionsOnEachScroll(false);
                     })
                   }else{
-                    console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
+                    //console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {
@@ -983,7 +1027,7 @@ fetchTransactionsFirstTime = async (userData) => {
               if(inflowData.isAllActionCompleted == false){
                   
                   if(inflowData.currentExecutingSlot < inflowData.totalTransactionSlotsToBeCovered){
-                   // console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
+                   // //console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {
@@ -999,7 +1043,7 @@ fetchTransactionsFirstTime = async (userData) => {
                       this.fetchInflowTransactionsOnEachScroll(false);
                     })
                   }else{
-                    //console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
+                    ////console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
                     this.setState((prevState)=>{
                       return{
                         outflowinflowstate: {
@@ -1060,7 +1104,9 @@ fetchTransactionsFirstTime = async (userData) => {
                      this.state.seprateDate.map( (singleDate,dateIndex )=> {
                         return <React.Fragment key={dateIndex}>
                           <ShowDateHeadings key={dateIndex} date={singleDate} />
-                          <View style={{marginTop:20,backgroundColor:"#FFFFFF", flexDirection:'column',width:"100%", alignSelf:'center'}}>
+                          <View style={{marginTop:20,
+                          backgroundColor:"#FFFFFF", 
+                          flexDirection:'column',width:"100%", alignSelf:'center'}}>
                         {  this.state.transactions.map( (transaction,transactionIndex) => {
                             if(singleDate === transaction.date){
                             
@@ -1226,5 +1272,20 @@ const styles = StyleSheet.create({
       },
     });
 
-    const mapStateToProps = state =>  ({ reduxState:state });
-    export default connect(mapStateToProps,null)(DetectPlatform(Checking,styles.margins));
+    //const mapStateToProps = state =>  ({ reduxState:state });
+
+    const mapStateToProps = state => {
+      return {
+          reduxState:state,
+          categoryReduxData: state.plaidCategoryData
+      }
+  }
+  
+  const mapDispatchToProps = dispatch => {
+      return {
+          fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
+          fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
+          fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) }
+      }
+  }
+    export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(Checking,styles.margins));

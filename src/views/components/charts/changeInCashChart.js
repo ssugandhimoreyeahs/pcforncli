@@ -78,7 +78,7 @@ class ChangeInCashChart extends Component {
     // console.log(composingDataLevel1);
     // console.log("ends here ----------------");
     let { cicCurrentRange } = cashInChangeData;
-    let barRatio = cicCurrentRange == 1 ? 0.6 : 
+    let barRatio = cicCurrentRange == 1 ? 0.5 : 
      cicCurrentRange == 3 ? 0.15 : 
      cicCurrentRange == 6 ? 0.20 : 
      cicCurrentRange == 12 ? 0.35 : 0.2; 
@@ -86,14 +86,17 @@ class ChangeInCashChart extends Component {
         <View style={{ 
           
           alignItems:'flex-start',width:gw,
-          marginLeft:15
+          marginLeft:24
           }}>
           <VictoryChart  
           style={{
-            parent: { marginLeft: -55 }
+            parent: { marginLeft: -50 }
           }}
           height={270} width={gw} 
-          domainPadding={{ x: cashInChangeData.cicCurrentRange == 1 ? 7 : 20 }}
+          domainPadding={{ 
+            x: cashInChangeData.cicCurrentRange == 1 ? [ 2, 90] : 20 
+              
+          }}
         >
 	      
         <VictoryAxis  
@@ -169,6 +172,7 @@ class ChangeInCashChart extends Component {
           
           />
         <VictoryBar
+            alignment="end"
             barRatio={ barRatio }
             style={{ data: { fill: (items)=>{  if(items.y < 0){return "#FF7B32" }else{ return "#1188DF" }  } } }}
             data={ composingDataLevel1 }
@@ -182,7 +186,8 @@ class ChangeInCashChart extends Component {
           marginTop:-30,
           flexDirection:"row",
           justifyContent:"space-between",
-          width:gw-105
+          width:cashInChangeData.cicCurrentRange == 1 ? gw - 100 : gw-112,
+          paddingLeft: cashInChangeData.cicCurrentRange == 1 ? 0 : 3
           }}>
 
             {
@@ -213,84 +218,3 @@ const mapStateToProps = (state) => {
   }
 }
 export default connect(mapStateToProps,null)(ChangeInCashChart);
-//client code
-
- /* <VictoryChart height={260} width={gw}>
-      <VictoryAxis
-        dependentAxis={true}
-        tickFormat={() => ""}
-        style={{
-          axis: { stroke: "none" },
-          grid: { stroke: "#EEE", strokeDasharray: "5,5" },
-          tick: { display: "none" }
-        }}
-      />
-      <VictoryAxis
-        tickValues={data.map(each => {
-          return each.x;
-        })}
-        offsetY={40}
-        // tickFormat={x =>
-        //   JS_DATE_INDEX_TO_MONTH_MAP[(new Date(x).getMonth() + 1) % 12]
-        // }
-        style={{
-          tickLabels: { angle: 315, stroke: "#8E8E93", strokeWidth: 0.5 }
-        }}
-      />
-      <VictoryBar data={data} style={{ data: { fill: "#FF7B32" } }} />
-      </VictoryChart> 
-      
-      //  VictoryNative requires data to be in the format:
-    //     [
-    //         { x: "2019-08-01", y: 12000 },
-    //         { x: "2019-09-01", y: 11000 }
-    //     ]
-    // here we transform our data into this format
-
-    const { historicalFinances } = this.props;
-    let data = {};
-    if (historicalFinances) {
-      data = Object.keys(historicalFinances).map(currentMonthKey => {
-        const currentMonth = Moment(currentMonthKey, "YYYY-MM-DD");
-        const monthPriorKey = currentMonth
-          .subtract(1, "month")
-          .format("YYYY-MM-DD");
-        if (
-          monthPriorKey in historicalFinances &&
-          currentMonthKey in historicalFinances
-        ) {
-          return {
-            x: currentMonth.toDate(),
-            y:
-              historicalFinances[currentMonthKey].cash -
-              historicalFinances[monthPriorKey].cash
-          };
-        }
-      });
-    }
-      
-      */
-
-
-
-
-        //Logic 1 Based on the 25 percent
-    //positive labels data - 
-    // let positiveFinalLabels = [];
-    // const maxPositiveValue = allPositiveValues.map( (singlePositive) => { return singlePositive.y } );
-    // const maxPositiveValues = Math.max(...maxPositiveValue);
-    // let incrementMaxPositive25Percent = parseInt(maxPositiveValues + ( (maxPositiveValues * 25) / 100 ));
-    // let divideMaxPositiveBy5 = parseInt(incrementMaxPositive25Percent / 3);
-    // for(let i=0;i<3;i++){
-    //   positiveFinalLabels.push(divideMaxPositiveBy5*i);
-    // }
-
-    // //negative labels data - 
-    // let negativeFinalLabels = [];
-    // const maxNegativeValue = allNegativeValues.map( (singleNegative) => { return singleNegative.y });
-    // const maxNegativeValues = Math.min(...maxNegativeValue);
-    // const incrementMaxNegative25Percent = parseInt(maxNegativeValues + ( (maxNegativeValues * 25) / 100 ));
-    // const divideMaxNegativeBy5 = parseInt(  incrementMaxNegative25Percent / 2 );
-    // for(let i=1;i<=2;i++){
-    //   negativeFinalLabels.push(divideMaxNegativeBy5*i);
-    // }

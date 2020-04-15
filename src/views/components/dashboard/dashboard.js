@@ -5,15 +5,12 @@ import { StyleSheet } from "react-native";
 import IncomingAR from "../charts/incomingAR";
 import BottomNavLayout from "../../../controls/bottom-nav-layout";
 import HealthScore from "../charts/healthScore";
-import { HISTORICAL_FINANACES } from "../../../utilities/stub";
 import { connect } from "react-redux";
 import AsyncStorage from "@react-native-community/async-storage";
 import CashOnHand from "./cashOnHand";
 import ChangeInCash from "./changeInCash";
 import Sales from "./sales";
-import { listFinancials } from "../../../reducers/financials";
 import { fetchUserAsyncActionCreator,fetchUserSuccess } from "../../../reducers/getUser";
-
 import { 
   getCashOnHandGraph,
   getSalesData,
@@ -104,7 +101,7 @@ class Dashboard extends PureComponent {
         if(userResponse.userData.bankIntegrationStatus == true){
           this.showBankNotConnectedPopupFlag = false;
            //Approcahes using promises 
-            
+           this.props.fetchPlaidCategoryDispatch();
             getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
               if(cashOutOfDateResponse.result == true){
                 this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
@@ -139,7 +136,8 @@ class Dashboard extends PureComponent {
             },1000);
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
-            this.props.fetchInsights();
+            this.props.fetchMainExepenseByCategory(0);
+            // this.props.fetchInsights();
             if( userResponse.userData.qbIntegrationStatus == true  ){
               getHealthScoreUsingPromise().then((response)=>{
                   //console.log("health score api response - ",response);
@@ -170,7 +168,7 @@ class Dashboard extends PureComponent {
         }
         this.setState({  userData:userResponse.userData },()=>{
           if(userResponse.userData.bankIntegrationStatus == true){
-            this.props.fetchPlaidCategoryDispatch();
+            // this.props.fetchPlaidCategoryDispatch();
           }
         });
       }else{
@@ -227,7 +225,7 @@ class Dashboard extends PureComponent {
         if(userResponse.userData.bankIntegrationStatus == true){
           this.showBankNotConnectedPopupFlag = false;
            //Approcahes using promises 
-            
+           this.props.fetchPlaidCategoryDispatch();
             getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
               if(cashOutOfDateResponse.result == true){
                 this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
@@ -260,7 +258,8 @@ class Dashboard extends PureComponent {
             });
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
-            this.props.fetchInsights();
+            this.props.fetchMainExepenseByCategory(0);
+            // this.props.fetchInsights();
             if( userResponse.userData.qbIntegrationStatus == true  ){
               getHealthScoreUsingPromise().then((response)=>{
                   //console.log("health score api response - ",response);
@@ -311,22 +310,13 @@ class Dashboard extends PureComponent {
         if(userResponse.userData.qbIntegrationStatus == true){
             this.props.fetchSales();
             this.props.fetchIncommingAr();
-            // if(userResponse.userData.bankIntegrationStatus == true && 
-            //   isValidTokenApiCalled == false){
-            //   validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
-            //     if( triggerValidPlaidToken.result == true && triggerValidPlaidToken.response.IsQuickbookToken == false){
-            //           this.isshowQBPopup();
-            //     }
-            //   }).catch((error)=>{
-            //     console.log("Validate Plaid Token Promise error 2 - ",error);
-            //   });
-            // }
+            
         }
         
   
         this.setState({  userData:userResponse.userData,isSpinner:false,tryAgainScreen:false,isBodyLoaded:true },()=>{
           if(userResponse.userData.bankIntegrationStatus == true){
-            this.props.fetchPlaidCategoryDispatch();
+            // this.props.fetchPlaidCategoryDispatch();
           }
           if(this.state.isCountApiTriggered == false){
               if(userResponse.userData.bankIntegrationStatus == false){
@@ -575,11 +565,28 @@ class Dashboard extends PureComponent {
                reloadQuickbooks = { () => { this.reloadQuickbooks(); } }
                
                />
-              { bankIntegrationStatus == true ? <CashOnHand healthScoreIndicator={this.state.healthScoreIndicator} isCOHLoadedOnce={this.state.isCOHLoadedOnce} outOfCashDate={this.state.outOfCashDate} isEnableDropDownForSwitchingGraph={ this.state.cashOnHandGraph.length == 0 ? true : false  } showCOHChartLoader={this.state.showCOHChartLoader} handleGraphChangeFunction={this.handleGraphChangeFunction} userCurrentBalance={this.state.userCurrentBalance} historicalFinances={financials.breakdown} navigation={this.props.navigation} cashOnHandGraphData={this.state.cashOnHandGraph} cohPast={this.state.past} cohFuture={this.state.future} /> : null }
-              { bankIntegrationStatus == true ? <ChangeInCash historicalFinances={financials.breakdown} navigation={this.props.navigation}/> : null }
-              { bankIntegrationStatus == true ? <ExpenseByCategory navigation={this.props.navigation} /> : null }
-              { qbIntegrationStatus == true ? <Sales isSalesLoadedOnce={this.state.isSalesLoadedOnce} showSalesChartLoader={this.state.showSalesChartLoader} salesTotalAmount={this.state.salesTotalAmount} historicalFinances={financials.breakdown} navigation={this.props.navigation} salesData={this.state.salesData} /> : null }
-              { qbIntegrationStatus == true ? <IncomingAR style={styles.incomingAR} ar={financials.ar} navigation={this.props.navigation}/> : null }
+              { bankIntegrationStatus == true ? <CashOnHand 
+              healthScoreIndicator={this.state.healthScoreIndicator} 
+              isCOHLoadedOnce={this.state.isCOHLoadedOnce} 
+              outOfCashDate={this.state.outOfCashDate} 
+              isEnableDropDownForSwitchingGraph={ 
+                this.state.cashOnHandGraph.length == 0 ? true : false  
+              } 
+              showCOHChartLoader={this.state.showCOHChartLoader} 
+              handleGraphChangeFunction={this.handleGraphChangeFunction} 
+              userCurrentBalance={this.state.userCurrentBalance} 
+              navigation={this.props.navigation} 
+              cashOnHandGraphData={this.state.cashOnHandGraph} 
+              cohPast={this.state.past} cohFuture={this.state.future} /> : null }
+              { bankIntegrationStatus == true ? <ChangeInCash  
+              navigation={this.props.navigation}/> : null }
+              { bankIntegrationStatus == true ? <ExpenseByCategory 
+              navigation={this.props.navigation} /> : null }
+              { qbIntegrationStatus == true ? <Sales 
+              navigation={this.props.navigation} /> : null }
+              { qbIntegrationStatus == true ? <IncomingAR 
+              style={styles.incomingAR} 
+              navigation={this.props.navigation}/> : null }
           </BottomNavLayout>
           : null
         }
@@ -589,7 +596,6 @@ class Dashboard extends PureComponent {
 }
 const mapStateToProps = state => {
   return {
-    financials: state.financials.financials,
     reduxUserData: state.userData,
     
   };
@@ -602,7 +608,7 @@ const mapDispatchToProps = dispatch => {
   fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
   updateUserReduxTree: (userData) => { dispatch(fetchUserSuccess(userData)) },
   fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
-  fetchMainExepenseByCategory: (type = 1) => { dispatch(fetchMainExpenseAsyncCreator(type)) },
+  fetchMainExepenseByCategory: (type = 0) => { dispatch(fetchMainExpenseAsyncCreator(type)) },
   fetchCashInChange: ( cicCurrentRange = 0 ) => { dispatch(cicAsynCreator(cicCurrentRange)) },
   fetchIncommingAr: () => { dispatch(fetchArAsyncCreator()); },
   fetchInsights: () => { dispatch(fetchInsightsAsyncCreator()); },

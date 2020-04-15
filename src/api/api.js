@@ -46,7 +46,8 @@ export {
   addCategoryToTransaction,
   getSubCategories,
   getSubCategoryTransactions,
-  getChangeInCash
+  getChangeInCash,
+  changeAllSimilarTransaction
 } from "./Apis/plaid";
 
 //QuickBooks Api's
@@ -73,7 +74,10 @@ export {
 
 //all expense by category api's
 export {
-  getExpenseByCategoryPromise
+  getExpenseByCategoryPromise,
+  getExpenseByCategoryScreenPromise,
+  getExpenseByCategorySubScreenPromise,
+  getExpenseBySubCategoryGraphPromise
 } from "./Apis/expensecategory";
 
 export {

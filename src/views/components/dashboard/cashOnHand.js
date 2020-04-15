@@ -11,6 +11,8 @@ import { Dropdown } from 'react-native-material-dropdown';
 import {Button_Months} from "../../../constants/constants";
 import { Button } from "react-native-elements";
 import { numberWithCommas } from "../../../api/common";
+import { TERMINOLOGY,INSIGHTS } from "../../../api/message";
+
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 export default class CashOnHand extends PureComponent {
@@ -23,17 +25,7 @@ export default class CashOnHand extends PureComponent {
     }
     this.dropdownRef = React.createRef();
   }
-  getOutOfCashDateLabel(cash, expenses, sales) {
-    const rate = sales - expenses;
-    if (rate === 0) {
-      return "Cash Flow Neutral";
-    } else if (rate > 0) {
-      return "Cash Flow Positive";
-    } else {
-      const ooc = getOutOfCashDate(cash, expenses, sales);
-      return ooc.format("MMM D, YYYY");
-    }
-  }
+ 
 
   getRunwayColor(cash, expenses, sales) {
     const oocDate = getOutOfCashDate(cash, expenses, sales);
@@ -43,17 +35,9 @@ export default class CashOnHand extends PureComponent {
 
   showAlert1() {  
     Alert.alert(  
-        'OUT OF CASH DATE',  
-        `Out-of-Cash Date is the date at which your company will run out of money based on your current cash on hand and burn rate. The duration of time from now to your out-of-cash date is called runway.`,  
-        [  
-            {  
-                text: 'Cancel',  
-                onPress: () => console.log('Cancel Pressed'),  
-                style: 'cancel',
-                  
-            },  
-        ]  
-    );  
+        TERMINOLOGY.OUTOFCASHDATE.title,  
+        TERMINOLOGY.OUTOFCASHDATE.message,[{  
+                text: TERMINOLOGY.OUTOFCASHDATE.button1,style:"cancel" }]);  
 }  
 handleSelectShowGraphDropDown = (recieveText) => { 
   //console.log("Receiving Text  ",recieveText);
@@ -67,17 +51,10 @@ handleSelectShowGraphDropDown = (recieveText) => {
 }
 showAlert2() {  
   Alert.alert(  
-      'CASH ON HAND',  
-      'Cash on Hand is the money in your bank that is immediately available to your business.',  
-      [  
-          {  
-              text: 'Cancel',  
-              onPress: () => console.log('Cancel Pressed'),  
-              style: 'cancel',
-                
-          },  
-      ]  
-  );  
+      TERMINOLOGY.CASHONHAND.title,  
+      TERMINOLOGY.CASHONHAND.message,[{  
+              text: TERMINOLOGY.CASHONHAND.button1,  
+              style: 'cancel'}]);  
 } 
 handleArrowStyle = () => {
   if(this.state.arrowStyle == "arrow-down"){
@@ -87,23 +64,11 @@ handleArrowStyle = () => {
   }
 }
   render() {
-    const historicalFinances = this.props.historicalFinances;
-
-    const firstOfCurrentMonth = Moment().format("YYYY-MM-01");
-    let currentCashOnHand = 0;
-    let currentExpenses = 0;
-    let currentRevenue = 0;
-    if (historicalFinances[firstOfCurrentMonth]) {
-      currentCashOnHand = historicalFinances[firstOfCurrentMonth]["cash"];
-      currentExpenses = historicalFinances[firstOfCurrentMonth]["expenses"];
-      currentRevenue = historicalFinances[firstOfCurrentMonth]["revenue"];
-    }
+    
     const gw=Dimensions.get("window").width;
 
     let isCOHGraphEmpty = true;
 
-    
-    
     for(let i=0;i<this.props.cashOnHandGraphData.length; i++){
     
       if( this.props.cashOnHandGraphData[i].amount != 0 && this.props.cashOnHandGraphData[i].amount > 0 ){
@@ -118,30 +83,14 @@ handleArrowStyle = () => {
         {
           this.props.healthScoreIndicator == true ?
           <View
-          style={{
-            borderRadius:5,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            paddingVertical: 15,
-            paddingHorizontal: 15,
-            height:48,width:'100%',
-            }}></View> :
+          style={ styles.offOutOfCashDate }></View> :
         <View
         style={{
           backgroundColor: this.getRunwayColor(
-            currentCashOnHand,
-            currentExpenses,
-            currentRevenue
-          ),
-          borderRadius:5,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          paddingVertical: 15,
-          paddingHorizontal: 15,
-          height:48,width:'100%',
-          elevation:10,shadowColor:'#000',
-          backgroundColor:'#FF7749',
-
+            0,
+            0,
+            0
+          ),...styles.outOfCashDateDateStyle
         }}>
          <TouchableOpacity onPress={this.showAlert1} >
           <View style={{flexDirection:'row'}}>
@@ -152,11 +101,7 @@ handleArrowStyle = () => {
           </View>
           </TouchableOpacity>
         <Text style={{ fontSize: 14, fontWeight: "bold", color: "#FFF" }}>
-          {/* {`${this.getOutOfCashDateLabel(
-            currentCashOnHand,
-            currentExpenses,
-            currentRevenue
-          ) || ""}`} */}{ `${this.props.outOfCashDate}` }
+          { `${this.props.outOfCashDate}` }
         </Text>
      </View> 
         }
@@ -164,19 +109,19 @@ handleArrowStyle = () => {
       <View style={styles.margins}/>
         {
           this.props.isCOHLoadedOnce == false ?
-          <View style={{height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
+          <View style={{ marginVertical:10,height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
             <ActivityIndicator size="large" color="#070640" />
           </View>
           :
 
-        <View style={{height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000'}}>
+        <View style={ styles.cashOnHandCart }>
         {
           this.props.showCOHChartLoader == true ?
-          <View style={{height:277,width:'100%',justifyContent:"center",alignItems:"center"}}>
+          <View style={{height:"90%",width:'100%',justifyContent:"center",alignItems:"center"}}>
             <ActivityIndicator size="large" color="#070640" />
           </View>
           :
-          <View>
+          <View style={{ height: "90%" }}>
             <View style={styles.heading}>
           <TouchableOpacity onPress={this.showAlert2}>
           <View style={{flexDirection:'row'}}>
@@ -184,21 +129,24 @@ handleArrowStyle = () => {
             <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>
           </View>
           </TouchableOpacity>
-          <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+          <Text style={{ textAlign:"right",fontSize: 22, fontWeight: "bold" }}>
             {`$${ numberWithCommas(this.props.userCurrentBalance) || 0.0}`}
           </Text>
         </View>
         {
           isCOHGraphEmpty == true ?
 
-          <View style={{height:220,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
+          <View style={{height:"66%",justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
            <Text style={{ color:"#070640" }}>No Data Available!</Text>
           </View>
 
           :
 
-          <View style={{marginTop:"-10%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
-            <CashOnHandChart historicalFinances={this.props.historicalFinances} cashOnHandGraphData={this.props.cashOnHandGraphData} cohPast={this.props.cohPast} cohFuture={this.props.cohFuture} />
+          <View style={{marginTop:"-4.9%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
+            <CashOnHandChart 
+            cashOnHandGraphData={this.props.cashOnHandGraphData} 
+            cohPast={this.props.cohPast} 
+            cohFuture={this.props.cohFuture} />
           </View>
         }
         
@@ -227,8 +175,7 @@ handleArrowStyle = () => {
           <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
            onPress={()=>{
             // this.props.navigation.navigate("CashOnHandinsights")
-            Alert.alert("Coming soon",
-            "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
+            Alert.alert(INSIGHTS.title,INSIGHTS.message,[ { text: INSIGHTS.button1  } ],false);
            }
             }/>
           </View>
@@ -244,25 +191,53 @@ handleArrowStyle = () => {
 const styles =  StyleSheet.create({
   margins: {
     backgroundColor: "#EEEFF1",
-    marginVertical:8,
+    marginTop:10,
     
   },
-  heading: {
+  offOutOfCashDate: {
+    borderRadius:5,
     flexDirection: "row",
     justifyContent: "space-between",
     paddingVertical: 15,
     paddingHorizontal: 15,
+    height:48,width:'100%',
+    },
+    outOfCashDateDateStyle: {
+    borderRadius:5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    height:48,width:'100%',
+    elevation:10,shadowColor:'#000',
+    backgroundColor:'#FF7749',
+  },
+  heading: {
+    width:"100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 15
+  },
+  cashOnHandCart: {
+    marginVertical:8, 
+    height:340,
+    width:'100%',
+    backgroundColor:'#FFF',
+    elevation:10,
+    shadowColor:'#000',
+    paddingVertical:20
   },
   buttonview:{
     height:"10%",
-    width:'90%',
+    width:'100%',
     flexDirection:"row",
     justifyContent:"space-between",
     alignSelf:"center",
+    paddingHorizontal:15
   },
   Toucha:{
     width:"40%",
-    height:"100%",
+    height:32,
     borderRadius:10, 
     backgroundColor:"#E6E6EC",
     flexDirection:'row',
@@ -270,6 +245,7 @@ const styles =  StyleSheet.create({
   
   },
   dropdown: {
+    
     width:"71%",
     marginLeft:22,
     marginTop:-25,
