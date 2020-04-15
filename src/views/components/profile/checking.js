@@ -132,7 +132,7 @@ const TransactionComponent = (props) => {
 
             <Text style={{ fontSize:11,
               color: categoryButtonText == "+ Category" ? "#000" : "#FFF"
-            }}>{ categoryButtonText }</Text>
+            }}>{ firstLetterCapital(categoryButtonText) }</Text>
 
           </TouchableOpacity>
 

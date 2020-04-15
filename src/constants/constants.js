@@ -5,10 +5,10 @@ export const APP_VERSION = APPJSON.version;
 const NETWORKINSTANCE = {
   SANDBOXINSTANCE : "http://18.222.152.47:8081/v0.1", //code for the using the sandbox
   PRODUCTIONINSTANCE : "http://3.132.213.123:8081/v0.1", // code for the production
-  NGROK : "https://e46c6c78.ngrok.io/v0.1"
+  NGROK : "https://aaffa9c4.ngrok.io/v0.1"
 }
 const APIENDPOINT = {
-  endPoint: NETWORKINSTANCE.SANDBOXINSTANCE,
+  endPoint: NETWORKINSTANCE.NGROK,
   isQuickBookProduction:true,
   isPlaidProduction: false,
   //isPlaidProduction: true

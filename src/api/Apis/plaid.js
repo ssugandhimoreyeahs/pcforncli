@@ -395,7 +395,7 @@ export async function validPlaidToken(){
     try{
   
       const token = await AsyncStorage.getItem("authToken");
-      const deletePlaidCategoryResponse  = await axios.post(APINETWORK.deleteCategory,{ id  },{
+      const deletePlaidCategoryResponse  = await axios.post(APINETWORK.deleteCategory,{ id },{
         headers: { Authorization: token,"Content-Type": "application/json" },
         timeout
       });

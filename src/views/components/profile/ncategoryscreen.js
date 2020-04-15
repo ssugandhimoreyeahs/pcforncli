@@ -8,7 +8,7 @@ import EvilIcons from "react-native-vector-icons/EvilIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import DialogInput from 'react-native-dialog-input';
 import { connect } from "react-redux";
-import { allFirstWordCapital } from "../../../api/common";
+import { allFirstWordCapital,firstLetterCapital } from "../../../api/common";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
@@ -208,17 +208,19 @@ class CategoryScreen extends Component{
             setTimeout(()=>{
                 this.setState({ isSpinner: false },()=>{
                     setTimeout(()=>{
-                        
-                            //this.props.fetchPlaidCategoryDispatch();  
-                        
-                            //code change after the edit of the category by user
+
                             this.props.fetchPlaidCategoryDispatch();
+
                             setTimeout(()=>{
                                 this.props.navigation.getParam("resetTransactionScreen")();
                             },500);
+
                             setTimeout(()=>{
-                                this.props.fetchMainExpenseAsyncCreator(0);
                                 this.props.fetchExpenseByCategory(3);
+                            },1000);
+                            
+                            setTimeout(()=>{
+                                this.props.fetchMainExepenseByCategory(0);
                             },1500);
                     },500);
                 });
@@ -325,7 +327,7 @@ class CategoryScreen extends Component{
                             fontSize:12,
                             color: "#000", 
                             fontWeight: "600" }}>
-                             { categoryName }
+                             { firstLetterCapital(categoryName) }
                         </Text>
                     </View>
                     {
@@ -374,7 +376,7 @@ class CategoryScreen extends Component{
                             fontSize:12,
                             color: "#000", 
                             fontWeight: "600" }}>
-                             { categoryName }
+                             { firstLetterCapital(categoryName) }
                         </Text>
                     </View>
 
