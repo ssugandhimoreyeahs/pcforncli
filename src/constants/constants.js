@@ -1,17 +1,17 @@
 import APPJSON from "../../app.json";
-
+ 
 export const API_TIMEOUT = 20000;
 export const APP_VERSION = APPJSON.version;
 const NETWORKINSTANCE = {
   SANDBOXINSTANCE : "http://18.222.152.47:8081/v0.1", //code for the using the sandbox
   PRODUCTIONINSTANCE : "http://3.132.213.123:8081/v0.1", // code for the production
-  NGROK : "https://6a8ca0cc.ngrok.io/v0.1"
+  NGROK : "https://e46c6c78.ngrok.io/v0.1"
 }
 const APIENDPOINT = {
-  endPoint: NETWORKINSTANCE.NGROK,
-  isQuickBookProduction:false,
-  isPlaidProduction: false,
-  //isPlaidProduction: true
+  endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
+  isQuickBookProduction:true,
+  //isPlaidProduction: false,
+  isPlaidProduction: true
 }
 
 const USERDATAAPIS = {

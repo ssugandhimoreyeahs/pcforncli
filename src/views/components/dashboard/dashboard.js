@@ -38,7 +38,7 @@ import { fetchInsightsAsyncCreator } from "../../../reducers/insights";
 import { fetchForecastAsyncCreator } from "../../../reducers/forecast";
 import { salesAsyncCreator } from "../../../reducers/sales";
 
-const TIMEOUT_POPUP = 60000;
+
 class Dashboard extends PureComponent {
   
   constructor(props){

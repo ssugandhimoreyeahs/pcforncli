@@ -7,13 +7,18 @@ import BottomNavLayout from "../../controls/bottom-nav-layout";
 import { getHealthScoreColor } from "../../utilities/gradient";
 import { getOutOfCashDate } from "../../utilities/cash";
 import { fetchForecastAsyncCreator } from "../../reducers/forecast";
-import { MaterialCommunityIcons,AntDesign } from "@expo/vector-icons";
+//import { MaterialCommunityIcons,AntDesign } from "@expo/vector-icons";
 
 import { connect } from "react-redux";
 import Spinner from "react-native-loading-spinner-overlay";
 import { getForecastData } from "../../api/api";
 import { getFormatedDate } from "../../api/common";
 import { getUpdatedForecast } from "../../utilities/forecast";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
+MaterialCommunityIcons.loadFont();
+AntDesign.loadFont();
 
 class Forecasting extends Component {
   constructor(props) {

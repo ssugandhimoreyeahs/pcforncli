@@ -100,8 +100,7 @@ export default class CashOnHandChart extends PureComponent {
     
     var gradients = [];
     let { cashOnHandGraphData: forGradientData,cohFuture,cohPast } = this.props;
-    console.log("cohPast = ",cohPast);
-    console.log("cohFuture = ",cohFuture);
+    
     let precentForCurrentMonth = 3;
     let percentForThreeMonth = 25;
     let percentForSixMonth = 20;
@@ -186,9 +185,6 @@ export default class CashOnHandChart extends PureComponent {
       
     }//end of loop
     const gw=Dimensions.get("window").width;
-    console.log("-----------------------------");
-    console.log("Length Test - ", gradients.length);
-    console.log("------------------------------");
   let customYaxis = [];
   if(applyGraph.length > 0){
           //calculate latest Logic for the Yaxis
