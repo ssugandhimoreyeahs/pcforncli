@@ -1,5 +1,5 @@
 import React,{ Component,Fragment } from "react";
-import { Alert,Text,View,TouchableOpacity,StyleSheet,ScrollView,Image,ActivityIndicator } from "react-native";
+import { Alert,Text,View,TouchableOpacity,StyleSheet,ScrollView,Image,ActivityIndicator,BackHandler } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import ToggleSwitch from 'toggle-switch-react-native';
@@ -45,9 +45,25 @@ class CategoryScreen extends Component{
         }
     }
     componentDidMount(){
+        BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
         let recievedData = this.props.navigation.getParam("currentExecutingTransaction");
         
     }
+
+    componentWillMount(){
+        BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+    }
+    handleBackButton=(nav)=> {
+        if (!nav.isFocused()) {
+          BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+          return false;
+        }else{
+          nav.goBack();
+          ////console.log("Transaction")
+          return true;
+        }
+      }
+
     handleHeaderButton = () => {
         const { isEdit } = this.state;
         if(isEdit){
