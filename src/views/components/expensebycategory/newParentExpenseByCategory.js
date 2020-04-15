@@ -339,7 +339,7 @@ class ExpenseByCategory extends Component{
                 const { labelCentroid, pieCentroid, data } = slice;
                 //code to check that the percentage is greater than 30
                 //for rendering the image
-                if(data.percentage < 30)
+                if(data.percentage < 20)
                     return false;
                 return (
                     <G
