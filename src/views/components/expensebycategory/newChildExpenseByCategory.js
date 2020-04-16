@@ -430,7 +430,7 @@ class ExpenseByCategoryChild extends Component{
                         <View style={ styles.upperIconView }>
                         <FontAwesome name={`${iconObj.type}`} color={`${iconObj.color}`} />
                         <Text style={ styles.upperIconHikeText}>
-                            { `${iconObj.text} since last month` }
+                            { `${iconObj.text}% since last month` }
                         </Text>
                         </View> : <View style={{ marginTop: 8 }} />
                     }
