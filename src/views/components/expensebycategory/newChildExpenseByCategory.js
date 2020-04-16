@@ -461,13 +461,15 @@ class ExpenseByCategoryChild extends Component{
         let currentTransactionDateObj = transaction.date.split("-");
         return(
             <Fragment>
-                 <View style={{ width: "85%",alignSelf:"center" }}>
+                 <View style={{ width: "85%",alignSelf:"center",
+                    borderColor:"red",borderWidth:0
+                  }}>
                 <View style={{ flexDirection: "row",justifyContent: "space-between" }}>
 
-                <Text style={{ fontSize:15, color:"#1D1E1F" }}>
+                <Text style={{ width:"70%",textAlign:"left", fontSize:15, color:"#1D1E1F" }}>
                     {`${transaction.name}`}
                 </Text>
-                <Text style={{ fontSize:15, color:"#1D1E1F" }}>
+                <Text style={{ textAlign:"right",width:"30%",fontSize:15, color:"#1D1E1F" }}>
                     {`-$${numberWithCommas(transaction.amount)}`}
                 </Text>
                 </View>
@@ -530,7 +532,7 @@ class ExpenseByCategoryChild extends Component{
             flexDirection:"column",width:"100%",alignSelf: "center"}}>
                 <View style={{ width: "90%",alignSelf:'center' }}>
                 <View style={{ flexDirection: "row",justifyContent:"space-between" }}>
-                    <View style={{ flexDirection:"row",alignItems:"flex-end" }}>
+                    <View style={{ width:"70%",flexDirection:"row",alignItems:"flex-end" }}>
                     <TouchableOpacity 
                       disabled={ transaction.length > 0 ? false : true }
                       style={{ flexDirection: "row" }} 
@@ -547,7 +549,7 @@ class ExpenseByCategoryChild extends Component{
                         }
                         </TouchableOpacity>
                     </View>
-                    <Text style={{ fontSize: 15, color: "#1D1E1F" }}>
+                    <Text style={{ textAlign:"right",width:"30%",fontSize: 15, color: "#1D1E1F" }}>
                         {`-$${numberWithCommas(total)}`}
                     </Text>
                 </View>
