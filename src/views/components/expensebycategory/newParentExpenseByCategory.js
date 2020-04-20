@@ -319,7 +319,7 @@ class ExpenseByCategory extends Component{
                     }}
                     style={{ left: -75,
                         borderWidth:0,borderColor: "red",
-                        width: "33%",
+                        width: "32%",
                         justifyContent:"center",alignItems:"flex-end"
                      }}>
                         <AntDesign size={16} name={"right"} color={"#030538"} style={{ opacity: 0.5 }} />
