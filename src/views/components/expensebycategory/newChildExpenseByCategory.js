@@ -795,10 +795,22 @@ class ExpenseByCategoryChild extends Component{
                             return this.bankNotConnectedPopup();
                         }
                         this.props.navigation.navigate("NCategoryScreen",{ 
+                        showEditTray: false,
                         currentExecutingTransaction: { ...items,category: "uncategory"},
-                        resetTransactionScreen: () => { 
-                            console.log("CB Run ");
-                            this.setState({ loading: true },()=>{
+                        resetTransactionScreen: (runMethod = false,directlyGoBack = false) => { 
+                            
+                            if(runMethod == true){
+                                if(directlyGoBack == true){
+                                    setTimeout(()=>{
+                                        this.props.fetchMainExepenseByCategory(expenseType);
+                                    },500);
+                                    setTimeout(()=>{
+                                       this.props.fetchExpenseByCategory(3);
+                                    },1000);
+                                    this.props.navigation.goBack();
+                                    return;
+                                }
+                                this.setState({ loading: true },()=>{
                                 setTimeout(()=>{
                                     this.triggerExpenseSubCategoryServer();
                                 },500);
@@ -812,7 +824,8 @@ class ExpenseByCategoryChild extends Component{
                                 setTimeout(()=>{
                                     this.props.fetchExpenseByCategory(3);
                                 },1300);
-                            })
+                            });
+                            }
                         }});
                     }}
                     style={styles.plusCategoryTouch}>

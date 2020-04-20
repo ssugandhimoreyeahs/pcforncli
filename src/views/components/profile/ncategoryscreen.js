@@ -76,7 +76,8 @@ class CategoryScreen extends Component{
         let { category,error,isFetched,loading } = this.props.categoryReduxData;
         // error = true;
         const { isEdit } = this.state;
-        let antDesignIcon = isEdit == true ? `close` : 'left'
+        let antDesignIcon = isEdit == true ? `close` : 'left';
+        const showEditTray = this.props.navigation.getParam("showEditTray");
         return(
             <View style={ styles.header }>
                     <View style={{ 
@@ -94,10 +95,11 @@ class CategoryScreen extends Component{
                        <View style={{ width: 35 }}></View> : 
                        isEdit == true ?
                         <View style={{ width: 35 }}></View> : 
+                        showEditTray == true ?
                         <TouchableOpacity style={{ paddingRight:2,width: 35 }} onPress={()=>{ this.setState({ isEdit:true,toggle: false }); }} >
                     
                                 <Text style={{ color:"#4A90E2",fontSize:17 }}>Edit</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity> : <View style={{ width: 35 }}></View> 
                     }
                     
                     </View>
@@ -165,10 +167,10 @@ class CategoryScreen extends Component{
                     
                     setTimeout(()=>{
                         this.setState({  isSpinner:false },()=>{
-                           this.props.navigation.getParam("resetTransactionScreen")();
+                           this.props.navigation.getParam("resetTransactionScreen")(true,true);
                             setTimeout(()=>{
                                  this.props.navigation.goBack();
-                            },800);
+                            },600);
                         });
                        },500);
                 })
@@ -186,10 +188,10 @@ class CategoryScreen extends Component{
         setTimeout(()=>{
             this.setState({  isSpinner:false },()=>{
                
-                this.props.navigation.getParam("resetTransactionScreen")();
+                this.props.navigation.getParam("resetTransactionScreen")(true,false);
                 setTimeout(()=>{
                      this.props.navigation.goBack();
-                },800);
+                },600);
             });
            },500);
         }else{
