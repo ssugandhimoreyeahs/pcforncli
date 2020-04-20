@@ -395,7 +395,7 @@ export async function validPlaidToken(){
     try{
   
       const token = await AsyncStorage.getItem("authToken");
-      const deletePlaidCategoryResponse  = await axios.post(APINETWORK.deleteCategory,{ id  },{
+      const deletePlaidCategoryResponse  = await axios.post(APINETWORK.deleteCategory,{ id },{
         headers: { Authorization: token,"Content-Type": "application/json" },
         timeout
       });
@@ -589,5 +589,29 @@ export async function validPlaidToken(){
         reject({ result: "error",error });
       });
 
-    })
+    });
+  }
+
+
+  export function changeAllSimilarTransaction(axiosBody = {}){
+    return new Promise((resolve,reject)=>{
+    AsyncStorage.getItem("authToken").then((token) => { 
+        console.log("Hitting Change All similar Transaction - ",APINETWORK.categoryChangeInAllTransaction);
+        console.log("Change Similar Transaction body - ",axiosBody);
+        axios.post(APINETWORK.categoryChangeInAllTransaction,axiosBody,{
+          headers: { Authorization: token,"Content-Type": "application/json" },
+          timeout
+        }).then((response)=>{
+          if(response.status == 200 && response.data.success == true){
+            resolve({ result: true,changeAllTransactionResponse: response.data });
+          }else{
+            reject({ result: false,changeAllTransactionResponse: response.data });
+          }
+        }).catch((error)=>{
+          reject({ result:false,error });
+        });
+      }).catch(error => {
+        reject({ result: "error",error });
+      });
+    });
   }

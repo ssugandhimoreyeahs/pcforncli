@@ -1,16 +1,22 @@
 import React, { Component, Fragment } from "react";
 import { View, Text,TouchableOpacity,Alert, Keyboard, StyleSheet,ActivityIndicator,Dimensions } from "react-native";
-// import {Ionicons, SimpleLineIcons} from '@expo/vector-icons';
+
 import { Dropdown } from "react-native-material-dropdown";
 import {Button_Months} from "../../.././constants/constants";
 import { Button } from "react-native-elements";
 import ProgressCircle from 'react-native-progress-circle'
 import { connect } from "react-redux";
-import { AntDesign,MaterialCommunityIcons } from '@expo/vector-icons';
+// import { AntDesign,MaterialCommunityIcons } from '@expo/vector-icons';
 import { fetchExpensesMultipleTimesAsyncCreator } from "../../../reducers/expensecategory";
 import { numberWithCommas,firstLetterCapital } from "../../../api/common";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import { TERMINOLOGY } from "../../../api/message";
+
+MaterialCommunityIcons.loadFont();
+AntDesign.loadFont();
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 const gw=Dimensions.get("window").width;
@@ -26,9 +32,9 @@ class ExpenseByCategory extends Component{
 
     static getDerivedStateFromProps(props, state){
 
-        //code here
+
         const { expenseCurrentRange } = props.expenseByCategoryRedux;
-        //console.log("testing here inside static getDerivedStatefromprops--------------------------------------");
+
         let renderButton;
         if(expenseCurrentRange == 1){
             renderButton = "This Month";
@@ -39,13 +45,12 @@ class ExpenseByCategory extends Component{
         }else{
             renderButton = "12 Months"
         }
-        //console.log(renderButton);
-        //console.log("Ends Here")
+
         return { expenseCurrentMonth: renderButton };
     }
     handleExpenseRangeSelection = (currentExpenseRange) => {
         const { expenseCurrentMonth:currentRange } = this.state;
-        //console.log("User select expense by category filter - ",currentExpenseRange);
+
         if(currentRange != currentExpenseRange){
                 if(currentExpenseRange == "This Month"){
                     this.props.fetchExpenseMultipleTimesByCategory(1);
@@ -60,25 +65,11 @@ class ExpenseByCategory extends Component{
         }
         
     }
-    showAlert() {  
-        Alert.alert(  
-            'EXPENSE BY CATEGORY',  
-            'Your expenses are categorized into these default categories to help you see where you spent the money. You can edit these categories here or connect your ledge to import your categories.',  
-            [  
-                {  
-                    text: 'Cancel',  
-                    onPress: () => console.log('Cancel Pressed'),  
-                    style: 'cancel',
-                      
-                },  
-            ]  
-        );  
-    }
     handleReloadExpenseByCategory = () => {
 
         const { expenseCurrentMonth:currentExpenseRange } = this.state;
         
-        
+            // console.log("Current Expense Ragne - ",currentExpenseRange);
                 if(currentExpenseRange == "This Month"){
                     this.props.fetchExpenseMultipleTimesByCategory(1);
                 }else if(currentExpenseRange == "3 Months"){
@@ -88,10 +79,6 @@ class ExpenseByCategory extends Component{
                 }else if(currentExpenseRange == "12 Months"){
                     this.props.fetchExpenseMultipleTimesByCategory(12);
                 }
-        
-        
-
-        
     }
       handleArrowStyle = () => {
         if(this.state.arrowStyle == "arrow-down"){
@@ -104,7 +91,7 @@ class ExpenseByCategory extends Component{
      loadProgressCircle = (props) => {
         return(
             <Fragment>
-                <View style={{flexDirection:'row',justifyContent:'space-evenly', width:154, height:43}}>
+                <View style={{flexDirection:'row',justifyContent:'space-between', width:154, height:43}}>
                         <View style={{ height:25,width:40}}>
                             <ProgressCircle 
                             percent={props.percentage}
@@ -125,74 +112,103 @@ class ExpenseByCategory extends Component{
             </Fragment>
         );
      }
+
+     renderCategoryWithPercentage = ({ percentage,category,price }) => {
+
+        return(
+            <View style={ styles.renderSingleCategory }>
+
+                  <ProgressCircle 
+                            percent={percentage}
+                            radius={24}
+                            borderWidth={2}
+                            color="#FF7B32"
+                            containerStyle={{height:40,width:40}}
+                            shadowColor="#EFEEEE"
+                            bgColor="#FFFFFF" >
+                                <Text style={{ fontSize: 15 ,color:'#151927'}}>{ `${percentage}%` }</Text>
+                    </ProgressCircle>
+
+                    <View style={{ 
+                        borderWidth:0,borderColor:"#000",
+                        paddingLeft: 9 }}>
+                        <Text style={ styles.renderCategoryNameStyle }>{ `${category}` }</Text>
+                        <Text style={ styles.renderCategoryPriceStyle }>{`${price}`}</Text>
+                    </View>
+                  
+                  </View>
+        );
+     }
+     showExpenseByCategoryTerminology = () => {
+        Alert.alert(  
+                TERMINOLOGY.EXPENSEBYCATEGORY.title,  
+                TERMINOLOGY.EXPENSEBYCATEGORY.message,[{  
+                        text: TERMINOLOGY.EXPENSEBYCATEGORY.button1,  
+                        style: 'cancel', }]);  
+     }
      renderExepensesByCategory = () => {
         const { expenseByCategoryRedux:expenseByCategory } = this.props;
         const { expenseCurrentMonth } = this.state;
          return(
             <Fragment>
-            <View style={{ height:350,width:'100%', backgroundColor:'white', alignSelf:'center',elevation:10,shadowColor:'#000' }}>
+            <View style={ styles.categoryCart }>
             {
                  expenseByCategory.childLoader == false ? <Fragment>
-                 <View style={styles.heading}>
-                     <TouchableOpacity onPress={this.showAlert}>
-                         <View style={{flexDirection:'row'}}>
-                         <Text style={{ fontSize: 13 }}>EXPENSE BY CATEGORY</Text>
-                         <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>
-                         </View>
-                     </TouchableOpacity>
-                     <TouchableOpacity onPress={()=>{ this.props.navigation.navigate("ExpenseScreenParent"); }}><Text style={{ fontSize: 22, fontWeight: "bold" }}>{ expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}</Text></TouchableOpacity>
-                 </View>
-                 <View style={{ width:"100%",flexDirection:"row",justifyContent:"flex-end",marginTop:-11,marginLeft:-15, }}>
-                     <Text style={{ color:"#1D1E1F",fontSize:12 }}>
-                         {
-                             `Total ${expenseCurrentMonth}`
-                         }
-                     </Text>
-                 </View>
-                 {
-                     expenseByCategory.expense.length > 0 ?
-
-                        <View style={{ height: 177,marginTop:15 }}>
+                  
+                  <View style={ styles.expenseHeader }>
+                     <TouchableOpacity onPress={()=>{ this.showExpenseByCategoryTerminology(); }} style={{ flexDirection:"row" }}>
+                        <Text style={{ fontSize:12,color:"#1D1E1F" }}>EXPENSE BY CATEGORY</Text>
+                        <Ionicons 
+                        style={{ margin:2,height:13,width:13,color:"#1D1E1F" }}
+                        name='md-information-circle-outline' />
+                    </TouchableOpacity>
+                  
+                    <View style={{ flexDirection:"column",justifyContent:"space-between" }}>
+                        <TouchableOpacity 
+                        style={{ alignSelf:"flex-end",borderBottomColor:"#000",borderBottomWidth:1 }}
+                        onPress={()=>{ this.props.navigation.navigate("NewExpenseByCategoryParent"); }}>
+                        <Text style={ styles.expenseTotalCurrency }>
+                        { expenseByCategory.totalExpense == undefined || expenseByCategory.totalExpense == null || expenseByCategory.totalExpense == 0 ? `$0` : `-$${numberWithCommas(expenseByCategory.totalExpense)}`}
+                        </Text>
+                        </TouchableOpacity>
+                        <Text style={ styles.expenseTotalMonth }>
                             {
-                                expenseByCategory.expense.map( (singleExpense,index,fullArray) => {
-                                    if(index % 2 == 0){
-                                        if(index < 6){
-                                            if( typeof fullArray[index] == "object" && typeof fullArray[index+1] == "object" ){
-                                                return <View key={index} style={{width:"95%",alignSelf:'center',marginVertical:8, }}>
-                                                            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                                            <this.loadProgressCircle percentage={parseInt(fullArray[index].percentage)} category = {firstLetterCapital(fullArray[index].category)} price = {`-$${numberWithCommas(fullArray[index].amount)}`} />
-                                                            <this.loadProgressCircle percentage={parseInt(fullArray[index+1].percentage)} category = {firstLetterCapital(fullArray[index+1].category)} price = {`-$${numberWithCommas(fullArray[index+1].amount)}`} />
-                                                        </View>
-                                                    </View>
-                                            }else if( typeof fullArray[index] == "object" && typeof fullArray[index+1] != "object" ){
-                                                return <View key={index} style={{width:"95%",alignSelf:'center',marginVertical:8, }}>
-                                                            <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                                            <this.loadProgressCircle percentage={parseInt(fullArray[index].percentage)} category = {firstLetterCapital(fullArray[index].category)} price = {`-$${numberWithCommas(fullArray[index].amount)}`} />
-                                                        </View>
-                                                </View>
-                                            }else{
-                                                return null
-                                            }
-                                        }else{
-                                            return null
-                                        }
-                                    }
-                                })
+                              `Total ${expenseCurrentMonth}`
                             }
-                        </View>
-                     :
-                     <View style={{ height:177,marginTop:15,justifyContent:"center",alignItems:"center" }}>
-                         <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
-                     </View>
-                 }
+                        </Text>                    
+                    </View>
+                  </View>
+
+                  <View style={ styles.expenseCategoryCart }>
+
+                    {
+                        expenseByCategory.expense.length > 0 ?
+                        expenseByCategory.expense.map( (singleExpense,index,fullArray) => { 
+                            if(index < 6){
+                            return <this.renderCategoryWithPercentage key={index}
+                                percentage={parseInt(fullArray[index].percentage)} 
+                                category = {firstLetterCapital(fullArray[index].category)} 
+                                price = {`-$${numberWithCommas(fullArray[index].amount)}`} 
+                            />
+                            }else{
+                                return null;
+                            }
+                        })
+                        :
+                        <View style={ styles.expenseEmptyCart }>
+                             <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
+                         </View>
+                    }
+                    
+                </View>
              
-             </Fragment> :  <View style={{height:252,width:gw,justifyContent:"center",alignSelf:"center"}}>
+             </Fragment> :  <View style={ styles.expenseLoading }>
               <ActivityIndicator size="large" color="#070640" />
             </View>
             }
       
 
-        <View style = {styles.buttonview}>
+        <View style = { styles.expenseFooter }>
             <View style={styles.Toucha}>
             <Dropdown
                     disabled={false}
@@ -225,36 +241,31 @@ class ExpenseByCategory extends Component{
             </View>
         </View>
         </View>
-            </Fragment> 
+        </Fragment> 
          );
      }
 render(){
-        // console.log("-----------------------------------------Render Exepense By Category ------------------------------");
-        // console.log(this.props.expenseByCategoryRedux);
-        // console.log("-----------------------------------------Render Exepense By Category ------------------------------");
-        const { expenseByCategoryRedux:expenseByCategory } = this.props;
-        
-        return(
-        
-         <View style={{width:'95%', alignSelf:'center' }}>
-            <View style={styles.margins}></View>
+       let { expenseByCategoryRedux:expenseByCategory } = this.props;
 
+       
+     return(
+        <View style={ styles.mainContainerStyle }>
             {
                 expenseByCategory.error == true ?
-                <View style={{ height:350,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
-                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+                <View style={ styles.expenseByCategoryError }>
+                    <View style={ styles.expenseByCategoryErrorChild } >
                         <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
-                        <Text style={{ marginLeft:10,alignSelf:"center" }}>Oops Error Try Again!</Text>
+                        <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
                     </View> 
-                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+                    <View style={ styles.expenseByCategoryErrorChild2 }>
                         <TouchableOpacity onPress={()=>{ this.handleReloadExpenseByCategory(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
-                            <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
+                            <View style={ styles.expenseByCategoryErrorChild } ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
                         </TouchableOpacity>
                     </View>
                 </View> 
                 :
                 expenseByCategory.loading == true ?
-                <View style={{ height:350,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
+                <View style={ styles.expenseByCategoryLoading }>
                     <ActivityIndicator size="large" color="#070640" />
                 </View> 
                 :
@@ -262,11 +273,7 @@ render(){
                 this.renderExepensesByCategory() : null
 
             }
-                
-
-          
       </View> 
-     
       )
     }
 }
@@ -283,10 +290,11 @@ const mapDispatchToProps = (dispatch) => {
 }
 export default connect(mapStateToProps,mapDispatchToProps)(ExpenseByCategory);
 const styles = StyleSheet.create({
-    margins: {
-        backgroundColor: "#EEEFF1",
-        marginVertical:8
-       
+    mainContainerStyle: {
+        backgroundColor: "#FFF",
+        marginVertical:8,
+        width:'95%', 
+        alignSelf:'center'
       },
       heading: {
         flexDirection: "row",
@@ -305,7 +313,7 @@ const styles = StyleSheet.create({
       },
       Toucha:{
         width:"40%",
-        height:"100%",
+        height:32,
         borderRadius:10, 
         backgroundColor:"#E6E6EC",
         flexDirection:'row',
@@ -337,6 +345,104 @@ const styles = StyleSheet.create({
         width:12,
         margin:6,
       },
-
-
+      expenseByCategoryError: { 
+          height:350,
+          width:'100%', 
+          backgroundColor:'white', 
+          alignSelf:'center',
+          justifyContent:"center",
+          elevation:10,
+          shadowColor:'#000' 
+    },
+      expenseByCategoryErrorChild: { 
+          flexDirection:"row",
+          justifyContent:"center",
+          alignItems:"center" 
+    },
+      expenseByCategoryLoading: { 
+          height:350,
+          width:'100%', 
+          backgroundColor:'white', 
+          alignSelf:'center',
+          justifyContent:"center",
+          elevation:10,
+          shadowColor:'#000' 
+      },
+      expenseByCategoryErrorChild2: { 
+          flexDirection:"row",
+          justifyContent:"center",
+          alignItems:"center",
+          marginTop:15 
+        },
+      categoryCart: { 
+        height:360,
+        width:'100%', 
+        backgroundColor:'#FFF', 
+        alignSelf:'center',
+        elevation:10,
+        shadowColor:'#000',
+        paddingVertical:15,paddingHorizontal:13 
+    },
+    expenseHeader: {
+        height: "17%",
+        flexDirection:"row",
+        justifyContent:"space-between",
+        backgroundColor:"#FFF"
+    },
+    expenseTotalCurrency:{
+        paddingBottom:3,
+        textAlign:'right',
+        fontSize:22,
+        color:"#1D1E1F",
+        fontWeight:"600" 
+    },
+    expenseTotalMonth: { 
+        textAlign:"right",
+        color:"#1D1E1F",
+        fontSize:12 
+    },
+    expenseCategoryCart: {
+        justifyContent:"space-between",
+        flexDirection:"row",
+        flexWrap:"wrap",
+        paddingTop:25,
+        borderWidth:0,borderColor:"red",
+        height: "73%"
+    },
+    expenseEmptyCart: { 
+        width:"100%",
+        justifyContent:"center",
+        alignItems:"center" 
+    },
+    expenseLoading: {
+        height:"90%",
+        width:gw,
+        justifyContent:"center",
+        alignSelf:"center"
+    },
+    expenseFooter: {
+        height:"10%",
+        width:'100%',
+        flexDirection:"row",
+        justifyContent:"space-between",
+        alignSelf:'center'
+    },
+    renderSingleCategory: { 
+        borderWidth:0,
+        borderColor:"orange",
+        flexDirection:"row",
+        paddingBottom:20,
+        width:"50%" 
+    },
+    renderCategoryNameStyle: { 
+        textAlign:"left",
+        fontSize:12,
+        color:"#151927" 
+    },
+    renderCategoryPriceStyle: { 
+        paddingTop:7,
+        textAlign:"left",
+        fontSize:15,
+        color:"#151927" 
+    }
 })

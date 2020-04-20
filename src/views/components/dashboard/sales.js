@@ -124,10 +124,8 @@ class Sales extends Component {
       this.props.fetchSalesMultiple(12);
     }
   }
-  render() {
-    // console.log("sales testing ------------------");
-    // console.log(this.props.salesData);
-    // console.log("------------------ ends here---");
+  render(){
+    
     let isSalesGraphEmpty = true;
     let { error,salesData:reduxObj,isFetched, masterLoader, childLoader, salesCurrentRange } = this.props.salesRedux;
     let totalSalesAmount = 0;
@@ -142,11 +140,15 @@ class Sales extends Component {
         }
       }
     }
+    //childLoader = true;
+    //isSalesGraphEmpty = true;
+    // masterLoader = true;
     //error = true;
     return (
-      <View style={{width:'95%', alignSelf:'center' }}>
-        <View style={styles.margins}>
-        </View>
+      <View style={{
+        borderWidth:0,borderColor:"red",
+        width:'95%', alignSelf:'center',...styles.margins }}>
+        
        {
          masterLoader == true ?
          <View style={{height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
@@ -154,10 +156,10 @@ class Sales extends Component {
        </View> :
 
          error == true ?
-         <View style={{ height:375,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
+         <View style={{ height:340,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
           <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
               <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
-              <Text style={{ marginLeft:10,alignSelf:"center" }}>Oops Error Try Again!</Text>
+              <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
           </View> 
           <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
               <TouchableOpacity onPress={()=>{ this.handleErrorReloadSales(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
@@ -167,14 +169,23 @@ class Sales extends Component {
         </View>  
          :
          <View>
-         <View style={{ height:340,width:'100%', backgroundColor:'white', alignSelf:'center',elevation:10,shadowColor:'#000' }}>
+         <View style={{ 
+           paddingVertical:20,
+           borderColor:"blue",
+           borderWidth:0,      
+           height:340,
+           width:'100%', 
+           backgroundColor:'white', 
+           alignSelf:'center',
+           elevation:10,
+           shadowColor:'#000' }}>
          {
           childLoader == true ? 
-            <View style={{height:280,width:gw,justifyContent:"center",alignSelf:"center"}}>
+            <View style={{height:"90%",width:gw,justifyContent:"center",alignSelf:"center"}}>
               <ActivityIndicator size="large" color="#070640" />
             </View> : 
 
-            <Fragment>
+            <View style={{ height:"90%" }}>
             <View style={styles.heading}>
           <TouchableOpacity onPress={this.showAlert}>
             <View style={{flexDirection:'row'}}>
@@ -198,7 +209,7 @@ class Sales extends Component {
             
             isSalesGraphEmpty == true ?  
             <View style={{height:260,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
-              <Text style={{ color:"#070640" }}>No Data Available!</Text>
+              <Text style={{ color:"#070640" }}>You have no sales data this month.</Text>
             </View>
             :
             <SalesChart 
@@ -210,7 +221,7 @@ class Sales extends Component {
         
         
         </View>
-            </Fragment>
+            </View>
          }
          
             
@@ -261,12 +272,14 @@ const styles = {
   heading: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 15,
-    paddingHorizontal: 15
+    paddingBottom: 15,
+    paddingHorizontal:15
+    
   },
   buttonview:{
+    paddingHorizontal:15,
     height:"10%",
-    width:'90%',
+    width:'100%',
     flexDirection:"row",
     justifyContent:"space-between",
     alignSelf:"center",

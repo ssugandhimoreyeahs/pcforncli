@@ -1,5 +1,5 @@
 import React,{ Component } from "react";
-import { Text,View,TouchableOpacity,StyleSheet, ScrollView } from "react-native";
+import { Text,View,TouchableOpacity,StyleSheet, ScrollView, Alert } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
@@ -31,9 +31,7 @@ class ExpenseByCategoryInsights extends Component{
             
 
             <View style={{ width:"87%" }}>
-                <Text style={{ fontSize: 16, color: "#000",textAlign: 'left' }}>
-                    { blockText }                
-                </Text>
+                { blockText }
             </View>
             </View>
         );
@@ -72,16 +70,23 @@ class ExpenseByCategoryInsights extends Component{
                         </Text>
                     </View>
                     
-                    <this.renderBlock 
+                    
+                    {
+                        staticInsight.map((singleInsight,index)=>{
+                            return  <this.renderBlock key={index}
+                                marginTop={index == 0 ? true : false}
+                                blockNo={singleInsight.sequence}
+                                blockText = {singleInsight.data(this.props.navigation)}
+                            />
+                        })
+                    }
+                    {/* <this.renderBlock 
                         marginTop={true}
-                        blockNo={1}
-                        blockText = {`Actionable insight copy - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.`}
-                    />
+                        blockNo={staticInsight[0].sequence}
+                        blockText = {staticInsight[0].data}
+                    /> */}
 
-                    <this.renderBlock 
-                        blockNo={2}
-                        blockText = {`Actionable insight copy - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.`}
-                    />
+                    
                 </View>
                 <View style = {{ backgroundColor: "#EEEFF1",height: 15,marginTop: 40 }}/>
 
@@ -125,11 +130,29 @@ const styles = StyleSheet.create({
 let staticInsight = [
     {
         sequence: 1,
-        data: `Evaluate the highest expenses (non rent) and reduce unnecessary expenses to extend your runway. Identify one time expenses that are unlikely to be monthly expenses going forward.`
+        data: (navigation) => {
+            return <Text style={{ fontSize: 16, color: "#000",textAlign: 'left' }}>
+            { `Evaluate the highest`}
+            <Text onPress={()=>{ navigation.navigate("ExpenseScreenParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
+             { `(non rent) and reduce unnecessary` } 
+             <Text onPress={()=>{ navigation.navigate("ExpenseScreenParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
+             { `to extend your runway. Identify one time`} 
+             <Text onPress={()=>{ navigation.navigate("ExpenseScreenParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
+             { `that are unlikely to be monthly` } 
+             <Text onPress={()=>{ navigation.navigate("ExpenseScreenParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
+             { `going forward. ` }         
+        </Text>
+        }
     },
     {
         sequence: 2,
-        data: `2) These expenses may be expected as you're growing the business, but keeping an eye on them monthly will help keep them in perspective.`
+        data: (navigation) => {
+            return <Text style={{ fontSize: 16, color: "#000",textAlign: 'left' }}>
+            { `These`}
+            <Text onPress={()=>{ navigation.navigate("ExpenseScreenParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
+             { `may be expected as you're growing the business, but keeping an eye on them monthly will help keep them in perspective. ` }         
+        </Text>
+        }
     }
 ]
 

@@ -1,12 +1,8 @@
 import React, { Component } from "react";
 import { createAppContainer, } from "react-navigation";
 import {createStackNavigator} from 'react-navigation-stack';
-import { createStore, applyMiddleware } from "redux";
-import ReduxThunk from "redux-thunk";
 import { Provider } from "react-redux";
-import reducer from "./src/reducers";
-import axios from "axios";
-import { network } from "./src/constants/constants";
+import Store from "./src/reducers/store";
 
 //Home Screen 
 import Legal from "./src/views/legal/legal";
@@ -51,6 +47,7 @@ import FeedbackSubmission from "./src/views/feedback/feedbackSubmission";
 import ChangePassword from "./src/views/components/profile/changepassword";
 import ForgetPassword from "./src/views/ftux/forgetPassword";
 import CategoryScreen from "./src/views/components/profile/categoryscreen";
+import NCategoryScreen from "./src/views/components/profile/ncategoryscreen";
 
 //insights
 import CashOnHandinsights from "./src/views/components/charts/cashonhandinsights";
@@ -58,9 +55,13 @@ import ChangeInCashInsights from "./src/views/components/charts/changeInCashInsi
 import IncomingARInsights from "./src/views/components/charts/incomingArInsights";
 import SalesInsights from "./src/views/components/charts/salesInsights";
 import ExpenseByCategoryInsights from "./src/views/components/insights/expenseByCategory";
+
 //Expense By Category Module
 import ExpenseScreenParent from "./src/views/components/expensebycategory/categoryExpenseParentScreen";
 import ExpenseScreenChild from "./src/views/components/expensebycategory/categoryExpenseChildScreen";
+import NewExpenseByCategoryParent from "./src/views/components/expensebycategory/newParentExpenseByCategory";
+import NewExpenseByCategoryChild from "./src/views/components/expensebycategory/newChildExpenseByCategory";
+import UncategorizedExpenseByCategory from "./src/views/components/expensebycategory/uncategorized";
 
 //App Levels Routes
 import SplashScreen from "react-native-splash-screen";
@@ -315,6 +316,13 @@ const PROFILE = {
       gesturesEnabled: false
     }
   },
+  NCategoryScreen: {
+    screen: NCategoryScreen,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
+    }
+  }
 }
 
 const EXPENSEBYCATEGORY = {
@@ -331,6 +339,27 @@ const EXPENSEBYCATEGORY = {
     navigationOptions: {
       header:null,
       gesturesEnabled:false
+    }
+  },
+  NewExpenseByCategoryParent: {
+    screen: NewExpenseByCategoryParent,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
+    }
+  },
+  NewExpenseByCategoryChild: {
+    screen: NewExpenseByCategoryChild,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
+    }
+  },
+  UncategorizedExpenseByCategory: {
+    screen: UncategorizedExpenseByCategory,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false
     }
   }
 }
@@ -387,7 +416,7 @@ const MainNavigator = createStackNavigator(
   }
 );
 
-const store = createStore(reducer,applyMiddleware(ReduxThunk));
+
 
 const NavigationApp = createAppContainer(MainNavigator);
 
@@ -404,7 +433,7 @@ export default class App extends Component {
   render() {
     return (
      
-      <Provider store={store}>
+      <Provider store={Store}>
         <ErrorBoundry>
           <NavigationApp />
         </ErrorBoundry>

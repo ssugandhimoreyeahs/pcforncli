@@ -15,6 +15,8 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 //import {SimpleLineIcons,AntDesign, MaterialIcons, EvilIcons} from '@expo/vector-icons';
+
+import { DELETECATEGORY,ADDEDCATEGORY,ERRORCATEGORY,CHANGECATEGORY } from "../../../api/message";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -97,19 +99,23 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Added",[ { text:'Okay',onPress:()=>{  this.props.fetchPlaidCategoryDispatch();  } } ],{ cancelable: false });
+                    Alert.alert(ADDEDCATEGORY.title,
+                     ADDEDCATEGORY.message,[ 
+                        { text:ADDEDCATEGORY.button1,onPress:()=>{  
+                            this.props.fetchPlaidCategoryDispatch();  
+                        } } ],{ cancelable: false });
                 },100);
             })
         }else if(addCategoryResponse.result == false){
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message",addCategoryResponse.message,[ { text:'Cancel' } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             })
         }else{
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Error Try Again!",[ { text:'Cancel' } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             })
         }
@@ -124,26 +130,26 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Deleted",[ { text:'Okay',onPress: () => { 
+                    
                         this.props.navigation.getParam("resetTransactionScreen")();
                         this.props.fetchExpenseByCategory(3);
                         this.props.fetchPlaidCategoryDispatch();
-                      } } ],{ cancelable: false });
+                      
                 },500);
             })
         }else{
             this.setState({ isSpinner: false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Okay" } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             });
         }
     }
     handleCategoryDataDelete = (categoryId,categoryName) => {
         console.log("Category Id to be deleted ",categoryId," ",categoryName);
-        Alert.alert("Alert",`Sure Delete Category - ${categoryName}`,[
-            { text:'Cancel' },
-            { text:'Okay', onPress: ()=>{ 
+        Alert.alert(DELETECATEGORY.title,DELETECATEGORY.message(categoryName),[
+            { text:DELETECATEGORY.button1 },
+            { text:DELETECATEGORY.button2, onPress: ()=>{ 
                 //Api Trigers here for deleting the Category Data
                 this.setState({ isSpinner: true },()=>{
                     this.deletePlaidCategory(categoryId);
@@ -190,7 +196,7 @@ class CategoryScreen extends React.Component{
         }else{
             this.setState({ isSpinner:false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Cancel" } ]);
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             })
         }
@@ -198,9 +204,9 @@ class CategoryScreen extends React.Component{
     }
     handleAddCategoryToTransaction = (categoryId,categoryName) => {
         console.log("change Request name - ",categoryName);
-        Alert.alert("Category Change","Are you sure to change this category?",[
-            { text:"Cancel" },
-            { text:"Confirm",onPress:()=>{
+        Alert.alert(CHANGECATEGORY.title,CHANGECATEGORY.message,[
+            { text:CHANGECATEGORY.button1},
+            { text:CHANGECATEGORY.button2,onPress:()=>{
                 this.setState({ isSpinner:true },()=>{
                     this.triggerAddCategoryToTransaction(categoryId,categoryName);
                 });
@@ -268,20 +274,20 @@ class CategoryScreen extends React.Component{
             
             this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner } },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Message","Category Successfully Edit",[ { text:'Okay',onPress:()=>{ 
+                    
                         //this.props.fetchPlaidCategoryDispatch();  
                     
                         //code change after the edit of the category by user
                         this.props.navigation.getParam("resetTransactionScreen")();
                         this.props.fetchExpenseByCategory(3);
                         this.props.fetchPlaidCategoryDispatch();
-                    } } ],{ cancelable: false });
+                    
                 },500);
             })
         }else{
             this.setState({ isSpinner: false },()=>{
                 setTimeout(()=>{
-                    Alert.alert("Error","Error Try Again!",[ { text:"Okay" } ],{ cancelable: false });
+                    Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[ { text:ERRORCATEGORY.button1 } ],{ cancelable: false });
                 },100);
             });
         }
@@ -319,7 +325,9 @@ class CategoryScreen extends React.Component{
                  {
                    this.state.isUsefulTouched ? this.FirstViewComponent() : this.SecondViewComponent()
                  }
-                 <DialogInput isDialogVisible={addCategoryDialogVisible}
+                 <DialogInput 
+                    dialogStyle={{ marginTop:-80 }}
+                    isDialogVisible={addCategoryDialogVisible}
                     title={"Add Category"}
                     message={<Fragment><Text>{"Please Add New Category Here..."}</Text>{
                         showPleaseEnterCategory == true ? <Text style={{ color:"red" }}>{`\n\nPlease Enter Category Name`}</Text> : null
@@ -332,7 +340,8 @@ class CategoryScreen extends React.Component{
                     closeDialog={ () => {
                     console.log("Cancle Pressed.....")
                     this.setState({addCategoryDialogVisible:false,showPleaseEnterCategory:false
-                    })}}
+                    })
+                    }}
                     >
                 </DialogInput>
 
