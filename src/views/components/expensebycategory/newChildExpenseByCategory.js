@@ -272,7 +272,7 @@ class ExpenseByCategoryChild extends Component{
             <BarWraper style={{ marginLeft: -15 }}>  
                 <VictoryChart width={deviceWidth - 5}
                 height={270}
-                domainPadding={15}
+                domainPadding={20}
                 //style={{ parent: { marginLeft: -20 } }} 
                 >
                 {/* <VictoryAxis 
@@ -313,31 +313,32 @@ class ExpenseByCategoryChild extends Component{
                                     }}
                                 tickValues= {[ ...yAxisLabels ]}
                                 tickFormat={y => {
-                                    
-                                    if(y <= -1000){
+                                    y = Math.abs(y);
+                                    if(y > 1000){
 
                                     let returnValue = (y/1000);
                                     if(isFloat(returnValue)){
-                                        return `${returnValue.toFixed(1)}K`;
+                                        return `-$${returnValue.toFixed(1)}K`;
                                     }else{
-                                        return `${returnValue}K`;
+                                        return `-$${returnValue}K`;
                                     }
-                                    // //let returnValue = (y/1000).toFixed(1);
-                                    // let returnValue = parseInt(y/1000);
-                                    // return `${returnValue}K`;
-                                    }else if(y <= -1000000){
+                                    }else if(y  > 1000000){
 
                                     let returnValue = (y/1000000);
                                     if(isFloat(returnValue)){
-                                        return `${returnValue.toFixed(1)}M`;
+                                        return `-$${returnValue.toFixed(1)}M`;
                                     }else{
-                                        return `${returnValue}M`;
+                                        return `-$${returnValue}M`;
                                     }
 
-                                    // let returnValue = y/1000000;
-                                    // return `${returnValue}M`;
+                                    
                                     }else{
-                                    return y;
+                                        let returnValue = y;
+                                        if(isFloat(returnValue)){
+                                           return `-$${returnValue.toFixed(1)}`;
+                                        }else{
+                                           return `-$${returnValue}`;
+                                        }
                                     }
                                 }}
                                 /> 
@@ -374,8 +375,8 @@ class ExpenseByCategoryChild extends Component{
                 />
                 </VictoryChart>
                 </BarWraper>
-                <View style={{ marginTop: -35,marginLeft:35,
-                    width: deviceWidth-110,justifyContent:"space-between",
+                <View style={{ marginTop: -35,marginLeft:37,
+                    width: deviceWidth-115,justifyContent:"space-between",
                     borderWidth:0,borderColor:"red",
                     flexDirection:"row",marginBottom:40 }}>
                 {
@@ -795,18 +796,15 @@ class ExpenseByCategoryChild extends Component{
                             return this.bankNotConnectedPopup();
                         }
                         this.props.navigation.navigate("NCategoryScreen",{ 
-                        showEditTray: false,
                         currentExecutingTransaction: { ...items,category: "uncategory"},
                         resetTransactionScreen: (runMethod = false,directlyGoBack = false) => { 
                             
                             if(runMethod == true){
                                 if(directlyGoBack == true){
+                                    this.props.fetchMainExepenseByCategory(expenseType);
                                     setTimeout(()=>{
-                                        this.props.fetchMainExepenseByCategory(expenseType);
-                                    },500);
-                                    setTimeout(()=>{
-                                       this.props.fetchExpenseByCategory(3);
-                                    },1000);
+                                    this.props.fetchExpenseByCategory(3);
+                                },1300);
                                     this.props.navigation.goBack();
                                     return;
                                 }
