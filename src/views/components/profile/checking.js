@@ -33,6 +33,7 @@ function Separator() {
 
 
 const TransactionComponent = (props) => {
+  console.log("props recieve here - for the testin - ",props);
   const { userData } = props;
   let readyAmount = ``;
   let categoryButtonText = ``;
@@ -100,8 +101,9 @@ const TransactionComponent = (props) => {
               if(userData.bankStatus == "linked"){
                 //console.log("Full transaction obj - ",props.fullTransactionObj);
                 props.navigation.navigate("NCategoryScreen",{ 
+                  showEditTray: true,
                   currentExecutingTransaction:props.fullTransactionObj,
-                  resetTransactionScreen: () => { 
+                  resetTransactionScreen: (reciever1 = false,reciever2 = false) => { 
                     props.resetTransactionScreen(); 
                   }});
               }else{

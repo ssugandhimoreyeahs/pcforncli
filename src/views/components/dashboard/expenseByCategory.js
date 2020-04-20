@@ -232,10 +232,11 @@ class ExpenseByCategory extends Component{
                 buttonStyle={styles.btnstyle1} 
                 titleStyle={styles.buttontextt1}
                 onPress={()=>{ 
-                    Alert.alert("Coming soon",
-                        "We are building your personalized Pocket Insights. We will notify you when they are ready.",
-                        [ { text: "Okay"  } ],
-                        false);
+                    // Alert.alert("Coming soon",
+                    //     "We are building your personalized Pocket Insights. We will notify you when they are ready.",
+                    //     [ { text: "Okay"  } ],
+                    //     false);
+                    this.props.navigation.navigate("ExpenseByCategoryInsights");
                 }}
             />
             </View>
