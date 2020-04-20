@@ -1,5 +1,5 @@
 import React,{ Component,Fragment } from "react";
-import { Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions,ActivityIndicator, Platform,BackHandler } from "react-native";
+import { Alert,Text,View,TouchableOpacity,StyleSheet,ScrollView,Dimensions,ActivityIndicator, Platform,BackHandler } from "react-native";
 import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -9,6 +9,9 @@ import { numberWithCommas,firstLetterCapital,isFloat } from "../../../api/common
 import { VictoryBar,VictoryAxis,VictoryChart,VictoryTheme } from "victory-native";
 import { getExpenseByCategorySubScreenPromise,getExpenseBySubCategoryGraphPromise } from "../../../api/api";
 import SVG from "react-native-svg";
+import { connect } from "react-redux";
+import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
+import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 FontAwesome.loadFont();
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -39,12 +42,12 @@ class ExpenseByCategoryChild extends Component{
         }
     }
     triggerDataOnTouchableOpacity = (index) => {
-        console.log("Ready for switching data on touch - ",index);
+        
         
         const { subCategoryRequestType } = this.state;
         const { maximum,current } = subCategoryRequestType;
         let actionType = maximum - index;
-        console.log("Action Type here - ",actionType);
+        
         if(actionType != current){
             subCategoryRequestType.current = actionType;
             this.setState({ loading:true,subCategoryRequestType },()=>{
@@ -58,7 +61,7 @@ class ExpenseByCategoryChild extends Component{
         const { subCategoryRequestType } = this.state;
         const { maximum,current } = subCategoryRequestType;
         let changeCurrent = Math.abs( (maximum+1) - _x );
-        console.log("Current VALUE - ",current, "Change - ",changeCurrent);
+        
         if(current != changeCurrent){
             //let changeCurrent = Math.abs( (maximum+1) - _x );
             subCategoryRequestType.current = changeCurrent;
@@ -68,7 +71,7 @@ class ExpenseByCategoryChild extends Component{
         }
     }
     triggerDataOnTextLabelClick = (datum) => {
-        console.log("inside function = ",datum);
+        
         
         const { subCategoryRequestType } = this.state;
         const { maximum,current } = subCategoryRequestType;
@@ -139,6 +142,7 @@ class ExpenseByCategoryChild extends Component{
     componentDidMount = () => {
         BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
         const currentExpenseCategory = this.props.navigation.getParam("currentExpenseCategory");
+        console.log("Data recieved - ",currentExpenseCategory);
         let { subCategoryRequestType } = this.state;
         subCategoryRequestType.current = currentExpenseCategory.expenseType;
         this.setState({ currentExpenseCategory,subCategoryRequestType  },()=>{
@@ -751,9 +755,28 @@ class ExpenseByCategoryChild extends Component{
             </View>
         );
     }
+    bankNotConnectedPopup = () => {
+        Alert.alert(
+            'Bank Disconnected',
+            `Your bank account has been disconnected. Please reconnect again.`,
+            [
+              {text: 'Cancel'},
+              {
+                text: 'Reconnect',
+                onPress: () =>{ this.props.navigation.navigate("Integration") },
+                style: 'cancel',
+              }
+              
+            ],
+            {cancelable: false},
+          );
+    }
     renderUncategoryTransactions = ({items,showSeprator}) => {
         const { name,amount,date } = items;
         let currentTransactionDateObj = date.split("-");
+        let userData  = { ...this.props.reduxState.userData.userData };
+        const { expenseType } = this.props.navigation.getParam("currentExpenseCategory");
+        const { current } = this.state.subCategoryRequestType;
         return(
             <Fragment>
                     <View style={styles.uncategoryTransactionlayout}>
@@ -766,7 +789,33 @@ class ExpenseByCategoryChild extends Component{
                          {`${ALL_MONTHS[ parseInt(currentTransactionDateObj[1]) - 1 ]} ${currentTransactionDateObj[2]}, ${currentTransactionDateObj[0]}`}
                      </Text>
 
-                    <TouchableOpacity style={styles.plusCategoryTouch}>
+                    <TouchableOpacity 
+                    onPress={()=>{
+                        if(userData.bankStatus !== "linked"){
+                            return this.bankNotConnectedPopup();
+                        }
+                        this.props.navigation.navigate("NCategoryScreen",{ 
+                        currentExecutingTransaction: { ...items,category: "uncategory"},
+                        resetTransactionScreen: () => { 
+                            console.log("CB Run ");
+                            this.setState({ loading: true },()=>{
+                                setTimeout(()=>{
+                                    this.triggerExpenseSubCategoryServer();
+                                },500);
+
+                                if(current === expenseType){
+                                    setTimeout(()=>{
+                                        this.props.fetchMainExepenseByCategory(expenseType);
+                                    },1000);
+                                }
+                                
+                                setTimeout(()=>{
+                                    this.props.fetchExpenseByCategory(3);
+                                },1300);
+                            })
+                        }});
+                    }}
+                    style={styles.plusCategoryTouch}>
                     <Text style={styles.plusCategoryText}>+ Category</Text>
                     </TouchableOpacity>
                     </View>
@@ -984,4 +1033,20 @@ const styles = StyleSheet.create({
         opacity: 0.2
     }
 });
-export default DetectPlatform(ExpenseByCategoryChild,styles.container);
+
+const mapStateToProps = state => {
+    return {
+        reduxState:state,
+        categoryReduxData: state.plaidCategoryData
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },
+        fetchMainExepenseByCategory: (type = 0) => { dispatch(fetchMainExpenseAsyncCreator(type)) },
+        //staggingData: (staggingDataParam) => { dispatch(staggingDataParam); }
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(ExpenseByCategoryChild,styles.container));

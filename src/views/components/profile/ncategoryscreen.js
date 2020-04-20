@@ -47,7 +47,7 @@ class CategoryScreen extends Component{
     componentDidMount(){
         BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
         let recievedData = this.props.navigation.getParam("currentExecutingTransaction");
-        
+        console.log("Recieve data from the transaction change - ",recievedData);
     }
 
     componentWillMount(){

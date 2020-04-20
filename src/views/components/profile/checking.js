@@ -33,6 +33,7 @@ function Separator() {
 
 
 const TransactionComponent = (props) => {
+  console.log("props recieve here - for the testin - ",props);
   const { userData } = props;
   let readyAmount = ``;
   let categoryButtonText = ``;
