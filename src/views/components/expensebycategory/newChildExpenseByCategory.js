@@ -268,7 +268,7 @@ class ExpenseByCategoryChild extends Component{
             <BarWraper style={{ marginLeft: -15 }}>  
                 <VictoryChart width={deviceWidth - 5}
                 height={270}
-                domainPadding={10}
+                domainPadding={15}
                 //style={{ parent: { marginLeft: -20 } }} 
                 >
                 {/* <VictoryAxis 
@@ -371,7 +371,7 @@ class ExpenseByCategoryChild extends Component{
                 </VictoryChart>
                 </BarWraper>
                 <View style={{ marginTop: -35,marginLeft:35,
-                    width: deviceWidth-105,justifyContent:"space-between",
+                    width: deviceWidth-110,justifyContent:"space-between",
                     borderWidth:0,borderColor:"red",
                     flexDirection:"row",marginBottom:40 }}>
                 {
@@ -611,30 +611,13 @@ class ExpenseByCategoryChild extends Component{
             <Fragment>
                 <View style={{ flexDirection:"row",
                 justifyContent:"space-between" }}>
-                    <Text style={{ 
-                        borderWidth:0,
-                        borderColor:"yellow",
-                        color: "#1D1E1F",
-                        fontSize: 15,
-                        textAlign: "left",
-                        width: "70%"
-                    }}>{`${singleTransaction.name}`}</Text>
-                    <Text style={{
-                        borderWidth:0,
-                        borderColor:"yellow",
-                        color: "#1D1E1F",
-                        fontSize: 15,
-                        textAlign: "right",
-                        width: "30%"
-                    }}
-                    >{`-$${numberWithCommas(singleTransaction.amount)}`}</Text>
+                    <Text style={styles.transactionTitle}>{`${singleTransaction.name}`}</Text>
+                    <Text style={styles.transactionAmount}>{`-$${numberWithCommas(singleTransaction.amount)}`}</Text>
                 </View>
 
                 <View style={{ marginTop:8,flexDirection:"row",
                 justifyContent:"space-between" }}>
-                    <Text style={{ color: "#1D1E1F",
-                        opacity: 0.5,fontSize:11,textAlign:"left"
-                     }}>
+                    <Text style={styles.transactionDate}>
                          {`${ALL_MONTHS[ parseInt(currentTransactionDateObj[1]) - 1 ]} ${currentTransactionDateObj[2]}, ${currentTransactionDateObj[0]}`}
                      </Text>
                 </View>
@@ -768,15 +751,78 @@ class ExpenseByCategoryChild extends Component{
             </View>
         );
     }
+    renderUncategoryTransactions = ({items,showSeprator}) => {
+        const { name,amount,date } = items;
+        let currentTransactionDateObj = date.split("-");
+        return(
+            <Fragment>
+                    <View style={styles.uncategoryTransactionlayout}>
+                    <Text style={styles.transactionTitle}>{ name }</Text>
+                    <Text style={styles.transactionAmount}>{`-$${numberWithCommas(amount)}`}</Text>
+                    </View>
+
+                    <View style={{ ...styles.uncategoryTransactionlayout,marginTop:8 }}>
+                    <Text style={{...styles.transactionDate,alignSelf:"center"}}>
+                         {`${ALL_MONTHS[ parseInt(currentTransactionDateObj[1]) - 1 ]} ${currentTransactionDateObj[2]}, ${currentTransactionDateObj[0]}`}
+                     </Text>
+
+                    <TouchableOpacity style={styles.plusCategoryTouch}>
+                    <Text style={styles.plusCategoryText}>+ Category</Text>
+                    </TouchableOpacity>
+                    </View>
+                    {
+                        showSeprator == true ? <View style={styles.uncategorizedSeprator}/> : null
+                    }
+            </Fragment>
+        );
+    }
+    renderUncategorizedCategory = () => {
+        const { subExepenseByCategory } = this.state;
+        const { ExpenseSubCategory } = subExepenseByCategory;
+        //let expenseMoreOne = ExpenseSubCategory.filter( itr => itr.transaction.length > 0 );
+        let customKey = 0;
+        return(
+            <Fragment>
+            <View style={{ height: 25, backgroundColor: "#EEEFF1" }}></View>
+            <View style={styles.uncategoryContainer}>
+            {
+                ExpenseSubCategory.map((singleExpenseCategory,categoryIndex)=>{
+                    if(singleExpenseCategory.transaction.length > 0){
+                    return singleExpenseCategory.transaction.map((singleUncategorized,transactionIndex)=>{
+                    let showSeprator = true;
+                    if( categoryIndex == ExpenseSubCategory.length - 1 && transactionIndex == singleExpenseCategory.transaction.length - 1){
+                        showSeprator = false;
+                    }
+                    customKey++;
+                    return <this.renderUncategoryTransactions 
+                        key={customKey}
+                        items={{ ...singleUncategorized }}
+                        showSeprator={ showSeprator }
+                    />
+                    })
+                    }else{
+                        return null;
+                    }
+                })
+            }
+            </View>
+            </Fragment>
+        );
+    }
     renderBody = () => {
         const { ExpenseSubCategory } = this.state.subExepenseByCategory;
+        let { category } = this.state.currentExpenseCategory;
+        let isUncategorized = category.toLowerCase() === "uncategory";
         return(
             <ScrollView  keyboardShouldPersistTaps='always' contentContainerStyle={{ paddingBottom: 20 }}>
                 <this.header />
                 <this.bodyChart />
                 {
                     ExpenseSubCategory.length > 0 ?
-                    <this.bodyTransaction /> : <View style={{ height: 25, backgroundColor: "#EEEFF1" }}></View>
+                    isUncategorized == true ?
+                    <this.renderUncategorizedCategory /> :
+                    <this.bodyTransaction /> : 
+                    <View style={{ height: 25, backgroundColor: "#EEEFF1" }} />
                 }
             </ScrollView>
         );
@@ -877,6 +923,65 @@ const styles = StyleSheet.create({
         color: "#1D1E1F",
         fontSize: 10,
         paddingLeft: 5 
+    },
+    transactionTitle:{ 
+        borderWidth:0,
+        borderColor:"yellow",
+        color: "#1D1E1F",
+        fontSize: 15,
+        textAlign: "left",
+        width: "70%"
+    },
+    transactionAmount:{
+        borderWidth:0,
+        borderColor:"yellow",
+        color: "#1D1E1F",
+        fontSize: 15,
+        textAlign: "right",
+        width: "30%"
+    },
+    uncategoryTransactionlayout:{ 
+        flexDirection:"row",
+        justifyContent: "space-between",
+        borderWidth: 0,
+        borderColor:"green"
+    },
+    transactionDate: { 
+        color: "#1D1E1F",
+        opacity: 0.5,
+        fontSize:11,
+        textAlign:"left"
+    },
+    plusCategoryText: {
+        fontSize: 11,
+        textAlign:"center",
+        color:"#1D1E1F"
+    },
+    plusCategoryTouch:{
+        borderColor: "#1C1C1D",
+        borderWidth:1,
+        borderRadius: 100,
+        justifyContent: "center",
+        alignItems:"center",
+        alignSelf:"flex-end",
+        height: 25,
+        paddingHorizontal:15
+    },
+    uncategoryContainer: { 
+        paddingVertical:30,
+        backgroundColor:"#FFF",
+        borderColor:"red",
+        borderWidth: 0,
+        width:"90%",
+        alignSelf: "center"
+    },
+    uncategorizedSeprator: { 
+        alignSelf:"center",
+        marginVertical: 20,
+        borderBottomColor:"#1D1E1F",
+        width:"103%",
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        opacity: 0.2
     }
 });
 export default DetectPlatform(ExpenseByCategoryChild,styles.container);

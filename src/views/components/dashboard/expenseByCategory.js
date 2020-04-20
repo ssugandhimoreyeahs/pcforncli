@@ -188,7 +188,7 @@ class ExpenseByCategory extends Component{
                             return <this.renderCategoryWithPercentage key={index}
                                 percentage={parseInt(fullArray[index].percentage)} 
                                 category = {firstLetterCapital(fullArray[index].category)} 
-                                price = {`-$${numberWithCommas(fullArray[index].amount.toFixed(2))}`} 
+                                price = {`-$${numberWithCommas(fullArray[index].amount)}`} 
                             />
                             }else{
                                 return null;

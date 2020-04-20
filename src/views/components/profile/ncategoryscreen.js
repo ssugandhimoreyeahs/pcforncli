@@ -533,7 +533,7 @@ class CategoryScreen extends Component{
       handleEditPlaidCategoryApi = (category) => {
         
         this.setState({ isSpinner: true,editCategoryDialogVisible: false }, async ()=>{
-            const editPlaidCategoryResponse = await editPlaidCategory(this.state.editInitDialogId,category);
+            const editPlaidCategoryResponse = await editPlaidCategory(this.state.editInitDialogId,category.toLowerCase());
         if(editPlaidCategoryResponse.result == true){
             
             setTimeout(()=>{
