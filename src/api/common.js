@@ -268,6 +268,10 @@ export const PLAID_EXPENSE_CATEGORIES = [
     {
         categoryName: "Payment",
         ...EXPENSE_ICONS.interest_and_bank_fees
+    },
+    {
+        categoryName: "Uncategory",
+        ...EXPENSE_ICONS.uncategorized
     }
 ]
 

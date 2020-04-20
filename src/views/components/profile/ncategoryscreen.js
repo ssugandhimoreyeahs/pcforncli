@@ -486,7 +486,8 @@ class CategoryScreen extends Component{
         
             this.setState({ addCategoryDialogVisible:false,isSpinner:true }, async ()=>{
 
-            const addCategoryResponse = await addPlaidCategory(allFirstWordCapital(categoryInput));
+            //const addCategoryResponse = await addPlaidCategory(allFirstWordCapital(categoryInput));
+            const addCategoryResponse = await addPlaidCategory(categoryInput.toLowerCase());
             if(addCategoryResponse.result == true){
                 
                 setTimeout(()=>{
