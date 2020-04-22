@@ -182,7 +182,7 @@ const EXPENSE_ICONS = {
         categoryColor: '#E89200'
     },
     professional_services: {
-        categoryIcon: require('../assets/CategoryIcon/payroll3.png'),
+        categoryIcon: require('../assets/CategoryIcon/professional_services3.png'),
         categoryColor: '#801365'
     },
     repair_and_maintanence: {
