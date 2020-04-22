@@ -10,6 +10,7 @@ import { connect } from "react-redux";
 import { fetchUserAsyncActionCreator } from "../../../reducers/getUser";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { SURE_UNLINK_ACCOUNT,SURE_RELINK_ACCOUNT,ERROR } from "../../../api/message";
+import { ERRORCATEGORY } from "../../../api/common";
 AntDesign.loadFont();
 
 class Integration extends Component{
@@ -235,7 +236,13 @@ class Integration extends Component{
                 })
 
             }else{
-                Alert.alert("Error","Error Try Again!");
+                this.setState({ isSpinner: false },()=>{
+                    setTimeout(()=>{
+                        Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[
+                            { text: ERRORCATEGORY.button1 }
+                        ]);
+                    },500);
+                });
             }  
         } );
             
@@ -250,7 +257,13 @@ class Integration extends Component{
                 })
 
             }else{
-                Alert.alert("Error","Error Try Again!");
+                this.setState({ isSpinner: false },()=>{
+                    setTimeout(()=>{
+                        Alert.alert(ERRORCATEGORY.title,ERRORCATEGORY.message,[
+                            { text: ERRORCATEGORY.button1 }
+                        ]);
+                    },500);
+                });
             } 
             });
             
