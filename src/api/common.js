@@ -295,3 +295,19 @@ export const getCategoryInitials = (str = "") => {
     });
     return initials;
 }
+
+
+export const PLAID_SECURE_MODAL = [
+    {
+        title: 'Secure',
+        text: 'Your information is encrypted end-to-end.'
+    },
+    {
+        title: 'Private',
+        text: 'Your credentials will never be accessible to PocketCFO.'
+    },
+    {
+        title: 'Anonymous',
+        text: 'Your financial data will always be anonymized in our database.'
+    }
+]
