@@ -11,7 +11,7 @@ import PlaidSecureImg from "../../assets/PlaidSecureImg.png";
 import BlueLockImg from '../../assets/BlueLock.png';
 import { PLAID_SECURE_MODAL } from "../../api/common";
 import Entypo from "react-native-vector-icons/Entypo";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { widthPercentageToDP as Width, heightPercentageToDP as Height } from "react-native-responsive-screen";
 FontAwesome.loadFont();
 Entypo.loadFont();
 
@@ -472,10 +472,10 @@ Text.defaultProps = {
   dataSecureTips = React.memo(({title,text}) => { 
     return(
       <View style={styles.overlayTipsMainView}>
-        <View style={{ width: wp('9%'),justifyContent: "center" }}>
-          <Image source={BlueLockImg} style={{ width:wp(5.5),height:wp(5.5) }}/>
+        <View style={{ width: Width('9%'),justifyContent: "center" }}>
+          <Image source={BlueLockImg} style={{ width:Width(5.5),height:Width(5.5) }}/>
         </View>
-        <View style={{ width: wp('91%') }}>
+        <View style={{ width: Width('91%') }}>
            <Text style={styles.overlayTipsTitleStyle}>{`${title}`}</Text>
            <Text style={styles.overlayTipsTextStyle}>{`${text}`}</Text>
         </View>
@@ -491,7 +491,7 @@ Text.defaultProps = {
         isVisible = {isModalVisible}>
          <Fragment>
          <View style={styles.dataSecureoverlayMainContainer}>
-             <View style={{ marginTop: hp(1),alignItems:"center" }}>
+             <View style={{ marginTop: Height(1),alignItems:"center" }}>
               <Image source={PlaidSecureImg} style={{ height:70,width: 70 }} />
              </View>
              <Text style={styles.upperOverlayUpperText} >
@@ -509,12 +509,12 @@ Text.defaultProps = {
            </View>
        
        <TouchableOpacity style={{ 
-         marginTop:hp(3),
+         marginTop:Height(3),
          justifyContent:"center",alignItems:"center",alignSelf:"center",
-         height:hp(8),width:hp(8),borderRadius:100,backgroundColor:"#4E5050"
+         height:Height(8),width:Height(8),borderRadius:100,backgroundColor:"#4E5050"
        }}
        onPress={this.toggleDataSecuredModal}>
-         <Entypo name={"cross"} size={hp(5.5)} color={"#FFF"} />
+         <Entypo name={"cross"} size={Height(5.5)} color={"#FFF"} />
        </TouchableOpacity>
          </Fragment>
     </Overlay>
@@ -754,31 +754,31 @@ const styles = StyleSheet.create({
     alignItems:"center"
   },
   dataSecureOverlay: {
-    height: hp('100%'),
-    width:wp('100%'),
+    height: Height('100%'),
+    width:Width('100%'),
     justifyContent:"center" 
   },
   dataSecureoverlayMainContainer: {
       paddingVertical:30,
       alignSelf:"center",
-      width: wp('85%'),
+      width: Width('85%'),
       backgroundColor:"#FFF",
       borderRadius: 10
   },
   upperOverlayUpperText: { 
     textAlign: 'center',
-    marginTop: hp(3),
-    fontSize: hp('2.0'),
-    lineHeight: hp(2.8),
+    marginTop: Height(3),
+    fontSize: Height('2.0'),
+    lineHeight: Height(2.8),
     color:"#1D1E1F",
     fontWeight: '700' 
   },
   overlayTipsContainer: {
-    marginTop: hp(2.5),
+    marginTop: Height(2.5),
     borderColor:"red",
     borderWidth: 0,
     alignSelf: "center",
-    width: wp('60%')
+    width: Width('60%')
    },
    overlayTipsMainView: { 
      flexDirection:"row",
@@ -787,16 +787,16 @@ const styles = StyleSheet.create({
   },
   overlayTipsTextStyle: {
     marginTop: 5,
-    width: wp("50%"),
+    width: Width("50%"),
     opacity: 0.5,
     color: "#000",
-    fontSize: hp(1.5),
+    fontSize: Height(1.5),
     textAlign: "left",
-    lineHeight: hp(2.15)
+    lineHeight: Height(2.15)
   },
   overlayTipsTitleStyle: { 
     color: '#1D1E1F',
-    fontSize: hp(1.9),
+    fontSize: Height(1.9),
     fontWeight:"600" 
   }
 
