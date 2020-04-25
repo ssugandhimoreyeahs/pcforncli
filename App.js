@@ -412,7 +412,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "Setup"
+    initialRouteName: "ValueProp"
   }
 );
 

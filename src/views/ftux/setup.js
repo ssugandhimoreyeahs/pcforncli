@@ -14,6 +14,11 @@ import Entypo from "react-native-vector-icons/Entypo";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 FontAwesome.loadFont();
 Entypo.loadFont();
+
+//Text.allowFontScaling=false;
+Text.defaultProps = {
+  allowFontScaling: false
+};
  class Setup extends Component {
   constructor(props) {
     super(props);
@@ -468,7 +473,7 @@ Entypo.loadFont();
     return(
       <View style={styles.overlayTipsMainView}>
         <View style={{ width: wp('9%'),justifyContent: "center" }}>
-          <Image source={BlueLockImg} style={{ width:20,height:20 }}/>
+          <Image source={BlueLockImg} style={{ width:wp(5.5),height:wp(5.5) }}/>
         </View>
         <View style={{ width: wp('91%') }}>
            <Text style={styles.overlayTipsTitleStyle}>{`${title}`}</Text>
@@ -484,11 +489,12 @@ Entypo.loadFont();
         windowBackgroundColor="rgba(0, 0, 0, 0.7)" 
         overlayBackgroundColor="rgba(0, 0, 0, 0)" 
         isVisible = {isModalVisible}>
+         <Fragment>
          <View style={styles.dataSecureoverlayMainContainer}>
-             <View style={{ marginTop: 8,alignItems:"center" }}>
+             <View style={{ marginTop: hp(1),alignItems:"center" }}>
               <Image source={PlaidSecureImg} style={{ height:70,width: 70 }} />
              </View>
-             <Text style={styles.upperOverlayUpperText}>
+             <Text style={styles.upperOverlayUpperText} >
                 {'We partner with Plaid to \n securely link your account'}
               </Text>
 
@@ -503,14 +509,15 @@ Entypo.loadFont();
            </View>
        
        <TouchableOpacity style={{ 
-         marginTop:20,
+         marginTop:hp(3),
          justifyContent:"center",alignItems:"center",alignSelf:"center",
-         height:60,width:60,borderRadius:100,backgroundColor:"#4E5050"
+         height:hp(8),width:hp(8),borderRadius:100,backgroundColor:"#4E5050"
        }}
        onPress={this.toggleDataSecuredModal}>
-         <Entypo name={"cross"} size={35} color={"#FFF"} />
+         <Entypo name={"cross"} size={hp(5.5)} color={"#FFF"} />
        </TouchableOpacity>
-       </Overlay>
+         </Fragment>
+    </Overlay>
     );
   });
   render() {
@@ -721,7 +728,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     alignSelf:"center"
   },
-  flexRow: { flexDirection: "row", marginLeft: "-8.5%" },
+  flexRow: { flexDirection: "row", marginLeft: "-6%" },
   flexCol: { flexDirection: "column" },
   textContainer: {
     flexDirection: "column",
@@ -760,14 +767,14 @@ const styles = StyleSheet.create({
   },
   upperOverlayUpperText: { 
     textAlign: 'center',
-    marginTop: 25,
-    fontSize: 14,
-    lineHeight: 20,
+    marginTop: hp(3),
+    fontSize: hp('2.0'),
+    lineHeight: hp(2.8),
     color:"#1D1E1F",
-    fontWeight: '600' 
+    fontWeight: '700' 
   },
   overlayTipsContainer: {
-    marginTop: 15,
+    marginTop: hp(2.5),
     borderColor:"red",
     borderWidth: 0,
     alignSelf: "center",
@@ -783,13 +790,13 @@ const styles = StyleSheet.create({
     width: wp("50%"),
     opacity: 0.5,
     color: "#000",
-    fontSize: 12,
+    fontSize: hp(1.5),
     textAlign: "left",
-    lineHeight: 18
+    lineHeight: hp(2.15)
   },
   overlayTipsTitleStyle: { 
     color: '#1D1E1F',
-    fontSize: 13,
+    fontSize: hp(1.9),
     fontWeight:"600" 
   }
 
