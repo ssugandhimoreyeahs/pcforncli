@@ -49,7 +49,7 @@ export async function getCashOnHandGraph(PAST = 0, FUTURE = 0){
           }).then(response => {
             const res = response.data;
             if(res.success == true && response.status == 200){
-              resolve({ result:true,response:response.data.data });
+              resolve({ result:true,response:response.data.data,amount:res.currentBalance });
             }
             else{
               reject({ result:false });

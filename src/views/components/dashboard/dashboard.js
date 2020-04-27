@@ -235,20 +235,20 @@ class Dashboard extends PureComponent {
             }).catch((error)=>{ 
               this.setState({ outOfCashDate: 'NA' });
             });
-            fetchCurrentBalancePromise().then((userBalance)=>{
-              if(userBalance.result == true){
-                this.setState({ userCurrentBalance: userBalance.available_balance,showCOHChartLoader:false });
-              }    
-            }).catch((error)=>{
-                console.log("current Balance promise error - resposne - ",error);
-                this.setState({ userCurrentBalance: 0,showCOHChartLoader:false });
-            })
+            // fetchCurrentBalancePromise().then((userBalance)=>{
+            //   if(userBalance.result == true){
+            //     this.setState({ userCurrentBalance: userBalance.available_balance,showCOHChartLoader:false });
+            //   }    
+            // }).catch((error)=>{
+            //     console.log("current Balance promise error - resposne - ",error);
+            //     this.setState({ userCurrentBalance: 0,showCOHChartLoader:false });
+            // })
             getCashOnHandGraphPromiseBased(this.state.past,this.state.future).then((cashOnHandGraphData)=>{
-              console.log("cashOnHand Response Here -------------------- ");
-              console.log(cashOnHandGraphData);
-              console.log("----------------------------------------------------------------");
+              // console.log("cashOnHand Response Here -------------------- ");
+              // console.log(cashOnHandGraphData);
+              // console.log("----------------------------------------------------------------");
               if(cashOnHandGraphData.result == true && cashOnHandGraphData.response.length > 0){
-                this.setState({ cashOnHandGraph:cashOnHandGraphData.response,isCOHLoadedOnce: true });
+                this.setState({ userCurrentBalance:cashOnHandGraphData.amount,cashOnHandGraph:cashOnHandGraphData.response,isCOHLoadedOnce: true });
                }else{
                 this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
                }
