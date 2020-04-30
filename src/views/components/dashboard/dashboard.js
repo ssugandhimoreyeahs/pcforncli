@@ -34,7 +34,9 @@ import { fetchArAsyncCreator } from "../../../reducers/incommingar";
 import { fetchInsightsAsyncCreator } from "../../../reducers/insights";
 import { fetchForecastAsyncCreator } from "../../../reducers/forecast";
 import { salesAsyncCreator } from "../../../reducers/sales";
-
+import { cohAsyncCreator } from "../../../reducers/cashonhand";
+import { outOfCashDateAsyncCreator } from "../../../reducers/outofcashdate";
+import { healthScoreAsyncCreator } from "../../../reducers/healthscore";
 
 class Dashboard extends PureComponent {
   
@@ -46,30 +48,9 @@ class Dashboard extends PureComponent {
     this.showBankCredentialChangePopupFlag = false;
 
     this.state = {
-      isSalesLoadedOnce:false,
-      isCOHLoadedOnce:false,
-      healthScoreIndicator:true,
       userData:{},
       isSpinner:true,
       tryAgainScreen:false,
-      cashOnHandGraph:[],
-      userCurrentBalance:0,
-      //states for managing the graph data
-      
-      showCOHChartLoader:false,
-      past:3,
-      future:1,
-      healthScore:0,
-
-      //salesData
-      salesData:[],
-      showSalesChartLoader:true,
-      salesTotalAmount: 0,
-      outOfCashDate: 'NA',
-      isCountApiTriggered: false,
-
-      //expensebycategory data
-      expenseByCategory:{ exponseCategoryIndicator:true },
     }
 
     this.popupInterval = null;
@@ -84,87 +65,28 @@ class Dashboard extends PureComponent {
   reloadPlaid = () => {
     this.resetFlags();
 
-    //reload code only if the user connected to the plaid
-
     getUserPromise().then((userResponse)=>{
       console.log("Dashboard user - ",userResponse);
+
       if(userResponse.result == true){
-        this.props.updateUserReduxTree(userResponse.userData)
+        this.props.updateUserReduxTree(userResponse.userData);
         if(userResponse.userData.bankIntegrationStatus == false){
           this.showBankNotConnectedPopupFlag = true;
-          this.setState({ showCOHChartLoader: false, healthScoreIndicator: false },()=>{});
-        }
-        if(userResponse.userData.qbIntegrationStatus == false){
-          this.setState({ salesData:[],showSalesChartLoader:false });
         }
   
         if(userResponse.userData.bankIntegrationStatus == true){
-          this.showBankNotConnectedPopupFlag = false;
-           //Approcahes using promises 
-           this.props.fetchPlaidCategoryDispatch();
-            getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
-              if(cashOutOfDateResponse.result == true){
-                this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
-              }else{
-                this.setState({ outOfCashDate: 'NA' });
-              }
-            }).catch((error)=>{ 
-              this.setState({ outOfCashDate: 'NA' });
-            });
-            fetchCurrentBalancePromise().then((userBalance)=>{
-              if(userBalance.result == true){
-                this.setState({ userCurrentBalance: userBalance.available_balance,showCOHChartLoader:false });
-              }    
-            }).catch((error)=>{
-                console.log("current Balance promise error - resposne - ",error);
-                this.setState({ userCurrentBalance: 0,showCOHChartLoader:false });
-            })
-            setTimeout(()=>{
-              getCashOnHandGraphPromiseBased(this.state.past,this.state.future).then((cashOnHandGraphData)=>{
-                console.log("cashOnHand Response Here -------------------- ");
-                console.log(cashOnHandGraphData);
-                console.log("----------------------------------------------------------------");
-                if(cashOnHandGraphData.result == true && cashOnHandGraphData.response.length > 0){
-                  this.setState({ cashOnHandGraph:cashOnHandGraphData.response,isCOHLoadedOnce: true });
-                 }else{
-                  this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
-                 }
-              }).catch((error)=>{
-                
-                this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
-              });
-            },1000);
+            this.showBankNotConnectedPopupFlag = false;
+           
+            this.props.fetchPlaidCategoryDispatch();
+            this.props.outOfCashDateAsyncCreator();
+            this.props.fetchCashOnHand(3,true);
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
             this.props.fetchMainExepenseByCategory(0);
             // this.props.fetchInsights();
-            if( userResponse.userData.qbIntegrationStatus == true  ){
-              getHealthScoreUsingPromise().then((response)=>{
-                  //console.log("health score api response - ",response);
-                  if(response.result == true){
-                    this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
-                  }else{
-                    this.setState({  healthScore :0,healthScoreIndicator: false });
-                  }
-                }).catch((error)=>{
-                    this.setState({  healthScore :0,healthScoreIndicator: false });
-                });
-              }
-            if( userResponse.userData.qbIntegrationStatus == false ){
-  
-              getHealthScoreUsingWithOutQbPromise().then((response)=>{
-                if(response.result == true){
-                  this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
-                }else{
-                  this.setState({  healthScore :0,healthScoreIndicator: false });
-                }
-              }).catch((error) =>{
-                console.log("error on getHealthScoreUsingWithOutQbPromise() - ",error);
-                this.setState({  healthScore :0,healthScoreIndicator: false });
-              })
-              }
+            this.props.healthScoreAsyncCreator(userResponse.userData.qbIntegrationStatus);
             isValidTokenApiCalled = true;
-            
+           
         }
         this.setState({  userData:userResponse.userData },()=>{
           if(userResponse.userData.bankIntegrationStatus == true){
@@ -177,6 +99,7 @@ class Dashboard extends PureComponent {
     }).catch((error)=>{
       this.setState({ isSpinner:false,tryAgainScreen: true, isBodyLoaded:true });  
     });
+    
   }
   reloadQuickbooks = () => {
     this.resetFlags();
@@ -212,79 +135,24 @@ class Dashboard extends PureComponent {
 
     getUserPromise().then((userResponse)=>{
       console.log("Dashboard user - ",userResponse);
+
       if(userResponse.result == true){
-        this.props.updateUserReduxTree(userResponse.userData)
+        this.props.updateUserReduxTree(userResponse.userData);
         if(userResponse.userData.bankIntegrationStatus == false){
           this.showBankNotConnectedPopupFlag = true;
-          this.setState({ showCOHChartLoader: false, healthScoreIndicator: false },()=>{});
-        }
-        if(userResponse.userData.qbIntegrationStatus == false){
-          this.setState({ salesData:[],showSalesChartLoader:false });
         }
   
         if(userResponse.userData.bankIntegrationStatus == true){
-          this.showBankNotConnectedPopupFlag = false;
-           //Approcahes using promises 
-           this.props.fetchPlaidCategoryDispatch();
-            getCashOutOfDatePromise().then((cashOutOfDateResponse)=>{
-              if(cashOutOfDateResponse.result == true){
-                this.setState({ outOfCashDate: cashOutOfDateResponse.outOfCashDate });
-              }else{
-                this.setState({ outOfCashDate: 'NA' });
-              }
-            }).catch((error)=>{ 
-              this.setState({ outOfCashDate: 'NA' });
-            });
-            // fetchCurrentBalancePromise().then((userBalance)=>{
-            //   if(userBalance.result == true){
-            //     this.setState({ userCurrentBalance: userBalance.available_balance,showCOHChartLoader:false });
-            //   }    
-            // }).catch((error)=>{
-            //     console.log("current Balance promise error - resposne - ",error);
-            //     this.setState({ userCurrentBalance: 0,showCOHChartLoader:false });
-            // })
-            getCashOnHandGraphPromiseBased(this.state.past,this.state.future).then((cashOnHandGraphData)=>{
-              // console.log("cashOnHand Response Here -------------------- ");
-              // console.log(cashOnHandGraphData);
-              // console.log("----------------------------------------------------------------");
-              if(cashOnHandGraphData.result == true && cashOnHandGraphData.response.length > 0){
-                this.setState({ userCurrentBalance:cashOnHandGraphData.amount,cashOnHandGraph:cashOnHandGraphData.response,isCOHLoadedOnce: true });
-               }else{
-                this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
-               }
-            }).catch((error)=>{
-              
-              this.setState({ cashOnHandGraph: [],showCOHChartLoader:false,isCOHLoadedOnce: true });
-            });
+            this.showBankNotConnectedPopupFlag = false;
+           
+            this.props.fetchPlaidCategoryDispatch();
+            this.props.outOfCashDateAsyncCreator();
+            this.props.fetchCashOnHand(3,true);
             this.props.fetchCashInChange(3);
             this.props.fetchExpenseByCategory(3);
             this.props.fetchMainExepenseByCategory(0);
             // this.props.fetchInsights();
-            if( userResponse.userData.qbIntegrationStatus == true  ){
-              getHealthScoreUsingPromise().then((response)=>{
-                  //console.log("health score api response - ",response);
-                  if(response.result == true){
-                    this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
-                  }else{
-                    this.setState({  healthScore :0,healthScoreIndicator: false });
-                  }
-                }).catch((error)=>{
-                    this.setState({  healthScore :0,healthScoreIndicator: false });
-                });
-              }
-            if( userResponse.userData.qbIntegrationStatus == false ){
-  
-              getHealthScoreUsingWithOutQbPromise().then((response)=>{
-                if(response.result == true){
-                  this.setState({  healthScore :response.HealthScore,healthScoreIndicator: false });
-                }else{
-                  this.setState({  healthScore :0,healthScoreIndicator: false });
-                }
-              }).catch((error) =>{
-                console.log("error on getHealthScoreUsingWithOutQbPromise() - ",error);
-                this.setState({  healthScore :0,healthScoreIndicator: false });
-              })
-              }
+            this.props.healthScoreAsyncCreator(userResponse.userData.qbIntegrationStatus);
             isValidTokenApiCalled = true;
             validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
               if(triggerValidPlaidToken.result == true){
@@ -431,9 +299,7 @@ class Dashboard extends PureComponent {
     ]);
   }
   componentDidMount = async () => {
-    //console.log("State length Test ",this.state.cashOnHandGraph.length);
     BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
-    //this.setState(()=>{ return { healthScore:Math.floor(Math.random()*100) } });
     await AsyncStorage.setItem("isUserLoggedInStorage","true");
     if(this.props.navigation.getParam("readyValuePropAfterLogout")){
       this.props.navigation.getParam("readyValuePropAfterLogout")();
@@ -469,48 +335,12 @@ class Dashboard extends PureComponent {
     }
   }
 
-  reloadGraphAsPerCondition = async () => { 
-    if(this.props.reduxUserData.userData.bankIntegrationStatus == true){
-      const cashOnHandGraphData = await getCashOnHandGraph(this.state.past,this.state.future);
-     // console.log(`Getting COH On past=${this.state.past}&future=${this.state.future}`,cashOnHandGraphData);
-      if(cashOnHandGraphData.result == true){
-        this.setState({ cashOnHandGraph:cashOnHandGraphData.response,showCOHChartLoader:false });
-      }else{
-        this.setState({ showCOHChartLoader:false });
-      }
-    }else{
-      this.setState({ showCOHChartLoader:false });
-    }
-   
-  }
+  
   handleTryAgainButton = () => {
     this.setState({ isSpinner:true });
     this.fetchUser();
   }
-  handleGraphChangeFunction = (recieveText) => {
-    this.setState(()=>{
-      return { showCOHChartLoader: true }
-    },()=>{
-      if(recieveText == "3 Months"){
-        this.setState(()=>{ return { past:3,future: 1 } },()=>{
-          this.reloadGraphAsPerCondition();
-        })
-      }else if(recieveText == "This Month"){
-        this.setState(()=>{ return { past:0,future: 0 } },()=>{
-          this.reloadGraphAsPerCondition();
-        })
-      }else if(recieveText == "6 Months"){
-        this.setState(()=>{ return { past:3,future: 3 } },()=>{
-          this.reloadGraphAsPerCondition();
-        })
-      }else if(recieveText == "12 Months"){
-        this.setState(()=>{ return { past:12,future: 0 } },()=>{
-          this.reloadGraphAsPerCondition();
-        })
-      }
-    });
-    
-  }
+ 
   callAgainForThePopup = () => {
 
     if(this.showQuickBooksPopupFlag){
@@ -529,7 +359,7 @@ class Dashboard extends PureComponent {
   }
   render(){
     
-    const financials = this.props.financials;
+    
     const { isSpinner } = this.state;
     const { bankIntegrationStatus,qbIntegrationStatus } = this.state.userData;
     return (
@@ -553,31 +383,12 @@ class Dashboard extends PureComponent {
         {
           this.state.isBodyLoaded == true ?  this.state.tryAgainScreen ?  <TryAgainScreen navigation={this.props.navigation} handleButton={this.handleTryAgainButton} showLoggedOutButton = {true} /> :  
           <BottomNavLayout navigation={this.props.navigation}>
-              <HealthScore  
-               
-               healthScoreIndicator={this.state.healthScoreIndicator} 
-               outOfCashDate={this.state.outOfCashDate} 
-               healthScore={this.state.healthScore} 
-               navigation={this.props.navigation} 
-               userCurrentBalance={this.state.userCurrentBalance}  
-               userData={this.props.reduxUserData.userData}  
+              <HealthScore navigation={this.props.navigation} 
                reloadPlaid = { () => { this.reloadPlaid(); } }
                reloadQuickbooks = { () => { this.reloadQuickbooks(); } }
-               
                />
-              { bankIntegrationStatus == true ? <CashOnHand 
-              healthScoreIndicator={this.state.healthScoreIndicator} 
-              isCOHLoadedOnce={this.state.isCOHLoadedOnce} 
-              outOfCashDate={this.state.outOfCashDate} 
-              isEnableDropDownForSwitchingGraph={ 
-                this.state.cashOnHandGraph.length == 0 ? true : false  
-              } 
-              showCOHChartLoader={this.state.showCOHChartLoader} 
-              handleGraphChangeFunction={this.handleGraphChangeFunction} 
-              userCurrentBalance={this.state.userCurrentBalance} 
-              navigation={this.props.navigation} 
-              cashOnHandGraphData={this.state.cashOnHandGraph} 
-              cohPast={this.state.past} cohFuture={this.state.future} /> : null }
+              { bankIntegrationStatus == true ? 
+              <CashOnHand navigation={this.props.navigation}  /> : null }
               { bankIntegrationStatus == true ? <ChangeInCash  
               navigation={this.props.navigation}/> : null }
               { bankIntegrationStatus == true ? <ExpenseByCategory 
@@ -603,8 +414,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
  return {
-  listFinance : (token) => { dispatch(listFinancials(token)); },
-  fetchUserDispatch : () => { dispatch(fetchUserAsyncActionCreator()); },
+  healthScoreAsyncCreator: (isPlaidConnected) => { dispatch(healthScoreAsyncCreator(isPlaidConnected)); },
+  outOfCashDateAsyncCreator : () => { dispatch(outOfCashDateAsyncCreator()); },
+  fetchCashOnHand: (cohCurrentRange = 3, isInitialRequest = false) => { dispatch(cohAsyncCreator(cohCurrentRange,isInitialRequest)); },
   fetchPlaidCategoryDispatch: () => {  dispatch(triggerPlaidCategoryAsync())  },
   updateUserReduxTree: (userData) => { dispatch(fetchUserSuccess(userData)) },
   fetchExpenseByCategory: (type = 1) => { dispatch(fetchExpensesAsyncCreator(type)); },

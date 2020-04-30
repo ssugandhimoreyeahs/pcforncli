@@ -34,7 +34,6 @@ class Password extends Component {
       heading,
       content, [{
           text: 'Okay',
-          //onPress: () => console.log('Cancel Pressed'),
           style: 'cancel'
       },],{
           cancelable: false
@@ -54,7 +53,7 @@ class Password extends Component {
      }
    }
   componentWillUnmount(){
-    //console.log("password componentWillUnmount()");
+    
     BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
     if(this.props.navigation.getParam("setEmailClickButtonEnabled"))
       this.props.navigation.getParam("setEmailClickButtonEnabled")();
@@ -79,12 +78,10 @@ class Password extends Component {
       timezoneOffset: new Date().getTimezoneOffset(),
       buildversion: APP_VERSION
     };
-    //console.log(body);
-      console.log("user body ");
-      console.log(body);
-      console.log("----");
+    
+      
       const user = await createUser(body);
-     // console.log("mongo Response ",user);
+     
       if(user.result === true){
         this.props.navigation.navigate("Setup", {
           firstName: user.response.user.firstname,

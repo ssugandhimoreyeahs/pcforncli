@@ -12,10 +12,13 @@ import {Button_Months} from "../../../constants/constants";
 import { Button } from "react-native-elements";
 import { numberWithCommas } from "../../../api/common";
 import { TERMINOLOGY,INSIGHTS } from "../../../api/message";
+import { connect } from "react-redux";
+import { cohAsyncCreator } from "../../../reducers/cashonhand";
 
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
-export default class CashOnHand extends PureComponent {
+ 
+class CashOnHand extends PureComponent {
   constructor(props) {
     super(props);
     this.state={
@@ -33,22 +36,13 @@ export default class CashOnHand extends PureComponent {
     return getHealthScoreColor(oocMonths, true);
   }
 
-  showAlert1() {  
+showAlert1() {  
     Alert.alert(  
         TERMINOLOGY.OUTOFCASHDATE.title,  
         TERMINOLOGY.OUTOFCASHDATE.message,[{  
                 text: TERMINOLOGY.OUTOFCASHDATE.button1,style:"cancel" }]);  
 }  
-handleSelectShowGraphDropDown = (recieveText) => { 
-  //console.log("Receiving Text  ",recieveText);
-  
-     if(this.state.months != recieveText){
-       this.setState(()=>{ return { months: recieveText } });
-       this.props.handleGraphChangeFunction(recieveText);
-     }
-  
-  
-}
+
 showAlert2() {  
   Alert.alert(  
       TERMINOLOGY.CASHONHAND.title,  
@@ -63,29 +57,69 @@ handleArrowStyle = () => {
     this.setState({ arrowStyle: "arrow-down" });
   }
 }
-  render() {
-    
+triggerCohRequest = (userRequest) => {
+  const { cohCurrentRange } = this.props.cashOnHandRedux;
+  let monthRequestType = userRequest == "This Month" ? 1 :
+                  userRequest == "3 Months" ? 3 :
+                  userRequest == "6 Months" ? 6 : 12;
+  if(monthRequestType != cohCurrentRange){
+    this.props.triggerCohRequestApi(monthRequestType);
+  }              
+  
+}
+parentLoader = React.memo(()=>{
+  return(
+    <View style={{ marginVertical:10,height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
+            <ActivityIndicator size="large" color="#070640" />
+      </View>
+  );
+})
+childLoader = React.memo(()=>{
+  return(
+    <View style={{height:"90%",width:'100%',justifyContent:"center",alignItems:"center"}}>
+            <ActivityIndicator size="large" color="#070640" />
+    </View>
+  );
+})
+emptyGraph = React.memo(()=>{
+  return(
+    <View style={{height:"66%",justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
+           <Text style={{ color:"#070640" }}>No Data Available!</Text>
+    </View>
+  );
+})
+render() {
+  const { outOfCashDateResponse,fetched: outOfCashDateIsFetched } = this.props.outOfCashDateRedux;
     const gw=Dimensions.get("window").width;
-
-    let isCOHGraphEmpty = true;
-
-    for(let i=0;i<this.props.cashOnHandGraphData.length; i++){
+    const { isFetched,cohData,parentLoader,childLoader,cohCurrentRange } = this.props.cashOnHandRedux;
+    let instanceObj = { past: 0, future: 0 };
+    instanceObj = cohCurrentRange == 1 ? { past: 0, future: 0 } :
+                  cohCurrentRange == 3 ? { past: 3, future: 1 } :
+                  cohCurrentRange == 6 ? { past: 3, future: 3 } :
+                  { past: 12, future: 0 };
     
-      if( this.props.cashOnHandGraphData[i].amount != 0 && this.props.cashOnHandGraphData[i].amount > 0 ){
+    let cashOnHandGraphData = isFetched == true ? cohData.data : [];
+    let isCOHGraphEmpty = true;
+    let btnText = cohCurrentRange == 1 ? "This Month" : cohCurrentRange == 3 ? "3 Months" : cohCurrentRange == 6 ? "6 Months" : "12 Months";
+    for(let i=0;i<cashOnHandGraphData.length; i++){
+    
+      if( cashOnHandGraphData[i].amount != 0 && cashOnHandGraphData[i].amount > 0 ){
     
         isCOHGraphEmpty = false;
         break;
       }
     }
     
+    let outOfCashDate = "";
+    if(outOfCashDateIsFetched){
+      outOfCashDate = outOfCashDateResponse.days;
+    }
     return (
       <View style={{alignSelf:'center',marginTop:-20, width:'95%'}}>
         {
           this.props.healthScoreIndicator == true ?
-          <View
-          style={ styles.offOutOfCashDate }></View> :
-        <View
-        style={{
+          <View style={ styles.offOutOfCashDate }></View> :
+        <View style={{
           backgroundColor: this.getRunwayColor(
             0,
             0,
@@ -101,26 +135,17 @@ handleArrowStyle = () => {
           </View>
           </TouchableOpacity>
         <Text style={{ fontSize: 14, fontWeight: "bold", color: "#FFF" }}>
-          { `${this.props.outOfCashDate}` }
+          { `${outOfCashDate}` }
         </Text>
      </View> 
         }
         
       <View style={styles.margins}/>
         {
-          this.props.isCOHLoadedOnce == false ?
-          <View style={{ marginVertical:10,height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
-            <ActivityIndicator size="large" color="#070640" />
-          </View>
-          :
-
+          parentLoader == true ? <this.parentLoader /> :
         <View style={ styles.cashOnHandCart }>
         {
-          this.props.showCOHChartLoader == true ?
-          <View style={{height:"90%",width:'100%',justifyContent:"center",alignItems:"center"}}>
-            <ActivityIndicator size="large" color="#070640" />
-          </View>
-          :
+          childLoader == true ? <this.childLoader /> :
           <View style={{ height: "90%" }}>
             <View style={styles.heading}>
           <TouchableOpacity onPress={this.showAlert2}>
@@ -130,27 +155,19 @@ handleArrowStyle = () => {
           </View>
           </TouchableOpacity>
           <Text style={{ textAlign:"right",fontSize: 22, fontWeight: "bold" }}>
-            {`$${ numberWithCommas(this.props.userCurrentBalance) || 0.0}`}
+            {`$${ numberWithCommas(cohData.currentBalance) || 0.0}`}
           </Text>
         </View>
         {
-          isCOHGraphEmpty == true ?
-
-          <View style={{height:"66%",justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
-           <Text style={{ color:"#070640" }}>No Data Available!</Text>
-          </View>
-
-          :
-
+          isCOHGraphEmpty == true ? <this.emptyGraph /> :
           <View style={{marginTop:"-4.9%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
             <CashOnHandChart 
-            cashOnHandGraphData={this.props.cashOnHandGraphData} 
-            cohPast={this.props.cohPast} 
-            cohFuture={this.props.cohFuture} />
+            cashOnHandGraphData={cashOnHandGraphData} 
+            cohPast={instanceObj.past} 
+            cohFuture={instanceObj.future} />
           </View>
         }
-        
-          </View>
+        </View>
         }
         <View style = {styles.buttonview}>
           <TouchableOpacity style={styles.Toucha} onPress={()=>{ this.dropdownRef.current.focus(); }}>
@@ -159,8 +176,8 @@ handleArrowStyle = () => {
                         //disabled={this.props.isEnableDropDownForSwitchingGraph}
                         disabled={ false }
                         data={Button_Months}
-                        onChangeText={this.handleSelectShowGraphDropDown}
-                        value={this.state.months}
+                        onChangeText={this.triggerCohRequest}
+                        value={btnText}
                         containerStyle={styles.dropdown}
                         renderAccessory={() => null}
                         pickerStyle={{backgroundColor:"#E6E6EC",borderRadius:10,}}
@@ -268,3 +285,17 @@ const styles =  StyleSheet.create({
   },
 
 });
+
+const mapStateToProps = state => {
+  return {
+    cashOnHandRedux: state.cohReducer,
+    outOfCashDateRedux: state.outOfCashDateReducer,
+    healthScoreIndicator: !state.healthScoreReducer.isFetched
+  }
+}
+const mapDispatchToProps = dispatch => {
+  return {
+    triggerCohRequestApi: (cohCurrentRange) => { dispatch(cohAsyncCreator(cohCurrentRange)); }
+  }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(CashOnHand);

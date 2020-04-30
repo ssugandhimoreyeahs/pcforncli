@@ -26,7 +26,7 @@ class Forgetpassword extends Component {
       heading,
       content, [{
           text: 'OK',
-          //onPress: () => console.log('Cancel Pressed'),
+          
           style: 'cancel'
       },],{
           cancelable: false
@@ -52,10 +52,10 @@ class Forgetpassword extends Component {
   handlePress = async () => {
     Keyboard.dismiss();
     this.setState({ isSpinner:true,isButtonEnabled:false });
-    //check email first is exist or not
+    
     
     const forgetPasswordApiCall = await forgetPassword(this.state.email.trim().toLowerCase());
-    // console.log("Test here",forgetPasswordApiCall);
+    
 
     if(forgetPasswordApiCall.result == true){
         this.setState((prevState)=>{ return { isSpinner:false,isButtonEnabled:false,email:"" }  },()=>{
@@ -64,7 +64,7 @@ class Forgetpassword extends Component {
                 "Password Sent",
                 FORGET_PASSWORD_SEND, [{
                     text: 'OK',
-                    //onPress: () => console.log('Cancel Pressed'),
+                    
                     onPress: () => {
                       this.props.navigation.navigate("Login");
                       

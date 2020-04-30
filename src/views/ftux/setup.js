@@ -75,7 +75,7 @@ Text.defaultProps = {
         onBoardingData.data.push(data);
       }
       this.setState({ onBoardingData });
-      console.log("Questions Data Recieved - ",onBoardingData);
+      
     }
   }
   componentDidMount(){
@@ -190,8 +190,7 @@ Text.defaultProps = {
         data: updatedData
       }
     },()=>{
-      console.log("Testing here - ");
-      console.log(this.state.onBoardingData.data[currentQuestionIndex].selectedAns);
+      
     })
     
 
@@ -240,8 +239,7 @@ Text.defaultProps = {
         noneOfTheAbove: false
       }
     },()=>{
-      console.log("Multiple Testing here - ");
-      console.log(this.state.onBoardingData.data[currentQuestionIndex].selectedAns);
+      
     })
     
 
@@ -435,7 +433,7 @@ Text.defaultProps = {
           }
         }
       }
-      console.log("Recieving total questions  - ",totalQuestions);
+      
       if(currentQuestion < totalQuestions-1){
         this.setState({ 
           onBoardingData:{
