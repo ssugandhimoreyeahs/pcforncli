@@ -51,6 +51,7 @@ class Dashboard extends PureComponent {
       userData:{},
       isSpinner:true,
       tryAgainScreen:false,
+      isCountApiTriggered: false
     }
 
     this.popupInterval = null;
@@ -113,7 +114,7 @@ class Dashboard extends PureComponent {
           this.setState({ showCOHChartLoader: false, healthScoreIndicator: false },()=>{});
         }
         if(userResponse.userData.qbIntegrationStatus == false){
-          this.setState({ salesData:[],showSalesChartLoader:false });
+          //this.setState({ salesData:[],showSalesChartLoader:false });
         }
         if(userResponse.userData.qbIntegrationStatus == true){
             this.props.fetchSales();
@@ -188,7 +189,7 @@ class Dashboard extends PureComponent {
           }
           if(this.state.isCountApiTriggered == false){
               if(userResponse.userData.bankIntegrationStatus == false){
-
+                
                   if(userResponse.userData.qbIntegrationStatus == true){
                     validatePlaidTokenPromise().then((triggerValidPlaidToken)=>{
                       if(triggerValidPlaidToken.result == true){
