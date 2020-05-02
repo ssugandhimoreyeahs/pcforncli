@@ -10,22 +10,15 @@ import AsyncStorage from "@react-native-community/async-storage";
 import CashOnHand from "./cashOnHand";
 import ChangeInCash from "./changeInCash";
 import Sales from "./sales";
-import { fetchUserAsyncActionCreator,fetchUserSuccess } from "../../../reducers/getUser";
-import { 
-  getCashOnHandGraph,
-  getSalesData,
-  userLoginCounter,
-  getHealthScoreUsingPromise,
-  getCashOnHandGraphPromiseBased,
-  getCashOutOfDatePromise,
-  fetchCurrentBalancePromise,
-  validatePlaidTokenPromise,getSalesDataPromise,getHealthScoreUsingWithOutQbPromise,getExpenseByCategoryPromise,getUserPromise } from "../../../api/api";
+import { fetchUserSuccess } from "../../../reducers/getUser";
+import {  userLoginCounter,validatePlaidTokenPromise,getUserPromise } from "../../../api/api";
 
 import Spinner from 'react-native-loading-spinner-overlay';
 import TryAgainScreen from "../../ftux/somethingWrong";
 import { logger } from "../../../api/logger";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
-//expense by category Dev priya
+
+
 import ExpenseByCategory from "./expenseByCategory";
 import { fetchExpensesAsyncCreator  } from "../../../reducers/expensecategory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
@@ -37,6 +30,7 @@ import { salesAsyncCreator } from "../../../reducers/sales";
 import { cohAsyncCreator } from "../../../reducers/cashonhand";
 import { outOfCashDateAsyncCreator } from "../../../reducers/outofcashdate";
 import { healthScoreAsyncCreator } from "../../../reducers/healthscore";
+import { BANK_CONNECTION,BANK_CREDENTIALS_CHANGE,QUICKBOOKS_ERROR,EXIT_APP } from "../../../api/message";
 
 class Dashboard extends PureComponent {
   
@@ -139,6 +133,7 @@ class Dashboard extends PureComponent {
 
       if(userResponse.result == true){
         this.props.updateUserReduxTree(userResponse.userData);
+        //userResponse.userData.bankIntegrationStatus = false;
         if(userResponse.userData.bankIntegrationStatus == false){
           this.showBankNotConnectedPopupFlag = true;
         }
@@ -241,10 +236,10 @@ class Dashboard extends PureComponent {
   }
 
   showQBPopup = () => {
-    Alert.alert("Message","Somethings went wrong with Quickbooks Please Reconnect Quickbooks",[
-                    {text: 'Cancel'},
+    Alert.alert(QUICKBOOKS_ERROR.title,QUICKBOOKS_ERROR.message,[
+                    {text: QUICKBOOKS_ERROR.button1},
                     {
-                      text: 'Connect Here',
+                      text: QUICKBOOKS_ERROR.button2,
                       onPress: () => { 
                         this.props.navigation.navigate("Integration",{ 
                           reloadPlaid:()=>{ this.reloadPlaid(); },
@@ -257,17 +252,17 @@ class Dashboard extends PureComponent {
                   );
   }
   showBankCredentialChangePopup = (isShowQBPopup = false) => {
-    Alert.alert("Message","Bank Credentials Changed Please Connect to Bank Again",
+    Alert.alert(BANK_CREDENTIALS_CHANGE.title,BANK_CREDENTIALS_CHANGE.message,
     [
-      { text: 'Cancel', onPress: () => {
+      { 
+        text: BANK_CREDENTIALS_CHANGE.button1, onPress: () => {
         if(isShowQBPopup){
-          //this.showQuickBooksPopupFlag = true;
           setTimeout(()=>{
             this.showQBPopup();
-          },100);
-        }
-      }},
-      { text: 'Connect Here',
+          },100);}}
+      },
+      { 
+        text: BANK_CREDENTIALS_CHANGE.button2,
         onPress: () => { 
           if(isShowQBPopup){
             this.showQuickBooksPopupFlag = true;
@@ -280,23 +275,26 @@ class Dashboard extends PureComponent {
     ],{cancelable: false});
   }
   showConnectBankPopup = (isShowQBPopup = false) => {
-    Alert.alert("Info","You're Not Connected To The Bank Please Connect To Bank",[ 
-      { text:"Cancel", onPress: () => {
+    
+    Alert.alert(BANK_CONNECTION.title,BANK_CONNECTION.message,[ 
+      { 
+        text:BANK_CONNECTION.button1, onPress: () => {
         if(isShowQBPopup){
-            // this.showQuickBooksPopupFlag = true;
             setTimeout(()=>{
               this.showQBPopup();
             },100);
-        }
-      }},{ text:"Connect Here", onPress:()=>{ 
+        }}
+      },
+      { 
+        text:BANK_CONNECTION.button2, onPress:()=>{ 
         if(isShowQBPopup){
             this.showQuickBooksPopupFlag = true;
         }
         this.props.navigation.navigate("Integration",{ 
           reloadPlaid:()=>{ this.reloadPlaid(); },
           reloadQuickbooks:()=>{ this.reloadQuickbooks(); }
-        });
-      }}
+        }); }
+      }
     ]);
   }
   componentDidMount = async () => {
@@ -319,19 +317,19 @@ class Dashboard extends PureComponent {
       clearInterval(this.popupInterval);
       return true;
     }else{
-    Alert.alert(
-      'Exit App',
-      'Do you want to Exit..', [{
-          text: 'Cancel',
-          onPress: () => logger('Cancel Pressed'),
-          style: 'cancel'
-      }, {
-          text: 'Exit',
-          onPress: () => BackHandler.exitApp()
-      }, ], {
+    Alert.alert(EXIT_APP.title,EXIT_APP.message,[
+        {
+            text: EXIT_APP.button1,
+            style: 'cancel'
+        }, 
+        {
+            text: EXIT_APP.button2,
+            onPress: () => BackHandler.exitApp()
+        } 
+      ], 
+      {
           cancelable: false
-      })
-      
+      });
       return true;
     }
   }
