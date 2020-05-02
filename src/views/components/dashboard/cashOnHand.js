@@ -193,7 +193,7 @@ renderCashOnHand = React.memo(({ currentBalance,parentLoader,isCOHGraphEmpty,chi
    let heightRatio = this.state.showInsightsCart ? "66%" : "90%";
     return(
       <View style={{ ...styles.cashOnHandNewCantainer,
-        height: this.state.showInsightsCart ? 465 : 360 }}>
+        height: this.state.showInsightsCart ? 450 : 360 }}>
         <Fragment>
         {
           parentLoader ? <this.parentLoaderRender height={this.state.showInsightsCart ? 465 : 360} /> :

@@ -27,7 +27,8 @@ class Sales extends Component {
     super(props);
     this.state={
       months:'3 Months',
-      arrowStyle:"arrow-down"
+      arrowStyle:"arrow-down",
+      showInsightCart: false
     }
     this.dropdownRef = React.createRef();
   }
@@ -124,8 +125,154 @@ class Sales extends Component {
       this.props.fetchSalesMultiple(12);
     }
   }
+
+  salesMasterLoader = React.memo(()=>{
+
+    return(
+      <View style={{ justifyContent:"center",alignItems: 'center', height:"100%" }}>
+         <ActivityIndicator size="large" color="#070640" />
+       </View> 
+    );
+  })
+
+  salesErrorView = React.memo(()=>{
+
+    return(
+      <View style={{ width:'100%',justifyContent:"center" }}>
+          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+              <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
+              <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
+          </View> 
+          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+              <TouchableOpacity onPress={()=>{ this.handleErrorReloadSales(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                  <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><SimpleLineIcons style={{ marginTop:4 }} name='reload' size={18} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
+              </TouchableOpacity>
+           </View>
+        </View>  
+    );
+  });
+  salesChildLoader = React.memo(({ height })=>{
+
+    return(
+      <View style={{height,
+        justifyContent:"center",alignItems:"center"}}>
+          <ActivityIndicator size="large" color="#070640" />
+      </View> 
+    );
+  });
+  salesGraphEmpty = React.memo(({ height })=>{
+
+    return(
+      <View style={{height,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
+              <Text style={{ color:"#070640" }}>You have no sales data this month.</Text>
+      </View>
+    );
+  });
+  salesInsightFooter = React.memo(({ insightText,insightButtonText,backgroundColor })=>{
+
+    return(
+      <View style={{ ...styles.insightCartBody,backgroundColor }}>
+      <Text style={styles.insightCartBodyText}>{ insightText } </Text>
+
+      <TouchableOpacity style={styles.insightCartBodyGotoButton}>
+        <Text style={styles.insightCartBodyGotoButtonText}>{ insightButtonText }</Text>
+        <AntDesign name='right' style={styles.insightCartBodyGotoButtonIcon} 
+        size={14} color={'#000000'}/>
+      </TouchableOpacity>
+      </View> 
+    );
+  });
+
+  salesMainBody = React.memo(({ totalSalesAmount,salesCurrentRange,heightRatio,isSalesGraphEmpty,salesData })=>{
+
+    return(
+      <View style={{ height:heightRatio }}>
+          <View style={styles.heading}>
+            <TouchableOpacity onPress={this.showAlert}>
+              <View style={{flexDirection:'row'}}>
+                <Text style={{ fontSize: 12 }}>SALES</Text>
+                <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>
+              </View>
+            </TouchableOpacity>
+            <View>
+              <Text style={{ fontSize: 22, fontWeight: "bold" }}>
+                {/* {`$${this.calculateCurrentMonthSales(historicalFinances) || "-"}`} */}
+                {`$${numberWithCommas(totalSalesAmount)}`}
+                
+              </Text>
+              <Text style={{ color:"#1D1E1F",fontSize:12,textAlign:"right",marginRight:5,marginTop:8 }}>{` ${this.state.months}`}</Text>
+            </View>
+          </View>
+          
+          <View style={{marginTop:"-8%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
+            {
+            
+                isSalesGraphEmpty == true ?  
+                  <this.salesGraphEmpty height={heightRatio} /> :
+                  <SalesChart 
+                      salesCurrentRange={salesCurrentRange} 
+                      salesData={salesData} />
+            }
+            </View>
+      </View>
+    );
+  })
+  salesBody = React.memo(({ salesData,childLoader,salesCurrentRange,heightRatio,totalSalesAmount,isSalesGraphEmpty })=>{
+
+    return(
+      <View style={{ paddingVertical:20, }}>
+         {
+          childLoader == true ? 
+            <this.salesChildLoader height={heightRatio} /> : 
+            <this.salesMainBody 
+                heightRatio={heightRatio}
+                isSalesGraphEmpty={isSalesGraphEmpty}
+                salesData={salesData}
+                salesCurrentRange={salesCurrentRange}
+                totalSalesAmount={totalSalesAmount}
+            />
+         }
+        <View style = {styles.buttonview}>
+            <TouchableOpacity style={styles.Toucha} onPress = { () =>  {  this.dropdownRef.current.focus()  } }>
+                <Dropdown
+                      ref = {this.dropdownRef}
+                      data={Button_Months}
+                      onChangeText={(month)=> { this.handleSalesChangeRequest(month); }}
+                      value={this.state.months}
+                      containerStyle={styles.dropdown}
+                      renderAccessory={() => null}
+                      pickerStyle={{backgroundColor:"#E6E6EC",borderRadius:10,}}
+                      onBlur={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
+                      onFocus={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
+                      inputContainerStyle={styles.detailsInputContainer}
+                      dropdownPosition={4.5}
+                      fontSize={11} />
+                  <SimpleLineIcons name={this.state.arrowStyle} color="#030538" style={{marginTop:10, marginRight:20,}}/>
+              </TouchableOpacity>
+          <View style={{width:"40%",height:"100%",}}>
+          <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
+           onPress={()=>{  Alert.alert("Coming soon",
+            "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
+            }}
+           />
+          </View>
+        </View>
+
+        {
+          this.state.showInsightCart ? 
+          <this.salesInsightFooter 
+            backgroundColor={"#E5FCEA"}
+            insightText={"Your cash balance has increased from last months cash balance."}
+            insightButtonText={"Keep on improving"}
+            /> : null
+        }
+      </View>
+    );
+  })
   render(){
-    
+    const { showInsightCart } = this.state;
+    const height = showInsightCart ? 450 : 360;
+    const heightRatio = showInsightCart ? "66%" : "90%";
     let isSalesGraphEmpty = true;
     let { error,salesData:reduxObj,isFetched, masterLoader, childLoader, salesCurrentRange } = this.props.salesRedux;
     let totalSalesAmount = 0;
@@ -142,121 +289,22 @@ class Sales extends Component {
     }
     //childLoader = true;
     //isSalesGraphEmpty = true;
-    // masterLoader = true;
+    //masterLoader = true;
     //error = true;
+    
     return (
-      <View style={{
-        borderWidth:0,borderColor:"red",
-        width:'95%', alignSelf:'center',...styles.margins }}>
-        
+      <View style={{ height,...styles.salesContainer }}>
        {
-         masterLoader == true ?
-         <View style={{height:340,width:'100%', backgroundColor:'white',elevation:10,shadowColor:'#000',justifyContent:"center",alignItems:"center"}}>
-         <ActivityIndicator size="large" color="#070640" />
-       </View> :
-
-         error == true ?
-         <View style={{ height:340,width:'100%', backgroundColor:'white', alignSelf:'center',justifyContent:"center",elevation:10,shadowColor:'#000' }}>
-          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
-              <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
-              <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
-          </View> 
-          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
-              <TouchableOpacity onPress={()=>{ this.handleErrorReloadSales(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
-                  <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><SimpleLineIcons style={{ marginTop:4 }} name='reload' size={18} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
-              </TouchableOpacity>
-           </View>
-        </View>  
-         :
-         <View>
-         <View style={{ 
-           paddingVertical:20,
-           borderColor:"blue",
-           borderWidth:0,      
-           height:340,
-           width:'100%', 
-           backgroundColor:'white', 
-           alignSelf:'center',
-           elevation:10,
-           shadowColor:'#000' }}>
-         {
-          childLoader == true ? 
-            <View style={{height:"90%",width:gw,justifyContent:"center",alignSelf:"center"}}>
-              <ActivityIndicator size="large" color="#070640" />
-            </View> : 
-
-            <View style={{ height:"90%" }}>
-            <View style={styles.heading}>
-          <TouchableOpacity onPress={this.showAlert}>
-            <View style={{flexDirection:'row'}}>
-              <Text style={{ fontSize: 12 }}>SALES</Text>
-              <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>
-            </View>
-          </TouchableOpacity>
-          <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-            {/* {`$${this.calculateCurrentMonthSales(historicalFinances) || "-"}`} */}
-            {`$${numberWithCommas(totalSalesAmount)}`}
-            
-          </Text>
-        </View>
-
-        <View style={{ width:"100%",flexDirection:"row",justifyContent:"flex-end",marginTop:-11,marginLeft:-15, }}>
-              <Text style={{ color:"#1D1E1F",fontSize:12 }}>{` ${this.state.months}`}</Text>
-        </View>
-
-        <View style={{marginTop:"-10%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
-        {
-            
-            isSalesGraphEmpty == true ?  
-            <View style={{height:260,justifyContent:"center",alignItems:"center"}} accessible={true} pointerEvents="none">
-              <Text style={{ color:"#070640" }}>You have no sales data this month.</Text>
-            </View>
-            :
-            <SalesChart 
-                salesCurrentRange={salesCurrentRange} 
-                salesData={salesData} />
-          }
-
-          
-        
-        
-        </View>
-            </View>
-         }
-         
-            
-        
-        <View style = {styles.buttonview}>
-          <TouchableOpacity style={styles.Toucha} onPress = { () =>  {  this.dropdownRef.current.focus()  } }>
-           <Dropdown
-                ref = {this.dropdownRef}
-                data={Button_Months}
-                onChangeText={(month)=> { this.handleSalesChangeRequest(month); }}
-                value={this.state.months}
-                containerStyle={styles.dropdown}
-                renderAccessory={() => null}
-                pickerStyle={{backgroundColor:"#E6E6EC",borderRadius:10,}}
-                onBlur={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
-                onFocus={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
-                inputContainerStyle={styles.detailsInputContainer}
-                dropdownPosition={4.5}
-                fontSize={11} />
-                <SimpleLineIcons name={this.state.arrowStyle} color="#030538" style={{marginTop:10, marginRight:20,}}/>
-          </TouchableOpacity>
-          <View style={{width:"40%",height:"100%",}}>
-          <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
-           //onPress={()=>this.props.navigation.navigate("SalesInsights")}
-           onPress={()=>{  
-            // Alert.alert("Message","Coming Soon!");  
-            Alert.alert("Coming soon",
-            "We are building your personalized Pocket Insights. We will notify you when they are ready.",[ { text: "Okay"  } ],false);
-            }}
-           />
-          </View>
-        </View>
-
-          </View>
-        </View>
+          masterLoader == true ? <this.salesMasterLoader /> :
+          error == true ? <this.salesErrorView /> :
+          <this.salesBody 
+            childLoader={childLoader} 
+            heightRatio={heightRatio}
+            totalSalesAmount={totalSalesAmount}
+            isSalesGraphEmpty={isSalesGraphEmpty}
+            salesCurrentRange={salesCurrentRange}
+            salesData={salesData}
+          />
        }
       </View>
     );
@@ -265,8 +313,12 @@ class Sales extends Component {
 
 
 const styles = {
-  margins: {
-    backgroundColor: "#EEEFF1",
+  salesContainer:{
+    width:'95%', 
+    alignSelf:'center',
+    backgroundColor:'#FFF',
+    elevation:10,
+    shadowColor:'#000',
     marginVertical:8
   },
   heading: {
@@ -278,11 +330,10 @@ const styles = {
   },
   buttonview:{
     paddingHorizontal:15,
-    height:"10%",
     width:'100%',
+    height:33,
     flexDirection:"row",
     justifyContent:"space-between",
-    alignSelf:"center",
   },
   Toucha:{
     width:"40%",
@@ -318,6 +369,34 @@ const styles = {
     width:12,
     margin:6,
   },
+  insightCartBody: { 
+    borderRadius:6,
+    marginTop:16,
+    backgroundColor: "#FFE8DD",
+    width:"91%",
+    alignSelf:"center",
+    padding:16 
+  },
+  insightCartBodyText: { 
+    fontSize:13, 
+    color:"#1D1E1F",
+    fontWeight:"500" 
+  },
+  insightCartBodyGotoButton: { 
+    flexDirection:"row",
+    alignSelf:"flex-end",
+    marginTop:12 
+  },
+  insightCartBodyGotoButtonText: { 
+    alignSelf:"center",
+    fontSize:13,
+    color:"#1D1E1F",
+    fontWeight:"500" 
+  },
+  insightCartBodyGotoButtonIcon: {
+    marginLeft:3,
+    marginTop: 3
+  }
   
 };
 
