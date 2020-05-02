@@ -18,21 +18,19 @@ SimpleLineIcons.loadFont();
 //MaterialCommunityIcons.loadFont();
 Ionicons.loadFont();
 AntDesign.loadFont();
-const gw=Dimensions.get("window").width;
-
 
 
 class Sales extends Component {
+
   constructor(props) {
     super(props);
     this.state={
       months:'3 Months',
       arrowStyle:"arrow-down",
-      showInsightCart: false
+      showInsightCart: true
     }
     this.dropdownRef = React.createRef();
   }
-  
   static getDerivedStateFromProps(props,state){
      //code here
      const { salesCurrentRange } = props.salesRedux;
@@ -49,25 +47,7 @@ class Sales extends Component {
      }
      return { months: renderButton };
   }
-  calculateCurrentMonthSales(historicalFinances) {
-    // find data for the current month
-    currentMonthKey = Object.keys(historicalFinances).filter(monthKey => {
-      const monthKeyMoment = Moment(monthKey, "YYYY-MM-DD");
-      if (
-        monthKeyMoment.month() === Moment().month() &&
-        monthKeyMoment.year() === Moment().year()
-      ) {
-        return monthKey;
-      }
-    });
-
-    return historicalFinances[currentMonthKey]
-      ? historicalFinances[currentMonthKey].revenue
-      : 0;
-  }
-
-
-  showAlert() {  
+  showAlert = () => {  
     Alert.alert(  
         'Sales',  
         'Revenue is the income generated from normal business operations and includes discounts and deductions for returned product or services. It is the top line or gross income figure from which costs are subtracted to determine net income.',  
@@ -80,39 +60,29 @@ class Sales extends Component {
             },  
         ]  
     );  
-  }
-
+  };
   handleArrowStyle = () => {
     if(this.state.arrowStyle == "arrow-down"){
       this.setState({ arrowStyle: "arrow-up" });
     }else{
       this.setState({ arrowStyle: "arrow-down" });
     }
-  }
-  
+  };
   handleSalesChangeRequest = (salesMonthIncomming) => {
-
-    
-      const { months:currentSalesMonth } = this.state;
-      if(currentSalesMonth != salesMonthIncomming){
-  
-        this.setState({ months: salesMonthIncomming });
-        if(salesMonthIncomming == "This Month"){
-          this.props.fetchSalesMultiple(1);
-        }else if(salesMonthIncomming == "3 Months"){
-          this.props.fetchSalesMultiple(3);
-        }else if(salesMonthIncomming == "6 Months"){
-          this.props.fetchSalesMultiple(6);
-        }else{
-          this.props.fetchSalesMultiple(12);
-        }
-  
+    const { months:currentSalesMonth } = this.state;
+    if(currentSalesMonth != salesMonthIncomming){
+      this.setState({ months: salesMonthIncomming });
+      if(salesMonthIncomming == "This Month"){
+        this.props.fetchSalesMultiple(1);
+      }else if(salesMonthIncomming == "3 Months"){
+        this.props.fetchSalesMultiple(3);
+      }else if(salesMonthIncomming == "6 Months"){
+        this.props.fetchSalesMultiple(6);
+      }else{
+        this.props.fetchSalesMultiple(12);
       }
-      
-    
-
-  }
-
+    }
+  };
   handleErrorReloadSales = () => {
     const { months: salesMonthIncomming } = this.state;
     if(salesMonthIncomming == "This Month"){
@@ -124,8 +94,7 @@ class Sales extends Component {
     }else{
       this.props.fetchSalesMultiple(12);
     }
-  }
-
+  };
   salesMasterLoader = React.memo(()=>{
 
     return(
@@ -133,8 +102,7 @@ class Sales extends Component {
          <ActivityIndicator size="large" color="#070640" />
        </View> 
     );
-  })
-
+  });
   salesErrorView = React.memo(()=>{
 
     return(
@@ -196,15 +164,13 @@ class Sales extends Component {
             </TouchableOpacity>
             <View>
               <Text style={{ fontSize: 22, fontWeight: "bold" }}>
-                {/* {`$${this.calculateCurrentMonthSales(historicalFinances) || "-"}`} */}
                 {`$${numberWithCommas(totalSalesAmount)}`}
-                
               </Text>
               <Text style={{ color:"#1D1E1F",fontSize:12,textAlign:"right",marginRight:5,marginTop:8 }}>{` ${this.state.months}`}</Text>
             </View>
           </View>
           
-          <View style={{marginTop:"-8%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
+          <View style={{marginTop:"-11%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
             {
             
                 isSalesGraphEmpty == true ?  
@@ -271,8 +237,8 @@ class Sales extends Component {
   })
   render(){
     const { showInsightCart } = this.state;
-    const height = showInsightCart ? 450 : 360;
-    const heightRatio = showInsightCart ? "66%" : "90%";
+    const height = showInsightCart ? 455 : 355;
+    const heightRatio = showInsightCart ? "66%" : "89%";
     let isSalesGraphEmpty = true;
     let { error,salesData:reduxObj,isFetched, masterLoader, childLoader, salesCurrentRange } = this.props.salesRedux;
     let totalSalesAmount = 0;

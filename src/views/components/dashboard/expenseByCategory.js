@@ -227,7 +227,7 @@ class ExpenseByCategory extends Component{
      renderExepensesByCategory = () => {
         const { expenseByCategoryRedux:expenseByCategory } = this.props;
         const { expenseCurrentMonth,showInsightCart } = this.state;
-        let heightRatio = showInsightCart ? "68%" : "90%";
+        let heightRatio = showInsightCart ? "67%" : "90%";
          return(
             <Fragment>
             {
@@ -311,7 +311,7 @@ class ExpenseByCategory extends Component{
     render(){
        let { expenseByCategoryRedux:expenseByCategory } = this.props;
        const { showInsightCart } = this.state;
-       const height = showInsightCart ? 475 : 360;
+       const height = showInsightCart ? 465 : 360;
        
      return(
         <View style={{ ...styles.mainContainerStyle,height  }}>

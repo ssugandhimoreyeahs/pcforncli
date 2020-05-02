@@ -210,7 +210,7 @@ class ChangeInCash extends Component {
   render() {
 
     const { showInsightsCart } = this.state;
-    let heightRatio = showInsightsCart ? "69%" : "90%"
+    let heightRatio = showInsightsCart ? "68%" : "90%"
     let { cashInChangeData } = this.props;
     let total = 0;
     if(cashInChangeData.cicData.totalCash != undefined && cashInChangeData.cicData.totalCash != null){
@@ -237,7 +237,7 @@ class ChangeInCash extends Component {
     return (
       
         
-      <View style={{ ...styles.cicCharts,height: showInsightsCart ? 475 : 360 }}>
+      <View style={{ ...styles.cicCharts,height: showInsightsCart ? 480 : 360 }}>
         {
           cashInChangeData.error == true ?  <this.cashInChangeError /> :  
             cashInChangeData.masterLoader == false ?
