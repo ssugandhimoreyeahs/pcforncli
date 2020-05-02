@@ -134,25 +134,19 @@ let staticInsight = [
         sequence: 1,
         data: (navigation) => {
             return <Text style={{ fontSize: 16, color: "#000",textAlign: 'left' }}>
-            { `Evaluate the highest`}
-            <Text onPress={()=>{ navigation.navigate("NewExpenseByCategoryParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
-             { `(non rent) and reduce unnecessary` } 
-             <Text onPress={()=>{ navigation.navigate("NewExpenseByCategoryParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
-             { `to extend your runway. Identify one time`} 
-             <Text onPress={()=>{ navigation.navigate("NewExpenseByCategoryParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
-             { `that are unlikely to be monthly` } 
-             <Text onPress={()=>{ navigation.navigate("NewExpenseByCategoryParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
-             { `going forward. ` }         
-        </Text>
+                 {`Evaluate the highest expenses (non rent) and reduce unnecessary expenses to extend your runway. Identify one time expenses that are unlikely to be monthly expenses going forward  `}   
+                 <Text onPress={()=>{ navigation.navigate("NewExpenseByCategoryParent") }} 
+                    style={{ fontWeight: "500",textDecorationLine:'underline' }}>
+                        { `View expenses.`}
+                </Text> 
+            </Text>
         }
     },
     {
         sequence: 2,
         data: (navigation) => {
             return <Text style={{ fontSize: 16, color: "#000",textAlign: 'left' }}>
-            { `These`}
-            <Text onPress={()=>{ navigation.navigate("NewExpenseByCategoryParent") }} style={{ fontWeight: "bold" }}>{ `  expenses  `}</Text> 
-             { `may be expected as you're growing the business, but keeping an eye on them monthly will help keep them in perspective. ` }         
+            { `These expenses may be expected as you're growing the business, but keeping an eye on them monthly will help keep them in perspective.` }
         </Text>
         }
     }
