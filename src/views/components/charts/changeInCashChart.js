@@ -89,8 +89,13 @@ class ChangeInCashChart extends Component {
           <VictoryChart  
           height={270} width={gw} 
           domainPadding={{ 
-            x: cashInChangeData.cicCurrentRange == 1 ? 10 : 10 
+            x: cashInChangeData.cicCurrentRange == 1 ? 10 :
+               cashInChangeData.cicCurrentRange == 3 ? 20 : 15 
               
+          }}
+          animate={{
+                    duration: 500,
+                    onLoad: { duration: 50 }
           }}
         >
 	      

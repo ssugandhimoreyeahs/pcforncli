@@ -170,7 +170,7 @@ class Sales extends Component {
             </View>
           </View>
           
-          <View style={{marginTop:"-11%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
+          <View style={{marginTop:"-10%",marginLeft:"-8%"}} accessible={true} pointerEvents="none">
             {
             
                 isSalesGraphEmpty == true ?  
