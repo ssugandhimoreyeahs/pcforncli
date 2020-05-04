@@ -82,43 +82,37 @@ class ChangeInCashChart extends Component {
      cicCurrentRange == 3 ? 0.15 : 
      cicCurrentRange == 6 ? 0.20 : 
      cicCurrentRange == 12 ? 0.35 : 0.2; 
+
+     console.log("compose data ratio here - ",composingDataLevel1);
     return (
-        <View style={{ 
-          
-          alignItems:'flex-start',width:gw,
-          marginLeft:24
-          }}>
+        <View>
           <VictoryChart  
-          style={{
-            parent: { marginLeft: -50 }
-          }}
           height={270} width={gw} 
           domainPadding={{ 
-            x: cashInChangeData.cicCurrentRange == 1 ? 13 : 20 
+            x: cashInChangeData.cicCurrentRange == 1 ? 10 : 10 
               
           }}
         >
 	      
         <VictoryAxis  
-        //style={{ axis: { stroke: '#000' } }} 
         offsetY = {40}
         tickValues={composingDataLevel1.map(each => each.x)}
         style = 
         { cashInChangeData.cicCurrentRange == 1 ? 
-        { axis:{ stroke:"none" },tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0},
+        { axis:{ stroke:"none" },tickLabels: { fill:"#8E8E93",fontSize: 10,angle: 0 , strokeWidth: 2.0},
             grid:{ stroke: currentvalue => { 
-              //if(currentvalue == new Date().getDate()){ return "grey"; }  
                 if(currentvalue == new Date().getDate()){
                   return "grey";
-                }
-                  },
-                  strokeDasharray: [1,3]           
-                }
-              } : 
-              { axis:{ stroke:"none" },tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0} } 
+                }}, strokeDasharray: [1,3] } } : 
+              { axis:{ stroke:"none" },tickLabels: {  
+                fontSize:10,fill:"#8E8E93",angle: 0 , strokeWidth: 2.0} } 
         }
         
-        tickFormat={(val)=>{ return val % 2 == 0 ? val : ` ` }} 
+        tickFormat={(val)=>{ 
+          return cashInChangeData.cicCurrentRange == 1 ?
+          val % 2 == 0 ? val : ` ` : 
+          val;
+         }} 
 
 
         />
@@ -127,9 +121,10 @@ class ChangeInCashChart extends Component {
           style={{
             axis: { stroke: "none" },
             grid: { stroke: "#EEE", strokeDasharray: "50,0" },
-            tick: { display: "none" }
+            tick: { display: "none" },
+            tickLabels:{fontSize:10,fill:"#8E8E93"}
           }} 
-          offsetX={gw}
+          offsetX={gw+5}
           tickValues={ finalLabels } 
 
           tickFormat={y => {
@@ -137,35 +132,35 @@ class ChangeInCashChart extends Component {
 
               let returnValue = (y/1000);
               if(isFloat(returnValue)){
-                return `${returnValue.toFixed(1)}K`;
+                return `$${returnValue.toFixed(1)}K`;
               }else{
-                return `${returnValue}K`;
+                return `$${returnValue}K`;
               }
               
             }else if(y >= 1000000){
 
               let returnValue = (y/1000000);
               if(isFloat(returnValue)){
-                return `${returnValue.toFixed(1)}M`;
+                return `$${returnValue.toFixed(1)}M`;
               }else{
-                return `${returnValue}M`;
+                return `$${returnValue}M`;
               }
 
             }else if(y <= -1000){
 
               let returnValue = (y/1000);
               if(isFloat(returnValue)){
-                return `${returnValue.toFixed(1)}K`;
+                return `-$${Math.abs(returnValue).toFixed(1)}K`;
               }else{
-                return `${returnValue}K`;
+                return `-$${Math.abs(returnValue)}K`;
               }
               
             }else if(y <= -1000000){
               let returnValue = (y/1000);
               if(isFloat(returnValue)){
-                return `${returnValue.toFixed(1)}M`;
+                return `-$${Math.abs(returnValue).toFixed(1)}M`;
               }else{
-                return `${returnValue}M`;
+                return `-$${Math.abs(returnValue)}M`;
               }
             }else{
               return y;
@@ -183,14 +178,17 @@ class ChangeInCashChart extends Component {
         
 
         {/* <View style={{ marginTop:-35,marginLeft: cashInChangeData.cicCurrentRange == 1 ? 10 : 10,marginBottom:15,flexDirection:"row",justifyContent:"space-between",width:gw-95,paddingRight:-5 }}></View> */}
-        {
+        {/* {
           cashInChangeData.cicCurrentRange == 1 ? null :
-          <View style={{ 
+          <View style={{
+          borderWidth:0,
+          borderColor:"red", 
           alignSelf:"flex-start",
           marginTop:-27,
           flexDirection:"row",
           justifyContent:"space-between",
-          width:cashInChangeData.cicCurrentRange == 1 ? gw - 100 : gw-112,
+          marginLeft:"12%",
+          width: gw-90,
           paddingLeft: cashInChangeData.cicCurrentRange == 1 ? 0 : 3
           }}>
 
@@ -199,19 +197,19 @@ class ChangeInCashChart extends Component {
                 cash.map( (singleData,index) => {
                   let showDtValue = new Date(singleData.date).getDate();
                   if(showDtValue % 2 == 0){
-                    return <Text key={index} style={{ fontSize:9,color:"#000",fontWeight: showDtValue == new Date().getDate() ? "bold" : null }}> { showDtValue } </Text>
+                    return <Text key={index} style={{ fontSize:9.5,color:"#8E8E93",fontWeight: showDtValue == new Date().getDate() ? "bold" : null }}> { showDtValue } </Text>
                   }else{
                     return null;
                   }
                 })
               : cash.map( (singleData,index) => (
-                <Text key={index} style={{ fontSize:9,color:"#000" }}> {singleData.month} </Text>
+                <Text key={index} style={{ fontSize:9.5,color:"#8E8E93" }}> {singleData.month} </Text>
               ))
             }
            
 
           </View>
-        }
+        } */}
        
         </View>
     );

@@ -149,7 +149,7 @@ class ChangeInCash extends Component {
             </View>
                  {
                    isCICGraphEmpty == true ? <this.renderCicGraphEmpty /> :
-                   <View style={{ marginTop:"-5.5%" }} accessible={true} pointerEvents="none">
+                   <View style={{ marginTop:"-5.5%",marginLeft:"-10%" }} accessible={true} pointerEvents="none">
                     <ChangeInCashChart historicalFinances={historicalFinances} />
                    </View>
                  }

@@ -181,117 +181,89 @@ export default class CashOnHandChart extends PureComponent {
        {
          (this.props.cashOnHandGraphData.length > 0) ? 
          (this.props.cohFuture == 0 && this.props.cohPast == 0) ?
-          
-
-         <VictoryChart height={260} width={gw}
-         minDomain={{  y: 0 }}
-         // maxDomain={{x: 30, y: 1000 }}
-        //  theme={VictoryTheme.material} 
-        //  animate={{
-        //      duration: 2000,
-        //      onLoad: { duration: 1000 }
-        //    }}
-        
-         >
+          <VictoryChart height={265} width={gw}
+            animate={{
+                duration: 700,
+                onLoad: { duration: 100 }
+              }}>
            <Defs>
              <LinearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                {gradients}
              </LinearGradient>
            </Defs>
            <VictoryAxis
-           
-             style={{ tickLabels: { fontSize:11 },
-             grid: { stroke: "#EEE", strokeDasharray: "50,0" },
+              style={{ 
+                axis: { stroke: "none" }, 
+                tickLabels: { fontSize:10,fill:"#8E8E93" },
+                grid: { stroke: "#EEE", strokeDasharray: "50,0" } 
               }}
+             offsetX={gw-3}
              dependentAxis={true}
              tickValues={customYaxis}
              tickFormat={y => {
                if(y >= 1000){
-
                 let returnValue = (y/1000);
                 if(isFloat(returnValue)){
-                  return `${returnValue.toFixed(1)}K`;
+                  return `$${returnValue.toFixed(1)}K`;
                 }else{
-                  return `${returnValue}K`;
+                  return `$${returnValue}K`;
                 }
-
-                //  let returnValue = parseInt(y/1000);
-                //  return `${returnValue}K`;
                }else if(y >= 1000000){
-
                 let returnValue = (y/1000000);
                 if(isFloat(returnValue)){
-                  return `${returnValue.toFixed(1)}M`;
+                  return `$${returnValue.toFixed(1)}M`;
                 }else{
-                  return `${returnValue}M`;
-                }
-
-                //  let returnValue = parseInt(y/1000000);
-                //  return `${returnValue}M`;
-               }else{
+                  return `$${returnValue}M`;
+                }}else{
                  return y;
                }
-             }}
-
-             
-           />
+             }}/>
            <VictoryAxis
              tickValues={applyGraph.map(each => each.x)}
-             style={{ tickLabels: {} }}
-             tickFormat={x => {
-              if(x%2 == 0){
-                return x;
-              }else{
-                return "";
-              }
-             }
-               
-               //JS_DATE_INDEX_TO_MONTH_MAP[(new Date(x).getMonth() + 1) % 12]
-             }
-             style={{ tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0},
-                  grid:{ stroke: currentvalue => { if(currentvalue == dateObj.getDate()){ return "grey"; }  },
+             tickFormat={x => x % 2 == 0 ? x : ` ` }
+             style={{ 
+                  axis: { stroke: "none" }, 
+                  tickLabels: {  fill:"#8E8E93",fontSize: 10,angle: 0 , strokeWidth: 2.0},
+                  grid:{ stroke: currentvalue => { 
+                    if(currentvalue == dateObj.getDate()){ 
+                      return "grey"; 
+                    }},
                   strokeDasharray: [1,3]           
                 }
-              }}
-   
-           />
-           <VictoryLine
+              }}/><VictoryLine
              style={{
                data: { stroke: "url(#gradient)", strokeWidth: 5 }
              }}
              data={applyGraph}
            />
          </VictoryChart>
-
-
-         : <VictoryChart height={260} width={gw}
-         minDomain={{  y: 0 }}
-         // maxDomain={{x: 30, y: 1000 }}
-        //  theme={VictoryTheme.material} 
-        //  animate={{
-        //      duration: 2000,
-        //      onLoad: { duration: 1000 }
-        //    }}
-        
-         >
+          : 
+         <VictoryChart height={260} width={gw}
+         animate={{
+             duration: 700,
+             onLoad: { duration: 100 }
+           }}>
            <Defs>
              <LinearGradient id="gradient" >
                {gradients}
              </LinearGradient>
            </Defs>
            <VictoryAxis
-           style={{ tickLabels: { fontSize:11 },
-           grid: { stroke: "#EEE", strokeDasharray: "50,0" },
-            }}
+              style={{ 
+                axis: { stroke: "none" }, 
+                tickLabels: { fontSize:10,fill:"#8E8E93" },
+                grid: { stroke: "#EEE", strokeDasharray: "50,0" } 
+              }}
+             offsetX={gw-2}
              dependentAxis={true}
              tickValues={customYaxis}
              tickFormat={y => {
                if(y >= 1000){
                  let returnValue = parseInt(y/1000);
-                 return `${returnValue}K`;
+                 return `$${returnValue}K`;
                }else if(y >= 1000000){
                  let returnValue = parseInt(y/1000000);
-                 return `${returnValue}M`;
+                 return `$${returnValue}M`;
                }else{
                  return y;
                }
@@ -301,21 +273,12 @@ export default class CashOnHandChart extends PureComponent {
            />
            <VictoryAxis
              tickValues={applyGraph.map(each => each.x)}
-             tickFormat={x =>
-               x
-               //JS_DATE_INDEX_TO_MONTH_MAP[(new Date(x).getMonth() + 1) % 12]
-             }
-             style={
-                { tickLabels: { angle: 0 , strokeWidth: 2.0,fontSize: 11},
-                  grid:{ stroke: currentvalue => { if(currentvalue == currentMonth){ return "grey"; }  },
+             style={{ axis: { stroke: "none" },tickLabels: { fill:"#8E8E93",angle: 0 , strokeWidth: 2.0,fontSize: 10},
+                  grid:{ stroke: currentvalue => currentvalue == currentMonth ? "grey" : null,
                   strokeDasharray: [1,3],strokeWidth: 1.0
-
                   }
                 }
-            }
-   
-           />
-           <VictoryLine
+            }/><VictoryLine
              style={{
                data: { stroke: "url(#gradient)", strokeWidth: 5 }
              }}

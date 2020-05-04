@@ -120,7 +120,7 @@ cashOnHandBody = React.memo(({ height,cashOnHandGraphData,past,future,currentBal
          </View>
          </View>
 
-         <View style={{marginTop:"-4.9%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
+         <View style={{marginTop:"-4.9%",marginLeft:"-6.5%",borderColor:"red",borderWidth:0 }} accessible={true} pointerEvents="none">
             <CashOnHandChart 
               cashOnHandGraphData={cashOnHandGraphData} 
               cohPast={past} 
