@@ -94,17 +94,18 @@ class ChangeInCashChart extends Component {
           }}
           height={270} width={gw} 
           domainPadding={{ 
-            x: cashInChangeData.cicCurrentRange == 1 ? [ 2, 27 ] : 20 
+            x: cashInChangeData.cicCurrentRange == 1 ? 13 : 20 
               
           }}
         >
 	      
         <VictoryAxis  
         //style={{ axis: { stroke: '#000' } }} 
+        offsetY = {40}
         tickValues={composingDataLevel1.map(each => each.x)}
         style = 
         { cashInChangeData.cicCurrentRange == 1 ? 
-        { tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0},
+        { axis:{ stroke:"none" },tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0},
             grid:{ stroke: currentvalue => { 
               //if(currentvalue == new Date().getDate()){ return "grey"; }  
                 if(currentvalue == new Date().getDate()){
@@ -114,9 +115,10 @@ class ChangeInCashChart extends Component {
                   strokeDasharray: [1,3]           
                 }
               } : 
-              { tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0} } 
+              { axis:{ stroke:"none" },tickLabels: {  fontSize: 11,angle: 0 , strokeWidth: 2.0} } 
         }
-        tickFormat={()=>{ return "" }} 
+        
+        tickFormat={(val)=>{ return val % 2 == 0 ? val : ` ` }} 
 
 
         />
@@ -181,9 +183,11 @@ class ChangeInCashChart extends Component {
         
 
         {/* <View style={{ marginTop:-35,marginLeft: cashInChangeData.cicCurrentRange == 1 ? 10 : 10,marginBottom:15,flexDirection:"row",justifyContent:"space-between",width:gw-95,paddingRight:-5 }}></View> */}
-        <View style={{ 
+        {
+          cashInChangeData.cicCurrentRange == 1 ? null :
+          <View style={{ 
           alignSelf:"flex-start",
-          marginTop:-30,
+          marginTop:-27,
           flexDirection:"row",
           justifyContent:"space-between",
           width:cashInChangeData.cicCurrentRange == 1 ? gw - 100 : gw-112,
@@ -207,6 +211,8 @@ class ChangeInCashChart extends Component {
            
 
           </View>
+        }
+       
         </View>
     );
   }
