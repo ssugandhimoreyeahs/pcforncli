@@ -103,7 +103,6 @@ export default class SalesChart extends Component {
                       axis:{ stroke:"none" },
                       tickLabels: { 
                           angle: 0, 
-                          stroke: "#8E8E93", 
                           strokeWidth: 0.5, 
                           fontSize:10,
                           fill:"#8E8E93", 
