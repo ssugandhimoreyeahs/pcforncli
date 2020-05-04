@@ -175,7 +175,7 @@ export default class CashOnHandChart extends PureComponent {
             customYaxis.push(divide25Percent*i);
           }
         }
-
+        applyGraph = applyGraph.map(singleArray => singleArray.y >= 0 ? singleArray : ({ ...singleArray,y: 0 }));
     return (
      <Fragment>
        {
