@@ -9,6 +9,9 @@ import Spinner from 'react-native-loading-spinner-overlay';
 import DetectPlatform from "../../../DetectPlatform";
 import { StackActions, NavigationActions } from 'react-navigation';
 
+Text.defaultProps = {
+  allowFontScaling: false
+};
 const resetAction = StackActions.reset({
   index: 0,
   actions: [

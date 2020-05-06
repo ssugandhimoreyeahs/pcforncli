@@ -66,3 +66,30 @@ export const DELETECATEGORY = {
     button2: "Delete"
 
 }
+
+export const BANK_CONNECTION = {
+    title: "Bank Connection",
+    message: "Connect your bank and get a complete picture of your cash flow in one place.",
+    button1: "Cancel",
+    button2: "Connect"
+}
+export const BANK_CREDENTIALS_CHANGE = {
+    title: "Bank Connection",
+    message: "Bank Credentials Changed Please Connect to Bank Again",
+    button1: "Cancel",
+    button2: "Connect"
+}
+
+export const QUICKBOOKS_ERROR = {
+    title: "Quickbooks Connection",
+    message: "Somethings went wrong with Quickbooks Please Reconnect Quickbooks",
+    button1: "Cancel",
+    button2: "Connect"
+}
+
+export const EXIT_APP = {
+    title: 'Exit App',
+    message: "Sure exit from PocketCFO?",
+    button1: "Cancel",
+    button2: "Exit"
+}

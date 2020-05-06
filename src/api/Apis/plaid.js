@@ -268,39 +268,21 @@ export async function validPlaidToken(){
   }
   
   export function getCashOutOfDatePromise(){
-
     return new Promise((resolve,reject)=>{
       AsyncStorage.getItem("authToken").then((token)=>{
-
         axios.get(APINETWORK.outOfCashDateApi,{
           headers: { Authorization: token,"Content-Type": "application/json" },
           timeout
         }).then(response => {
-          // setTimeout(()=>{
-          //   console.log("outofcashdata response - ",response.data);
-          // },15000);
-          
           const res = response.data;
           if(res.success == true && response.status == 200){
-            resolve({ result: true, outOfCashDate: res.days });
+           return resolve({ result: true, outOfCashDateResponse: res });
+          }else{
+            return reject({ result:false });
           }
-          else{
-            reject({ result:false });
-          }
-        }).catch((error)=>{
-          console.log("getCashOnHandGraphPromiseBased() - Axios Error");
-          reject({ result:"error",error });
-        });
-      
-
-
-      }).catch((error)=>{
-        console.log("getCashOnHandGraphPromiseBased() - Async Token Error");
-        reject({ result:"error",error });
-      });
+        }).catch((error)=>{ return reject({ result:"error",error }); });
+      }).catch((error)=>{ return reject({ result:"error",error }); });
     })
-
-
   }
   export async function getUserOutFlowTransactions(skip = 0,limit = 0){
     try{

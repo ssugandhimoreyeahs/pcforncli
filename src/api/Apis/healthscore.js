@@ -35,19 +35,12 @@ export async function getHealthScore(){
         }).then((response)=>{
          // console.log("inside getHealthScoreUsingPromise() response - ",response.data);
           if(response.status == 200 && response.data.success == true){
-            resolve({ result:true,HealthScore: response.data.HealthScore });
+            return resolve({ result:true,healthScoreResponse: response.data });
           }else{
-            reject({ result: false });
+            return reject({ result: false });
           }
-        }).catch((error)=>{
-        //  console.log("Error on getHealthScoreUsingPromise() - ",error);
-          reject({ result:"error",error });
-        })
-      }).catch((tokenError)=>{
-       // console.log("Token Error on getHealthScoreUsingPromise() - ",tokenError);
-        reject({ result:"error",tokenError });
-      })
-      
+        }).catch((error)=>{ return reject({ result:"error",error }); })
+      }).catch((tokenError)=>{ return reject({ result:"error",tokenError }); })
     })
   }
 
@@ -55,30 +48,17 @@ export async function getHealthScore(){
   export function getHealthScoreUsingWithOutQbPromise(){
     return new Promise((resolve,reject)=>{
       AsyncStorage.getItem("authToken").then((token)=>{
-
         axios.get(APINETWORK.getHealthScoreWithoutQb,{
           headers: { Authorization: token,"Content-Type": "application/json" },
           timeout
         }).then((response)=>{
-          console.log("inside getHealthScoreUsingWithOutQbPromise() response - ",response.data);
-          if(response.status == 200 && response.data.success == true){
-            resolve({ result:true,HealthScore: response.data.HealthScore });
-          }else{
-            reject({ result: false });
+        if(response.status == 200 && response.data.success == true){
+          return resolve({ result:true,healthScoreResponse: response.data });
+        }else{
+           return reject({ result: false });
           }
-        }).catch((error)=>{
-          console.log("Error on axios getHealthScoreUsingWithOutQbPromise() - ",error);
-          reject({ result:"error",error });
-        })
-
-
-      }).catch((error)=>{
-
-        console.log("token Error on axios getHealthScoreUsingWithOutQbPromise() - ",error);
-        reject({ result:"error",error });
-
-      });
-      
+        }).catch((error)=>{ return reject({ result:"error",error }); })
+      }).catch((error)=>{ return reject({ result:"error",error }); });
     })
   }
   
