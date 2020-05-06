@@ -11,7 +11,7 @@ const APIENDPOINT = {
   endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
   isQuickBookProduction:true,
   //isPlaidProduction: false,
-  isPlaidProduction: false
+  isPlaidProduction: true
 }
 
 const USERDATAAPIS = {

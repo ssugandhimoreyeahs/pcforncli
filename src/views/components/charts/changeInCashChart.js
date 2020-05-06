@@ -94,7 +94,7 @@ class ChangeInCashChart extends Component {
           }}
           height={270} width={gw} 
           domainPadding={{ 
-            x: cashInChangeData.cicCurrentRange == 1 ? [ 2, 90] : 20 
+            x: cashInChangeData.cicCurrentRange == 1 ? [ 2, 27 ] : 20 
               
           }}
         >

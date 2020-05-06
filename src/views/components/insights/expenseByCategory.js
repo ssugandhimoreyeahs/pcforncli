@@ -94,6 +94,7 @@ class ExpenseByCategoryInsights extends Component{
                 <Text style={{ fontSize:13, color:'#1D1E1F' }}>How do you like the insights?</Text> 
                 <View style={{ width:"100%",flexDirection:"row",justifyContent:"space-around",marginTop: 30 }}>
                     <TouchableOpacity
+                    disabled={true}
                     style ={{ 
                         paddingHorizontal: 15,
                         flexDirection:'row',
@@ -107,6 +108,7 @@ class ExpenseByCategoryInsights extends Component{
                     <Text style={{ fontSize: 12,paddingLeft:8,  }}>useful</Text></TouchableOpacity>
 
                     <TouchableOpacity
+                    disabled={true}
                     style ={{ paddingHorizontal:15,flexDirection:'row',backgroundColor:'#E0EBFF',height:40, width: 114, borderRadius: 50, justifyContent:'center',alignItems:'center' }}
                     >
                     <Feather name='thumbs-down' size={17} color='#1D1E1F' 
