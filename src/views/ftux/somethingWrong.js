@@ -12,7 +12,7 @@ class SomethingWrong extends Component {
         this.state = {
           spinner: false
         }
-        //console.log(this.props);
+        
       }
       handleLogoutButton = async () => {
         this.setState({ spinner: true });

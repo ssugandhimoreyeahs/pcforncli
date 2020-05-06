@@ -26,7 +26,8 @@ class ExpenseByCategory extends Component{
         super(props)
         this.state={
             expenseCurrentMonth: "3 Months",
-            arrowStyle:"arrow-down"
+            arrowStyle:"arrow-down",
+            showInsightCart: true
         }
     }
 
@@ -146,15 +147,95 @@ class ExpenseByCategory extends Component{
                         text: TERMINOLOGY.EXPENSEBYCATEGORY.button1,  
                         style: 'cancel', }]);  
      }
+     expenseChildLoader = React.memo(({ height })=>{
+
+        return(
+            <View style={{ ...styles.expenseLoading,height }}>
+                <ActivityIndicator size="large" color="#070640" />
+          </View>
+        );
+     });
+
+     noExpenseView = React.memo(({ height })=>{
+
+        return(
+        <View style={{ ...styles.expenseEmptyCart,height }}>
+            <Text style={{ color:"#070640" }}>
+                You have not spent anything this month.
+            </Text>
+        </View>
+        );
+     });
+
+     cicInsightFooter = React.memo(({ insightText,insightButtonText,backgroundColor })=>{
+
+        return(
+          <View style={{ ...styles.insightCartBody,backgroundColor }}>
+          <Text style={styles.insightCartBodyText}>{ insightText } </Text>
+    
+          <TouchableOpacity style={styles.insightCartBodyGotoButton}>
+            <Text style={styles.insightCartBodyGotoButtonText}>{ insightButtonText }</Text>
+            <AntDesign name='right' style={styles.insightCartBodyGotoButtonIcon} 
+            size={14} color={'#000000'}/>
+          </TouchableOpacity>
+          </View> 
+        );
+      });
+
+     expenseFooterRender = React.memo(()=>{
+
+        return(
+            <Fragment>
+            <View style = { styles.expenseFooter }>
+            <View style={styles.Toucha}>
+            <Dropdown
+                    disabled={false}
+                    data={Button_Months}
+                    onChangeText={ this.handleExpenseRangeSelection }
+                    value={ this.state.expenseCurrentMonth }
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    pickerStyle={{backgroundColor:"#E6E6EC",borderRadius:10,}}
+                    onBlur={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
+                    onFocus={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    dropdownPosition={4.5}
+                    fontSize={11} />
+                    <SimpleLineIcons name={this.state.arrowStyle} color="#030538" style={{marginTop:10, marginRight:20,}}/>
+            </View>
+            <View style={{width:"40%",height:"100%",}}>
+            <Button 
+                title="View Insights" 
+                type="solid" 
+                buttonStyle={styles.btnstyle1} 
+                titleStyle={styles.buttontextt1}
+                onPress={()=>{ 
+                    this.props.navigation.navigate("ExpenseByCategoryInsights");
+                }}
+            />
+            </View>
+            </View>
+
+            <this.cicInsightFooter 
+            backgroundColor={"#E5FCEA"}
+            insightText={"Your cash balance has increased from last months cash balance."}
+            insightButtonText={"Keep on improving"}
+            />
+        </Fragment>
+        );
+     });
      renderExepensesByCategory = () => {
         const { expenseByCategoryRedux:expenseByCategory } = this.props;
-        const { expenseCurrentMonth } = this.state;
+        const { expenseCurrentMonth,showInsightCart } = this.state;
+        let heightRatio = showInsightCart ? "67%" : "90%";
          return(
             <Fragment>
-            <View style={ styles.categoryCart }>
             {
-                 expenseByCategory.childLoader == false ? <Fragment>
-                  
+                 expenseByCategory.childLoader == false ? 
+
+                 expenseByCategory.expense.length == 0 ? 
+                    <this.noExpenseView height={heightRatio} /> : 
+                 <View style={{ height:heightRatio }}>
                   <View style={ styles.expenseHeader }>
                      <TouchableOpacity onPress={()=>{ this.showExpenseByCategoryTerminology(); }} style={{ flexDirection:"row" }}>
                         <Text style={{ fontSize:12,color:"#1D1E1F" }}>EXPENSE BY CATEGORY</Text>
@@ -180,9 +261,7 @@ class ExpenseByCategory extends Component{
                   </View>
 
                   <View style={ styles.expenseCategoryCart }>
-
                     {
-                        expenseByCategory.expense.length > 0 ?
                         expenseByCategory.expense.map( (singleExpense,index,fullArray) => { 
                             if(index < 6){
                             return <this.renderCategoryWithPercentage key={index}
@@ -194,66 +273,19 @@ class ExpenseByCategory extends Component{
                                 return null;
                             }
                         })
-                        :
-                        <View style={ styles.expenseEmptyCart }>
-                             <Text style={{ color:"#070640" }}>You have not spent anything this month.</Text>
-                         </View>
                     }
-                    
                 </View>
              
-             </Fragment> :  <View style={ styles.expenseLoading }>
-              <ActivityIndicator size="large" color="#070640" />
-            </View>
+             </View> : <this.expenseChildLoader height={heightRatio} />
             }
-      
-
-        <View style = { styles.expenseFooter }>
-            <View style={styles.Toucha}>
-            <Dropdown
-                    disabled={false}
-                    data={Button_Months}
-                    onChangeText={ this.handleExpenseRangeSelection }
-                    value={ this.state.expenseCurrentMonth }
-                    containerStyle={styles.dropdown}
-                    renderAccessory={() => null}
-                    pickerStyle={{backgroundColor:"#E6E6EC",borderRadius:10,}}
-                    onBlur={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
-                    onFocus={()=>{ this.handleArrowStyle(); Keyboard.dismiss(); }}
-                    inputContainerStyle={styles.detailsInputContainer}
-                    dropdownPosition={4.5}
-                    fontSize={11} />
-                    <SimpleLineIcons name={this.state.arrowStyle} color="#030538" style={{marginTop:10, marginRight:20,}}/>
-            </View>
-            <View style={{width:"40%",height:"100%",}}>
-            <Button 
-                title="View Insights" 
-                type="solid" 
-                buttonStyle={styles.btnstyle1} 
-                titleStyle={styles.buttontextt1}
-                onPress={()=>{ 
-                    // Alert.alert("Coming soon",
-                    //     "We are building your personalized Pocket Insights. We will notify you when they are ready.",
-                    //     [ { text: "Okay"  } ],
-                    //     false);
-                    this.props.navigation.navigate("ExpenseByCategoryInsights");
-                }}
-            />
-            </View>
-        </View>
-        </View>
+            <this.expenseFooterRender />
         </Fragment> 
          );
      }
-render(){
-       let { expenseByCategoryRedux:expenseByCategory } = this.props;
+     expenseErrorView = React.memo(({ height })=>{
 
-       
-     return(
-        <View style={ styles.mainContainerStyle }>
-            {
-                expenseByCategory.error == true ?
-                <View style={ styles.expenseByCategoryError }>
+        return(
+            <View style={{ ...styles.expenseByCategoryError,height }}>
                     <View style={ styles.expenseByCategoryErrorChild } >
                         <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
                         <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
@@ -263,16 +295,33 @@ render(){
                             <View style={ styles.expenseByCategoryErrorChild } ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
                         </TouchableOpacity>
                     </View>
-                </View> 
-                :
-                expenseByCategory.loading == true ?
-                <View style={ styles.expenseByCategoryLoading }>
-                    <ActivityIndicator size="large" color="#070640" />
-                </View> 
-                :
-                expenseByCategory.isFetched == true ?
-                this.renderExepensesByCategory() : null
+            </View> 
+        );
+     });
+     parentLoader = React.memo(()=>{
 
+        return(
+            <View style={{ justifyContent:"center",
+                    alignItems:"center",
+                    height:"100%" }}>
+                    <ActivityIndicator size="large" color="#070640" />
+            </View> 
+        );
+     });
+    render(){
+       let { expenseByCategoryRedux:expenseByCategory } = this.props;
+       const { showInsightCart } = this.state;
+       const height = showInsightCart ? 465 : 360;
+       
+     return(
+        <View style={{ ...styles.mainContainerStyle,height  }}>
+            {
+                expenseByCategory.error == true ? 
+                    <this.expenseErrorView height={height}/> :
+                expenseByCategory.loading == true ? 
+                    <this.parentLoader /> :
+                expenseByCategory.isFetched == true ?
+                    this.renderExepensesByCategory() : null
             }
       </View> 
       )
@@ -295,7 +344,10 @@ const styles = StyleSheet.create({
         backgroundColor: "#FFF",
         marginVertical:8,
         width:'95%', 
-        alignSelf:'center'
+        alignSelf:'center',
+        elevation:10,
+        shadowColor:'#000',
+        paddingVertical:15,
       },
       heading: {
         flexDirection: "row",
@@ -369,26 +421,17 @@ const styles = StyleSheet.create({
           elevation:10,
           shadowColor:'#000' 
       },
-      expenseByCategoryErrorChild2: { 
+    expenseByCategoryErrorChild2: { 
           flexDirection:"row",
           justifyContent:"center",
           alignItems:"center",
           marginTop:15 
-        },
-      categoryCart: { 
-        height:360,
-        width:'100%', 
-        backgroundColor:'#FFF', 
-        alignSelf:'center',
-        elevation:10,
-        shadowColor:'#000',
-        paddingVertical:15,paddingHorizontal:13 
     },
     expenseHeader: {
-        height: "17%",
         flexDirection:"row",
         justifyContent:"space-between",
-        backgroundColor:"#FFF"
+        backgroundColor:"#FFF",
+        paddingHorizontal:15
     },
     expenseTotalCurrency:{
         paddingBottom:3,
@@ -400,7 +443,8 @@ const styles = StyleSheet.create({
     expenseTotalMonth: { 
         textAlign:"right",
         color:"#1D1E1F",
-        fontSize:12 
+        fontSize:12,
+        marginTop:10
     },
     expenseCategoryCart: {
         justifyContent:"space-between",
@@ -408,7 +452,9 @@ const styles = StyleSheet.create({
         flexWrap:"wrap",
         paddingTop:25,
         borderWidth:0,borderColor:"red",
-        height: "73%"
+        width:"93%",
+        alignSelf:"center"
+    
     },
     expenseEmptyCart: { 
         width:"100%",
@@ -422,11 +468,11 @@ const styles = StyleSheet.create({
         alignSelf:"center"
     },
     expenseFooter: {
-        height:"10%",
         width:'100%',
         flexDirection:"row",
         justifyContent:"space-between",
-        alignSelf:'center'
+        alignSelf:'center',
+        paddingHorizontal:15
     },
     renderSingleCategory: { 
         borderWidth:0,
@@ -445,5 +491,33 @@ const styles = StyleSheet.create({
         textAlign:"left",
         fontSize:15,
         color:"#151927" 
-    }
+    },
+    insightCartBody: { 
+        borderRadius:6,
+        marginTop:16,
+        backgroundColor: "#FFE8DD",
+        width:"91%",
+        alignSelf:"center",
+        padding:16 
+      },
+      insightCartBodyText: { 
+        fontSize:13, 
+        color:"#1D1E1F",
+        fontWeight:"500" 
+      },
+      insightCartBodyGotoButton: { 
+        flexDirection:"row",
+        alignSelf:"flex-end",
+        marginTop:12 
+      },
+      insightCartBodyGotoButtonText: { 
+        alignSelf:"center",
+        fontSize:13,
+        color:"#1D1E1F",
+        fontWeight:"500" 
+      },
+      insightCartBodyGotoButtonIcon: {
+        marginLeft:3,
+        marginTop: 3
+      }
 })

@@ -29,8 +29,7 @@ import { triggerQbDataCopyDb } from "../../api/api";
       }
     }
     handleQbCopyFunction = async () => {
-      // const qbCopyResponse = await triggerQbDataCopyDb();
-      // console.log("Recieveing Qb Copy Response  ",qbCopyResponse);
+      
     }
     render() {
       return (

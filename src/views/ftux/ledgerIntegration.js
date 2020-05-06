@@ -84,13 +84,13 @@ class LedgerIntegration extends Component {
         [  
           {  
             text: 'Back',  
-            onPress: () => console.log('Cancel Pressed'),  
+            
             style: 'cancel',
               
         },  
             {  
                 text: 'Submit',  
-                onPress: () => console.log('Submit Pressed'),  
+            
                 style: 'submit',
                   
             },  
@@ -102,7 +102,7 @@ handleOtherPress = (param) => {
   if(param != ""){
     this.setState({ isSpinner:true,isDialogVisible:false,isShowPleaseEnter:false },async () => {
       
-        console.log("No Qb Form to be Send ",param);
+        
         const noQbFormResponse = await triggerNoQbForm(param);
         if(noQbFormResponse.result == true){
           this.setState({ isSpinner: false },()=>{
@@ -145,7 +145,7 @@ handleNoQbButton = async () => {
       sage,
       bench,
       wave } = this.state;
-      console.log(xero,"  ",sage," ",bench,"  ",wave);
+      
       let readyParam = '';
       if(xero == true){
         readyParam="Xero";
@@ -156,7 +156,7 @@ handleNoQbButton = async () => {
       }else if(wave == true){
         readyParam = "Wave";
       }
-      console.log("No Qb Form to be Send ",readyParam);
+      
       const noQbFormResponse = await triggerNoQbForm(readyParam);
       if(noQbFormResponse.result == true){
         this.setState({ isSpinner: false },()=>{
@@ -278,7 +278,7 @@ handleNoQbButton = async () => {
                     bench:false,
                     wave:false,
                   }))
-                  console.log("Xero Pressed....")
+                  
                  
                 }}
               >
@@ -310,7 +310,7 @@ handleNoQbButton = async () => {
                     bench:false,
                     wave:false,
                   }))
-                  console.log("Sage Pressed....")
+                  
                   
                 }}
               >
@@ -348,7 +348,7 @@ handleNoQbButton = async () => {
                     bench:!prevState.bench,
                     wave: false,
                   }))
-                  console.log("Bench Pressed....")
+                  
                  
                 }}
               >
@@ -378,7 +378,7 @@ handleNoQbButton = async () => {
                     bench:false,
                     wave: !prevState.wave,
                   }))
-                  console.log("wave Pressed....")
+                  
                   
                 }}
               >
@@ -416,7 +416,7 @@ handleNoQbButton = async () => {
                 <TouchableOpacity
                 
                 onPress={() => {
-                  console.log("Other Pressed.....")
+                  
                   this.setState({ isDialogVisible: true });
                 }}
               >
@@ -457,7 +457,7 @@ handleNoQbButton = async () => {
               } 
             }
             closeDialog={ () => {
-              console.log("Cancle Pressed.....")
+              
               this.setState({ isDialogVisible:false,isShowPleaseEnter:false })
             }}
             disabled={!this.state.otherSoftware}
