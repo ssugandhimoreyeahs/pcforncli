@@ -16,9 +16,16 @@ class HealthScore extends Component {
   }
 
   render() {
+
+    let bankIntegrationStatus = false;
+    const { userData } = this.props;
+    if(userData.isFetched == true){
+      bankIntegrationStatus = userData.userData.bankIntegrationStatus;
+    }
+    console.log("Finalization Testing here - ",bankIntegrationStatus);
     const { isFetched,healthScoreData,loading } = this.props.healthScoreRedux;
     let healthScoreDataOutput = 0;
-    if(isFetched){
+    if(isFetched && bankIntegrationStatus == true){
       healthScoreDataOutput = healthScoreData.HealthScore;
     }
     const healthScore = healthScoreDataOutput;
@@ -74,8 +81,7 @@ class HealthScore extends Component {
             fontWeight={"bold"}
             textAnchor={"middle"}
             fill={"#FFF"}
-          >
-            {`${healthScore}`}
+          >{ `${healthScore}` }
           </Text>
           <Text
             x={200}
@@ -131,7 +137,8 @@ class HealthScore extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    healthScoreRedux: state.healthScoreReducer
+    healthScoreRedux: state.healthScoreReducer,
+    userData: state.userData
   }
 }
 export default connect(mapStateToProps,null)(HealthScore);
