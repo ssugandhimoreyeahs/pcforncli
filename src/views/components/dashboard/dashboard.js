@@ -391,7 +391,7 @@ class Dashboard extends PureComponent {
     await AsyncStorage.setItem("isUserLoggedInStorage", "true");
     setTimeout(()=>{
       this.fetchUser();
-    },90000);
+    },50000);
   };
 
   componentWillUnmount() {
