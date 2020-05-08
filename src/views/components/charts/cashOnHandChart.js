@@ -215,7 +215,7 @@ export default class CashOnHandChart extends PureComponent {
                 }else{
                   return `$${returnValue}M`;
                 }}else{
-                 return y;
+                 return `$${y}`;
                }
              }}/>
            <VictoryAxis
@@ -265,7 +265,7 @@ export default class CashOnHandChart extends PureComponent {
                  let returnValue = parseInt(y/1000000);
                  return `$${returnValue}M`;
                }else{
-                 return y;
+                 return `$${y}`;
                }
              }}
 

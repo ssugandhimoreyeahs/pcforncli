@@ -385,11 +385,13 @@ class Dashboard extends PureComponent {
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
     );
-    await AsyncStorage.setItem("isUserLoggedInStorage", "true");
     if (this.props.navigation.getParam("readyValuePropAfterLogout")) {
       this.props.navigation.getParam("readyValuePropAfterLogout")();
     }
-    this.fetchUser();
+    await AsyncStorage.setItem("isUserLoggedInStorage", "true");
+    setTimeout(()=>{
+      this.fetchUser();
+    },90000);
   };
 
   componentWillUnmount() {

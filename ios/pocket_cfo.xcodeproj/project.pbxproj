@@ -438,9 +438,9 @@
 			baseConfigurationReference = 7A822120AB773F39F5DAA202 /* Pods-pocket_cfo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: MOREYEAHS IT TECHNOLOGIES PRIVATE LIMITED (FS87CRZ2ZU)";
+				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = FS87CRZ2ZU;
 				HEADER_SEARCH_PATHS = (
@@ -497,7 +497,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
 				PRODUCT_NAME = PocketCFO;
-				PROVISIONING_PROFILE_SPECIFIER = "app-store-pocketcfo";
+				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -508,9 +508,9 @@
 			baseConfigurationReference = 64AF052A29D35877DB08B100 /* Pods-pocket_cfo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: MOREYEAHS IT TECHNOLOGIES PRIVATE LIMITED (FS87CRZ2ZU)";
+				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = FS87CRZ2ZU;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -566,7 +566,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
 				PRODUCT_NAME = PocketCFO;
-				PROVISIONING_PROFILE_SPECIFIER = "app-store-pocketcfo";
+				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

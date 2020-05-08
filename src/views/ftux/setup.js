@@ -135,7 +135,7 @@ Text.defaultProps = {
         setTimeout(()=>{
           this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner,
             isQuestionOverlayVisible: !prevState.isQuestionOverlayVisible } })
-        },1000);
+        },2000);
         }else{
           this.props.navigation.navigate("Dashboard");
         }
@@ -164,11 +164,11 @@ Text.defaultProps = {
            this.setState({ isSpinner: false },()=>{
             setTimeout(()=>{
               this.props.navigation.navigate("Dashboard");
-            },150);
+            },200);
            })
           
         })
-      },500);
+      },300);
     });
   };
 

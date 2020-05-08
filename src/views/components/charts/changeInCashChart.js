@@ -168,7 +168,10 @@ class ChangeInCashChart extends Component {
                 return `-$${Math.abs(returnValue)}M`;
               }
             }else{
-              return y;
+              if(y < 0){
+                return `-$${Math.abs(y)}`;
+              }
+              return `$${y}`;
             }
           }}
           
