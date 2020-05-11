@@ -67,6 +67,9 @@ import UncategorizedExpenseByCategory from "./src/views/components/expensebycate
 import SplashScreen from "react-native-splash-screen";
 import ErrorBoundry from "./src/ErrorBoundry";
 
+
+console. disableYellowBox = true;
+
 const HOME = {
   ValueProp: { 
       screen: ValueProp,

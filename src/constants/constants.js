@@ -10,8 +10,8 @@ const NETWORKINSTANCE = {
 const APIENDPOINT = {
   endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
   isQuickBookProduction: true,
-  isPlaidProduction: true,
-  //isPlaidProduction: false
+  //isPlaidProduction: true,
+  isPlaidProduction: false
 };
 
 const USERDATAAPIS = {
