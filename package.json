@@ -21,6 +21,7 @@
     "axios": "^0.19.0",
     "cross-spawn": "^7.0.1",
     "css-loader": "^3.2.0",
+    "exit-on-double-back": "^1.0.1",
     "expo": "^34.0.4",
     "expo-cli": "^3.11.3",
     "expo-constants": "^6.0.0",
