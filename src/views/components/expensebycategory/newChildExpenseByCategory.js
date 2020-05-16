@@ -303,6 +303,10 @@ class ExpenseByCategoryChild extends Component {
             width={deviceWidth - 5}
             height={270}
             domainPadding={20}
+            animate={{
+              duration: 700,
+              onLoad: { duration: 100 },
+            }}
             //style={{ parent: { marginLeft: -20 } }}
           >
             {/* <VictoryAxis 
@@ -336,7 +340,7 @@ class ExpenseByCategoryChild extends Component {
                     }} /> */}
             <VictoryAxis
               dependentAxis
-              offsetX={deviceWidth + 2}
+              offsetX={deviceWidth + 8}
               style={{
                 grid: { stroke: "#EEE", strokeDasharray: "50,0" },
                 axis: { stroke: "#ffffff" },
