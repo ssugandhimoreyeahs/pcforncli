@@ -124,7 +124,7 @@ class Dashboard extends PureComponent {
             this.showBankNotConnectedPopupFlag = true;
             this.setState(
               { showCOHChartLoader: false, healthScoreIndicator: false },
-              () => { }
+              () => {}
             );
           }
           if (userResponse.userData.qbIntegrationStatus == false) {
@@ -190,7 +190,7 @@ class Dashboard extends PureComponent {
                     //this.showBankCredentialChangePopupFlag = true;
                     let isshowQBPopupFlag =
                       userResponse.userData.qbIntegrationStatus == true &&
-                        triggerValidPlaidToken.response.IsQuickbookToken == false
+                      triggerValidPlaidToken.response.IsQuickbookToken == false
                         ? true
                         : false;
                     if (this.onDashBoardFocused) {
@@ -237,7 +237,7 @@ class Dashboard extends PureComponent {
                         if (triggerValidPlaidToken.result == true) {
                           let isShowQBPopup =
                             triggerValidPlaidToken.response.IsQuickbookToken ==
-                              false
+                            false
                               ? true
                               : false;
                           setTimeout(() => {
@@ -471,36 +471,36 @@ class Dashboard extends PureComponent {
               showLoggedOutButton={true}
             />
           ) : (
-              <BottomNavLayout navigation={this.props.navigation}>
-                <HealthScore
+            <BottomNavLayout navigation={this.props.navigation}>
+              <HealthScore
+                navigation={this.props.navigation}
+                reloadPlaid={() => {
+                  this.reloadPlaid();
+                }}
+                reloadQuickbooks={() => {
+                  this.reloadQuickbooks();
+                }}
+              />
+              {bankIntegrationStatus == true ? (
+                <CashOnHand navigation={this.props.navigation} />
+              ) : null}
+              {bankIntegrationStatus == true ? (
+                <ChangeInCash navigation={this.props.navigation} />
+              ) : null}
+              {bankIntegrationStatus == true ? (
+                <ExpenseByCategory navigation={this.props.navigation} />
+              ) : null}
+              {qbIntegrationStatus == true ? (
+                <Sales navigation={this.props.navigation} />
+              ) : null}
+              {qbIntegrationStatus == true ? (
+                <IncomingAR
+                  style={styles.incomingAR}
                   navigation={this.props.navigation}
-                  reloadPlaid={() => {
-                    this.reloadPlaid();
-                  }}
-                  reloadQuickbooks={() => {
-                    this.reloadQuickbooks();
-                  }}
                 />
-                {bankIntegrationStatus == true ? (
-                  <CashOnHand navigation={this.props.navigation} />
-                ) : null}
-                {bankIntegrationStatus == true ? (
-                  <ChangeInCash navigation={this.props.navigation} />
-                ) : null}
-                {bankIntegrationStatus == true ? (
-                  <ExpenseByCategory navigation={this.props.navigation} />
-                ) : null}
-                {qbIntegrationStatus == true ? (
-                  <Sales navigation={this.props.navigation} />
-                ) : null}
-                {qbIntegrationStatus == true ? (
-                  <IncomingAR
-                    style={styles.incomingAR}
-                    navigation={this.props.navigation}
-                  />
-                ) : null}
-              </BottomNavLayout>
-            )
+              ) : null}
+            </BottomNavLayout>
+          )
         ) : null}
       </React.Fragment>
     );
