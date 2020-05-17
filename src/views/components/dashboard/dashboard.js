@@ -1,5 +1,7 @@
 import React, { Component, useContext, PureComponent } from "react";
 import { Alert, BackHandler } from "react-native";
+import { Observable, interval, timer } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { NavigationEvents } from "react-navigation";
 import { StyleSheet } from "react-native";
 import IncomingAR from "../charts/incomingAR";
@@ -15,6 +17,7 @@ import {
   userLoginCounter,
   validatePlaidTokenPromise,
   getUserPromise,
+  getUser,
 } from "../../../api/api";
 
 import Spinner from "react-native-loading-spinner-overlay";
@@ -239,149 +242,152 @@ class Dashboard extends PureComponent {
       },
     ]);
   };
-  fetchUser = () => {
+  fetchUser = (userResponse) => {
     this.resetFlags();
     let isValidTokenApiCalled = false;
+    if (userResponse.result == true) {
+      this.props.updateUserReduxTree(userResponse.userData);
+      //userResponse.userData.bankIntegrationStatus = false;
+      if (userResponse.userData.bankIntegrationStatus == false) {
+        this.showBankNotConnectedPopupFlag = true;
+      }
 
-    getUserPromise()
-      .then((userResponse) => {
-        console.log("Dashboard user - ", userResponse);
+      if (userResponse.userData.bankIntegrationStatus == true) {
+        this.showBankNotConnectedPopupFlag = false;
 
-        if (userResponse.result == true) {
-          this.props.updateUserReduxTree(userResponse.userData);
-          //userResponse.userData.bankIntegrationStatus = false;
-          if (userResponse.userData.bankIntegrationStatus == false) {
-            this.showBankNotConnectedPopupFlag = true;
-          }
-
-          if (userResponse.userData.bankIntegrationStatus == true) {
-            this.showBankNotConnectedPopupFlag = false;
-
-            this.props.fetchPlaidCategoryDispatch();
-            this.props.outOfCashDateAsyncCreator();
-            this.props.fetchCashOnHand(3, true);
-            this.props.fetchCashInChange(3);
-            this.props.fetchExpenseByCategory(3);
-            this.props.fetchMainExepenseByCategory(0);
-            // this.props.fetchInsights();
-            this.props.healthScoreAsyncCreator(
-              userResponse.userData.qbIntegrationStatus
-            );
-            isValidTokenApiCalled = true;
-            validatePlaidTokenPromise()
-              .then((triggerValidPlaidToken) => {
-                if (triggerValidPlaidToken.result == true) {
-                  if (
-                    triggerValidPlaidToken.response.isValidPlaidToken == false
-                  ) {
-                    //this.showBankCredentialChangePopupFlag = true;
-                    let isshowQBPopupFlag =
-                      userResponse.userData.qbIntegrationStatus == true &&
-                      triggerValidPlaidToken.response.IsQuickbookToken == false
-                        ? true
-                        : false;
-                    if (this.onDashBoardFocused) {
-                      this.showBankCredentialChangePopup(isshowQBPopupFlag);
-                    }
-                  } else {
-                    if (
-                      userResponse.userData.qbIntegrationStatus == true &&
-                      triggerValidPlaidToken.response.IsQuickbookToken == false
-                    ) {
-                      //this.showQuickBooksPopupFlag = true;
-                      if (this.onDashBoardFocused) {
-                        this.showQBPopup();
-                      }
-                    }
+        this.props.fetchPlaidCategoryDispatch();
+        this.props.outOfCashDateAsyncCreator();
+        this.props.fetchCashOnHand(3, true);
+        this.props.fetchCashInChange(3);
+        this.props.fetchExpenseByCategory(3);
+        this.props.fetchMainExepenseByCategory(0);
+        // this.props.fetchInsights();
+        this.props.healthScoreAsyncCreator(
+          userResponse.userData.qbIntegrationStatus
+        );
+        isValidTokenApiCalled = true;
+        validatePlaidTokenPromise()
+          .then((triggerValidPlaidToken) => {
+            if (triggerValidPlaidToken.result == true) {
+              if (triggerValidPlaidToken.response.isValidPlaidToken == false) {
+                //this.showBankCredentialChangePopupFlag = true;
+                let isshowQBPopupFlag =
+                  userResponse.userData.qbIntegrationStatus == true &&
+                  triggerValidPlaidToken.response.IsQuickbookToken == false
+                    ? true
+                    : false;
+                if (this.onDashBoardFocused) {
+                  this.showBankCredentialChangePopup(isshowQBPopupFlag);
+                }
+              } else {
+                if (
+                  userResponse.userData.qbIntegrationStatus == true &&
+                  triggerValidPlaidToken.response.IsQuickbookToken == false
+                ) {
+                  //this.showQuickBooksPopupFlag = true;
+                  if (this.onDashBoardFocused) {
+                    this.showQBPopup();
                   }
                 }
-              })
-              .catch((error) => {
-                console.log("Validate Plaid Token Promise error 1 - ", error);
-              });
-          }
-          if (userResponse.userData.qbIntegrationStatus == true) {
-            this.props.fetchSales();
-            this.props.fetchIncommingAr();
-          }
-
-          this.setState(
-            {
-              userData: userResponse.userData,
-              isSpinner: false,
-              tryAgainScreen: false,
-              isBodyLoaded: true,
-            },
-            () => {
-              if (userResponse.userData.bankIntegrationStatus == true) {
-                // this.props.fetchPlaidCategoryDispatch();
               }
-              if (this.state.isCountApiTriggered == false) {
-                if (userResponse.userData.bankIntegrationStatus == false) {
-                  if (userResponse.userData.qbIntegrationStatus == true) {
-                    validatePlaidTokenPromise()
-                      .then((triggerValidPlaidToken) => {
-                        if (triggerValidPlaidToken.result == true) {
-                          let isShowQBPopup =
-                            triggerValidPlaidToken.response.IsQuickbookToken ==
-                            false
-                              ? true
-                              : false;
-                          setTimeout(() => {
-                            if (this.onDashBoardFocused) {
-                              this.showConnectBankPopup(isShowQBPopup);
-                            }
-                          }, 300);
-                        } else {
-                          setTimeout(() => {
-                            if (this.onDashBoardFocused) {
-                              this.showConnectBankPopup(false);
-                            }
-                          }, 300);
+            }
+          })
+          .catch((error) => {
+            console.log("Validate Plaid Token Promise error 1 - ", error);
+          });
+      }
+      if (userResponse.userData.qbIntegrationStatus == true) {
+        this.props.fetchSales();
+        this.props.fetchIncommingAr();
+      }
+
+      this.setState(
+        {
+          userData: userResponse.userData,
+          isSpinner: false,
+          tryAgainScreen: false,
+          isBodyLoaded: true,
+        },
+        () => {
+          if (userResponse.userData.bankIntegrationStatus == true) {
+            // this.props.fetchPlaidCategoryDispatch();
+          }
+          if (this.state.isCountApiTriggered == false) {
+            if (userResponse.userData.bankIntegrationStatus == false) {
+              if (userResponse.userData.qbIntegrationStatus == true) {
+                validatePlaidTokenPromise()
+                  .then((triggerValidPlaidToken) => {
+                    if (triggerValidPlaidToken.result == true) {
+                      let isShowQBPopup =
+                        triggerValidPlaidToken.response.IsQuickbookToken ==
+                        false
+                          ? true
+                          : false;
+                      setTimeout(() => {
+                        if (this.onDashBoardFocused) {
+                          this.showConnectBankPopup(isShowQBPopup);
                         }
-                      })
-                      .catch((error) => {
-                        setTimeout(() => {
-                          if (this.onDashBoardFocused) {
-                            this.showConnectBankPopup(false);
-                          }
-                        }, 300);
-                      });
-                  } else {
+                      }, 300);
+                    } else {
+                      setTimeout(() => {
+                        if (this.onDashBoardFocused) {
+                          this.showConnectBankPopup(false);
+                        }
+                      }, 300);
+                    }
+                  })
+                  .catch((error) => {
                     setTimeout(() => {
                       if (this.onDashBoardFocused) {
                         this.showConnectBankPopup(false);
                       }
                     }, 300);
-                  }
-                }
-
-                this.setState({ isCountApiTriggered: true });
+                  });
+              } else {
                 setTimeout(() => {
-                  userLoginCounter();
-                }, 6000);
+                  if (this.onDashBoardFocused) {
+                    this.showConnectBankPopup(false);
+                  }
+                }, 300);
               }
             }
-          );
-        } else {
-          this.setState({
-            isSpinner: false,
-            tryAgainScreen: true,
-            isBodyLoaded: true,
-          });
+
+            this.setState({ isCountApiTriggered: true });
+            setTimeout(() => {
+              userLoginCounter();
+            }, 6000);
+          }
         }
-      })
-      .catch((error) => {
+      );
+    } else {
+      this.setState({
+        isSpinner: false,
+        tryAgainScreen: true,
+        isBodyLoaded: true,
+      });
+    }
+  };
+  myDelayJob = async () => {
+    try {
+      const userResponse = await getUser();
+      if(userResponse.result === true){
+        console.log("user response recieved - ",userResponse);
+        this.fetchUser(userResponse);
+      }else{
         this.setState({
           isSpinner: false,
           tryAgainScreen: true,
           isBodyLoaded: true,
         });
+      }
+    } catch (error) {
+      this.setState({
+        isSpinner: false,
+        tryAgainScreen: true,
+        isBodyLoaded: true,
       });
+    }
   };
-  myDelayJob = async () => {
-
-  }
   componentDidMount = async () => {
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
