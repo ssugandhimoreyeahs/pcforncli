@@ -57,7 +57,6 @@ class Dashboard extends PureComponent {
 
     this.popupInterval = null;
   }
-
   resetFlags = () => {
     this.showBankCredentialChangePopupFlag = false;
     this.showBankNotConnectedPopupFlag = false;
@@ -151,6 +150,94 @@ class Dashboard extends PureComponent {
           isBodyLoaded: true,
         });
       });
+  };
+  showQBPopup = () => {
+    Alert.alert(
+      QUICKBOOKS_ERROR.title,
+      QUICKBOOKS_ERROR.message,
+      [
+        { text: QUICKBOOKS_ERROR.button1 },
+        {
+          text: QUICKBOOKS_ERROR.button2,
+          onPress: () => {
+            this.props.navigation.navigate("Integration", {
+              reloadPlaid: () => {
+                this.reloadPlaid();
+              },
+              reloadQuickbooks: () => {
+                this.reloadQuickbooks();
+              },
+            });
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+  showBankCredentialChangePopup = (isShowQBPopup = false) => {
+    Alert.alert(
+      BANK_CREDENTIALS_CHANGE.title,
+      BANK_CREDENTIALS_CHANGE.message,
+      [
+        {
+          text: BANK_CREDENTIALS_CHANGE.button1,
+          onPress: () => {
+            if (isShowQBPopup) {
+              setTimeout(() => {
+                this.showQBPopup();
+              }, 100);
+            }
+          },
+        },
+        {
+          text: BANK_CREDENTIALS_CHANGE.button2,
+          onPress: () => {
+            if (isShowQBPopup) {
+              this.showQuickBooksPopupFlag = true;
+            }
+            this.props.navigation.navigate("Integration", {
+              reloadPlaid: () => {
+                this.reloadPlaid();
+              },
+              reloadQuickbooks: () => {
+                this.reloadQuickbooks();
+              },
+            });
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+  showConnectBankPopup = (isShowQBPopup = false) => {
+    Alert.alert(BANK_CONNECTION.title, BANK_CONNECTION.message, [
+      {
+        text: BANK_CONNECTION.button1,
+        onPress: () => {
+          if (isShowQBPopup) {
+            setTimeout(() => {
+              this.showQBPopup();
+            }, 100);
+          }
+        },
+      },
+      {
+        text: BANK_CONNECTION.button2,
+        onPress: () => {
+          if (isShowQBPopup) {
+            this.showQuickBooksPopupFlag = true;
+          }
+          this.props.navigation.navigate("Integration", {
+            reloadPlaid: () => {
+              this.reloadPlaid();
+            },
+            reloadQuickbooks: () => {
+              this.reloadQuickbooks();
+            },
+          });
+        },
+      },
+    ]);
   };
   fetchUser = () => {
     this.resetFlags();
@@ -292,95 +379,9 @@ class Dashboard extends PureComponent {
         });
       });
   };
+  myDelayJob = async () => {
 
-  showQBPopup = () => {
-    Alert.alert(
-      QUICKBOOKS_ERROR.title,
-      QUICKBOOKS_ERROR.message,
-      [
-        { text: QUICKBOOKS_ERROR.button1 },
-        {
-          text: QUICKBOOKS_ERROR.button2,
-          onPress: () => {
-            this.props.navigation.navigate("Integration", {
-              reloadPlaid: () => {
-                this.reloadPlaid();
-              },
-              reloadQuickbooks: () => {
-                this.reloadQuickbooks();
-              },
-            });
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-  showBankCredentialChangePopup = (isShowQBPopup = false) => {
-    Alert.alert(
-      BANK_CREDENTIALS_CHANGE.title,
-      BANK_CREDENTIALS_CHANGE.message,
-      [
-        {
-          text: BANK_CREDENTIALS_CHANGE.button1,
-          onPress: () => {
-            if (isShowQBPopup) {
-              setTimeout(() => {
-                this.showQBPopup();
-              }, 100);
-            }
-          },
-        },
-        {
-          text: BANK_CREDENTIALS_CHANGE.button2,
-          onPress: () => {
-            if (isShowQBPopup) {
-              this.showQuickBooksPopupFlag = true;
-            }
-            this.props.navigation.navigate("Integration", {
-              reloadPlaid: () => {
-                this.reloadPlaid();
-              },
-              reloadQuickbooks: () => {
-                this.reloadQuickbooks();
-              },
-            });
-          },
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-  showConnectBankPopup = (isShowQBPopup = false) => {
-    Alert.alert(BANK_CONNECTION.title, BANK_CONNECTION.message, [
-      {
-        text: BANK_CONNECTION.button1,
-        onPress: () => {
-          if (isShowQBPopup) {
-            setTimeout(() => {
-              this.showQBPopup();
-            }, 100);
-          }
-        },
-      },
-      {
-        text: BANK_CONNECTION.button2,
-        onPress: () => {
-          if (isShowQBPopup) {
-            this.showQuickBooksPopupFlag = true;
-          }
-          this.props.navigation.navigate("Integration", {
-            reloadPlaid: () => {
-              this.reloadPlaid();
-            },
-            reloadQuickbooks: () => {
-              this.reloadQuickbooks();
-            },
-          });
-        },
-      },
-    ]);
-  };
+  }
   componentDidMount = async () => {
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
@@ -389,7 +390,7 @@ class Dashboard extends PureComponent {
       this.props.navigation.getParam("readyValuePropAfterLogout")();
     }
     await AsyncStorage.setItem("isUserLoggedInStorage", "true");
-    this.fetchUser();
+    this.myDelayJob();
     // setTimeout(() => {
     //   //this.fetchUser();
     // }, 50000);
