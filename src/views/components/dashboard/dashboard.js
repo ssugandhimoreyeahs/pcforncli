@@ -1,5 +1,5 @@
 import React, { Component, useContext, PureComponent } from "react";
-import { Alert, BackHandler } from "react-native";
+import { Alert, BackHandler, View, Text } from "react-native";
 import { Observable, interval, timer } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { NavigationEvents } from "react-navigation";
@@ -56,6 +56,7 @@ class Dashboard extends PureComponent {
       isSpinner: true,
       tryAgainScreen: false,
       isCountApiTriggered: false,
+      isStuffCompleted: false,
     };
 
     this.popupInterval = null;
@@ -367,13 +368,54 @@ class Dashboard extends PureComponent {
       });
     }
   };
-  myDelayJob = async () => {
+  cronJob = (userResponse) => {};
+  myDelayJob = async (fromJob = false) => {
     try {
-      const userResponse = await getUser();
-      if(userResponse.result === true){
-        console.log("user response recieved - ",userResponse);
-        this.fetchUser(userResponse);
-      }else{
+      let userResponse = await getUser();
+      if (fromJob) {
+        userResponse.userData.isStuffCompleted = true;
+      }
+      if (userResponse.result === true) {
+        if (
+          userResponse.userData.bankIntegrationStatus === true &&
+          userResponse.userData.isStuffCompleted === true
+        ) {
+          //case 1 where all thing are working fine user connected to the bank and in the backend all the data and balances had been loaded
+          if (fromJob) {
+            this.setState(
+              { isBodyLoaded: false, isSpinner: true, isStuffCompleted: true },
+              () => {
+                setTimeout(() => {
+                  this.fetchUser(userResponse);
+                }, 2000);
+              }
+            );
+          } else {
+            this.setState({ isStuffCompleted: true }, () => {
+              this.fetchUser(userResponse);
+            });
+          }
+        } else if (
+          userResponse.userData.bankIntegrationStatus === true &&
+          userResponse.userData.isStuffCompleted === false
+        ) {
+          //case 2 where bank integrated but the backend is not ready for the data
+
+          this.setState({
+            userData: {},
+            isSpinner: false,
+            tryAgainScreen: false,
+            isBodyLoaded: true,
+            isStuffCompleted: false,
+          });
+
+          //case ends here
+        } else if (userResponse.userData.bankIntegrationStatus === false) {
+          this.setState({ isStuffCompleted: true }, () => {
+            this.fetchUser(userResponse);
+          });
+        }
+      } else {
         this.setState({
           isSpinner: false,
           tryAgainScreen: true,
@@ -397,9 +439,23 @@ class Dashboard extends PureComponent {
     }
     await AsyncStorage.setItem("isUserLoggedInStorage", "true");
     this.myDelayJob();
-    // setTimeout(() => {
-    //   //this.fetchUser();
-    // }, 50000);
+    const timer$ = timer(600000);
+    const jobObservable = new Observable((obs) => {
+      const jobInterval = interval(10000)
+        .pipe(takeUntil(timer$))
+        .subscribe((intervalObs) => {
+          if (this.state.isStuffCompleted === true) {
+            jobInterval.unsubscribe();
+            obs.complete();
+            return;
+          }
+          this.myDelayJob(true);
+          obs.next("Job Run");
+        });
+    });
+    jobObservable.subscribe((next) => {
+      console.log(next);
+    });
   };
 
   componentWillUnmount() {
@@ -477,6 +533,16 @@ class Dashboard extends PureComponent {
               handleButton={this.handleTryAgainButton}
               showLoggedOutButton={true}
             />
+          ) : this.state.isStuffCompleted == false ? (
+            <View
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text>Stuff Is not completed</Text>
+            </View>
           ) : (
             <BottomNavLayout navigation={this.props.navigation}>
               <HealthScore
