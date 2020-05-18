@@ -423,7 +423,7 @@ export default class App extends Component {
   componentDidMount = () => {
     setTimeout(() => {
       SplashScreen.hide();
-    }, 600);
+    }, 500);
   };
 
   render() {
