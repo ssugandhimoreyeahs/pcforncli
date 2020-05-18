@@ -11,6 +11,7 @@
 		13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB11A68108700A75B9A /* LaunchScreen.xib */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		184FB4EF2472830000297B81 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 184FB4EE2472830000297B81 /* File.swift */; };
 		18BFDB04242D515A007938F6 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18BFDB02242D515A007938F6 /* GoogleService-Info.plist */; };
 		A58B71E6530E10174DB6A3C7 /* libPods-pocket_cfo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C2E92ED5789FBCB1F7D41458 /* libPods-pocket_cfo.a */; };
 /* End PBXBuildFile section */
@@ -37,6 +38,8 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = pocket_cfo/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = pocket_cfo/main.m; sourceTree = "<group>"; };
 		183BDAAF242894C000877DFE /* SplashScreen.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SplashScreen.xcodeproj; path = "../node_modules/react-native-splash-screen/ios/SplashScreen.xcodeproj"; sourceTree = "<group>"; };
+		184FB4ED247282FF00297B81 /* pocket_cfo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "pocket_cfo-Bridging-Header.h"; sourceTree = "<group>"; };
+		184FB4EE2472830000297B81 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		18BFDB02242D515A007938F6 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "pocket_cfo/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		64AF052A29D35877DB08B100 /* Pods-pocket_cfo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pocket_cfo.release.xcconfig"; path = "Target Support Files/Pods-pocket_cfo/Pods-pocket_cfo.release.xcconfig"; sourceTree = "<group>"; };
 		7A822120AB773F39F5DAA202 /* Pods-pocket_cfo.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-pocket_cfo.debug.xcconfig"; path = "Target Support Files/Pods-pocket_cfo/Pods-pocket_cfo.debug.xcconfig"; sourceTree = "<group>"; };
@@ -126,6 +129,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				184FB4EE2472830000297B81 /* File.swift */,
 				183BDAAF242894C000877DFE /* SplashScreen.xcodeproj */,
 				13B07FAE1A68108700A75B9A /* pocket_cfo */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -133,6 +137,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				00C8EF92EC9CE57B304FB71D /* Pods */,
+				184FB4ED247282FF00297B81 /* pocket_cfo-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -197,6 +202,7 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = FS87CRZ2ZU;
+						LastSwiftMigration = 1140;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -414,6 +420,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				184FB4EF2472830000297B81 /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -438,6 +445,7 @@
 			baseConfigurationReference = 7A822120AB773F39F5DAA202 /* Pods-pocket_cfo.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
@@ -498,6 +506,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
 				PRODUCT_NAME = PocketCFOLoader;
 				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
+				SWIFT_OBJC_BRIDGING_HEADER = "pocket_cfo-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -508,6 +519,7 @@
 			baseConfigurationReference = 64AF052A29D35877DB08B100 /* Pods-pocket_cfo.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 2;
@@ -567,6 +579,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
 				PRODUCT_NAME = PocketCFOLoader;
 				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
+				SWIFT_OBJC_BRIDGING_HEADER = "pocket_cfo-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

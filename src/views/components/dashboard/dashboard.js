@@ -1,5 +1,11 @@
-import React, { Component, useContext, PureComponent } from "react";
-import { Alert, BackHandler, View, Text } from "react-native";
+import React, { PureComponent } from "react";
+import {
+  Alert,
+  BackHandler,
+  View,
+  TouchableWithoutFeedback,
+  Text,
+} from "react-native";
 import { Observable, interval, timer } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { NavigationEvents } from "react-navigation";
@@ -22,9 +28,7 @@ import {
 
 import Spinner from "react-native-loading-spinner-overlay";
 import TryAgainScreen from "../../ftux/somethingWrong";
-import { logger } from "../../../api/logger";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
-
 import ExpenseByCategory from "./expenseByCategory";
 import { fetchExpensesAsyncCreator } from "../../../reducers/expensecategory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
@@ -42,7 +46,8 @@ import {
   QUICKBOOKS_ERROR,
   EXIT_APP,
 } from "../../../api/message";
-
+import LottieView from "lottie-react-native";
+import SpinnerLottie from "@assets/lottie/spinner.json";
 class Dashboard extends PureComponent {
   constructor(props) {
     super(props);
@@ -368,26 +373,29 @@ class Dashboard extends PureComponent {
       });
     }
   };
-  cronJob = (userResponse) => {};
-  myDelayJob = async (fromJob = false) => {
+
+  myCronJob = async (fromJob = false) => {
     try {
       let userResponse = await getUser();
-      if (fromJob) {
-        userResponse.userData.isStuffCompleted = true;
-      }
+      // if (fromJob) {
+      //   userResponse.userData.isStuffCompleted = true;
+      // }
       if (userResponse.result === true) {
         if (
           userResponse.userData.bankIntegrationStatus === true &&
           userResponse.userData.isStuffCompleted === true
         ) {
           //case 1 where all thing are working fine user connected to the bank and in the backend all the data and balances had been loaded
+          if (this.jobInterval.unsubscribe) {
+            this.jobInterval.unsubscribe();
+          }
           if (fromJob) {
             this.setState(
               { isBodyLoaded: false, isSpinner: true, isStuffCompleted: true },
               () => {
                 setTimeout(() => {
                   this.fetchUser(userResponse);
-                }, 2000);
+                }, 2500);
               }
             );
           } else {
@@ -411,24 +419,84 @@ class Dashboard extends PureComponent {
 
           //case ends here
         } else if (userResponse.userData.bankIntegrationStatus === false) {
+          if (this.jobInterval.unsubscribe) {
+            //this.jobObservable.unsubscribe();
+            this.jobInterval.unsubscribe();
+          }
           this.setState({ isStuffCompleted: true }, () => {
             this.fetchUser(userResponse);
           });
         }
       } else {
+        if (this.jobInterval.unsubscribe) {
+          //this.jobObservable.unsubscribe();
+          this.jobInterval.unsubscribe();
+        }
         this.setState({
           isSpinner: false,
           tryAgainScreen: true,
           isBodyLoaded: true,
+          isStuffCompleted: true,
         });
       }
     } catch (error) {
+      if (this.jobInterval.unsubscribe) {
+        //this.jobObservable.unsubscribe();
+        this.jobInterval.unsubscribe();
+      }
       this.setState({
         isSpinner: false,
         tryAgainScreen: true,
         isBodyLoaded: true,
+        isStuffCompleted: true,
       });
     }
+  };
+  registerMyCronJob = () => {
+    const JOB_TIMER = 300000;
+    let currentDT = new Date();
+    let tillDT = new Date();
+    tillDT.setMilliseconds(currentDT.getMilliseconds() + JOB_TIMER);
+    const timer$ = timer(JOB_TIMER);
+    this.jobObservable = new Observable((obs) => {
+      this.jobInterval = interval(20000)
+        .pipe(takeUntil(timer$))
+        .subscribe(
+          (intervalObs) => {
+            if (this.state.isStuffCompleted === true) {
+              this.jobInterval.unsubscribe();
+              obs.complete();
+              return;
+            } else {
+              this.myCronJob(true);
+              obs.next(`Request Number - ${intervalObs + 1} - 
+            Job Registered At = ${currentDT.toLocaleString()} 
+            Job Run Till = ${tillDT.toLocaleString()}
+            Total Time Elapsed = ${(tillDT - new Date()) / 1000 / 60} Min 
+          `);
+            }
+          },
+          (error) => {
+            console.log("Error for the Job Interval");
+          },
+          () => {
+            jobInterval.unsubscribe();
+            obs.complete();
+            console.log("Interval Job Completed");
+          }
+        );
+    });
+    this.jobObservable.subscribe(
+      (next) => {
+        console.log(next);
+      },
+      (error) => {
+        console.log("job error");
+      },
+      () => {
+        console.log("Observable Job Completed");
+      }
+    );
   };
   componentDidMount = async () => {
     BackHandler.addEventListener("hardwareBackPress", () =>
@@ -438,24 +506,8 @@ class Dashboard extends PureComponent {
       this.props.navigation.getParam("readyValuePropAfterLogout")();
     }
     await AsyncStorage.setItem("isUserLoggedInStorage", "true");
-    this.myDelayJob();
-    const timer$ = timer(600000);
-    const jobObservable = new Observable((obs) => {
-      const jobInterval = interval(10000)
-        .pipe(takeUntil(timer$))
-        .subscribe((intervalObs) => {
-          if (this.state.isStuffCompleted === true) {
-            jobInterval.unsubscribe();
-            obs.complete();
-            return;
-          }
-          this.myDelayJob(true);
-          obs.next("Job Run");
-        });
-    });
-    jobObservable.subscribe((next) => {
-      console.log(next);
-    });
+    this.myCronJob();
+    this.registerMyCronJob();
   };
 
   componentWillUnmount() {
@@ -509,6 +561,29 @@ class Dashboard extends PureComponent {
       }, 500);
     }
   };
+  jobView = React.memo(() => {
+    return (
+      <View style={styles.jobViewCart}>
+        <TouchableWithoutFeedback>
+          <LottieView
+            source={SpinnerLottie}
+            autoPlay
+            loop
+            style={{ width: 100, height: 100 }}
+          />
+        </TouchableWithoutFeedback>
+        <Text
+          style={{
+            lineHeight: 25,
+            textAlign: "center",
+            marginTop: 25,
+            fontSize: 15,
+            fontWeight: "500",
+          }}
+        >{`Sit Tight\nWe're Building Your Dashboard`}</Text>
+      </View>
+    );
+  });
   render() {
     const { isSpinner } = this.state;
     const { bankIntegrationStatus, qbIntegrationStatus } = this.state.userData;
@@ -534,15 +609,7 @@ class Dashboard extends PureComponent {
               showLoggedOutButton={true}
             />
           ) : this.state.isStuffCompleted == false ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text>Stuff Is not completed</Text>
-            </View>
+            <this.jobView />
           ) : (
             <BottomNavLayout navigation={this.props.navigation}>
               <HealthScore
@@ -632,6 +699,11 @@ export default connect(
 )(Dashboard);
 
 const styles = StyleSheet.create({
+  jobViewCart: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   groundUp: {
     flex: 1,
     flexDirection: "column",
