@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { createAppContainer, } from "react-navigation";
-import {createStackNavigator} from 'react-navigation-stack';
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
 import { Provider } from "react-redux";
 import Store from "./src/reducers/store";
-
-//Home Screen 
+import Root from "@components/Root";
+//Home Screen
 import Legal from "./src/views/legal/legal";
 import Login from "./src/views/components/login/login";
 import ValueProp from "./src/views/components/value-prop/value-prop";
@@ -67,340 +67,341 @@ import UncategorizedExpenseByCategory from "./src/views/components/expensebycate
 import SplashScreen from "react-native-splash-screen";
 import ErrorBoundry from "./src/ErrorBoundry";
 
+console.disableYellowBox = true;
+
 const HOME = {
-  ValueProp: { 
-      screen: ValueProp,
-      navigationOptions: {
-       header: null,
-       gesturesEnabled:false
-      }
-    },
-    Login: { 
-      screen: Login,
-      navigationOptions: {
-        header: null,
-        gesturesEnabled:false
-      },
-    },
-    Legal: { 
-      screen: Legal,
-      navigationOptions: {
-        header: null,
-        gesturesEnabled:false,
-      },
-    }
-}
-
-const REGISTER = {
-  Name: { 
-    screen: Name,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  Title: { 
-    screen: Title ,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  Email: { 
-    screen: Email ,
-    navigationOptions:{
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  Password: { 
-    screen: Password,
-    navigationOptions:{
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  Setup: { 
-    screen: Setup,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  BusinessProfile: { 
-    screen: BusinessProfile,
-    navigationOptions:{
-      header: null,
-      gesturesEnabled:false,
-    }
-  },
-  IntegrationLogin: { 
-    screen: IntegrationLogin,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  BankIntegration: { 
-    screen: BankIntegration, 
-    navigationOptions: {
-    header: null,
-    gesturesEnabled:false,
-    }
-  },
-  LedgerIntegration: { 
-    screen: LedgerIntegration,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  AccountConnected: { 
-    screen: AccountConnected,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-  }
-  },
-  OopsSorry: { 
-    screen: OopsSorry,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-  }
-  },
-  SomethingWrong: { 
-    screen: SomethingWrong,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-  }
-  },
-  TimeOutScreen:{ 
-    screen:TimeOut,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-  }
-  },
-  QuickbookIntegration:{
-    screen: QuickbookIntegration,
-    navigationOptions: {
-      header: null,
-      gesturesEnabled:false
-  },
-},
-QuickbookConnected:{
-  screen: QuickbookConnected,
-  navigationOptions: {
-    header: null,
-    gesturesEnabled:false
-},
-},
-} 
-
-const DASHBOARD = {
-  Dashboard: { 
-    screen: Dashboard ,
+  ValueProp: {
+    screen: ValueProp,
     navigationOptions: {
       header: null,
       gesturesEnabled: false,
-    }
+    },
+  },
+  Login: {
+    screen: Login,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  Legal: {
+    screen: Legal,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+};
+
+const REGISTER = {
+  Name: {
+    screen: Name,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  Title: {
+    screen: Title,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  Email: {
+    screen: Email,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  Password: {
+    screen: Password,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  Setup: {
+    screen: Setup,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  BusinessProfile: {
+    screen: BusinessProfile,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  IntegrationLogin: {
+    screen: IntegrationLogin,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  BankIntegration: {
+    screen: BankIntegration,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  LedgerIntegration: {
+    screen: LedgerIntegration,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  AccountConnected: {
+    screen: AccountConnected,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  OopsSorry: {
+    screen: OopsSorry,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  SomethingWrong: {
+    screen: SomethingWrong,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  TimeOutScreen: {
+    screen: TimeOut,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  QuickbookIntegration: {
+    screen: QuickbookIntegration,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  QuickbookConnected: {
+    screen: QuickbookConnected,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+};
+
+const DASHBOARD = {
+  Dashboard: {
+    screen: Dashboard,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
   },
   Forecasting: {
     screen: Forecasting,
     navigationOptions: {
       header: null,
       gesturesEnabled: false,
-    }
+    },
   },
-  Feedback: { 
+  Feedback: {
     screen: Feedback,
     navigationOptions: {
       header: null,
       gesturesEnabled: false,
-    }
+    },
   },
-  Contact: { 
+  Contact: {
     screen: Contact,
-    navigationOptions:({navigation})=>{
-      return{
-      header: null,
-      gesturesEnabled:false,
-      }
-  }
+    navigationOptions: ({ navigation }) => {
+      return {
+        header: null,
+        gesturesEnabled: false,
+      };
+    },
   },
-  Checking:{ 
-    screen:Checking,
+  Checking: {
+    screen: Checking,
     navigationOptions: {
       header: null,
-      gesturesEnabled:false
-  }
+      gesturesEnabled: false,
+    },
   },
-}
+};
 
 const CHARTS = {
-  HealthScore: { 
+  HealthScore: {
     screen: HealthScore,
     navigationOptions: {
       header: null,
-      gesturesEnabled:false
-    }
+      gesturesEnabled: false,
+    },
   },
-  CashOnHand: { 
-    screen: CashOnHand 
-  }
-}
+  CashOnHand: {
+    screen: CashOnHand,
+  },
+};
 
 const PROFILE = {
-  Businesspro: { 
+  Businesspro: {
     screen: Businesspro,
-    navigationOptions:{
-      header:null,
-      gesturesEnabled:false,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
   },
-  },
-  BusinessproEdit: { 
+  BusinessproEdit: {
     screen: BusinessproEdit,
-    navigationOptions:{
-      header:null,
-      gesturesEnabled:false
-    }
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
   },
-  Setting:{
+  Setting: {
     screen: Setting,
-    navigationOptions:{
-      header:null,
-      gesturesEnabled:false,
-  }
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
   },
-  SettingEdit: { 
+  SettingEdit: {
     screen: SettingEdit,
-    navigationOptions:{
-      header:null,
-      gesturesEnabled:false,
-  }
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
   },
-  Integration : { 
+  Integration: {
     screen: InnerIntegrations,
-    navigationOptions:{
-      header:null,
-      gesturesEnabled:false
-    }
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
   },
-  FeedbackSubmission:{ 
+  FeedbackSubmission: {
     screen: FeedbackSubmission,
     navigationOptions: {
       header: null,
-      gesturesEnabled:false
-  }
+      gesturesEnabled: false,
+    },
   },
-  ForgetPassword:{
+  ForgetPassword: {
     screen: ForgetPassword,
-    navigationOptions:{
-      header: null,
-      gesturesEnabled:false
-    }
-  },
-  ChangePassword:{ 
-    screen: ChangePassword,
-    navigationOptions:{
-      header:null,
-      gesturesEnabled:false,
-  }, 
-  },
-  CategoryScreen:{
-    screen : CategoryScreen,
     navigationOptions: {
       header: null,
-      gesturesEnabled: false
-    }
+      gesturesEnabled: false,
+    },
+  },
+  ChangePassword: {
+    screen: ChangePassword,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+  CategoryScreen: {
+    screen: CategoryScreen,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
   },
   NCategoryScreen: {
     screen: NCategoryScreen,
     navigationOptions: {
       header: null,
-      gesturesEnabled: false
-    }
-  }
-}
+      gesturesEnabled: false,
+    },
+  },
+};
 
 const EXPENSEBYCATEGORY = {
-
-  ExpenseScreenParent:{
+  ExpenseScreenParent: {
     screen: ExpenseScreenParent,
-    navigationOptions:{
+    navigationOptions: {
       header: null,
-      gesturesEnabled: false
-    }
+      gesturesEnabled: false,
+    },
   },
-  ExpenseScreenChild:{
+  ExpenseScreenChild: {
     screen: ExpenseScreenChild,
     navigationOptions: {
-      header:null,
-      gesturesEnabled:false
-    }
+      header: null,
+      gesturesEnabled: false,
+    },
   },
   NewExpenseByCategoryParent: {
     screen: NewExpenseByCategoryParent,
     navigationOptions: {
       header: null,
-      gesturesEnabled: false
-    }
+      gesturesEnabled: false,
+    },
   },
   NewExpenseByCategoryChild: {
     screen: NewExpenseByCategoryChild,
     navigationOptions: {
       header: null,
-      gesturesEnabled: false
-    }
+      gesturesEnabled: false,
+    },
   },
   UncategorizedExpenseByCategory: {
     screen: UncategorizedExpenseByCategory,
     navigationOptions: {
       header: null,
-      gesturesEnabled: false
-    }
-  }
-}
+      gesturesEnabled: false,
+    },
+  },
+};
 
 const INSIGHTS = {
-  CashOnHandinsights: { 
+  CashOnHandinsights: {
     screen: CashOnHandinsights,
     navigationOptions: {
       header: null,
-      gesturesEnabled:false
-  }
+      gesturesEnabled: false,
+    },
   },
-  ChangeInCashInsights: { 
+  ChangeInCashInsights: {
     screen: ChangeInCashInsights,
     navigationOptions: {
       header: null,
-      gesturesEnabled:false
-  }
+      gesturesEnabled: false,
+    },
   },
-  IncomingARInsights: { 
+  IncomingARInsights: {
     screen: IncomingARInsights,
     navigationOptions: {
       header: null,
-      gesturesEnabled:false
-  }
+      gesturesEnabled: false,
+    },
   },
-  SalesInsights: { 
+  SalesInsights: {
     screen: SalesInsights,
     navigationOptions: {
       header: null,
-      gesturesEnabled:false
-  }
+      gesturesEnabled: false,
+    },
   },
   ExpenseByCategoryInsights: {
     screen: ExpenseByCategoryInsights,
     navigationOptions: {
       header: null,
-      gesturesEnabled: false
-    }
-  }
-}
+      gesturesEnabled: false,
+    },
+  },
+};
 const MainNavigator = createStackNavigator(
   {
     ...HOME,
@@ -412,34 +413,28 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "ValueProp"
+    initialRouteName: "ValueProp",
   }
 );
-
-
 
 const NavigationApp = createAppContainer(MainNavigator);
 
 export default class App extends Component {
-
   componentDidMount = () => {
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 250);
+  };
 
-     setTimeout(()=>{
-        SplashScreen.hide();
-      },600);
-    
-  }
-  
   render() {
     return (
-     
-      <Provider store={Store}>
-        <ErrorBoundry>
-          <NavigationApp />
-        </ErrorBoundry>
-      </Provider>
-      
+      <Root>
+        <Provider store={Store}>
+          <ErrorBoundry>
+            <NavigationApp />
+          </ErrorBoundry>
+        </Provider>
+      </Root>
     );
   }
 }
-

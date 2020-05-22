@@ -18,7 +18,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import DetectPlatform from "../../DetectPlatform";
+
 import TryAgainScreen from "./somethingWrong";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -255,7 +255,7 @@ Ionicons.loadFont();
     
     let readyProfileUrl = isBodyLoaded && (selectLogoByUser == null ? (logoByApi   == null || logoByApi == "") ? { "type":"require" }   :  { "type":"uri", uri : logoByApi } : { "type":"uri", uri: selectLogoByUser.uri } ); 
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Spinner
           visible={this.state.spinner}
         />
@@ -402,7 +402,7 @@ Ionicons.loadFont();
           />
         </View>
           </ScrollView>  : null  }
-    </React.Fragment>
+    </View>
     );
   }
 }
@@ -496,4 +496,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DetectPlatform(BusinessProfile,styles.container);
+export default BusinessProfile;
