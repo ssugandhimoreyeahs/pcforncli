@@ -27,7 +27,6 @@ import {
   TRY_AGAIN,
   ERROR,
 } from "../../../api/message";
-import DetectPlatfrom from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 AntDesign.loadFont();
@@ -112,7 +111,13 @@ class LoginScreen extends React.Component {
         );
 
         if (isUserValid.result) {
-          this.props.navigation.navigate("Dashboard");
+          this.props.navigation.navigate("Dashboard", {
+            fromLogin: true,
+            userResponse: {
+              result: true,
+              userData: { ...isUserValid.data.user },
+            },
+          });
           this.setState({ isSpinner: false });
         } else {
           if (
@@ -174,7 +179,7 @@ class LoginScreen extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Spinner
           visible={this.state.isSpinner}
           textStyle={styles.spinnerTextStyle}
@@ -270,7 +275,7 @@ class LoginScreen extends React.Component {
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -323,7 +328,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-export default DetectPlatfrom(LoginScreen, styles.container);
+export default LoginScreen;
 
 // import * as React from "react";
 // import { Image, StyleSheet, View, Text, BackHandler, Alert, Keyboard, SafeAreaView,TouchableOpacity,Linking, KeyboardAvoidingView,ScrollView} from "react-native";
@@ -336,7 +341,7 @@ export default DetectPlatfrom(LoginScreen, styles.container);
 // import tandc from "../../legal/legal";
 // import Spinner from 'react-native-loading-spinner-overlay';
 // import { CONNECTION_ABORTED,INVALID_CREDENTIALS,TRY_AGAIN } from "../../../api/message";
-// import DetectPlatfrom from "../../../DetectPlatform";
+
 
 // class LoginScreen extends React.Component {
 //   constructor(props) {

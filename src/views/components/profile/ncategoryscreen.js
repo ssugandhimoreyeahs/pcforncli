@@ -10,7 +10,6 @@ import {
   ActivityIndicator,
   BackHandler,
 } from "react-native";
-import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import ToggleSwitch from "toggle-switch-react-native";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
@@ -941,7 +940,7 @@ class CategoryScreen extends Component {
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
 
     return (
-      <Fragment>
+      <View style={styles.container}>
         <Spinner visible={this.state.isSpinner} />
         {error == true ? (
           <Fragment>
@@ -951,7 +950,7 @@ class CategoryScreen extends Component {
         ) : (
           <this.renderBody />
         )}
-      </Fragment>
+      </View>
     );
   }
 }
@@ -1021,4 +1020,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetectPlatform(CategoryScreen, styles.container));
+)(CategoryScreen);

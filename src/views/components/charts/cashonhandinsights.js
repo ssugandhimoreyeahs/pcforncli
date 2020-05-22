@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View , Text, ScrollView,  StyleSheet, TouchableOpacity,BackHandler, ActivityIndicator} from "react-native";
 import { Feather, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
-import DetectPlatform from "../../../DetectPlatform";
+
 import { connect } from "react-redux";
 import { fetchInsightsAsyncCreator } from "../../../reducers/insights";
 
@@ -187,7 +187,7 @@ import { fetchInsightsAsyncCreator } from "../../../reducers/insights";
       masterLoader = false;
       isFetched = true;
   return(
-    <View style={{ flex:1 }}>
+    <View style={styles.margins}>
       {
         error == true ?
         <View>
@@ -365,7 +365,7 @@ const mapDispatchToProps = (dispatch) => {
     fetchInsights: () => { dispatch(fetchInsightsAsyncCreator()); }
   }
 }
-export default connect(mapStateToProps,mapDispatchToProps)(DetectPlatform(CashOnHandinsights, styles.margins));
+export default connect(mapStateToProps,mapDispatchToProps)(CashOnHandinsights);
 
 const cohInsightsContent = {
 

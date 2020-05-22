@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { View, TouchableOpacity,BackHandler } from "react-native";
+import { View, TouchableOpacity, BackHandler } from "react-native";
 import { Card, Icon, Input, Image } from "react-native-elements";
-import DetectPlatform from "../../DetectPlatform";
+
 
 class IntegrationLogin extends Component {
   constructor(props) {
@@ -9,27 +9,33 @@ class IntegrationLogin extends Component {
 
     this.state = {
       username: "",
-      password: ""
+      password: "",
     };
   }
 
-  componentDidMount(){
-    BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
-   }
- 
-   componentWillUnmount(){
-     BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
-   }
- 
-   handleBackButton=(nav)=> {
-     if (!nav.isFocused()) {
-       BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
-       return false;
-     }else{
-       nav.goBack();
-       return true;
-     }
-   }
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", () =>
+      this.handleBackButton(this.props.navigation)
+    );
+  }
+
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", () =>
+      this.handleBackButton(this.props.navigation)
+    );
+  }
+
+  handleBackButton = (nav) => {
+    if (!nav.isFocused()) {
+      BackHandler.removeEventListener("hardwareBackPress", () =>
+        this.handleBackButton(this.props.navigation)
+      );
+      return false;
+    } else {
+      nav.goBack();
+      return true;
+    }
+  };
 
   validateFormAndSubmit = () => {
     if (this.state.username && this.state.password) {
@@ -56,7 +62,7 @@ class IntegrationLogin extends Component {
           backgroundColor: "#F1F3F5",
           flexDirection: "column",
           alignItems: "center",
-          height: "100%"
+          height: "100%",
         }}
       >
         {integrator && <Text h3>`${integrator.name}`</Text>}
@@ -65,7 +71,7 @@ class IntegrationLogin extends Component {
             alignItems: "center",
             marginVertical: "75%",
             height: "100%",
-            width: "100%"
+            width: "100%",
           }}
         >
           <Card
@@ -74,14 +80,14 @@ class IntegrationLogin extends Component {
               borderWidth: 0,
               width: 296,
               shadowOpacity: 0,
-              padding: 0
+              padding: 0,
             }}
           >
             <Input
               placeholder="username"
               rightIcon={icon}
               inputContainerStyle={{ borderBottomColor: "#FFF" }}
-              onChangeText={text => {
+              onChangeText={(text) => {
                 this.setState({ username: text });
               }}
               onSubmitEditing={this.validateFormAndSubmit}
@@ -93,7 +99,7 @@ class IntegrationLogin extends Component {
               borderWidth: 0,
               width: 296,
               shadowOpacity: 0,
-              padding: 0
+              padding: 0,
             }}
           >
             <Input
@@ -101,7 +107,7 @@ class IntegrationLogin extends Component {
               secureTextEntry
               rightIcon={icon}
               inputContainerStyle={{ borderBottomColor: "#FFF" }}
-              onChangeText={text => {
+              onChangeText={(text) => {
                 this.setState({ password: text });
               }}
               onSubmitEditing={this.validateFormAndSubmit}
@@ -113,4 +119,4 @@ class IntegrationLogin extends Component {
   }
 }
 
-export default DetectPlatform(IntegrationLogin);
+export default IntegrationLogin;

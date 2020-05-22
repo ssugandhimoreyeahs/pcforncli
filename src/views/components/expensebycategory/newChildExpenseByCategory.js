@@ -11,7 +11,6 @@ import {
   Platform,
   BackHandler,
 } from "react-native";
-import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
@@ -1084,7 +1083,7 @@ class ExpenseByCategoryChild extends Component {
     let { loading, error } = this.state;
 
     return (
-      <Fragment>
+      <View style={styles.container}>
         {error == true ? (
           <this.errorView />
         ) : loading == true ? (
@@ -1092,7 +1091,7 @@ class ExpenseByCategoryChild extends Component {
         ) : (
           <this.renderBody />
         )}
-      </Fragment>
+      </View>
     );
   }
 }
@@ -1318,7 +1317,7 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetectPlatform(ExpenseByCategoryChild, styles.container));
+)(ExpenseByCategoryChild);
 
 /*
 

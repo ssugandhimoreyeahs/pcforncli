@@ -15,7 +15,6 @@ import logo from "../../../assets/logo2.png";
 import { colors } from "react-native-elements";
 import { isUserLoggedIn } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
-import DetectPlatform from "../../../DetectPlatform";
 import { StackActions, NavigationActions } from "react-navigation";
 
 Text.defaultProps = {
@@ -43,7 +42,7 @@ class ValueProp extends React.Component {
   isUserLoggedIn = async () => {
     const userLoggedIn = await isUserLoggedIn();
     if (userLoggedIn.result == true) {
-      this.props.navigation.navigate("Dashboard");
+      this.props.navigation.navigate("Dashboard", { fromValueProp: true });
       this.setState({ isBodyLoaded: true, isSpinner: false });
       //this.setState({ isSpinner: false});
       // setTimeout(()=>{
@@ -79,7 +78,7 @@ class ValueProp extends React.Component {
   render() {
     const { isSpinner } = this.state;
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Spinner visible={isSpinner} />
         {this.state.isBodyLoaded == true ? (
           // <View style={styles.container} >
@@ -122,7 +121,7 @@ class ValueProp extends React.Component {
             </View>
           </SafeAreaView>
         ) : null}
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -169,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetectPlatform(ValueProp, styles.container);
+export default ValueProp;

@@ -31,7 +31,6 @@ import {
 import Timeout from "./timeout";
 import { SafeAreaView } from "react-navigation";
 //import { getUser } from "../../../api/api";
-import DetectPlatform from "../../../DetectPlatform";
 import {
   numberWithCommas,
   firstLetterCapital,
@@ -1732,7 +1731,7 @@ class Checking extends React.PureComponent {
   render() {
     const { transactions, isBodyLoaded } = this.state;
     return (
-      <React.Fragment>
+      <View style={styles.margins}>
         <Spinner
           visible={this.state.isSpinner}
           textStyle={styles.spinnerTextStyle}
@@ -1752,7 +1751,7 @@ class Checking extends React.PureComponent {
             }}
           />
         )}
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -1839,4 +1838,4 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetectPlatform(Checking, styles.margins));
+)(Checking);

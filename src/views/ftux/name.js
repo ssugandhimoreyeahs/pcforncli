@@ -1,7 +1,15 @@
-import React, { Component,Fragment } from "react";
-import { StyleSheet, View, TouchableOpacity, SafeAreaView , StatusBar, Linking,BackHandler} from "react-native";
+import React, { Component, Fragment } from "react";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  StatusBar,
+  Linking,
+  BackHandler,
+} from "react-native";
 import { Button, Input, Text } from "react-native-elements";
-import DetectPlatform from "../../DetectPlatform";
+
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -13,84 +21,110 @@ class Name extends Component {
 
     this.state = {
       firstName: "",
-      lastName: ""
+      lastName: "",
     };
   }
-    handlePress = () => {
+  handlePress = () => {
     this.props.navigation.navigate("Title", {
       firstName: this.state.firstName.trim(),
-      lastName: this.state.lastName.trim()
+      lastName: this.state.lastName.trim(),
     });
   };
 
   handleLegalPressTOS = () => {
-    Linking.openURL(
-      `https://www.pocketcfoapp.com/terms-of-use`
-    );
+    Linking.openURL(`https://www.pocketcfoapp.com/terms-of-use`);
     // this.props.navigation.navigate("Legal")
-};
-handleLegalPressPP = () => {
-Linking.openURL(
-  `https://www.pocketcfoapp.com/privacy-policy`
-);
-// this.props.navigation.navigate("Legal")
-};
+  };
+  handleLegalPressPP = () => {
+    Linking.openURL(`https://www.pocketcfoapp.com/privacy-policy`);
+    // this.props.navigation.navigate("Legal")
+  };
 
-componentDidMount(){
-   BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", () =>
+      this.handleBackButton(this.props.navigation)
+    );
   }
 
-  componentWillUnmount(){
-    BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", () =>
+      this.handleBackButton(this.props.navigation)
+    );
   }
 
-  handleBackButton=(nav)=> {
+  handleBackButton = (nav) => {
     if (!nav.isFocused()) {
-      BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+      BackHandler.removeEventListener("hardwareBackPress", () =>
+        this.handleBackButton(this.props.navigation)
+      );
       return false;
-    }else{
+    } else {
       nav.goBack();
       return true;
     }
-  }
+  };
 
   render() {
     return (
-      
-      <Fragment>
-        <TouchableOpacity onPress={()=> this.props.navigation.navigate("ValueProp")}>
-        <Ionicons size={30} name='md-close' style={{alignSelf:'flex-start', marginLeft:25,marginTop:5}} />
+      <View style={styles.container}>
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate("ValueProp")}
+        >
+          <Ionicons
+            size={30}
+            name="md-close"
+            style={{ alignSelf: "flex-start", marginLeft: 25, marginTop: 5 }}
+          />
         </TouchableOpacity>
-        <Text style={{alignSelf:'center',marginTop:'10%'}} h4>What's your name?</Text>
+        <Text style={{ alignSelf: "center", marginTop: "10%" }} h4>
+          What's your name?
+        </Text>
         <Input
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.input}
           placeholder={"First name"}
           value={this.state.firstName}
-          onChangeText={text => this.setState({ firstName: text })}
+          onChangeText={(text) => this.setState({ firstName: text })}
         />
         <Input
           inputContainerStyle={styles.inputContainer}
           inputStyle={styles.input}
           placeholder={"Last name"}
-value={this.state.lastName}
-          onChangeText={text => this.setState({ lastName: text })}
+          value={this.state.lastName}
+          onChangeText={(text) => this.setState({ lastName: text })}
         />
-        <View style={{marginTop: 50, alignItems:'center', marginBottom:'3%'}}>
+        <View
+          style={{ marginTop: 50, alignItems: "center", marginBottom: "3%" }}
+        >
           <Text style={styles.text}>By continuing, you accept our</Text>
-          <View style={{flexDirection:'row'}}>
-            <Text style={styles.text,{color:'#007AFF'}} onPress={this.handleLegalPressTOS}>Terms of Service</Text><Text  style={styles.text}> and </Text><Text  style={styles.text,{color:'#007AFF'}} onPress={this.handleLegalPressPP}>Privacy Policy</Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text
+              style={(styles.text, { color: "#007AFF" })}
+              onPress={this.handleLegalPressTOS}
+            >
+              Terms of Service
+            </Text>
+            <Text style={styles.text}> and </Text>
+            <Text
+              style={(styles.text, { color: "#007AFF" })}
+              onPress={this.handleLegalPressPP}
+            >
+              Privacy Policy
+            </Text>
           </View>
         </View>
         <Button
-          disabled={!this.state.firstName.trim().length || !this.state.lastName.trim().length }
+          disabled={
+            !this.state.firstName.trim().length ||
+            !this.state.lastName.trim().length
+          }
           buttonStyle={styles.button}
-          disabledStyle={{backgroundColor:'#7FBDFF',}}
+          disabledStyle={{ backgroundColor: "#7FBDFF" }}
           containerStyle={styles.buttonContainer}
           title="Continue"
           onPress={this.handlePress}
         />
-      </Fragment>
+      </View>
     );
   }
 }
@@ -98,9 +132,8 @@ value={this.state.lastName}
 const styles = StyleSheet.create({
   button: {
     borderRadius: 24,
-    height:48,
-    backgroundColor:'#007AFF',
-    
+    height: 48,
+    backgroundColor: "#007AFF",
   },
   container: {
     flex: 1,
@@ -108,28 +141,27 @@ const styles = StyleSheet.create({
   },
   text: {
     marginVertical: "50%",
-    alignSelf:'center'
+    alignSelf: "center",
   },
   buttonContainer: {
     marginTop: 10,
     width: "75%",
-    alignSelf:'center',
-    
+    alignSelf: "center",
   },
   inputContainer: {
     alignSelf: "center",
     borderBottomColor: "#007AFF",
     marginVertical: "2%",
-    width: "75%"
+    width: "75%",
   },
   input: {
     marginVertical: "5%",
     textAlign: "center",
   },
-  text:{
-    fontFamily:'System',
-    fontSize:12,
-  }
+  text: {
+    fontFamily: "System",
+    fontSize: 12,
+  },
 });
 
-export default DetectPlatform(Name,styles.container);
+export default Name;
