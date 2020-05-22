@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, ScrollView, BackHandler, Alert, SafeAreaView, StatusBar } from "react-native";
 import Menu from "./menu";
-import DetectPlatform from "../DetectPlatform";
+
 
  class BottomNavLayout extends Component {
   

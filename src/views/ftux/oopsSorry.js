@@ -17,7 +17,7 @@ import {
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
 // import Button from "../components/login/button";
-import DetectPlatform from "../../DetectPlatform";
+
 
 class OopsSorry extends Component {
   constructor(props) {

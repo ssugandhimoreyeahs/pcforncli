@@ -12,7 +12,7 @@ import {
 import { Button } from "react-native-elements";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 // import Button from "../components/login/button";
-import DetectPlatform from "../../DetectPlatform";
+
 import { triggerQbDataCopyDb } from "../../api/api";
 
 class AccountConnected extends Component {

@@ -14,7 +14,7 @@ import { forgetPassword } from "../../api/api";
 import { FORGET_PASSWORD_SEND, TRY_AGAIN } from "../../api/message";
 import Spinner from "react-native-loading-spinner-overlay";
 //import {AntDesign} from "@expo/vector-icons"
-import DetectPlatform from "../../DetectPlatform";
+
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 AntDesign.loadFont();

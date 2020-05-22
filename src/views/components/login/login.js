@@ -27,7 +27,6 @@ import {
   TRY_AGAIN,
   ERROR,
 } from "../../../api/message";
-import DetectPlatfrom from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 AntDesign.loadFont();
@@ -342,7 +341,7 @@ export default LoginScreen;
 // import tandc from "../../legal/legal";
 // import Spinner from 'react-native-loading-spinner-overlay';
 // import { CONNECTION_ABORTED,INVALID_CREDENTIALS,TRY_AGAIN } from "../../../api/message";
-// import DetectPlatfrom from "../../../DetectPlatform";
+
 
 // class LoginScreen extends React.Component {
 //   constructor(props) {

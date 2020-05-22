@@ -10,7 +10,7 @@ import {
 import { Button } from "react-native-elements";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-import DetectPlatform from "../../DetectPlatform";
+
 import { loggedOutUser } from "../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
 

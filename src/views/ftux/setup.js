@@ -15,7 +15,7 @@ import { Observable, interval, timer } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { Button, Card, Text, Image, Overlay } from "react-native-elements";
 import { fetchQuestionsFromApi } from "../../api/api";
-import DetectPlatform from "../../DetectPlatform";
+
 import ProgressCircle from "react-native-progress-circle";
 import Spinner from "react-native-loading-spinner-overlay";
 import GestureRecognizer, {
@@ -170,12 +170,12 @@ class Setup extends Component {
                 registerCron: false,
               },
               () => {
-                setTimeout(()=>{
+                setTimeout(() => {
                   this.props.navigation.navigate("Dashboard", {
                     userResponse,
                     fromSetup: true,
                   });
-                },300)
+                }, 300);
               }
             );
           }, 1000);

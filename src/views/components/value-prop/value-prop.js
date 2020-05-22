@@ -15,7 +15,6 @@ import logo from "../../../assets/logo2.png";
 import { colors } from "react-native-elements";
 import { isUserLoggedIn } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
-import DetectPlatform from "../../../DetectPlatform";
 import { StackActions, NavigationActions } from "react-navigation";
 
 Text.defaultProps = {

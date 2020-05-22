@@ -18,7 +18,7 @@ import {
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-import DetectPlatform from "../../DetectPlatform";
+
 import TryAgainScreen from "./somethingWrong";
 import Ionicons from "react-native-vector-icons/Ionicons";
 

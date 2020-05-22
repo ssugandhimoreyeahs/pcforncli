@@ -1,14 +1,22 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity ,BackHandler, SafeAreaView, ScrollView, StatusBar,StyleSheet} from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  BackHandler,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+} from "react-native";
 import WebView from "react-native-webview";
-import {Ionicons} from "@expo/vector-icons";
-import DetectPlatfrom from "../../DetectPlatform";
+import { Ionicons } from "@expo/vector-icons";
 
- class Legal extends Component {
+class Legal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isTosEnabled: true
+      isTosEnabled: true,
     };
   }
 
@@ -16,41 +24,50 @@ import DetectPlatfrom from "../../DetectPlatform";
     this.setState({ isTosEnabled: isTosEnabled });
   }
 
-  componentDidMount(){
-    BackHandler.addEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+  componentDidMount() {
+    BackHandler.addEventListener("hardwareBackPress", () =>
+      this.handleBackButton(this.props.navigation)
+    );
   }
 
-  componentWillUnmount(){
-    BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+  componentWillUnmount() {
+    BackHandler.removeEventListener("hardwareBackPress", () =>
+      this.handleBackButton(this.props.navigation)
+    );
   }
 
-  handleBackButton=(nav)=> {
+  handleBackButton = (nav) => {
     if (!nav.isFocused()) {
-      BackHandler.removeEventListener('hardwareBackPress',  ()=>this.handleBackButton(this.props.navigation));
+      BackHandler.removeEventListener("hardwareBackPress", () =>
+        this.handleBackButton(this.props.navigation)
+      );
       return false;
-    }else{
+    } else {
       nav.goBack();
       return true;
     }
-  }
-
+  };
 
   render() {
     return (
-      <React.Fragment>
-      {/* <View style={{ backgroundColor: '#070640', height: StatusBar.currentHeight, width:'100%' }} />
+      <View style={styles.container}>
+        {/* <View style={{ backgroundColor: '#070640', height: StatusBar.currentHeight, width:'100%' }} />
       <View style={styles.container} > */}
-      <View>
-      <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
-        <Ionicons size={30} name='md-close' style={{alignSelf:'flex-end', marginRight:15,}} />
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <Ionicons
+              size={30}
+              name="md-close"
+              style={{ alignSelf: "flex-end", marginRight: 15 }}
+            />
+          </TouchableOpacity>
         </View>
         <View style={{ flexDirection: "column" }}>
           <View
             style={{
               flexDirection: "row",
               justifyContent: "space-around",
-              paddingVertical: 10
+              paddingVertical: 10,
             }}
           >
             <TouchableOpacity
@@ -63,8 +80,8 @@ import DetectPlatfrom from "../../DetectPlatform";
                     this.state.isTosEnabled
                       ? styles.headerTextEnabled
                       : styles.headerTextDisabled
-                  }>
-                    
+                  }
+                >
                   Terms of Service
                 </Text>
               </View>
@@ -91,47 +108,45 @@ import DetectPlatfrom from "../../DetectPlatform";
             {this.state.isTosEnabled ? termsOfService : privacyPolicy}
           </View>
         </View>
-      {/* </View> */}
-      </React.Fragment>
+        {/* </View> */}
+      </View>
     );
   }
 }
 
 const termsOfService = (
-    <WebView source={{uri:`https://www.pocketcfoapp.com/terms-of-use`}} />
+  <WebView source={{ uri: `https://www.pocketcfoapp.com/terms-of-use` }} />
 );
 
 const privacyPolicy = (
- 
-    <WebView source={{uri:`https://www.pocketcfoapp.com/privacy-policy`}} />
-  
+  <WebView source={{ uri: `https://www.pocketcfoapp.com/privacy-policy` }} />
 );
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 18
+    padding: 18,
   },
   contentContainer: {
-    flex:1
+    flex: 1,
   },
   headerTextEnabled: {
     fontSize: 17,
     fontWeight: "bold",
     paddingBottom: 10,
-    paddingHorizontal: 18
+    paddingHorizontal: 18,
   },
   headerTextDisabled: {
     fontSize: 17,
     fontWeight: "bold",
     opacity: 0.25,
     paddingBottom: 10,
-    paddingHorizontal: 18
+    paddingHorizontal: 18,
   },
   underline: {
     borderBottomColor: "#000",
-    borderBottomWidth: 5
-  }
+    borderBottomWidth: 5,
+  },
 });
 
-export default DetectPlatfrom(Legal,styles.container)
+export default Legal;

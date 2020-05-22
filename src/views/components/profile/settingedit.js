@@ -21,7 +21,6 @@ import {
   CONNECTION_ABORTED,
   TRY_AGAIN,
 } from "../../../api/message";
-import DetectPlatform from "../../../DetectPlatform";
 import { fetchUserAsyncActionCreator } from "../../../reducers/getUser";
 import { connect } from "react-redux";
 import AntDesign from "react-native-vector-icons/AntDesign";
@@ -184,7 +183,7 @@ class SettingEdit extends React.Component {
   render() {
     const { getParam } = this.props.navigation;
     return (
-      <React.Fragment>
+      <View style={styles.margins}>
         <Spinner
           visible={this.state.isSpinner}
           textStyle={styles.spinnerTextStyle}
@@ -391,7 +390,7 @@ borderBottomWidth:1,borderBottomEndRadius:5, borderBottomStartRadius:5,height:27
             onPress={this.handleSettingEdit}
           />
         </View>
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -514,4 +513,4 @@ const mapDispatchToProps = (dispatch) => ({ reduxDispatch: dispatch });
 export default connect(
   null,
   mapDispatchToProps
-)(DetectPlatform(SettingEdit, styles.margins));
+)(SettingEdit);

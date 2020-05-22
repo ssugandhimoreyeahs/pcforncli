@@ -12,7 +12,6 @@ import { APINETWORK } from "../../constants/constants";
 import { getCurrentAuthToken } from "../../api/api";
 import { triggerQbDataCopyDb } from "../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
-import DetectPlatform from "../../DetectPlatform";
 import Url from "url";
 import Ionicons from "react-native-vector-icons/Ionicons";
 

@@ -11,7 +11,6 @@ import {
   Image as RNImage,
   Platform,
 } from "react-native";
-import DetectPlatform from "../../../DetectPlatform";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -596,7 +595,7 @@ class ExpenseByCategory extends Component {
     let { error, loader, isFetched } = this.props.mainExpenseByCategoryRedux;
 
     return (
-      <Fragment>
+      <View style={styles.container}>
         {error == true ? (
           <this.errorView />
         ) : loader == true ? (
@@ -604,7 +603,7 @@ class ExpenseByCategory extends Component {
         ) : isFetched == true ? (
           <this.loadExpenseScreen />
         ) : null}
-      </Fragment>
+      </View>
     );
   }
 }
@@ -773,7 +772,7 @@ const mapDispatchToProps = (dispatch) => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DetectPlatform(ExpenseByCategory, styles.container));
+)(ExpenseByCategory);
 
 // return data = [
 //     {

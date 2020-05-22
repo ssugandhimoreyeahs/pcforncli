@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { View, TouchableOpacity, BackHandler } from "react-native";
 import { Card, Icon, Input, Image } from "react-native-elements";
-import DetectPlatform from "../../DetectPlatform";
+
 
 class IntegrationLogin extends Component {
   constructor(props) {

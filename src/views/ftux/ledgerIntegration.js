@@ -13,7 +13,7 @@ import { LEDGERS, network } from "../../constants/constants";
 //import { TouchableOpacity } from "react-native-gesture-handler";
 import { Linking } from "react-native";
 import AsyncStorage from "@react-native-community/async-storage";
-import DetectPlatform from "../../DetectPlatform";
+
 // import {Ionicons, AntDesign} from "@expo/vector-icons";
 import { TextInput } from "react-native-paper";
 import DialogInput from "react-native-dialog-input";

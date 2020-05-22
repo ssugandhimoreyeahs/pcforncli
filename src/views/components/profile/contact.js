@@ -19,7 +19,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { updateUserWithCompany, getUser } from "../../../api/api";
 import { loggedOutUser } from "../../../api/api";
 import { APP_VERSION } from "../../../constants/constants";
-import DetectPlatform from "../../../DetectPlatform";
+
 import { connect } from "react-redux";
 import { StackActions, NavigationActions } from "react-navigation";
 Ionicons.loadFont();
@@ -91,7 +91,7 @@ class Contact extends Component {
   render() {
     const { userData } = this.props.reduxState.userData;
     return (
-      <Fragment>
+      <View style={styles.margins}>
         <ScrollView style={{ backgroundColor: "#FFF" }}>
           <Spinner
             visible={this.state.spinner}
@@ -309,7 +309,7 @@ class Contact extends Component {
             </View>
           </TouchableOpacity>
         </ScrollView>
-      </Fragment>
+      </View>
     );
   }
 }
@@ -410,4 +410,4 @@ const mapStateToProps = (state) => ({ reduxState: state });
 export default connect(
   mapStateToProps,
   null
-)(DetectPlatform(Contact, styles.margins));
+)(Contact);

@@ -16,7 +16,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { CONNECTION_ABORTED, USER_EXIST, TRY_AGAIN } from "../../api/message";
 //import {  } from "react-native-gesture-handler";
 //import {AntDesign} from "@expo/vector-icons";
-import DetectPlatform from "../../DetectPlatform";
+
 import { APP_VERSION } from "../../constants/constants";
 
 import AntDesign from "react-native-vector-icons/AntDesign";

@@ -9,7 +9,7 @@ import {
   BackHandler,
 } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
-import DetectPlatform from "../../DetectPlatform";
+
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 

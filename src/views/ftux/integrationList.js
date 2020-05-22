@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { View, SafeAreaView, StatusBar, BackHandler } from "react-native";
 import { Card, Text } from "react-native-elements";
 import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
-import DetectPlatform from "../../DetectPlatform";
+
 class IntegrationList extends Component {
   constructor(props) {
     super(props);

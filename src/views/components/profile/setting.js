@@ -13,7 +13,6 @@ import {
 import Spinner from "react-native-loading-spinner-overlay";
 import { getUser } from "../../../api/api";
 import { ScrollView } from "react-native-gesture-handler";
-import DetectPlatfrom from "../../../DetectPlatform";
 import { connect } from "react-redux";
 import AntDesign from "react-native-vector-icons/AntDesign";
 
@@ -66,7 +65,7 @@ class Setting extends React.Component {
       isError,
     } = this.props.reduxState.userData;
     return (
-      <React.Fragment>
+      <View style={styles.margins}>
         <Spinner visible={loading && !isFetched} />
         {!loading && isFetched && !isError && (
           <Fragment>
@@ -183,7 +182,7 @@ class Setting extends React.Component {
             </ScrollView>
           </Fragment>
         )}
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -297,5 +296,5 @@ const mapStateToProps = (state) => ({ reduxState: state });
 export default connect(
   mapStateToProps,
   null
-)(DetectPlatfrom(Setting, styles.margins));
+)(Setting);
 //export default DetectPlatfrom(Setting,styles.margins);
