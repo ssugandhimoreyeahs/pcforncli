@@ -11,6 +11,9 @@ import { arDataReducer } from "./incommingar";
 import { insightsDataReducer } from './insights';
 import { forecastReducer } from "./forecast";
 import { salesReducer } from "./sales";
+import { cohReducer } from "./cashonhand";
+import { outOfCashDateReducer } from "./outofcashdate";
+import { healthScoreReducer } from "./healthscore";
 
 export default combineReducers({
 
@@ -22,5 +25,8 @@ export default combineReducers({
   incommingArRedux: arDataReducer,
   insightsRedux: insightsDataReducer,
   forecastReducer: forecastReducer,
-  salesReducer: salesReducer
+  salesReducer: salesReducer,
+  cohReducer: cohReducer,
+  outOfCashDateReducer: outOfCashDateReducer,
+  healthScoreReducer: healthScoreReducer
 });

@@ -42,28 +42,23 @@ export async function getCashOnHandGraph(PAST = 0, FUTURE = 0){
           if(PAST != 0 || FUTURE != 0){
           readyGraphUrl = `${readyGraphUrl}?past=${PAST}&future=${FUTURE}`
           }
-          console.log("Initially Graph url for the coh Api- ",readyGraphUrl);
+          console.log("Cashon hand api trigger - ",readyGraphUrl);
           axios.get(readyGraphUrl,{
             headers: { Authorization: token,"Content-Type": "application/json" },
             timeout
           }).then(response => {
             const res = response.data;
             if(res.success == true && response.status == 200){
-              resolve({ result:true,response:response.data.data });
+              return resolve({ result: true,cohResponse: res });
             }
             else{
-              reject({ result:false });
+              return reject({ result:false,error: { message:"Error On Response" } });
             }
           }).catch((error)=>{
-            console.log("getCashOnHandGraphPromiseBased() - Axios Error");
-            reject({ result:"error",error });
+            return reject({ result:"error",error });
           });
-        
-  
-  
         }).catch((error)=>{
-          console.log("getCashOnHandGraphPromiseBased() - Async Token Error");
-          reject({ result:"error",error });
+          return reject({ result:"error",error });
         });
       })
       

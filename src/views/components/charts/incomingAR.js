@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text,TouchableOpacity,Alert,Fragment,ActivityIndicator } from "react-native";
+import React, { Component,Fragment } from "react";
+import { StyleSheet, View, Text,TouchableOpacity,Alert,ActivityIndicator } from "react-native";
 import { AntDesign,MaterialCommunityIcons } from "@expo/vector-icons";
 import { BarGraph } from "./BarGraph";
 import * as accounting from "accounting-js";
@@ -9,9 +9,18 @@ import { connect } from "react-redux";
 import { fetchArAsyncCreator } from "../../../reducers/incommingar";
 import { numberWithCommas,isFloat } from "../../../api/common";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { widthPercentageToDP as Width, heightPercentageToDP as Height } from "react-native-responsive-screen";
 Ionicons.loadFont();
 
 class IncomingAR extends Component {
+
+  constructor(props){
+    super(props);
+
+    this.state = {
+      showInsights: true
+    }
+  }
   showAlert() {  
     Alert.alert(  
         'INCOMING A/R',  
@@ -26,7 +35,22 @@ class IncomingAR extends Component {
         ]  
     );  
   }
+  noIncommingAr = React.memo(()=>{
 
+    return(
+      <View style={styles.noIncommingArData}>
+          <View style={styles.noIncommingArDataChildView} >
+              <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
+              <Text style={{ marginLeft:10,alignSelf:"center" }}>No Incomming AR Data Available!</Text>
+          </View> 
+          {/* <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+              <TouchableOpacity onPress={()=>{ this.handleReloadIncomingAr(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                  <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Reload</Text></View>
+              </TouchableOpacity>
+           </View> */}
+        </View> 
+    );
+  })
   incommingArBody = ({ composeArData }) => {
     // let total = composeArData.overDue.total + composeArData.notYetDue.total;
     // total = parseFloat(total).toFixed(2);
@@ -56,24 +80,14 @@ class IncomingAR extends Component {
     let notYetDueIsZero = parseInt(composeArData.notYetDue["1-30"]) == 0 && parseInt(composeArData.notYetDue["31-60"]) == 0 && parseInt(composeArData.notYetDue["60+"]) == 0;
     console.log("overDueIsZero = ",overDueIsZero);
     console.log("notYetDueIsZero = ",notYetDueIsZero);
+    
     return(
-      <View>
+      <Fragment>
         {
-          isAllZero == true ?
-          <View style={{ justifyContent:"center",alignItems:"center",alignSelf:"center",width:"100%",height:"100%"  }}>
-          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
-              <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
-              <Text style={{ marginLeft:10,alignSelf:"center" }}>No Incomming AR Data Available!</Text>
-          </View> 
-          {/* <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
-              <TouchableOpacity onPress={()=>{ this.handleReloadIncomingAr(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
-                  <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Reload</Text></View>
-              </TouchableOpacity>
-           </View> */}
-        </View> :
-          <View>
+          isAllZero == true ? <this.noIncommingAr /> :
+          <Fragment>
 
-          <View style={styles.heading}>
+                <View style={styles.heading}>
                   <TouchableOpacity 
                     
                     onPress={this.showAlert}
@@ -149,7 +163,7 @@ class IncomingAR extends Component {
                   </View>
                   
                 </View>
-                <View style={{width:"40%",height:"100%", marginTop:"20%", alignSelf:'flex-end'}}>
+                <View style={{width:"40%",height:60,marginTop:"20%", alignSelf:'flex-end'}}>
                   <Button title="View Insights" type="solid" buttonStyle={styles.btnstyle1} titleStyle={styles.buttontextt1}
                   onPress={()=>{ 
                     //this.props.navigation.navigate("IncomingARInsights")
@@ -159,15 +173,54 @@ class IncomingAR extends Component {
                   }}/>
                 </View>
 
-          </View>
+                {
+                  this.state.showInsights == true ?
+                  
+                  <this.arInsightFooter 
+                      backgroundColor={"#E5FCEA"}
+                      insightText={"Your cash balance has increased from last months cash balance."}
+                      insightButtonText={"Keep on improving"}/> 
+                  : null
+                }
+          </Fragment>
         }
-      </View>
+      </Fragment>
     );
   }
 
   handleReloadIncomingAr = () => {
     this.props.fetchIncommingAr();
   }
+  arInsightFooter = React.memo(({ insightText,insightButtonText,backgroundColor })=>{
+
+    return(
+      <View style={{ ...styles.insightCartBody,backgroundColor }}>
+      <Text style={styles.insightCartBodyText}>{ insightText } </Text>
+
+      <TouchableOpacity style={styles.insightCartBodyGotoButton}>
+        <Text style={styles.insightCartBodyGotoButtonText}>{ insightButtonText }</Text>
+        <AntDesign name='right' style={styles.insightCartBodyGotoButtonIcon} 
+        size={14} color={'#000000'}/>
+      </TouchableOpacity>
+      </View> 
+    );
+  });
+  incommingArError = React.memo(()=>{
+
+    return(
+      <View style={{ ...styles.margins,justifyContent:"center"  }}>
+          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
+              <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
+              <Text style={{ marginLeft:10,alignSelf:"center" }}>Something went wrong!</Text>
+          </View> 
+          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+              <TouchableOpacity onPress={()=>{ this.handleReloadIncomingAr(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                  <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
+              </TouchableOpacity>
+           </View>
+        </View>
+    );
+  });
   render() {
     
     let composeArData = {};
@@ -177,24 +230,15 @@ class IncomingAR extends Component {
        composeArData = { ...composeArData,overDue,notYetDue,total };
     }
     
-    // error = true;
+    let height = this.state.showInsights ? 400 : 300;
+    //error = true;
     return (
-      <View>
+      <Fragment>
         {
-          error == true ? <View style={{ ...styles.margins,justifyContent:"center"  }}>
-          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} >
-              <AntDesign name="exclamationcircle" size={20} style={{ color:'#070640',alignSelf:"center" }}/>
-              <Text style={{ marginLeft:10,alignSelf:"center" }}>Oops Error Try Again!</Text>
-          </View> 
-          <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
-              <TouchableOpacity onPress={()=>{ this.handleReloadIncomingAr(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
-                  <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Try Again</Text></View>
-              </TouchableOpacity>
-           </View>
-        </View>
+          error == true ? <this.incommingArError />
           :
           isFetched == true && masterLoader == false ?
-            <View style={styles.margins}>
+            <View style={{ ...styles.margins, height }}>
               <this.incommingArBody composeArData={composeArData} />
             </View>
           : <View style={{ ...styles.margins,justifyContent:"center" }}>
@@ -202,14 +246,14 @@ class IncomingAR extends Component {
        </View> 
 
         }
-      </View>
+      </Fragment>
     );
   }
 }
 
 const styles = StyleSheet.create({
   margins: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 15,
     paddingTop: 15,
     backgroundColor: "white",
     marginTop: 8,
@@ -285,6 +329,46 @@ const styles = StyleSheet.create({
   buttontextt1:{
     fontSize:11,
   },
+  noIncommingArData: { 
+    justifyContent:"center",
+    alignItems:"center",
+    alignSelf:"center",
+    width:"100%",
+    height:"100%"  
+  },
+  noIncommingArDataChildView: { 
+    flexDirection:"row",
+    justifyContent:"center",
+    alignItems:"center" 
+  },
+  insightCartBody: { 
+    borderRadius:6,
+    marginTop:-5,
+    backgroundColor: "#FFE8DD",
+    width:'100%',
+    alignSelf:"center",
+    padding:16 
+  },
+  insightCartBodyText: { 
+    fontSize:13, 
+    color:"#1D1E1F",
+    fontWeight:"500" 
+  },
+  insightCartBodyGotoButton: { 
+    flexDirection:"row",
+    alignSelf:"flex-end",
+    marginTop:12 
+  },
+  insightCartBodyGotoButtonText: { 
+    alignSelf:"center",
+    fontSize:13,
+    color:"#1D1E1F",
+    fontWeight:"500" 
+  },
+  insightCartBodyGotoButtonIcon: {
+    marginLeft:3,
+    marginTop: 3
+  }
 });
 
 const mapStateToProps = (state) => {

@@ -6,8 +6,19 @@ import DetectPlatform from "../../DetectPlatform";
 import ProgressCircle from 'react-native-progress-circle'
 import Spinner from 'react-native-loading-spinner-overlay';
 import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
+import PlaidSecureImg from "../../assets/PlaidSecureImg.png";
+import BlueLockImg from '../../assets/BlueLock.png';
+import { PLAID_SECURE_MODAL } from "../../api/common";
+import Entypo from "react-native-vector-icons/Entypo";
+import { widthPercentageToDP as Width, heightPercentageToDP as Height } from "react-native-responsive-screen";
+FontAwesome.loadFont();
+Entypo.loadFont();
 
-
+//Text.allowFontScaling=false;
+Text.defaultProps = {
+  allowFontScaling: false
+};
  class Setup extends Component {
   constructor(props) {
     super(props);
@@ -22,8 +33,8 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
       isSpinner: false,
       isQuestionOverlayVisible: false,
       setupUserName:"",
-      onBoardingData: { isFetched: false,noneOfTheAbove: false }
-
+      onBoardingData: { isFetched: false,noneOfTheAbove: false },
+      dataSecuredModal: false,
       // onBoardingData: {
       //   totalQuestions: 10,
       //   currentPercentage: 30,
@@ -64,7 +75,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         onBoardingData.data.push(data);
       }
       this.setState({ onBoardingData });
-      console.log("Questions Data Recieved - ",onBoardingData);
+      
     }
   }
   componentDidMount(){
@@ -124,7 +135,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         setTimeout(()=>{
           this.setState((prevState)=>{ return { isSpinner: !prevState.isSpinner,
             isQuestionOverlayVisible: !prevState.isQuestionOverlayVisible } })
-        },1000);
+        },2000);
         }else{
           this.props.navigation.navigate("Dashboard");
         }
@@ -153,11 +164,11 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
            this.setState({ isSpinner: false },()=>{
             setTimeout(()=>{
               this.props.navigation.navigate("Dashboard");
-            },150);
+            },200);
            })
           
         })
-      },500);
+      },300);
     });
   };
 
@@ -179,8 +190,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         data: updatedData
       }
     },()=>{
-      console.log("Testing here - ");
-      console.log(this.state.onBoardingData.data[currentQuestionIndex].selectedAns);
+      
     })
     
 
@@ -229,8 +239,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         noneOfTheAbove: false
       }
     },()=>{
-      console.log("Multiple Testing here - ");
-      console.log(this.state.onBoardingData.data[currentQuestionIndex].selectedAns);
+      
     })
     
 
@@ -424,7 +433,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
           }
         }
       }
-      console.log("Recieving total questions  - ",totalQuestions);
+      
       if(currentQuestion < totalQuestions-1){
         this.setState({ 
           onBoardingData:{
@@ -455,11 +464,64 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
       }
     }
   }
+  toggleDataSecuredModal = () => {
+    this.setState((prevState)=>({ dataSecuredModal: !prevState.dataSecuredModal }));
+  }
+  dataSecureTips = React.memo(({title,text}) => { 
+    return(
+      <View style={styles.overlayTipsMainView}>
+        <View style={{ width: Width('9%'),justifyContent: "center" }}>
+          <Image source={BlueLockImg} style={{ width:Width(5.5),height:Width(5.5) }}/>
+        </View>
+        <View style={{ width: Width('91%') }}>
+           <Text style={styles.overlayTipsTitleStyle}>{`${title}`}</Text>
+           <Text style={styles.overlayTipsTextStyle}>{`${text}`}</Text>
+        </View>
+      </View>
+    );
+  });
+  dataSecuredModal = React.memo(({ isVisible: isModalVisible }) => {
+    return(
+       <Overlay
+        overlayStyle = {styles.dataSecureOverlay}
+        windowBackgroundColor="rgba(0, 0, 0, 0.7)" 
+        overlayBackgroundColor="rgba(0, 0, 0, 0)" 
+        isVisible = {isModalVisible}>
+         <Fragment>
+         <View style={styles.dataSecureoverlayMainContainer}>
+             <View style={{ marginTop: Height(1),alignItems:"center" }}>
+              <Image source={PlaidSecureImg} style={{ height:70,width: 70 }} />
+             </View>
+             <Text style={styles.upperOverlayUpperText} >
+                {'We partner with Plaid to \n securely link your account'}
+              </Text>
 
+              <View style={styles.overlayTipsContainer}>
+              {
+                PLAID_SECURE_MODAL.map((singleModal,index)=>{
+                    return <this.dataSecureTips title={singleModal.title} text={singleModal.text} key={index} />
+                })
+              }
+              </View>
+
+           </View>
+       
+       <TouchableOpacity style={{ 
+         marginTop:Height(3),
+         justifyContent:"center",alignItems:"center",alignSelf:"center",
+         height:Height(8),width:Height(8),borderRadius:100,backgroundColor:"#4E5050"
+       }}
+       onPress={this.toggleDataSecuredModal}>
+         <Entypo name={"cross"} size={Height(5.5)} color={"#FFF"} />
+       </TouchableOpacity>
+         </Fragment>
+    </Overlay>
+    );
+  });
   render() {
     
     const firstName = this.props.navigation.getParam("firstName", "PocketCFO");
-    const { questionsData,isQuestionOverlayVisible,isSpinner } = this.state;
+    const { questionsData,isQuestionOverlayVisible,isSpinner,dataSecuredModal } = this.state;
     const config = {
       velocityThreshold: 0.3,
       directionalOffsetThreshold: 80
@@ -471,6 +533,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
         <Spinner
           visible={isSpinner}
         />
+        { dataSecuredModal == true ? <this.dataSecuredModal isVisible={dataSecuredModal} /> : null}
         <Text h3 style={{marginTop:40,textAlign:"center"}}>{`Welcome, ${firstName}`}</Text>
         { this.state.onBoardingData.isFetched == true && this.state.isQuestionOverlayVisible == true ?
           <GestureRecognizer
@@ -515,7 +578,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
                 />
                 <View style={styles.textContainer}>
                   <Text style={styles.bold}>Create business profile</Text>
-                  <Text style={{fontSize:12}}>provide information on your business.</Text>
+                  <Text style={{fontSize:12,marginTop: 7}}>provide information on your business.</Text>
                 </View>
               </View>
             </Card>
@@ -555,8 +618,14 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
                   style={{ width: 50, height: 50 }}
                 />
                 <View style={styles.textContainer}>
-                  <Text style={styles.bold}>Bank integration</Text>
-                  <Text style={{fontSize:12}}>connect your business bank account.</Text>
+                  <View style={styles.dataSecuredParentContainer}>
+                    <Text style={styles.bold}>Bank integration</Text>
+                    <TouchableOpacity onPress={this.toggleDataSecuredModal} style={styles.dataSecuredContainer}>
+                      <FontAwesome name={"lock"} color={"#7C7C7C"} />
+                      <Text style={{ color:"#7C7C7C",fontSize: 10,textAlign:"right" }}>Data Secured</Text>
+                    </TouchableOpacity>
+                  </View>
+                  <Text style={{fontSize:12,marginTop: 7}}>connect your business bank account.</Text>
                 </View>
               </View>
             </Card>
@@ -597,7 +666,7 @@ import GestureRecognizer, {swipeDirections} from 'react-native-swipe-gestures';
                 />
                 <View style={styles.textContainer}>
                   <Text style={styles.bold}>Accounting integration</Text>
-                  <Text style={{fontSize:12}}>connect your accounting software.</Text>
+                  <Text style={{fontSize:12,marginTop: 7}}>connect your accounting software.</Text>
                 </View>
               </View>
             </Card>
@@ -657,15 +726,78 @@ const styles = StyleSheet.create({
     marginTop: 5,
     alignSelf:"center"
   },
-  flexRow: { flexDirection: "row", marginLeft: "-5%" },
+  flexRow: { flexDirection: "row", marginLeft: "-6%" },
   flexCol: { flexDirection: "column" },
   textContainer: {
     flexDirection: "column",
-    marginLeft: "5%"
+    marginLeft: "2.5%"
   },
   onBoardingTextStyle: {
     textAlign:"center", color:"#FFFFFF",fontWeight:"bold",fontSize:20,lineHeight:22
+  },
+  dataSecuredContainer: {
+    marginLeft:6,
+    paddingHorizontal:8,
+    width: 95,
+    height: 23,
+    backgroundColor:"#EBEBEB",
+    borderRadius: 50,
+    alignItems:"center",
+    flexDirection: "row",
+    justifyContent:"space-between"
+  },
+  dataSecuredParentContainer: {
+    flexDirection: "row",
+    justifyContent:"space-between",
+    alignItems:"center"
+  },
+  dataSecureOverlay: {
+    height: Height('100%'),
+    width:Width('100%'),
+    justifyContent:"center" 
+  },
+  dataSecureoverlayMainContainer: {
+      paddingVertical:30,
+      alignSelf:"center",
+      width: Width('85%'),
+      backgroundColor:"#FFF",
+      borderRadius: 10
+  },
+  upperOverlayUpperText: { 
+    textAlign: 'center',
+    marginTop: Height(3),
+    fontSize: Height('2.0'),
+    lineHeight: Height(2.8),
+    color:"#1D1E1F",
+    fontWeight: '700' 
+  },
+  overlayTipsContainer: {
+    marginTop: Height(2.5),
+    borderColor:"red",
+    borderWidth: 0,
+    alignSelf: "center",
+    width: Width('60%')
+   },
+   overlayTipsMainView: { 
+     flexDirection:"row",
+     justifyContent: "space-between",
+     marginVertical:10 
+  },
+  overlayTipsTextStyle: {
+    marginTop: 5,
+    width: Width("50%"),
+    opacity: 0.5,
+    color: "#000",
+    fontSize: Height(1.5),
+    textAlign: "left",
+    lineHeight: Height(2.15)
+  },
+  overlayTipsTitleStyle: { 
+    color: '#1D1E1F',
+    fontSize: Height(1.9),
+    fontWeight:"600" 
   }
+
 });
 
 

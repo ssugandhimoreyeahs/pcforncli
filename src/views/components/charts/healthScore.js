@@ -2,23 +2,35 @@ import React, { Component } from "react";
 import { View, Image, TouchableOpacity,Dimensions} from "react-native";
 import { VictoryPie } from "victory-native";
 import { Svg, Text, LinearGradient, Defs, Stop } from "react-native-svg";
-import {Ionicons} from '@expo/vector-icons';
+import { connect } from "react-redux";
+
 import {
   getHealthScoreColor,
   getHealthScoreCategory
 } from "../../../utilities/gradient";
 import { ActivityIndicator } from "react-native-paper";
 
-export default class HealthScore extends Component {
+class HealthScore extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    //const healthScore = Math.floor(Math.random()*100);
-    const healthScore = this.props.healthScore;
-    const healthScorecategory = getHealthScoreCategory(this.props.healthScore);
-    const gaugeColor = getHealthScoreColor(this.props.healthScore);
+
+    let bankIntegrationStatus = false;
+    const { userData } = this.props;
+    if(userData.isFetched == true){
+      bankIntegrationStatus = userData.userData.bankIntegrationStatus;
+    }
+    console.log("Finalization Testing here - ",bankIntegrationStatus);
+    const { isFetched,healthScoreData,loading } = this.props.healthScoreRedux;
+    let healthScoreDataOutput = 0;
+    if(isFetched && bankIntegrationStatus == true){
+      healthScoreDataOutput = healthScoreData.HealthScore;
+    }
+    const healthScore = healthScoreDataOutput;
+    const healthScorecategory = getHealthScoreCategory(healthScore);
+    const gaugeColor = getHealthScoreColor(healthScore);
     return (
       <View style={{ backgroundColor: "#090643",alignContent:'center', height:350 }}>
         <View style={{flexDirection:'row', justifyContent:'space-between',width:'100%',height:30,marginTop:20,}}>
@@ -42,7 +54,7 @@ export default class HealthScore extends Component {
         </View>
         <View style={{ backgroundColor: "#090643", alignItems:'center',justifyContent:"center",alignSelf:"center" }}>
         {
-          this.props.healthScoreIndicator == false ?
+          loading == false ?
           <Svg width={375} height={300} style={{marginTop:-40,marginRight:20,}} >
           <Text
             x={200}
@@ -69,8 +81,7 @@ export default class HealthScore extends Component {
             fontWeight={"bold"}
             textAnchor={"middle"}
             fill={"#FFF"}
-          >
-            {`${healthScore}`}
+          >{ `${healthScore}` }
           </Text>
           <Text
             x={200}
@@ -123,3 +134,11 @@ export default class HealthScore extends Component {
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    healthScoreRedux: state.healthScoreReducer,
+    userData: state.userData
+  }
+}
+export default connect(mapStateToProps,null)(HealthScore);

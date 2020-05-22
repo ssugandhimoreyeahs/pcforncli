@@ -47,11 +47,11 @@ Ionicons.loadFont();
   fetchUser= async ()=>{
     const users = await getUser();
     const { userData } = users;
-    // console.log("Mongo profile Res ",users);
+    
     if(users.result == true){
       let { company,industry,businessModel,companySize,yearFounded,stateIncorporated } = userData;
       company = company == null ? '' : company;
-      console.log("company comming ",company);
+      
       industry = industry == null ? "" : industry;
       businessModel = businessModel == null ? "" : businessModel;
       companySize = companySize == null ? "" : companySize;
@@ -101,7 +101,7 @@ Ionicons.loadFont();
       heading,
       content, [{
           text: 'Okay',
-          //onPress: () => console.log('Cancel Pressed'),
+          
           style: 'cancel'
       },],{
           cancelable: false
@@ -161,7 +161,7 @@ Ionicons.loadFont();
           "Success",
           BUSINESS_PROFILE_CREATED, [{
               text: 'Okay',
-              //onPress: () => console.log('Cancel Pressed'),
+              
               onPress: () => {
                 this.props.navigation.getParam("createBusinessProfile")();
                 this.props.navigation.navigate("Setup",{ shouldReloadApi:true });
