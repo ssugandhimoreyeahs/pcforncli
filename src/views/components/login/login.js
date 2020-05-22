@@ -174,7 +174,7 @@ class LoginScreen extends React.Component {
 
   render() {
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Spinner
           visible={this.state.isSpinner}
           textStyle={styles.spinnerTextStyle}
@@ -270,7 +270,7 @@ class LoginScreen extends React.Component {
             </View>
           </KeyboardAvoidingView>
         </ScrollView>
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -323,7 +323,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
 });
-export default DetectPlatfrom(LoginScreen, styles.container);
+export default LoginScreen;
 
 // import * as React from "react";
 // import { Image, StyleSheet, View, Text, BackHandler, Alert, Keyboard, SafeAreaView,TouchableOpacity,Linking, KeyboardAvoidingView,ScrollView} from "react-native";

@@ -79,7 +79,7 @@ class ValueProp extends React.Component {
   render() {
     const { isSpinner } = this.state;
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Spinner visible={isSpinner} />
         {this.state.isBodyLoaded == true ? (
           // <View style={styles.container} >
@@ -122,7 +122,7 @@ class ValueProp extends React.Component {
             </View>
           </SafeAreaView>
         ) : null}
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -169,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetectPlatform(ValueProp, styles.container);
+export default ValueProp;

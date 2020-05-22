@@ -44,7 +44,7 @@ Ionicons.loadFont();
 
   render() {
     return (
-      <React.Fragment>
+      <View style={styles.container}>
       
         <TouchableOpacity onPress={()=>{
           this.props.navigation.navigate("ValueProp");
@@ -67,7 +67,7 @@ Ionicons.loadFont();
           title="Continue"
           onPress={text => this.handlePress(text)}
         />
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -104,4 +104,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DetectPlatform(Title,styles.container);
+export default Title;

@@ -49,7 +49,7 @@ class OopsSorry extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Image
           style={{
             width: 140,
@@ -75,7 +75,7 @@ class OopsSorry extends Component {
             this.props.navigation.getParam("executeOperation")();
           }}
         />
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -107,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetectPlatform(OopsSorry, styles.container);
+export default OopsSorry;

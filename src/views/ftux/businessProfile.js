@@ -255,7 +255,7 @@ Ionicons.loadFont();
     
     let readyProfileUrl = isBodyLoaded && (selectLogoByUser == null ? (logoByApi   == null || logoByApi == "") ? { "type":"require" }   :  { "type":"uri", uri : logoByApi } : { "type":"uri", uri: selectLogoByUser.uri } ); 
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Spinner
           visible={this.state.spinner}
         />
@@ -402,7 +402,7 @@ Ionicons.loadFont();
           />
         </View>
           </ScrollView>  : null  }
-    </React.Fragment>
+    </View>
     );
   }
 }
@@ -496,4 +496,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DetectPlatform(BusinessProfile,styles.container);
+export default BusinessProfile;

@@ -3,7 +3,7 @@ import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { Provider } from "react-redux";
 import Store from "./src/reducers/store";
-
+import Root from "@components/Root";
 //Home Screen
 import Legal from "./src/views/legal/legal";
 import Login from "./src/views/components/login/login";
@@ -428,11 +428,13 @@ export default class App extends Component {
 
   render() {
     return (
-      <Provider store={Store}>
-        <ErrorBoundry>
-          <NavigationApp />
-        </ErrorBoundry>
-      </Provider>
+      <Root>
+        <Provider store={Store}>
+          <ErrorBoundry>
+            <NavigationApp />
+          </ErrorBoundry>
+        </Provider>
+      </Root>
     );
   }
 }

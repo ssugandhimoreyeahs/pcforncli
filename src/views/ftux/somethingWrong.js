@@ -39,7 +39,7 @@ class SomethingWrong extends Component {
   };
   render() {
     return (
-      <React.Fragment>
+      <View style={styles.container}>
         <Spinner visible={this.state.spinner} />
         <Image
           style={{ width: 133, height: 156, marginTop: "55%" }}
@@ -72,7 +72,7 @@ class SomethingWrong extends Component {
             </Text>
           </TouchableOpacity>
         )}
-      </React.Fragment>
+      </View>
     );
   }
 }
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 25,
     marginTop: 20,
-    marginBottom: 12
+    marginBottom: 12,
   },
   textSecond: {
     fontSize: 17,
@@ -107,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DetectPlatform(SomethingWrong, styles.container);
+export default SomethingWrong;
