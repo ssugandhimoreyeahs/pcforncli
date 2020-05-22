@@ -157,11 +157,12 @@ class Setup extends Component {
             this.jobInterval.unsubscribe();
             setTimeout(() => {
               this.obsInstance.instance.complete();
-            }, 1000);
+              this.isCronRegisterOneTime = false;
+              this.isStuffCompleted = false;
+              this.obsInstance = { assigned: false, instance: null };
+            }, 500);
           }
-          this.isCronRegisterOneTime = false;
-          this.isStuffCompleted = false;
-          this.obsInstance = { assigned: false, instance: null };
+
           setTimeout(() => {
             this.setState(
               {
@@ -169,13 +170,15 @@ class Setup extends Component {
                 registerCron: false,
               },
               () => {
-                this.props.navigation.navigate("Dashboard", {
-                  userResponse,
-                  fromSetup: true,
-                });
+                setTimeout(()=>{
+                  this.props.navigation.navigate("Dashboard", {
+                    userResponse,
+                    fromSetup: true,
+                  });
+                },300)
               }
             );
-          }, 1500);
+          }, 1000);
         } else if (
           userResponse.userData.bankIntegrationStatus === true &&
           userResponse.userData.isStuffCompleted === false
@@ -625,7 +628,7 @@ class Setup extends Component {
           overlayBackgroundColor="rgba(0, 0, 0, 0)"
           isVisible={isQuestionOverlayVisible}
         >
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ marginTop: 20, alignSelf: "center" }}>
               <Text style={styles.onBoardingTextStyle}>
                 Sit Tight {setupUserName},
