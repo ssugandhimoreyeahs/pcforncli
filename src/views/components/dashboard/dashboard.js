@@ -1,4 +1,4 @@
-import React, { PureComponent } from "react";
+import React, { PureComponent, Fragment } from "react";
 import {
   Alert,
   BackHandler,
@@ -61,7 +61,6 @@ class Dashboard extends PureComponent {
       isSpinner: true,
       tryAgainScreen: false,
       isCountApiTriggered: false,
-      isStuffCompleted: false,
     };
 
     this.popupInterval = null;
@@ -377,78 +376,20 @@ class Dashboard extends PureComponent {
   myCronJob = async (fromJob = false) => {
     try {
       let userResponse = await getUser();
-      // if (fromJob) {
-      //   userResponse.userData.isStuffCompleted = true;
-      // }
       if (userResponse.result === true) {
-        if (
-          userResponse.userData.bankIntegrationStatus === true &&
-          userResponse.userData.isStuffCompleted === true
-        ) {
-          //case 1 where all thing are working fine user connected to the bank and in the backend all the data and balances had been loaded
-          if (this.jobInterval.unsubscribe) {
-            this.jobInterval.unsubscribe();
-          }
-          if (fromJob) {
-            this.setState(
-              { isBodyLoaded: false, isSpinner: true, isStuffCompleted: true },
-              () => {
-                setTimeout(() => {
-                  this.fetchUser(userResponse);
-                }, 2500);
-              }
-            );
-          } else {
-            this.setState({ isStuffCompleted: true }, () => {
-              this.fetchUser(userResponse);
-            });
-          }
-        } else if (
-          userResponse.userData.bankIntegrationStatus === true &&
-          userResponse.userData.isStuffCompleted === false
-        ) {
-          //case 2 where bank integrated but the backend is not ready for the data
-
-          this.setState({
-            userData: {},
-            isSpinner: false,
-            tryAgainScreen: false,
-            isBodyLoaded: true,
-            isStuffCompleted: false,
-          });
-
-          //case ends here
-        } else if (userResponse.userData.bankIntegrationStatus === false) {
-          if (this.jobInterval.unsubscribe) {
-            //this.jobObservable.unsubscribe();
-            this.jobInterval.unsubscribe();
-          }
-          this.setState({ isStuffCompleted: true }, () => {
-            this.fetchUser(userResponse);
-          });
-        }
+        this.fetchUser(userResponse);
       } else {
-        if (this.jobInterval.unsubscribe) {
-          //this.jobObservable.unsubscribe();
-          this.jobInterval.unsubscribe();
-        }
         this.setState({
           isSpinner: false,
           tryAgainScreen: true,
           isBodyLoaded: true,
-          isStuffCompleted: true,
         });
       }
     } catch (error) {
-      if (this.jobInterval.unsubscribe) {
-        //this.jobObservable.unsubscribe();
-        this.jobInterval.unsubscribe();
-      }
       this.setState({
         isSpinner: false,
         tryAgainScreen: true,
         isBodyLoaded: true,
-        isStuffCompleted: true,
       });
     }
   };
@@ -502,12 +443,21 @@ class Dashboard extends PureComponent {
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
     );
-    if (this.props.navigation.getParam("readyValuePropAfterLogout")) {
-      this.props.navigation.getParam("readyValuePropAfterLogout")();
+    const { getParam } = this.props.navigation;
+    if (getParam("readyValuePropAfterLogout")) {
+      getParam("readyValuePropAfterLogout")();
+    }
+
+    if (getParam("fromSetup")) {
+      setTimeout(() => {
+        this.fetchUser(getParam("userResponse"));
+      }, 2000);
+    } else if (getParam("fromValueProp")) {
+      this.myCronJob();
+    } else if (getParam("fromLogin")) {
+      this.fetchUser(getParam("userResponse"));
     }
     await AsyncStorage.setItem("isUserLoggedInStorage", "true");
-    this.myCronJob();
-    this.registerMyCronJob();
   };
 
   componentWillUnmount() {
@@ -588,7 +538,7 @@ class Dashboard extends PureComponent {
     const { isSpinner } = this.state;
     const { bankIntegrationStatus, qbIntegrationStatus } = this.state.userData;
     return (
-      <React.Fragment>
+      <Fragment>
         <NavigationEvents
           onWillFocus={(payload) => {
             this.onDashBoardFocused = true;
@@ -608,8 +558,6 @@ class Dashboard extends PureComponent {
               handleButton={this.handleTryAgainButton}
               showLoggedOutButton={true}
             />
-          ) : this.state.isStuffCompleted == false ? (
-            <this.jobView />
           ) : (
             <BottomNavLayout navigation={this.props.navigation}>
               <HealthScore
@@ -642,7 +590,7 @@ class Dashboard extends PureComponent {
             </BottomNavLayout>
           )
         ) : null}
-      </React.Fragment>
+      </Fragment>
     );
   }
 }

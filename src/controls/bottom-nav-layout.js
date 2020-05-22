@@ -7,10 +7,10 @@ import DetectPlatform from "../DetectPlatform";
   
   render() {
     return (
-    <React.Fragment>
+    <View style={styles.wrapper}>
         <ScrollView style={{backgroundColor:'#f1f3f5'}}>{this.props.children}</ScrollView>
         <Menu navigation={this.props.navigation} />
-    </React.Fragment>
+    </View>
     );
   }
 }
@@ -24,4 +24,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default DetectPlatform(BottomNavLayout,styles.wrapper);
+export default BottomNavLayout;

@@ -112,7 +112,13 @@ class LoginScreen extends React.Component {
         );
 
         if (isUserValid.result) {
-          this.props.navigation.navigate("Dashboard");
+          this.props.navigation.navigate("Dashboard", {
+            fromLogin: true,
+            userResponse: {
+              result: true,
+              userData: { ...isUserValid.data.user },
+            },
+          });
           this.setState({ isSpinner: false });
         } else {
           if (

@@ -9,7 +9,10 @@ import {
   ScrollView,
   Platform,
   BackHandler,
+  ActivityIndicator,
 } from "react-native";
+import { Observable, interval, timer } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 import { Button, Card, Text, Image, Overlay } from "react-native-elements";
 import { fetchQuestionsFromApi } from "../../api/api";
 import DetectPlatform from "../../DetectPlatform";
@@ -23,10 +26,13 @@ import PlaidSecureImg from "../../assets/PlaidSecureImg.png";
 import BlueLockImg from "../../assets/BlueLock.png";
 import { PLAID_SECURE_MODAL } from "../../api/common";
 import Entypo from "react-native-vector-icons/Entypo";
+import LottieView from "lottie-react-native";
+import SpinnerLottie from "@assets/lottie/spinner.json";
 import {
   widthPercentageToDP as Width,
   heightPercentageToDP as Height,
 } from "react-native-responsive-screen";
+import { getUser } from "../../api/api";
 FontAwesome.loadFont();
 Entypo.loadFont();
 
@@ -50,14 +56,11 @@ class Setup extends Component {
       setupUserName: "",
       onBoardingData: { isFetched: false, noneOfTheAbove: false },
       dataSecuredModal: false,
-      // onBoardingData: {
-      //   totalQuestions: 10,
-      //   currentPercentage: 30,
-      //   data: [],
-      //   currentQuestion: 0,
-      //   isFetched = true
-      // }
+      registerCron: false,
     };
+    this.isCronRegisterOneTime = false;
+    this.isStuffCompleted = false;
+    this.obsInstance = { assigned: false, instance: null };
   }
 
   fetchQuestions = async () => {
@@ -139,7 +142,115 @@ class Setup extends Component {
       companyName: this.props.navigation.getParam("companyName", ""),
     });
   };
-
+  myCronJob = async (fromJob = false) => {
+    try {
+      let userResponse = await getUser();
+      console.log("Response recieve - ", userResponse);
+      if (userResponse.result === true) {
+        if (
+          userResponse.userData.bankIntegrationStatus === true &&
+          userResponse.userData.isStuffCompleted === true
+        ) {
+          //case 1 where all thing are working fine user connected to the bank and in the backend all the data and balances had been loaded
+          this.isStuffCompleted = true;
+          if (this.obsInstance.assigned) {
+            this.jobInterval.unsubscribe();
+            setTimeout(() => {
+              this.obsInstance.instance.complete();
+            }, 1000);
+          }
+          this.isCronRegisterOneTime = false;
+          this.isStuffCompleted = false;
+          this.obsInstance = { assigned: false, instance: null };
+          setTimeout(() => {
+            this.setState(
+              {
+                isQuestionOverlayVisible: false,
+                registerCron: false,
+              },
+              () => {
+                this.props.navigation.navigate("Dashboard", {
+                  userResponse,
+                  fromSetup: true,
+                });
+              }
+            );
+          }, 1500);
+        } else if (
+          userResponse.userData.bankIntegrationStatus === true &&
+          userResponse.userData.isStuffCompleted === false
+        ) {
+          //case 2 where bank integrated but the backend is not ready for the data
+          if (!this.isCronRegisterOneTime) {
+            console.log("Cron register here - ");
+            this.isCronRegisterOneTime = true;
+            this.registerMyCronJob();
+          }
+          this.isStuffCompleted = false;
+          //case ends here
+        }
+      } else {
+        //if there is an error
+        // if (this.jobInterval.unsubscribe) {
+        //   //this.jobObservable.unsubscribe();
+        //   this.jobInterval.unsubscribe();
+        // }
+      }
+    } catch (error) {
+      console.log("Job error - ", error);
+    }
+  };
+  registerMyCronJob = () => {
+    console.log("cron job registration started");
+    const JOB_TIMER = 300000;
+    let currentDT = new Date();
+    let tillDT = new Date();
+    tillDT.setMilliseconds(currentDT.getMilliseconds() + JOB_TIMER);
+    const timer$ = timer(JOB_TIMER);
+    this.jobObservable = new Observable((obs) => {
+      if (!this.obsInstance.assigned) {
+        this.obsInstance.assigned = true;
+        this.obsInstance.instance = obs;
+      }
+      this.jobInterval = interval(15000)
+        .pipe(takeUntil(timer$))
+        .subscribe(
+          (intervalObs) => {
+            if (this.isStuffCompleted === true) {
+              this.jobInterval.unsubscribe();
+              obs.complete();
+              return;
+            } else {
+              this.myCronJob(true);
+              obs.next(`Request Number - ${intervalObs + 1} - 
+            Job Registered At = ${currentDT.toLocaleString()} 
+            Job Run Till = ${tillDT.toLocaleString()}
+            Total Time Elapsed = ${(tillDT - new Date()) / 1000 / 60} Min 
+          `);
+            }
+          },
+          (error) => {
+            console.log("Error for the Job Interval");
+          },
+          () => {
+            this.jobInterval.unsubscribe();
+            obs.complete();
+            console.log("Interval Job Completed");
+          }
+        );
+    });
+    this.jobObservable.subscribe(
+      (next) => {
+        console.log(next);
+      },
+      (error) => {
+        console.log("job error");
+      },
+      () => {
+        console.log("Observable Job Completed");
+      }
+    );
+  };
   handlePressLedgetIntegration = () => {
     this.props.navigation.navigate("LedgerIntegration", {
       isOneTimeNoQbSend: this.state.isOneTimeNoQbSend,
@@ -175,17 +286,24 @@ class Setup extends Component {
       }
       return;
     }
-    // this.setState({
-    //   onBoardingData: { ...this.state.onBoardingData,currentPercentage: 100 },
-    //   isQuestionOverlayVisible: false
-    // },()=>{
-    //   setTimeout(()=>{
-    //         this.setState({ isSpinner: false });
-    //         this.props.navigation.navigate("Dashboard");
-    //       },3000);
-    // });
-    // this.setState({ isSpinner: true });
 
+    console.log("Executed");
+    this.setState(
+      (prevState) => {
+        return {
+          registerCron: true,
+          onBoardingData: {
+            ...prevState.onBoardingData,
+            currentPercentage: 100,
+          },
+        };
+      },
+      () => {
+        this.myCronJob();
+      }
+    );
+
+    return;
     this.setState(
       (prevState) => {
         return {
@@ -518,19 +636,28 @@ class Setup extends Component {
             </View>
 
             <View style={{ alignSelf: "center", marginTop: 100 }}>
-              <ProgressCircle
-                percent={currentPercentage}
-                radius={65}
-                borderWidth={0.5}
-                containerStyle={{ height: 117, width: 117 }}
-                color="#3399FF"
-                shadowColor="#999"
-                bgColor="#fff"
-              >
-                <Text style={{ fontSize: 18 }}>
-                  {Math.floor(currentPercentage) + "%"}
-                </Text>
-              </ProgressCircle>
+              {this.state.registerCron ? (
+                <LottieView
+                  source={SpinnerLottie}
+                  autoPlay
+                  loop
+                  style={{ width: 100, height: 100 }}
+                />
+              ) : (
+                <ProgressCircle
+                  percent={currentPercentage}
+                  radius={65}
+                  borderWidth={0.5}
+                  containerStyle={{ height: 117, width: 117 }}
+                  color="#3399FF"
+                  shadowColor="#999"
+                  bgColor="#fff"
+                >
+                  <Text style={{ fontSize: 18 }}>
+                    {Math.floor(currentPercentage) + "%"}
+                  </Text>
+                </ProgressCircle>
+              )}
             </View>
 
             <View style={{ marginTop: 130 }}>
@@ -543,7 +670,7 @@ class Setup extends Component {
   };
 
   onSwipeLeft = (gestureState) => {
-    const { onBoardingData } = this.state;
+    const { onBoardingData, registerCron } = this.state;
     if (
       onBoardingData.isFetched == true &&
       this.state.isQuestionOverlayVisible
@@ -570,10 +697,14 @@ class Setup extends Component {
           }
         }
         if (isButtonSelected) {
-          this.handleFinishSetup();
+          if (!registerCron) {
+            this.handleFinishSetup();
+          }
         } else {
           if (noneOfTheAbove) {
-            this.handleFinishSetup();
+            if (!registerCron) {
+              this.handleFinishSetup();
+            }
           } else {
             return;
           }

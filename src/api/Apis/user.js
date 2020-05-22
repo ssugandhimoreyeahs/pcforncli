@@ -48,7 +48,7 @@ export async function login(username, password) {
       await AsyncStorage.setItem("authToken", data.token);
       // await AsyncStorage.setItem("userId", data.user.id.toString());
       // await AsyncStorage.setItem("userData",JSON.stringify(data.user));
-      await AsyncStorage.setItem("isUserLoggedInStorage", "true");
+      //await AsyncStorage.setItem("isUserLoggedInStorage", "true");
       return { result: true, data };
     } else {
       return { result: false, error: "Invalid User" };

@@ -43,7 +43,7 @@ class ValueProp extends React.Component {
   isUserLoggedIn = async () => {
     const userLoggedIn = await isUserLoggedIn();
     if (userLoggedIn.result == true) {
-      this.props.navigation.navigate("Dashboard");
+      this.props.navigation.navigate("Dashboard", { fromValueProp: true });
       this.setState({ isBodyLoaded: true, isSpinner: false });
       //this.setState({ isSpinner: false});
       // setTimeout(()=>{
