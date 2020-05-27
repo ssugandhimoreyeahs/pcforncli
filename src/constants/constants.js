@@ -11,7 +11,7 @@ const APIENDPOINT = {
   endPoint: NETWORKINSTANCE.SANDBOXINSTANCE,
   isQuickBookProduction: true,
   //isPlaidProduction: true,
-  isPlaidProduction: false
+  isPlaidProduction: false,
 };
 
 const USERDATAAPIS = {

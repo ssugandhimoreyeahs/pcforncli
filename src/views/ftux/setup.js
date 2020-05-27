@@ -28,6 +28,7 @@ import { PLAID_SECURE_MODAL } from "../../api/common";
 import Entypo from "react-native-vector-icons/Entypo";
 import LottieView from "lottie-react-native";
 import SpinnerLottie from "@assets/lottie/spinner.json";
+import { Circle } from "react-native-progress";
 import {
   widthPercentageToDP as Width,
   heightPercentageToDP as Height,
@@ -639,7 +640,7 @@ class Setup extends Component {
             </View>
 
             <View style={{ alignSelf: "center", marginTop: 100 }}>
-              {this.state.registerCron ? (
+              {/* {this.state.registerCron ? (
                 <LottieView
                   source={SpinnerLottie}
                   autoPlay
@@ -660,7 +661,15 @@ class Setup extends Component {
                     {Math.floor(currentPercentage) + "%"}
                   </Text>
                 </ProgressCircle>
-              )}
+              )} */}
+              <Circle
+                size={Height(13)}
+                color={"#FFFFFF"}
+                unfilledColor={"#4A4A4B"}
+                indeterminateAnimationDuration={1500}
+                indeterminate={true}
+                borderWidth={7}
+              />
             </View>
 
             <View style={{ marginTop: 130 }}>

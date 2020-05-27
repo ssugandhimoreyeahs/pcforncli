@@ -46,8 +46,7 @@ import {
   QUICKBOOKS_ERROR,
   EXIT_APP,
 } from "../../../api/message";
-import LottieView from "lottie-react-native";
-import SpinnerLottie from "@assets/lottie/spinner.json";
+import NoPlaidView from './noPlaidView';
 class Dashboard extends PureComponent {
   constructor(props) {
     super(props);
@@ -248,123 +247,134 @@ class Dashboard extends PureComponent {
     ]);
   };
   fetchUser = (userResponse) => {
-    this.resetFlags();
-    let isValidTokenApiCalled = false;
-    if (userResponse.result == true) {
-      this.props.updateUserReduxTree(userResponse.userData);
-      //userResponse.userData.bankIntegrationStatus = false;
-      if (userResponse.userData.bankIntegrationStatus == false) {
-        this.showBankNotConnectedPopupFlag = true;
-      }
+    try {
+      this.resetFlags();
+      let isValidTokenApiCalled = false;
+      if (userResponse.result == true) {
+        this.props.updateUserReduxTree(userResponse.userData);
+        //userResponse.userData.bankIntegrationStatus = false;
+        if (userResponse.userData.bankIntegrationStatus == false) {
+          this.showBankNotConnectedPopupFlag = true;
+        }
 
-      if (userResponse.userData.bankIntegrationStatus == true) {
-        this.showBankNotConnectedPopupFlag = false;
+        if (userResponse.userData.bankIntegrationStatus == true) {
+          this.showBankNotConnectedPopupFlag = false;
 
-        this.props.fetchPlaidCategoryDispatch();
-        this.props.outOfCashDateAsyncCreator();
-        this.props.fetchCashOnHand(3, true);
-        this.props.fetchCashInChange(3);
-        this.props.fetchExpenseByCategory(3);
-        this.props.fetchMainExepenseByCategory(0);
-        // this.props.fetchInsights();
-        this.props.healthScoreAsyncCreator(
-          userResponse.userData.qbIntegrationStatus
-        );
-        isValidTokenApiCalled = true;
-        validatePlaidTokenPromise()
-          .then((triggerValidPlaidToken) => {
-            if (triggerValidPlaidToken.result == true) {
-              if (triggerValidPlaidToken.response.isValidPlaidToken == false) {
-                //this.showBankCredentialChangePopupFlag = true;
-                let isshowQBPopupFlag =
-                  userResponse.userData.qbIntegrationStatus == true &&
-                  triggerValidPlaidToken.response.IsQuickbookToken == false
-                    ? true
-                    : false;
-                if (this.onDashBoardFocused) {
-                  this.showBankCredentialChangePopup(isshowQBPopupFlag);
-                }
-              } else {
+          this.props.fetchPlaidCategoryDispatch();
+          this.props.outOfCashDateAsyncCreator();
+          this.props.fetchCashOnHand(3, true);
+          this.props.fetchCashInChange(3);
+          this.props.fetchExpenseByCategory(3);
+          this.props.fetchMainExepenseByCategory(0);
+          // this.props.fetchInsights();
+          this.props.healthScoreAsyncCreator(
+            userResponse.userData.qbIntegrationStatus
+          );
+          isValidTokenApiCalled = true;
+          validatePlaidTokenPromise()
+            .then((triggerValidPlaidToken) => {
+              if (triggerValidPlaidToken.result == true) {
                 if (
-                  userResponse.userData.qbIntegrationStatus == true &&
-                  triggerValidPlaidToken.response.IsQuickbookToken == false
+                  triggerValidPlaidToken.response.isValidPlaidToken == false
                 ) {
-                  //this.showQuickBooksPopupFlag = true;
+                  //this.showBankCredentialChangePopupFlag = true;
+                  let isshowQBPopupFlag =
+                    userResponse.userData.qbIntegrationStatus == true &&
+                    triggerValidPlaidToken.response.IsQuickbookToken == false
+                      ? true
+                      : false;
                   if (this.onDashBoardFocused) {
-                    this.showQBPopup();
+                    this.showBankCredentialChangePopup(isshowQBPopupFlag);
+                  }
+                } else {
+                  if (
+                    userResponse.userData.qbIntegrationStatus == true &&
+                    triggerValidPlaidToken.response.IsQuickbookToken == false
+                  ) {
+                    //this.showQuickBooksPopupFlag = true;
+                    if (this.onDashBoardFocused) {
+                      this.showQBPopup();
+                    }
                   }
                 }
               }
-            }
-          })
-          .catch((error) => {
-            console.log("Validate Plaid Token Promise error 1 - ", error);
-          });
-      }
-      if (userResponse.userData.qbIntegrationStatus == true) {
-        this.props.fetchSales();
-        this.props.fetchIncommingAr();
-      }
+            })
+            .catch((error) => {
+              console.log("Validate Plaid Token Promise error 1 - ", error);
+            });
+        }
+        if (userResponse.userData.qbIntegrationStatus == true) {
+          this.props.fetchSales();
+          this.props.fetchIncommingAr();
+        }
 
-      this.setState(
-        {
-          userData: userResponse.userData,
-          isSpinner: false,
-          tryAgainScreen: false,
-          isBodyLoaded: true,
-        },
-        () => {
-          if (userResponse.userData.bankIntegrationStatus == true) {
-            // this.props.fetchPlaidCategoryDispatch();
-          }
-          if (this.state.isCountApiTriggered == false) {
-            if (userResponse.userData.bankIntegrationStatus == false) {
-              if (userResponse.userData.qbIntegrationStatus == true) {
-                validatePlaidTokenPromise()
-                  .then((triggerValidPlaidToken) => {
-                    if (triggerValidPlaidToken.result == true) {
-                      let isShowQBPopup =
-                        triggerValidPlaidToken.response.IsQuickbookToken ==
-                        false
-                          ? true
-                          : false;
-                      setTimeout(() => {
-                        if (this.onDashBoardFocused) {
-                          this.showConnectBankPopup(isShowQBPopup);
-                        }
-                      }, 300);
-                    } else {
+        this.setState(
+          {
+            userData: userResponse.userData,
+            isSpinner: false,
+            tryAgainScreen: false,
+            isBodyLoaded: true,
+          },
+          () => {
+            if (userResponse.userData.bankIntegrationStatus == true) {
+              // this.props.fetchPlaidCategoryDispatch();
+            }
+            if (this.state.isCountApiTriggered == false) {
+              if (userResponse.userData.bankIntegrationStatus == false) {
+                if (userResponse.userData.qbIntegrationStatus == true) {
+                  validatePlaidTokenPromise()
+                    .then((triggerValidPlaidToken) => {
+                      if (triggerValidPlaidToken.result == true) {
+                        let isShowQBPopup =
+                          triggerValidPlaidToken.response.IsQuickbookToken ==
+                          false
+                            ? true
+                            : false;
+                        setTimeout(() => {
+                          if (this.onDashBoardFocused) {
+                            this.showConnectBankPopup(isShowQBPopup);
+                          }
+                        }, 300);
+                      } else {
+                        setTimeout(() => {
+                          if (this.onDashBoardFocused) {
+                            this.showConnectBankPopup(false);
+                          }
+                        }, 300);
+                      }
+                    })
+                    .catch((error) => {
                       setTimeout(() => {
                         if (this.onDashBoardFocused) {
                           this.showConnectBankPopup(false);
                         }
                       }, 300);
+                    });
+                } else {
+                  setTimeout(() => {
+                    if (this.onDashBoardFocused) {
+                      this.showConnectBankPopup(false);
                     }
-                  })
-                  .catch((error) => {
-                    setTimeout(() => {
-                      if (this.onDashBoardFocused) {
-                        this.showConnectBankPopup(false);
-                      }
-                    }, 300);
-                  });
-              } else {
-                setTimeout(() => {
-                  if (this.onDashBoardFocused) {
-                    this.showConnectBankPopup(false);
-                  }
-                }, 300);
+                  }, 300);
+                }
               }
-            }
 
-            this.setState({ isCountApiTriggered: true });
-            setTimeout(() => {
-              userLoginCounter();
-            }, 6000);
+              this.setState({ isCountApiTriggered: true });
+              setTimeout(() => {
+                userLoginCounter();
+              }, 6000);
+            }
           }
-        }
-      );
-    } else {
+        );
+      } else {
+        this.setState({
+          isSpinner: false,
+          tryAgainScreen: true,
+          isBodyLoaded: true,
+        });
+      }
+    } catch (error) {
+      console.log("Error on Dashboard on Catch - ");
       this.setState({
         isSpinner: false,
         tryAgainScreen: true,
@@ -511,27 +521,56 @@ class Dashboard extends PureComponent {
       }, 500);
     }
   };
-  jobView = React.memo(() => {
-    return (
-      <View style={styles.jobViewCart}>
-        <TouchableWithoutFeedback>
-          <LottieView
-            source={SpinnerLottie}
-            autoPlay
-            loop
-            style={{ width: 100, height: 100 }}
+
+  renderDashboard = React.memo(
+    ({ bankIntegrationStatus, qbIntegrationStatus }) => {
+      return (
+        <BottomNavLayout navigation={this.props.navigation}>
+          <HealthScore
+            navigation={this.props.navigation}
+            reloadPlaid={() => {
+              this.reloadPlaid();
+            }}
+            reloadQuickbooks={() => {
+              this.reloadQuickbooks();
+            }}
           />
-        </TouchableWithoutFeedback>
-        <Text
-          style={{
-            lineHeight: 25,
-            textAlign: "center",
-            marginTop: 25,
-            fontSize: 15,
-            fontWeight: "500",
+          {bankIntegrationStatus == true ? (
+            <CashOnHand navigation={this.props.navigation} />
+          ) : null}
+          {bankIntegrationStatus == true ? (
+            <ChangeInCash navigation={this.props.navigation} />
+          ) : null}
+          {bankIntegrationStatus == true ? (
+            <ExpenseByCategory navigation={this.props.navigation} />
+          ) : null}
+          {qbIntegrationStatus == true ? (
+            <Sales navigation={this.props.navigation} />
+          ) : null}
+          {qbIntegrationStatus == true ? (
+            <IncomingAR
+              style={styles.incomingAR}
+              navigation={this.props.navigation}
+            />
+          ) : null}
+        </BottomNavLayout>
+      );
+    }
+  );
+  renderNoPlaidDashboard = React.memo(() => {
+    return (
+      <BottomNavLayout navigation={this.props.navigation}>
+        <HealthScore
+          navigation={this.props.navigation}
+          reloadPlaid={() => {
+            this.reloadPlaid();
           }}
-        >{`Sit Tight\nWe're Building Your Dashboard`}</Text>
-      </View>
+          reloadQuickbooks={() => {
+            this.reloadQuickbooks();
+          }}
+        />
+        <NoPlaidView />
+      </BottomNavLayout>
     );
   });
   render() {
@@ -558,36 +597,13 @@ class Dashboard extends PureComponent {
               handleButton={this.handleTryAgainButton}
               showLoggedOutButton={true}
             />
+          ) : bankIntegrationStatus === false ? (
+            <this.renderNoPlaidDashboard />
           ) : (
-            <BottomNavLayout navigation={this.props.navigation}>
-              <HealthScore
-                navigation={this.props.navigation}
-                reloadPlaid={() => {
-                  this.reloadPlaid();
-                }}
-                reloadQuickbooks={() => {
-                  this.reloadQuickbooks();
-                }}
-              />
-              {bankIntegrationStatus == true ? (
-                <CashOnHand navigation={this.props.navigation} />
-              ) : null}
-              {bankIntegrationStatus == true ? (
-                <ChangeInCash navigation={this.props.navigation} />
-              ) : null}
-              {bankIntegrationStatus == true ? (
-                <ExpenseByCategory navigation={this.props.navigation} />
-              ) : null}
-              {qbIntegrationStatus == true ? (
-                <Sales navigation={this.props.navigation} />
-              ) : null}
-              {qbIntegrationStatus == true ? (
-                <IncomingAR
-                  style={styles.incomingAR}
-                  navigation={this.props.navigation}
-                />
-              ) : null}
-            </BottomNavLayout>
+            <this.renderDashboard
+              bankIntegrationStatus={bankIntegrationStatus}
+              qbIntegrationStatus={qbIntegrationStatus}
+            />
           )
         ) : null}
       </Fragment>
