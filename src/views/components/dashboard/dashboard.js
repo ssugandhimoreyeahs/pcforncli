@@ -160,7 +160,7 @@ class Dashboard extends Component {
     if (!this.state.isInnerIntegrationStarted) {
       this.setState(
         {
-          userData: { ...this.state.userData },
+          //userData: { ...this.state.userData },
           isInnerIntegrationStarted: true,
         },
         () => {
