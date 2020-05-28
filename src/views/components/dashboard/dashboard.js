@@ -1,4 +1,4 @@
-import React, { PureComponent, Fragment } from "react";
+import React, { PureComponent, Fragment, Component } from "react";
 import {
   Alert,
   BackHandler,
@@ -6,6 +6,7 @@ import {
   TouchableWithoutFeedback,
   Text,
 } from "react-native";
+import { Overlay } from "react-native-elements";
 import { Observable, interval, timer } from "rxjs";
 import { takeUntil } from "rxjs/operators";
 import { NavigationEvents } from "react-navigation";
@@ -46,8 +47,10 @@ import {
   QUICKBOOKS_ERROR,
   EXIT_APP,
 } from "../../../api/message";
-import NoPlaidView from './noPlaidView';
-class Dashboard extends PureComponent {
+import { Circle } from "react-native-progress";
+import NoPlaidView from "./noPlaidView";
+import { heightPercentageToDP } from "react-native-responsive-screen";
+class Dashboard extends Component {
   constructor(props) {
     super(props);
     this.onDashBoardFocused = true;
@@ -60,8 +63,16 @@ class Dashboard extends PureComponent {
       isSpinner: true,
       tryAgainScreen: false,
       isCountApiTriggered: false,
+      isBodyLoaded: false,
+
+      isInnerIntegrationStarted: false,
     };
 
+    this.isCronRegisterOneTime = false;
+    this.isStuffCompleted = false;
+    this.obsInstance = { assigned: false, instance: null };
+
+    this.isMyCronWorkDone = false;
     this.popupInterval = null;
   }
   resetFlags = () => {
@@ -69,54 +80,147 @@ class Dashboard extends PureComponent {
     this.showBankNotConnectedPopupFlag = false;
     this.showQuickBooksPopupFlag = false;
   };
-  reloadPlaid = () => {
-    this.resetFlags();
 
-    getUserPromise()
-      .then((userResponse) => {
-        console.log("Dashboard user - ", userResponse);
-
-        if (userResponse.result == true) {
-          this.props.updateUserReduxTree(userResponse.userData);
-          if (userResponse.userData.bankIntegrationStatus == false) {
-            this.showBankNotConnectedPopupFlag = true;
+  myUpdatedJobForAll = async (fromJob = false) => {
+    try {
+      let userResponse = await getUser();
+      console.log("Response recieve - ", userResponse);
+      if (userResponse.result === true) {
+        if (
+          userResponse.userData.bankIntegrationStatus === true &&
+          userResponse.userData.isStuffCompleted === true
+        ) {
+          //case 1 where all thing are working fine user connected to the bank and in the backend all the data and balances had been loaded
+          this.isStuffCompleted = true;
+          console.log("Here--------------------- ", this.obsInstance.assigned);
+          console.log("is jobinterval   - ", this.jobInterval);
+          if (this.obsInstance.assigned) {
+            this.jobInterval.unsubscribe();
+            setTimeout(() => {
+              this.obsInstance.instance.complete();
+              this.isCronRegisterOneTime = false;
+              this.isStuffCompleted = false;
+              this.obsInstance = { assigned: false, instance: null };
+            }, 500);
           }
-
-          if (userResponse.userData.bankIntegrationStatus == true) {
-            this.showBankNotConnectedPopupFlag = false;
-
-            this.props.fetchPlaidCategoryDispatch();
-            this.props.outOfCashDateAsyncCreator();
-            this.props.fetchCashOnHand(3, true);
-            this.props.fetchCashInChange(3);
-            this.props.fetchExpenseByCategory(3);
-            this.props.fetchMainExepenseByCategory(0);
-            // this.props.fetchInsights();
-            this.props.healthScoreAsyncCreator(
-              userResponse.userData.qbIntegrationStatus
+          this.isMyCronWorkDone = true;
+          setTimeout(() => {
+            this.setState(
+              {
+                isBodyLoaded: false,
+                isInnerIntegrationStarted: false,
+              },
+              () => {
+                setTimeout(() => {
+                  // this.props.navigation.navigate("Dashboard", {
+                  //   userResponse,
+                  //   fromSetup: true,
+                  // });
+                  this.setState(
+                    (prevState) => {
+                      return { isSpinner: true };
+                    },
+                    () => {
+                      setTimeout(() => {
+                        this.fetchUser(userResponse);
+                      }, 1500);
+                    }
+                  );
+                }, 50);
+              }
             );
-            isValidTokenApiCalled = true;
+          }, 1000);
+        } else if (
+          userResponse.userData.bankIntegrationStatus === true &&
+          userResponse.userData.isStuffCompleted === false
+        ) {
+          console.log("First Time i will be here- ");
+          //case 2 where bank integrated but the backend is not ready for the data
+          if (!this.isCronRegisterOneTime) {
+            console.log("But i will be only one time here");
+            console.log("Cron register here - ");
+            this.isCronRegisterOneTime = true;
+            this.registerMyCronJob();
           }
-          this.setState({ userData: userResponse.userData }, () => {
-            if (userResponse.userData.bankIntegrationStatus == true) {
-              // this.props.fetchPlaidCategoryDispatch();
-            }
-          });
-        } else {
-          this.setState({
-            isSpinner: false,
-            tryAgainScreen: true,
-            isBodyLoaded: true,
-          });
+          this.isStuffCompleted = false;
+          //case ends here
         }
-      })
-      .catch((error) => {
-        this.setState({
-          isSpinner: false,
-          tryAgainScreen: true,
-          isBodyLoaded: true,
-        });
-      });
+      } else {
+        //if there is an error
+        // if (this.jobInterval.unsubscribe) {
+        //   //this.jobObservable.unsubscribe();
+        //   this.jobInterval.unsubscribe();
+        // }
+      }
+    } catch (error) {
+      console.log("Job error - ", error);
+    }
+  };
+  reloadPlaid = async (fromJob = false) => {
+    if (!this.state.isInnerIntegrationStarted) {
+      this.setState(
+        {
+          userData: { ...this.state.userData },
+          isInnerIntegrationStarted: true,
+        },
+        () => {
+          console.log("finalll - ", this.state.isInnerIntegrationStarted);
+          this.myUpdatedJobForAll();
+        }
+      );
+      console.log("State set Here");
+    }
+  };
+  registerMyCronJob = () => {
+    console.log("cron job registration started");
+    const JOB_TIMER = 300000;
+    let currentDT = new Date();
+    let tillDT = new Date();
+    tillDT.setMilliseconds(currentDT.getMilliseconds() + JOB_TIMER);
+    const timer$ = timer(JOB_TIMER);
+    this.jobObservable = new Observable((obs) => {
+      if (!this.obsInstance.assigned) {
+        this.obsInstance.assigned = true;
+        this.obsInstance.instance = obs;
+      }
+      this.jobInterval = interval(12000)
+        .pipe(takeUntil(timer$))
+        .subscribe(
+          (intervalObs) => {
+            if (this.isStuffCompleted === true) {
+              this.jobInterval.unsubscribe();
+              obs.complete();
+              return;
+            } else {
+              this.myUpdatedJobForAll(true);
+              obs.next(`Request Number - ${intervalObs + 1} - 
+            Job Registered At = ${currentDT.toLocaleString()} 
+            Job Run Till = ${tillDT.toLocaleString()}
+            Total Time Elapsed = ${(tillDT - new Date()) / 1000 / 60} Min 
+          `);
+            }
+          },
+          (error) => {
+            console.log("Error for the Job Interval");
+          },
+          () => {
+            this.jobInterval.unsubscribe();
+            obs.complete();
+            console.log("Interval Job Completed");
+          }
+        );
+    });
+    this.jobObservable.subscribe(
+      (next) => {
+        console.log(next);
+      },
+      (error) => {
+        console.log("job error");
+      },
+      () => {
+        console.log("Observable Job Completed");
+      }
+    );
   };
   reloadQuickbooks = () => {
     this.resetFlags();
@@ -403,52 +507,6 @@ class Dashboard extends PureComponent {
       });
     }
   };
-  registerMyCronJob = () => {
-    const JOB_TIMER = 300000;
-    let currentDT = new Date();
-    let tillDT = new Date();
-    tillDT.setMilliseconds(currentDT.getMilliseconds() + JOB_TIMER);
-    const timer$ = timer(JOB_TIMER);
-    this.jobObservable = new Observable((obs) => {
-      this.jobInterval = interval(20000)
-        .pipe(takeUntil(timer$))
-        .subscribe(
-          (intervalObs) => {
-            if (this.state.isStuffCompleted === true) {
-              this.jobInterval.unsubscribe();
-              obs.complete();
-              return;
-            } else {
-              this.myCronJob(true);
-              obs.next(`Request Number - ${intervalObs + 1} - 
-            Job Registered At = ${currentDT.toLocaleString()} 
-            Job Run Till = ${tillDT.toLocaleString()}
-            Total Time Elapsed = ${(tillDT - new Date()) / 1000 / 60} Min 
-          `);
-            }
-          },
-          (error) => {
-            console.log("Error for the Job Interval");
-          },
-          () => {
-            jobInterval.unsubscribe();
-            obs.complete();
-            console.log("Interval Job Completed");
-          }
-        );
-    });
-    this.jobObservable.subscribe(
-      (next) => {
-        console.log(next);
-      },
-      (error) => {
-        console.log("job error");
-      },
-      () => {
-        console.log("Observable Job Completed");
-      }
-    );
-  };
   componentDidMount = async () => {
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
@@ -510,6 +568,10 @@ class Dashboard extends PureComponent {
   };
 
   callAgainForThePopup = () => {
+    if (this.state.isInnerIntegrationStarted) {
+      this.setState({ isInnerIntegrationStarted: true });
+      return;
+    }
     if (this.showQuickBooksPopupFlag) {
       setTimeout(() => {
         this.showQBPopup();
@@ -557,9 +619,51 @@ class Dashboard extends PureComponent {
       );
     }
   );
-  renderNoPlaidDashboard = React.memo(() => {
+
+  renderOverlay = () => {
+    const { userData } = this.state;
+    console.log("User datahere - ", userData);
+    return (
+      <Overlay
+        overlayStyle={{
+          height: "100%",
+          width: "100%",
+          flex: 1,
+        }}
+        windowBackgroundColor="rgba(0, 0, 0, 0.7)"
+        overlayBackgroundColor="rgba(0, 0, 0, 0)"
+        isVisible={this.state.isInnerIntegrationStarted}
+        //isVisible={true}
+      >
+        <View style={{ marginTop: heightPercentageToDP(18) }}>
+          <Text style={styles.onBoardingTextStyle}>
+            Sit Tight {`${userData.firstname}`}
+          </Text>
+          <Text style={{ ...styles.onBoardingTextStyle, marginTop: 15 }}>
+            We're Building Your Dashboard
+          </Text>
+
+          <View
+            style={{ marginTop: heightPercentageToDP(8), alignSelf: "center" }}
+          >
+            <Circle
+              //borderColor={"rgba(0, 0, 0, 0)"}
+              size={heightPercentageToDP(10)}
+              color={"#FFFFFF"}
+              unfilledColor={"#4A4A4B"}
+              indeterminateAnimationDuration={1500}
+              indeterminate={true}
+              borderWidth={7}
+            />
+          </View>
+        </View>
+      </Overlay>
+    );
+  };
+  renderNoPlaidDashboard = () => {
     return (
       <BottomNavLayout navigation={this.props.navigation}>
+        <this.renderOverlay />
         <HealthScore
           navigation={this.props.navigation}
           reloadPlaid={() => {
@@ -569,10 +673,11 @@ class Dashboard extends PureComponent {
             this.reloadQuickbooks();
           }}
         />
+
         <NoPlaidView />
       </BottomNavLayout>
     );
-  });
+  };
   render() {
     const { isSpinner } = this.state;
     const { bankIntegrationStatus, qbIntegrationStatus } = this.state.userData;
@@ -582,7 +687,27 @@ class Dashboard extends PureComponent {
           onWillFocus={(payload) => {
             this.onDashBoardFocused = true;
             if (this.state.isBodyLoaded == true) {
-              this.callAgainForThePopup();
+              //this.callAgainForThePopup();
+            }
+          }}
+          onDidFocus={() => {
+            const { getParam } = this.props.navigation;
+            console.log("onDidFocus() - demo ", getParam("comeFromTheBank"));
+            // if (this.state.isInnerIntegrationStarted) {
+            //   this.setState({
+            //     userData: { ...this.state.userData },
+            //     isInnerIntegrationStarted: true,
+            //   });
+            //   return;
+            // }
+            if (
+              getParam("comeFromTheBank") != undefined &&
+              getParam("comeFromTheBank") == true &&
+              this.state.isInnerIntegrationStarted === false
+            ) {
+              if (!this.isMyCronWorkDone) {
+                this.reloadPlaid();
+              }
             }
           }}
           onWillBlur={(payload) => {
@@ -598,7 +723,20 @@ class Dashboard extends PureComponent {
               showLoggedOutButton={true}
             />
           ) : bankIntegrationStatus === false ? (
-            <this.renderNoPlaidDashboard />
+            <BottomNavLayout navigation={this.props.navigation}>
+              <this.renderOverlay />
+              <HealthScore
+                navigation={this.props.navigation}
+                reloadPlaid={() => {
+                  this.reloadPlaid();
+                }}
+                reloadQuickbooks={() => {
+                  this.reloadQuickbooks();
+                }}
+              />
+
+              <NoPlaidView />
+            </BottomNavLayout>
           ) : (
             <this.renderDashboard
               bankIntegrationStatus={bankIntegrationStatus}
@@ -656,12 +794,6 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Dashboard);
-
 const styles = StyleSheet.create({
   jobViewCart: {
     flex: 1,
@@ -679,4 +811,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-end",
   },
+  onBoardingTextStyle: {
+    textAlign: "center",
+    color: "#FFFFFF",
+    fontWeight: "bold",
+    fontSize: 20,
+    lineHeight: 22,
+  },
 });
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Dashboard);

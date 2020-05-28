@@ -72,7 +72,7 @@ export default class BankIntegration extends Component {
                   this.setState({ isSpinner: true }, () => {
                     setTimeout(() => {
                       if (this.props.navigation.getParam("reloadPlaid")) {
-                        this.props.navigation.getParam("reloadPlaid")();
+                        //this.props.navigation.getParam("reloadPlaid")();
                       }
 
                       setTimeout(() => {
@@ -87,9 +87,11 @@ export default class BankIntegration extends Component {
                         //  },1000);
 
                         this.setState({ isSpinner: false });
-                        this.props.navigation.navigate("Contact");
-                      }, 1500);
-                    }, 8000);
+                        this.props.navigation.navigate("Dashboard",{
+                          comeFromTheBank: true
+                        });
+                      }, 1000);
+                    }, 3000);
                   });
                 },
               });
