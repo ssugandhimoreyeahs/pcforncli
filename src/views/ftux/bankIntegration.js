@@ -20,6 +20,7 @@ export default class BankIntegration extends Component {
     } else if (data.action === "plaid_link-undefined::connected") {
       try {
         this.setState({ isSpinner: true });
+        const { getParam, navigate } = this.props.navigation;
         //console.log(data);
         publicToken = data.metadata.public_token;
         institution = data.metadata.institution;
@@ -32,65 +33,49 @@ export default class BankIntegration extends Component {
         );
         console.log("Send Plaid Details Response", triggerPlaidPublicToken);
         if (triggerPlaidPublicToken.result == true) {
-          if (this.props.navigation.getParam("createBankIntegration")) {
+          if (getParam("createBankIntegration")) {
             this.setState({ isSpinner: false }, () => {
-              if (this.props.navigation.getParam("createBankIntegration")) {
-                this.props.navigation.getParam("createBankIntegration")();
+              if (getParam("createBankIntegration")) {
+                getParam("createBankIntegration")();
               }
-              this.props.navigation.navigate("AccountConnected", {
+              navigate("AccountConnected", {
                 redirectTo: () => {
-                  this.props.navigation.navigate("Setup");
+                  navigate("Setup");
                 },
               });
             });
-          } else if (this.props.navigation.getParam("comeFromTimeout")) {
+          } else if (getParam("comeFromTimeout")) {
             this.setState({ isSpinner: false }, () => {
               this.props.navigation.navigate("AccountConnected", {
                 redirectTo: () => {
                   this.setState({ isSpinner: true }, () => {
                     setTimeout(() => {
-                      if (
-                        this.props.navigation.getParam("reloadDashBoardData")
-                      ) {
-                        this.props.navigation.getParam("reloadDashBoardData")();
+                      if (getParam("reloadDashBoardData")) {
+                        getParam("reloadDashBoardData")();
                       }
                       setTimeout(() => {
                         this.setState({ isSpinner: false });
-                        this.props.navigation.navigate("Dashboard");
+                        navigate("Dashboard");
                       }, 1500);
-                    }, 7000);
+                    }, 2500);
                   });
                 },
               });
             });
-          } else if (
-            this.props.navigation.getParam("comeFromInnerIntegration")
-          ) {
+          } else if (getParam("comeFromInnerIntegration")) {
             this.setState({ isSpinner: false }, () => {
-              this.props.navigation.navigate("AccountConnected", {
+              navigate("AccountConnected", {
                 redirectTo: () => {
                   this.setState({ isSpinner: true }, () => {
                     setTimeout(() => {
-                      if (this.props.navigation.getParam("reloadPlaid")) {
-                        //this.props.navigation.getParam("reloadPlaid")();
-                      }
-
-                      setTimeout(() => {
-                        // if(this.props.navigation.getParam("reloadInnerIntegrationScreen")){
-                        //   this.props.navigation.getParam("reloadInnerIntegrationScreen")();
-                        // }
-                        //  setTimeout(()=>{
-                        //   //this.props.navigation.navigate("Integration");
-                        //   //change some flow on 28-mar-2020
-                        //   this.setState({ isSpinner: false });
-                        //   this.props.navigation.navigate("Contact");
-                        //  },1000);
-
-                        this.setState({ isSpinner: false });
-                        this.props.navigation.navigate("Dashboard",{
-                          comeFromTheBank: true
+                      this.setState({ isSpinner: false }, () => {
+                        setTimeout(() => {
+                          getParam("reloadPlaid")();
+                        }, 50);
+                        navigate("Dashboard", {
+                          comeFromTheBank: true,
                         });
-                      }, 1000);
+                      });
                     }, 3000);
                   });
                 },
