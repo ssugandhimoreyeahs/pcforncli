@@ -500,9 +500,9 @@ export function getPlaidCategoryUsingPromise() {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem("authToken").then((token) => {
       // console.log("Testing token here inside the callback of the async storage - ",token);
-
+      //Old Api Link
       axios
-        .get(APINETWORK.getCategory, {
+        .get(APINETWORK.newGetCategory, {
           headers: { Authorization: token, "Content-Type": "application/json" },
           timeout,
         })

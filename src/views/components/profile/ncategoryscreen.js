@@ -111,41 +111,27 @@ class CategoryScreen extends Component {
     const showEditTray = this.props.navigation.getParam("showEditTray");
     return (
       <View style={styles.header}>
-        <View
-          style={{
-            //borderWidth:1,borderColor:"red",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "92%",
-            marginTop: 30,
-            alignSelf: "center",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              this.handleHeaderButton();
-            }}
-          >
+        <View style={styles.myHeaderParent}>
+          <TouchableOpacity onPress={this.handleHeaderButton}>
             <AntDesign name={`${antDesignIcon}`} size={22} color={"#000000"} />
           </TouchableOpacity>
 
-          <Text style={{ fontSize: 17, color: "#000" }}>Select Category</Text>
+          <Text style={styles.headerTitle}>Select Category</Text>
           {error == true ? (
-            <View style={{ width: 35 }} />
+            <View style={styles.editTrayWidth} />
           ) : isEdit == true ? (
-            <View style={{ width: 35 }} />
+            <View style={styles.editTrayWidth} />
           ) : showEditTray == true ? (
             <TouchableOpacity
-              style={{ paddingRight: 2, width: 35 }}
+              style={{ ...styles.editTrayWidth, paddingRight: 2 }}
               onPress={() => {
                 this.setState({ isEdit: true, toggle: false });
               }}
             >
-              <Text style={{ color: "#4A90E2", fontSize: 17 }}>Edit</Text>
+              <Text style={styles.editHeaderTitle}>Edit</Text>
             </TouchableOpacity>
           ) : (
-            <View style={{ width: 35 }} />
+            <View style={styles.editTrayWidth} />
           )}
         </View>
       </View>
@@ -155,20 +141,7 @@ class CategoryScreen extends Component {
   addCategory = () => {
     const { isEdit, toggle } = this.state;
     return (
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingVertical: 17,
-          marginTop: 25,
-          height: 70,
-          backgroundColor: "#FFF",
-          width: "90%",
-          alignSelf: "center",
-          borderRadius: 5,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
+      <View style={styles.addCategoryParentView}>
         {isEdit == false ? (
           <Fragment>
             <View
@@ -208,9 +181,7 @@ class CategoryScreen extends Component {
             }}
             style={{ justifyContent: "center", paddingLeft: 4 }}
           >
-            <Text style={{ fontSize: 13, color: "#000", fontWeight: "600" }}>
-              Add Category
-            </Text>
+            <Text style={styles.addCategoryTitle}>Add Category</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -392,10 +363,10 @@ class CategoryScreen extends Component {
     let { categoryName, index, customcategories, id } = categoryData;
     let showCheckIcon =
       pointIconToDefaultCategory == true
-        ? categoryName == executingTransactionDetails.defaultCategory
+        ? categoryName == executingTransactionDetails.clientCategory
           ? true
           : false
-        : categoryName == executingTransactionDetails.category
+        : categoryName == executingTransactionDetails.clientCategory
         ? true
         : false;
     let isIconAvailable = false;
@@ -994,6 +965,43 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     alignSelf: "center",
+  },
+  myHeaderParent: {
+    //borderWidth:1,borderColor:"red",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "92%",
+    marginTop: 30,
+    alignSelf: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 17,
+    color: "#000",
+  },
+  editHeaderTitle: {
+    color: "#4A90E2",
+    fontSize: 17,
+  },
+  editTrayWidth: {
+    width: 35,
+  },
+  addCategoryParentView: {
+    paddingHorizontal: 10,
+    paddingVertical: 17,
+    marginTop: 25,
+    height: 70,
+    backgroundColor: "#FFF",
+    width: "90%",
+    alignSelf: "center",
+    borderRadius: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  addCategoryTitle: {
+    fontSize: 13,
+    color: "#000",
+    fontWeight: "600",
   },
 });
 

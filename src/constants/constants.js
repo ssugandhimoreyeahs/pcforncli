@@ -93,7 +93,13 @@ const QUICKBOOKSAPIS = {
   qbNGROKCallBackUrl: APIENDPOINT.endPoint + "/quickBooks/callback",
   noQbForm: APIENDPOINT.endPoint + "/quickBooks/NoQbForm",
 };
-
+const NEW_CATEGORY_API = {
+  newGetCategory: APIENDPOINT.endPoint + "/plaid/getClientCategory",
+  newAddCategory:
+    APIENDPOINT.endPoint + "/plaid/addClientCategoryToTransaction",
+  newDeleteCategory: APIENDPOINT.endPoint + "/plaid/deleteClientCategory",
+  newEditCategory: APIENDPOINT.endPoint + "/plaid/editClientCategory",
+};
 export const APINETWORK = {
   getQuestions: APIENDPOINT.endPoint + "/questions/getQuestions",
   incommingAr: APIENDPOINT.endPoint + "/parcentage/incomingAr",
@@ -104,6 +110,7 @@ export const APINETWORK = {
   ...HEALTHSCOREAPI,
   ...PLAIDAPIS,
   ...QUICKBOOKSAPIS,
+  ...NEW_CATEGORY_API,
 };
 
 export const PLAID = {

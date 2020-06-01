@@ -51,7 +51,7 @@ function Separator() {
 }
 
 const TransactionComponent = (props) => {
-  console.log("props recieve here - for the testin - ", props);
+  //console.log("props recieve here - for the testin - ", props);
   const { userData } = props;
   let readyAmount = ``;
   let categoryButtonText = ``;
@@ -59,14 +59,18 @@ const TransactionComponent = (props) => {
   let detailInfo = ``;
   //add category button text
   if (
-    props.fullTransactionObj.category ==
-    props.fullTransactionObj.defaultCategory
+    props.fullTransactionObj.clientCategory ==
+    props.fullTransactionObj.clientDefaultCategory
   ) {
     categoryButtonText = `+ Category`;
-    detailInfo = props.fullTransactionObj.category;
+    detailInfo = firstLetterCapital(
+      props.fullTransactionObj.clientDefaultCategory
+    );
   } else {
     detailInfo = `Detail Info`;
-    categoryButtonText = `${props.fullTransactionObj.category}`;
+    categoryButtonText = `${firstLetterCapital(
+      props.fullTransactionObj.clientDefaultCategory
+    )}`;
   }
 
   if (props.transactionTypes == "INFLOW") {
