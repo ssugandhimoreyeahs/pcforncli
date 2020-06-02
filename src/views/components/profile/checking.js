@@ -1744,11 +1744,11 @@ class Checking extends React.PureComponent {
           : null}
 
         {this.state.showTimeoutScreen && (
-          <Timeout
+          <Timeout 
             navigation={this.props.navigation}
-            reloadDashBoardData={() => {
-              if (this.props.navigation.getParam("reloadDashBoardData")) {
-                this.props.navigation.getParam("reloadDashBoardData")();
+            reloadPlaid={() => {
+              if (this.props.navigation.getParam("reloadPlaid")) {
+                this.props.navigation.getParam("reloadPlaid")();
               }
             }}
           />

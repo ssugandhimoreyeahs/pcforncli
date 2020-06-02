@@ -271,7 +271,7 @@ class ExpenseByCategory extends Component {
   renderExepensesByCategory = () => {
     const { expenseByCategoryRedux: expenseByCategory } = this.props;
     const { expenseCurrentMonth, showInsightCart } = this.state;
-    let heightRatio = showInsightCart ? "66%" : "89%";
+    let heightRatio = showInsightCart ? "66%" : "88.5%";
     return (
       <Fragment>
         {expenseByCategory.childLoader == false ? (
@@ -424,7 +424,7 @@ class ExpenseByCategory extends Component {
   render() {
     let { expenseByCategoryRedux: expenseByCategory } = this.props;
     const { showInsightCart } = this.state;
-    const height = showInsightCart ? 490 : 380;
+    const height = showInsightCart ? 490 : 395;
 
     return (
       <View style={{ ...styles.mainContainerStyle, height }}>
@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 12,
     color: "#151927",
-    width: "90%",
+    width: "95%",
     marginLeft: 5,
   },
   renderCategoryPriceStyle: {

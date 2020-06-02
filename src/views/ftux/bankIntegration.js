@@ -50,14 +50,15 @@ export default class BankIntegration extends Component {
                 redirectTo: () => {
                   this.setState({ isSpinner: true }, () => {
                     setTimeout(() => {
-                      if (getParam("reloadDashBoardData")) {
-                        getParam("reloadDashBoardData")();
-                      }
-                      setTimeout(() => {
-                        this.setState({ isSpinner: false });
-                        navigate("Dashboard");
-                      }, 1500);
-                    }, 2500);
+                      this.setState({ isSpinner: false }, () => {
+                        setTimeout(() => {
+                          getParam("reloadPlaid")();
+                        }, 50);
+                        navigate("Dashboard", {
+                          comeFromTheBank: true,
+                        });
+                      });
+                    }, 3000);
                   });
                 },
               });

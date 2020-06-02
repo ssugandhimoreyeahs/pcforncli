@@ -75,8 +75,8 @@ class TimeOut extends Component {
               onPress={() => {
                 this.props.navigation.navigate("BankIntegration", {
                   comeFromTimeout: true,
-                  reloadDashBoardData: () => {
-                    this.props.reloadDashBoardData();
+                  reloadPlaid: () => {
+                    this.props.reloadPlaid();
                   },
                 });
               }}
@@ -123,6 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     fontSize: 15,
+    marginTop: 10
   },
   image: {
     height: 80,

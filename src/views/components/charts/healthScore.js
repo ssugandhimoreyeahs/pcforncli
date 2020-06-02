@@ -77,7 +77,7 @@ class HealthScore extends Component {
             onPress={() =>
               this.props.navigation.navigate("Checking", {
                 userCurrentBalance: this.props.userCurrentBalance,
-                reloadDashBoardData: () => {
+                reloadPlaid: () => {
                   this.props.reloadPlaid();
                 },
               })

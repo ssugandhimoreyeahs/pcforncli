@@ -290,12 +290,12 @@ class CashOnHand extends PureComponent {
       past,
       future,
     }) => {
-      let heightRatio = this.state.showInsightsCart ? "66%" : "90%";
+      let heightRatio = this.state.showInsightsCart ? "66%" : "88%";
       return (
         <View
           style={{
             ...styles.cashOnHandNewCantainer,
-            height: this.state.showInsightsCart ? 490 : 380,
+            height: this.state.showInsightsCart ? 490 : 350,
           }}
         >
           <Fragment>

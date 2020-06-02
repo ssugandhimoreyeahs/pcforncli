@@ -316,7 +316,7 @@ class ChangeInCash extends Component {
   });
   render() {
     const { showInsightsCart } = this.state;
-    let heightRatio = showInsightsCart ? "68%" : "90%";
+    let heightRatio = showInsightsCart ? "68%" : "89%";
     let { cashInChangeData } = this.props;
     let total = 0;
     if (
