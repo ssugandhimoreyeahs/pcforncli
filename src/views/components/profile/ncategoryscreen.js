@@ -193,7 +193,7 @@ class CategoryScreen extends Component {
 
   handleChangeCategory = async (categoryId, categoryName) => {
     if (this.state.toggle) {
-      const { category: transactionCategory } = this.props.navigation.getParam(
+      const { clientCategory: transactionCategory } = this.props.navigation.getParam(
         "currentExecutingTransaction"
       );
       let axiosBody = {};
@@ -210,11 +210,11 @@ class CategoryScreen extends Component {
                 true,
                 true
               );
-              setTimeout(() => {
-                this.props.navigation.goBack();
-              }, 600);
+              //setTimeout(() => {
+              this.props.navigation.goBack();
+              //}, 600);
             });
-          }, 500);
+          }, 1000);
         })
         .catch((error) => {
           this.setState({ isSpinner: false }, () => {
@@ -243,11 +243,11 @@ class CategoryScreen extends Component {
               true,
               false
             );
-            setTimeout(() => {
-              this.props.navigation.goBack();
-            }, 600);
+            // setTimeout(() => {
+            this.props.navigation.goBack();
+            // }, 600);
           });
-        }, 500);
+        }, 1000);
       } else {
         this.setState({ isSpinner: false }, () => {
           setTimeout(() => {
@@ -335,11 +335,12 @@ class CategoryScreen extends Component {
           text: DELETECATEGORY.button2,
           onPress: () => {
             //Api Trigers here for deleting the Category Data
-            let { category } = this.props.navigation.getParam(
+            let { clientCategory } = this.props.navigation.getParam(
               "currentExecutingTransaction"
             );
             let pointIconToDefaultCategory = false;
-            if (categoryName == category) {
+            //console.log("For delete request - ",categoryName," ",clientCategory)
+            if (categoryName.toLowerCase() == clientCategory.toLowerCase()) {
               pointIconToDefaultCategory = true;
             }
             this.setState(
@@ -358,12 +359,14 @@ class CategoryScreen extends Component {
     let executingTransactionDetails = this.props.navigation.getParam(
       "currentExecutingTransaction"
     );
+    
     const { isEdit, pointIconToDefaultCategory } = this.state;
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     let { categoryName, index, customcategories, id } = categoryData;
+    console.log("Here - ",executingTransactionDetails.clientDefaultCategory, " category Name ",categoryName);
     let showCheckIcon =
       pointIconToDefaultCategory == true
-        ? categoryName == executingTransactionDetails.clientCategory
+        ? categoryName == executingTransactionDetails.clientDefaultCategory
           ? true
           : false
         : categoryName == executingTransactionDetails.clientCategory
@@ -391,12 +394,7 @@ class CategoryScreen extends Component {
             onPress={() => {
               this.handleChangeCategoryAlert(id, categoryName);
             }}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "93%",
-              paddingLeft: 6,
-            }}
+            style={styles.renderSingleCategoryParentView}
           >
             <View style={{ width: "15%" }}>
               {isIconAvailable == true ? (
@@ -409,12 +407,7 @@ class CategoryScreen extends Component {
               ) : (
                 <View
                   style={{
-                    borderRadius: 50,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 36,
-                    height: 36,
-                    borderColor: "#FFF",
+                    ...styles.renderSingleCategoryCustomIconView,
                     backgroundColor: categoryBackgroundColor,
                   }}
                 >
@@ -425,55 +418,21 @@ class CategoryScreen extends Component {
               )}
             </View>
 
-            <View
-              style={{
-                width: "79%",
-                borderWidth: 0,
-                borderColor: "red",
-                justifyContent: "center",
-                paddingLeft: 13,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "left",
-                  fontSize: 12,
-                  color: "#000",
-                  fontWeight: "600",
-                }}
-              >
+            <View style={styles.renderSingleCategoryTitleView}>
+              <Text style={styles.renderSingleCategoryTitleText}>
                 {firstLetterCapital(categoryName)}
               </Text>
             </View>
             {showCheckIcon == true ? (
-              <View
-                style={{
-                  width: "10%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
+              <View style={styles.renderSingleCategoryCheckView}>
                 <MaterialIcons name="check" size={20} color={"#000000"} />
               </View>
             ) : (
-              <View
-                style={{
-                  width: "10%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              />
+              <View style={styles.emptyCheckView} />
             )}
           </TouchableOpacity>
         ) : (
-          <View
-            style={{
-              paddingLeft: 6,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "95%",
-            }}
-          >
+          <View style={styles.viewRenderSingleCategoryParent}>
             <View style={{ width: "15%" }}>
               {isIconAvailable == true ? (
                 <Image
@@ -485,12 +444,7 @@ class CategoryScreen extends Component {
               ) : (
                 <View
                   style={{
-                    borderRadius: 50,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 36,
-                    height: 36,
-                    borderColor: "#FFF",
+                    ...styles.viewRenderSingleCategoryParentView,
                     backgroundColor: categoryBackgroundColor,
                   }}
                 >
@@ -501,40 +455,21 @@ class CategoryScreen extends Component {
               )}
             </View>
 
-            <View
-              style={{
-                width: "70%",
-                borderWidth: 0,
-                borderColor: "red",
-                justifyContent: "center",
-                paddingLeft: 8,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "left",
-                  fontSize: 12,
-                  color: "#000",
-                  fontWeight: "600",
-                }}
-              >
+            <View style={styles.viewRenderSingleCategoryTitleBody}>
+              <Text style={styles.viewRenderSingleCategoryText}>
                 {firstLetterCapital(categoryName)}
               </Text>
             </View>
 
-            <View
-              style={{
-                width: "15%",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={styles.viewRenderSingleCategoryLeftBody}>
               {customcategories == true ? (
                 <Fragment>
                   <TouchableOpacity
                     onPress={() => {
-                      this.handleCategoryDataEdit(id, categoryName);
+                      this.handleCategoryDataEdit(
+                        id,
+                        firstLetterCapital(categoryName)
+                      );
                     }}
                     style={{ paddingRight: 7 }}
                   >
@@ -543,7 +478,10 @@ class CategoryScreen extends Component {
 
                   <TouchableOpacity
                     onPress={() => {
-                      this.handleCategoryDataDelete(id, categoryName);
+                      this.handleCategoryDataDelete(
+                        id,
+                        firstLetterCapital(categoryName)
+                      );
                     }}
                   >
                     <MaterialIcons name="delete" size={23} color={"#000"} />
@@ -669,6 +607,7 @@ class CategoryScreen extends Component {
         const addCategoryResponse = await addPlaidCategory(
           categoryInput.toLowerCase()
         );
+        console.log("Add category Response here - ", addCategoryResponse);
         if (addCategoryResponse.result == true) {
           setTimeout(() => {
             this.setState(
@@ -1002,6 +941,76 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#000",
     fontWeight: "600",
+  },
+  renderSingleCategoryParentView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "93%",
+    paddingLeft: 6,
+  },
+  renderSingleCategoryCustomIconView: {
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 36,
+    height: 36,
+    borderColor: "#FFF",
+  },
+  renderSingleCategoryTitleView: {
+    width: "79%",
+    borderWidth: 0,
+    borderColor: "red",
+    justifyContent: "center",
+    paddingLeft: 13,
+  },
+  renderSingleCategoryTitleText: {
+    textAlign: "left",
+    fontSize: 12,
+    color: "#000",
+    fontWeight: "600",
+  },
+  renderSingleCategoryCheckView: {
+    width: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyCheckView: {
+    width: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  viewRenderSingleCategoryParent: {
+    paddingLeft: 6,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "95%",
+  },
+  viewRenderSingleCategoryParentView: {
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 36,
+    height: 36,
+    borderColor: "#FFF",
+  },
+  viewRenderSingleCategoryTitleBody: {
+    width: "70%",
+    borderWidth: 0,
+    borderColor: "red",
+    justifyContent: "center",
+    paddingLeft: 8,
+  },
+  viewRenderSingleCategoryText: {
+    textAlign: "left",
+    fontSize: 12,
+    color: "#000",
+    fontWeight: "600",
+  },
+  viewRenderSingleCategoryLeftBody: {
+    width: "15%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

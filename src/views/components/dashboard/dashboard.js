@@ -566,7 +566,7 @@ class Dashboard extends Component {
     if (getParam("fromSetup")) {
       setTimeout(() => {
         this.fetchUser(getParam("userResponse"));
-      }, 1500);
+      }, 2000);
     } else if (getParam("fromValueProp")) {
       this.fetchUserServer();
     } else if (getParam("fromLogin")) {

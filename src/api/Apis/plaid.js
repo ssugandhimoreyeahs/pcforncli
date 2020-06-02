@@ -423,8 +423,10 @@ export async function getPlaidCategory() {
 export async function addPlaidCategory(category) {
   try {
     const token = await AsyncStorage.getItem("authToken");
+
+    //Old API End Point  - APINETWORK.addCategory
     const getPlaidCategoryResponse = await axios.post(
-      APINETWORK.addCategory,
+      APINETWORK.newAddCategory,
       { category },
       {
         headers: { Authorization: token, "Content-Type": "application/json" },
@@ -451,8 +453,9 @@ export async function addPlaidCategory(category) {
 export async function deletePlaidCategory(id) {
   try {
     const token = await AsyncStorage.getItem("authToken");
+    //Old end point APINETWORK.deleteCategory
     const deletePlaidCategoryResponse = await axios.post(
-      APINETWORK.deleteCategory,
+      APINETWORK.newDeleteCategory,
       { id },
       {
         headers: { Authorization: token, "Content-Type": "application/json" },
@@ -475,8 +478,9 @@ export async function deletePlaidCategory(id) {
 export async function editPlaidCategory(id, category) {
   try {
     const token = await AsyncStorage.getItem("authToken");
+    //Old end point APINETWORK.editCategory
     const editPlaidCategoryResponse = await axios.post(
-      APINETWORK.editCategory,
+      APINETWORK.newEditCategory,
       { id, category },
       {
         headers: { Authorization: token, "Content-Type": "application/json" },
@@ -534,8 +538,9 @@ export async function addCategoryToTransaction(transactionId, categoryId) {
     console.log("------------------Ready Body---------------");
     console.log(body);
     console.log("------------------------------------");
+    //Old APINETWORK.addCategoryToTransaction
     const addCategoryToTransactionResponse = await axios.post(
-      APINETWORK.addCategoryToTransaction,
+      APINETWORK.addClientCategoryToTransaction,
       body,
       {
         headers: { Authorization: token, "Content-Type": "application/json" },
@@ -719,8 +724,10 @@ export function changeAllSimilarTransaction(axiosBody = {}) {
           APINETWORK.categoryChangeInAllTransaction
         );
         console.log("Change Similar Transaction body - ", axiosBody);
+        //OldEndpoint APINETWORK.categoryChangeInAllTransaction
+
         axios
-          .post(APINETWORK.categoryChangeInAllTransaction, axiosBody, {
+          .post(APINETWORK.clientCategoryChangeInAllTransaction, axiosBody, {
             headers: {
               Authorization: token,
               "Content-Type": "application/json",

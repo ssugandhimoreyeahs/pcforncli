@@ -95,10 +95,13 @@ const QUICKBOOKSAPIS = {
 };
 const NEW_CATEGORY_API = {
   newGetCategory: APIENDPOINT.endPoint + "/plaid/getClientCategory",
-  newAddCategory:
-    APIENDPOINT.endPoint + "/plaid/addClientCategoryToTransaction",
+  newAddCategory: APIENDPOINT.endPoint + "/plaid/addClientCategory",
   newDeleteCategory: APIENDPOINT.endPoint + "/plaid/deleteClientCategory",
   newEditCategory: APIENDPOINT.endPoint + "/plaid/editClientCategory",
+  addClientCategoryToTransaction:
+    APIENDPOINT.endPoint + "/plaid/addClientCategoryToTransaction",
+  clientCategoryChangeInAllTransaction:
+    APIENDPOINT.endPoint + "/category/clientCategoryChangeInAllTransaction",
 };
 export const APINETWORK = {
   getQuestions: APIENDPOINT.endPoint + "/questions/getQuestions",

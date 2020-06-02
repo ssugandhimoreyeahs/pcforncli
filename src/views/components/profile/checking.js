@@ -63,13 +63,11 @@ const TransactionComponent = (props) => {
     props.fullTransactionObj.clientDefaultCategory
   ) {
     categoryButtonText = `+ Category`;
-    detailInfo = firstLetterCapital(
-      props.fullTransactionObj.clientDefaultCategory
-    );
+    detailInfo = firstLetterCapital(props.fullTransactionObj.clientCategory);
   } else {
     detailInfo = `Detail Info`;
     categoryButtonText = `${firstLetterCapital(
-      props.fullTransactionObj.clientDefaultCategory
+      props.fullTransactionObj.clientCategory
     )}`;
   }
 
@@ -87,7 +85,7 @@ const TransactionComponent = (props) => {
   let categoryBackgroundColor = `#6C5BC1`;
   for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
     if (
-      props.fullTransactionObj.category.toLowerCase() ===
+      props.fullTransactionObj.clientCategory.toLowerCase() ===
       PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()
     ) {
       categoryBackgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
