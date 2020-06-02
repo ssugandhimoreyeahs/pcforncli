@@ -40,7 +40,7 @@ class CashOnHand extends PureComponent {
     super(props);
     this.state = {
       arrowStyle: "arrow-down",
-      showInsightsCart: true,
+      //showInsightsCart: true,
     };
     this.dropdownRef = React.createRef();
   }

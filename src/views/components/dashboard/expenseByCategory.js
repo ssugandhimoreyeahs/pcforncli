@@ -35,7 +35,7 @@ class ExpenseByCategory extends Component {
     this.state = {
       expenseCurrentMonth: "3 Months",
       arrowStyle: "arrow-down",
-      showInsightCart: true,
+      showInsightCart: false,
     };
   }
 
@@ -256,13 +256,15 @@ class ExpenseByCategory extends Component {
           </View>
         </View>
 
-        <this.cicInsightFooter
-          backgroundColor={"#E5FCEA"}
-          insightText={
-            "Your cash balance has increased from last months cash balance."
-          }
-          insightButtonText={"Keep on improving"}
-        />
+        {this.state.showInsightCart && (
+          <this.cicInsightFooter
+            backgroundColor={"#E5FCEA"}
+            insightText={
+              "Your cash balance has increased from last months cash balance."
+            }
+            insightButtonText={"Keep on improving"}
+          />
+        )}
       </Fragment>
     );
   });

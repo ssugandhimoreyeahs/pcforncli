@@ -36,7 +36,7 @@ class ChangeInCash extends Component {
     this.state = {
       cocMonths: "This Month",
       arrowStyle: "arrow-down",
-      showInsightsCart: true,
+      //showInsightsCart: true,
     };
     this.dropdownRef = React.createRef();
   }
@@ -302,13 +302,15 @@ class ChangeInCash extends Component {
             />
           </View>
         </View>
-        <this.cicInsightFooter
-          backgroundColor={"#E5FCEA"}
-          insightText={
-            "Your cash balance has increased from last months cash balance."
-          }
-          insightButtonText={"Keep on improving"}
-        />
+        {this.state.showInsightsCart && (
+          <this.cicInsightFooter
+            backgroundColor={"#E5FCEA"}
+            insightText={
+              "Your cash balance has increased from last months cash balance."
+            }
+            insightButtonText={"Keep on improving"}
+          />
+        )}
       </Fragment>
     );
   });
@@ -340,7 +342,7 @@ class ChangeInCash extends Component {
 
     return (
       <View
-        style={{ ...styles.cicCharts, height: showInsightsCart ? 480 : 360 }}
+        style={{ ...styles.cicCharts, height: showInsightsCart ? 490 : 380 }}
       >
         {cashInChangeData.error == true ? (
           <this.cashInChangeError />

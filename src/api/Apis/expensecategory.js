@@ -4,7 +4,7 @@ import { APINETWORK,API_TIMEOUT } from "../../constants/constants";
 const timeout = API_TIMEOUT;
 
 export function getExpenseByCategoryPromise( fetchExpenseTypes = 1 ){
-    
+     
       return new Promise((resolve,reject)=>{
         //console.log("Getting Request for the "+fetchExpenseTypes+" of the expense by category");
         //code here for getExpenseByCategoryDta
@@ -14,15 +14,15 @@ export function getExpenseByCategoryPromise( fetchExpenseTypes = 1 ){
 
             let expenseByCategoryEndPoint = "";
             if(fetchExpenseTypes == 1){
-              expenseByCategoryEndPoint = APINETWORK.expenseByCategoryCurrentMonth;
+              expenseByCategoryEndPoint = APINETWORK.expenseByClientCategoryCurrentMonth;
             }else if(fetchExpenseTypes == 3){
-              expenseByCategoryEndPoint = APINETWORK.expenseByCategoryPastThreeMonth;
+              expenseByCategoryEndPoint = APINETWORK.expenseByClientCategoryPastThreeMonth;
             }else if(fetchExpenseTypes == 6){
-              expenseByCategoryEndPoint = APINETWORK.expenseByCategoryPastSixMonth;
+              expenseByCategoryEndPoint = APINETWORK.expenseByClientCategoryPastSixMonth;
             }else if(fetchExpenseTypes == 12){
-              expenseByCategoryEndPoint = APINETWORK.expenseByCategoryPastTweleMonth;
+              expenseByCategoryEndPoint = APINETWORK.expenseByClientCategoryPastTweleMonth;
             }else{
-              expenseByCategoryEndPoint = APINETWORK.expenseByCategoryCurrentMonth;
+              expenseByCategoryEndPoint = APINETWORK.expenseByClientCategoryCurrentMonth;
             }
             console.log("Request for get Category - ",expenseByCategoryEndPoint);
             axios.get(expenseByCategoryEndPoint,{
@@ -59,7 +59,7 @@ export function getExpenseByCategoryPromise( fetchExpenseTypes = 1 ){
     return new Promise((resolve,reject)=>{
       AsyncStorage.getItem("authToken").then( (token) =>{
         console.log("Before request Trigger - ",APINETWORK.expenseByCategoryScreen(fetchExpenseTypes));
-        axios.get(APINETWORK.expenseByCategoryScreen(fetchExpenseTypes),{
+        axios.get(APINETWORK.expenseByClientCategoryScreen(fetchExpenseTypes),{
               headers: { Authorization: token,"Content-Type": "application/json" },
               timeout
             }).then((response)=>{

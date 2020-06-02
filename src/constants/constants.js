@@ -102,6 +102,17 @@ const NEW_CATEGORY_API = {
     APIENDPOINT.endPoint + "/plaid/addClientCategoryToTransaction",
   clientCategoryChangeInAllTransaction:
     APIENDPOINT.endPoint + "/category/clientCategoryChangeInAllTransaction",
+  expenseByClientCategoryCurrentMonth:
+    APIENDPOINT.endPoint + "/plaid/ExpenseByClientCategory?currentMonth=true",
+  expenseByClientCategoryPastThreeMonth:
+    APIENDPOINT.endPoint + "/plaid/ExpenseByClientCategory?pastThreeMonth=true",
+  expenseByClientCategoryPastSixMonth:
+    APIENDPOINT.endPoint + "/plaid/ExpenseByClientCategory?pastSixMonth=true",
+  expenseByClientCategoryPastTweleMonth:
+    APIENDPOINT.endPoint +
+    "/plaid/ExpenseByClientCategory?pastTwelveMonth=true",
+  expenseByClientCategoryScreen: (past) =>
+    APIENDPOINT.endPoint + `/plaid/ExpenseByClientCategoryScreen?past=${past}`,
 };
 export const APINETWORK = {
   getQuestions: APIENDPOINT.endPoint + "/questions/getQuestions",
