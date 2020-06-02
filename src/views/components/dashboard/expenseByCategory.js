@@ -93,42 +93,42 @@ class ExpenseByCategory extends Component {
     }
   };
 
-  loadProgressCircle = (props) => {
-    return (
-      <Fragment>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: 154,
-            height: 43,
-          }}
-        >
-          <View style={{ height: 25, width: 40 }}>
-            <ProgressCircle
-              percent={props.percentage}
-              radius={22}
-              borderWidth={2}
-              color="#FF7B32"
-              containerStyle={{ height: 40, width: 40 }}
-              shadowColor="#999"
-              bgColor="#FFFFFF"
-            >
-              <Text style={{ fontSize: 15, color: "#151927" }}>{`${
-                props.percentage
-              }%`}</Text>
-            </ProgressCircle>
-          </View>
-          <View
-            style={{ flexDirection: "column", justifyContent: "space-evenly" }}
-          >
-            <Text style={{ fontSize: 12 }}>{props.category} </Text>
-            <Text style={{ fontSize: 15 }}>{props.price}</Text>
-          </View>
-        </View>
-      </Fragment>
-    );
-  };
+  // loadProgressCircle = (props) => {
+  //   return (
+  //     <Fragment>
+  //       <View
+  //         style={{
+  //           flexDirection: "row",
+  //           justifyContent: "space-between",
+  //           width: 154,
+  //           height: 43,
+  //         }}
+  //       >
+  //         <View style={{ height: 25, width: 40 }}>
+  //           <ProgressCircle
+  //             percent={props.percentage}
+  //             radius={22}
+  //             borderWidth={2}
+  //             color="#FF7B32"
+  //             containerStyle={{ height: 40, width: 40 }}
+  //             shadowColor="#999"
+  //             bgColor="#FFFFFF"
+  //           >
+  //             <Text style={{ fontSize: 15, color: "#151927" }}>{`${
+  //               props.percentage
+  //             }%`}</Text>
+  //           </ProgressCircle>
+  //         </View>
+  //         <View
+  //           style={{ flexDirection: "column", justifyContent: "space-evenly" }}
+  //         >
+  //           <Text style={{ fontSize: 12 }}>{props.category} </Text>
+  //           <Text style={{ fontSize: 15 }}>{props.price}</Text>
+  //         </View>
+  //       </View>
+  //     </Fragment>
+  //   );
+  // };
 
   renderCategoryWithPercentage = ({ percentage, category, price }) => {
     return (
@@ -271,7 +271,7 @@ class ExpenseByCategory extends Component {
   renderExepensesByCategory = () => {
     const { expenseByCategoryRedux: expenseByCategory } = this.props;
     const { expenseCurrentMonth, showInsightCart } = this.state;
-    let heightRatio = showInsightCart ? "67%" : "90%";
+    let heightRatio = showInsightCart ? "66%" : "89%";
     return (
       <Fragment>
         {expenseByCategory.childLoader == false ? (
@@ -424,7 +424,7 @@ class ExpenseByCategory extends Component {
   render() {
     let { expenseByCategoryRedux: expenseByCategory } = this.props;
     const { showInsightCart } = this.state;
-    const height = showInsightCart ? 465 : 360;
+    const height = showInsightCart ? 490 : 380;
 
     return (
       <View style={{ ...styles.mainContainerStyle, height }}>
@@ -600,6 +600,8 @@ const styles = StyleSheet.create({
     textAlign: "left",
     fontSize: 12,
     color: "#151927",
+    width: "90%",
+    marginLeft: 5,
   },
   renderCategoryPriceStyle: {
     paddingTop: 7,

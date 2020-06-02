@@ -385,7 +385,7 @@ class ExpenseByCategory extends Component {
               left: -75,
               borderWidth: 0,
               borderColor: "red",
-              width: "32%",
+              width: "29%",
               justifyContent: "center",
               alignItems: "flex-end",
             }}

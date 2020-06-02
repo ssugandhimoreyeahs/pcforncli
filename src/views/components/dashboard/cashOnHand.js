@@ -295,7 +295,7 @@ class CashOnHand extends PureComponent {
         <View
           style={{
             ...styles.cashOnHandNewCantainer,
-            height: this.state.showInsightsCart ? 450 : 360,
+            height: this.state.showInsightsCart ? 490 : 380,
           }}
         >
           <Fragment>

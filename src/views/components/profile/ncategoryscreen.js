@@ -193,12 +193,14 @@ class CategoryScreen extends Component {
 
   handleChangeCategory = async (categoryId, categoryName) => {
     if (this.state.toggle) {
-      const { clientCategory: transactionCategory } = this.props.navigation.getParam(
-        "currentExecutingTransaction"
-      );
+      const {
+        clientCategoryObjectId: transactionCategory,
+      } = this.props.navigation.getParam("currentExecutingTransaction");
       let axiosBody = {};
-      axiosBody.oldCategoryId = getCategoryId(transactionCategory);
-      axiosBody.updateCategoryId = getCategoryId(categoryName);
+      //axiosBody.oldCategoryId = getCategoryId(transactionCategory);
+      //axiosBody.updateCategoryId = getCategoryId(categoryName);
+      axiosBody.oldCategoryId = transactionCategory;
+      axiosBody.updateCategoryId = categoryId;
 
       console.log("Axios Body Before Send - ", axiosBody);
 
@@ -359,11 +361,16 @@ class CategoryScreen extends Component {
     let executingTransactionDetails = this.props.navigation.getParam(
       "currentExecutingTransaction"
     );
-    
+
     const { isEdit, pointIconToDefaultCategory } = this.state;
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     let { categoryName, index, customcategories, id } = categoryData;
-    console.log("Here - ",executingTransactionDetails.clientDefaultCategory, " category Name ",categoryName);
+    console.log(
+      "Here - ",
+      executingTransactionDetails.clientDefaultCategory,
+      " category Name ",
+      categoryName
+    );
     let showCheckIcon =
       pointIconToDefaultCategory == true
         ? categoryName == executingTransactionDetails.clientDefaultCategory

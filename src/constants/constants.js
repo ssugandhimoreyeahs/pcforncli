@@ -113,6 +113,10 @@ const NEW_CATEGORY_API = {
     "/plaid/ExpenseByClientCategory?pastTwelveMonth=true",
   expenseByClientCategoryScreen: (past) =>
     APIENDPOINT.endPoint + `/plaid/ExpenseByClientCategoryScreen?past=${past}`,
+  expenseByCategoryClientSubScreenGrpah:
+    APIENDPOINT.endPoint + `/category/getClientSubCategoryScreen/graph`,
+  getClientSubCategoryScreen: (past) =>
+    APIENDPOINT.endPoint + `/category/getClientSubCategoryScreen?past=${past}`,
 };
 export const APINETWORK = {
   getQuestions: APIENDPOINT.endPoint + "/questions/getQuestions",

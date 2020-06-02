@@ -58,7 +58,7 @@ export function getExpenseByCategoryPromise( fetchExpenseTypes = 1 ){
   export function getExpenseByCategoryScreenPromise( fetchExpenseTypes = 0 ){
     return new Promise((resolve,reject)=>{
       AsyncStorage.getItem("authToken").then( (token) =>{
-        console.log("Before request Trigger - ",APINETWORK.expenseByCategoryScreen(fetchExpenseTypes));
+        console.log("Before request Trigger - ",APINETWORK.expenseByClientCategoryScreen(fetchExpenseTypes));
         axios.get(APINETWORK.expenseByClientCategoryScreen(fetchExpenseTypes),{
               headers: { Authorization: token,"Content-Type": "application/json" },
               timeout
@@ -85,8 +85,8 @@ export function getExpenseByCategorySubScreenPromise( past = 0,categoryId = ""){
   return new Promise((resolve,reject)=>{
     AsyncStorage.getItem("authToken").then( (token) =>{
       console.log("params recieve here - ",past,"  - ",categoryId);
-      console.log("subScreen End point - ",APINETWORK.expenseByCategorySubScreen(past));
-      axios.post(APINETWORK.expenseByCategorySubScreen(past),{ categoryId },{
+      console.log("subScreen End point - ",APINETWORK.getClientSubCategoryScreen(past));
+      axios.post(APINETWORK.getClientSubCategoryScreen(past),{ categoryId },{
             headers: { Authorization: token,"Content-Type": "application/json" },
             timeout
           }).then((response)=>{
@@ -109,8 +109,8 @@ export function getExpenseByCategorySubScreenPromise( past = 0,categoryId = ""){
 export function getExpenseBySubCategoryGraphPromise( categoryId = ""){
   return new Promise((resolve,reject)=>{
     AsyncStorage.getItem("authToken").then( (token) =>{
-      console.log("Sub Expense Graph Api Trigger Here ",APINETWORK.expenseByCategorySubScreenGrpah);
-      axios.post(APINETWORK.expenseByCategorySubScreenGrpah,{ categoryId },{
+      console.log("Sub Expense Graph Api Trigger Here ",APINETWORK.expenseByCategoryClientSubScreenGrpah);
+      axios.post(APINETWORK.expenseByCategoryClientSubScreenGrpah,{ categoryId },{
             headers: { Authorization: token,"Content-Type": "application/json" },
             timeout
           }).then((response)=>{

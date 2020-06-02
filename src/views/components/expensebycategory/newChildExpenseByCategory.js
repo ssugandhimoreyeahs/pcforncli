@@ -10,6 +10,7 @@ import {
   ActivityIndicator,
   Platform,
   BackHandler,
+  FlatList,
 } from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -34,6 +35,7 @@ import SVG from "react-native-svg";
 import { connect } from "react-redux";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 import { fetchExpensesAsyncCreator } from "../../../reducers/expensecategory";
+
 FontAwesome.loadFont();
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -339,7 +341,7 @@ class ExpenseByCategoryChild extends Component {
                     }} /> */}
             <VictoryAxis
               dependentAxis
-              offsetX={deviceWidth + 8}
+              offsetX={deviceWidth + 1}
               style={{
                 grid: { stroke: "#EEE", strokeDasharray: "50,0" },
                 axis: { stroke: "#ffffff" },
@@ -1014,42 +1016,138 @@ class ExpenseByCategoryChild extends Component {
       { cancelable: false }
     );
   };
-
-  renderNewTransactionTile = React.memo(() => {
-    return (
-      <Fragment>
-        <View style={styles.newTransactionChildContainer}>
-          <Text style={styles.newTransactionTitle}>Transaction Title</Text>
-
-          <Text style={styles.newTransactionAmountTitle}>$700.00</Text>
-        </View>
-
-        <View style={styles.newTransactionChildContainer2}>
-          <Text style={styles.newTransactionDateTitle}>Mar 15</Text>
-
-          <View style={{ maxWidth: "70%" }}>
-            <TouchableOpacity style={styles.newTransactionCategoryButton}>
-              <Text style={styles.newTransactionCategoryButtonText}>
-                Advertising & marketing
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Fragment>
+  handleOnPressOnButton = (items) => {
+    console.log("Item recieve here - ", items);
+    let userData = { ...this.props.reduxState.userData.userData };
+    const { expenseType } = this.props.navigation.getParam(
+      "currentExpenseCategory"
     );
-  });
+    const { current } = this.state.subCategoryRequestType;
+    if (userData.bankStatus !== "linked") {
+      return this.bankNotConnectedPopup();
+    }
+    this.props.navigation.navigate("NCategoryScreen", {
+      currentExecutingTransaction: {
+        ...items,
+        clientCategory: items.clientCategoryObjectId.ClientDefaultCategory,
+        clientCategoryObjectId: items.clientCategoryObjectId._id,
+      },
+      resetTransactionScreen: (runMethod = false, directlyGoBack = false) => {
+        if (runMethod == true) {
+          if (directlyGoBack == true) {
+            this.props.fetchMainExepenseByCategory(expenseType);
+            setTimeout(() => {
+              this.props.fetchExpenseByCategory(3);
+            }, 1300);
+            this.props.navigation.goBack();
+            return;
+          }
+          this.setState({ loading: true }, () => {
+            setTimeout(() => {
+              this.triggerExpenseSubCategoryGraphServer();
+              this.triggerExpenseSubCategoryServer();
+            }, 500);
+
+            if (current === expenseType) {
+              setTimeout(() => {
+                this.props.fetchMainExepenseByCategory(expenseType);
+              }, 1000);
+            }
+
+            setTimeout(() => {
+              this.props.fetchExpenseByCategory(3);
+            }, 1300);
+          });
+        }
+      },
+    });
+  };
+  renderNewTransactionTile = React.memo(
+    ({ category, backgroundColor, showSeprator, categoryItem }) => {
+      let currentTransactionDateObj = categoryItem.date.split("-");
+      return (
+        <Fragment>
+          <Fragment>
+            <View style={styles.newTransactionChildContainer}>
+              <Text style={styles.newTransactionTitle}>
+                {categoryItem.name}
+              </Text>
+
+              <Text style={styles.newTransactionAmountTitle}>
+                {`-$${numberWithCommas(categoryItem.amount)}`}
+              </Text>
+            </View>
+
+            <View style={styles.newTransactionChildContainer2}>
+              <Text style={styles.newTransactionDateTitle}>
+                {`${ALL_MONTHS[parseInt(currentTransactionDateObj[1]) - 1]} ${
+                  currentTransactionDateObj[2]
+                }, ${currentTransactionDateObj[0]}`}
+              </Text>
+
+              <View style={{ maxWidth: "70%" }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.handleOnPressOnButton(categoryItem);
+                  }}
+                  style={{
+                    ...styles.newTransactionCategoryButton,
+                    backgroundColor,
+                    borderColor: backgroundColor,
+                  }}
+                >
+                  <Text style={styles.newTransactionCategoryButtonText}>
+                    {firstLetterCapital(category)}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Fragment>
+          {!showSeprator && <View style={styles.commonSeperator} />}
+        </Fragment>
+      );
+    }
+  );
   renderNewBodyTransaction = React.memo(() => {
+    const {
+      subExepenseByCategory: { ExpenseSubCategory },
+    } = this.state;
+    const { backgroundColor, category } = this.props.navigation.getParam(
+      "currentExpenseCategory"
+    );
+    console.log(this.props.navigation.getParam("currentExpenseCategory"));
     return (
       <Fragment>
         <View style={{ height: 25, backgroundColor: "#EEEFF1" }} />
         <View style={styles.newTransactionParentContainer}>
-          <this.renderNewTransactionTile />
-          <View style={styles.commonSeperator} />
-          <this.renderNewTransactionTile />
-          <View style={styles.commonSeperator} />
-          <this.renderNewTransactionTile />
-          <View style={styles.commonSeperator} />
-          <this.renderNewTransactionTile />
+          {/* <this.renderNewTransactionTile />
+          <View style={styles.commonSeperator} /> */}
+          {ExpenseSubCategory.map((singleExpenseSubCategory, expenseIndex) => {
+            console.log("Expense index here - ", expenseIndex);
+            return (
+              <Fragment key={expenseIndex}>
+                <FlatList
+                  scrollEnabled={false}
+                  keyExtractor={({ _id }) => _id}
+                  data={singleExpenseSubCategory.transaction}
+                  renderItem={({ item, index }) => {
+                    return (
+                      <this.renderNewTransactionTile
+                        category={category}
+                        backgroundColor={backgroundColor}
+                        categoryItem={item}
+                        showSeprator={
+                          ExpenseSubCategory.length - 1 === expenseIndex &&
+                          singleExpenseSubCategory.transaction.length - 1 ===
+                            index
+                        }
+                      />
+                    );
+                  }}
+                />
+              </Fragment>
+            );
+          })}
         </View>
       </Fragment>
     );
@@ -1260,6 +1358,7 @@ const styles = StyleSheet.create({
     color: "#1D1E1F",
     maxWidth: "40%",
     textAlign: "right",
+    marginRight: 10,
   },
   newTransactionChildContainer2: {
     marginTop: 10,
