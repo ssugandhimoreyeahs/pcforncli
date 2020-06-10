@@ -186,8 +186,8 @@ class BusinessproEdit extends React.Component {
       );
     } else {
       if (
-        profileUpdated.error.code != undefined &&
-        profileUpdated.error.code == "ECONNABORTED"
+        isUserUpdated.error.code != undefined &&
+        isUserUpdated.error.code == "ECONNABORTED"
       ) {
         this.setState(
           (prevState) => {
@@ -207,7 +207,7 @@ class BusinessproEdit extends React.Component {
           () => {
             setTimeout(() => {
               this.showAlert(ERROR.title, ERROR.message);
-            }, 100);
+            }, 200);
           }
         );
       }
