@@ -166,7 +166,7 @@ class ExpenseByCategoryChild extends Component {
     const currentExpenseCategory = this.props.navigation.getParam(
       "currentExpenseCategory"
     );
-    console.log("Data recieved - ", currentExpenseCategory);
+    //console.log("Data recieved - ", currentExpenseCategory);
     let { subCategoryRequestType } = this.state;
     subCategoryRequestType.current = currentExpenseCategory.expenseType;
     this.setState({ currentExpenseCategory, subCategoryRequestType }, () => {
@@ -1017,7 +1017,7 @@ class ExpenseByCategoryChild extends Component {
     );
   };
   handleOnPressOnButton = (items) => {
-    console.log("Item recieve here - ", items);
+   // console.log("Item recieve here - ", items);
     let userData = { ...this.props.reduxState.userData.userData };
     const { expenseType } = this.props.navigation.getParam(
       "currentExpenseCategory"
@@ -1027,6 +1027,7 @@ class ExpenseByCategoryChild extends Component {
       return this.bankNotConnectedPopup();
     }
     this.props.navigation.navigate("NCategoryScreen", {
+      showEditTray: true,
       currentExecutingTransaction: {
         ...items,
         clientCategory: items.clientCategoryObjectId.ClientDefaultCategory,
@@ -1115,7 +1116,7 @@ class ExpenseByCategoryChild extends Component {
     const { backgroundColor, category } = this.props.navigation.getParam(
       "currentExpenseCategory"
     );
-    console.log(this.props.navigation.getParam("currentExpenseCategory"));
+    //console.log(this.props.navigation.getParam("currentExpenseCategory"));
     return (
       <Fragment>
         <View style={{ height: 25, backgroundColor: "#EEEFF1" }} />
@@ -1157,13 +1158,14 @@ class ExpenseByCategoryChild extends Component {
     let { category } = this.state.currentExpenseCategory;
     let isUncategorized = category.toLowerCase() === "uncategory";
     return (
-      <ScrollView
-        keyboardShouldPersistTaps="always"
-        contentContainerStyle={{ paddingBottom: 20 }}
-      >
+      <Fragment>
         <this.header />
-        <this.bodyChart />
-        {/* {ExpenseSubCategory.length > 0 ? (
+        <ScrollView
+          keyboardShouldPersistTaps="always"
+          contentContainerStyle={{ paddingBottom: 20 }}
+        >
+          <this.bodyChart />
+          {/* {ExpenseSubCategory.length > 0 ? (
           isUncategorized == true ? (
             <this.renderUncategorizedCategory />
           ) : (
@@ -1173,8 +1175,9 @@ class ExpenseByCategoryChild extends Component {
           <View style={{ height: 25, backgroundColor: "#EEEFF1" }} />
         )} */}
 
-        <this.renderNewBodyTransaction />
-      </ScrollView>
+          <this.renderNewBodyTransaction />
+        </ScrollView>
+      </Fragment>
     );
   };
   render() {

@@ -585,10 +585,12 @@ class ExpenseByCategory extends Component {
   };
   loadExpenseScreen = () => {
     return (
-      <ScrollView style={{ flex: 1 }}>
+      <Fragment>
         <this.header />
-        <this.expensePie />
-      </ScrollView>
+        <ScrollView style={{ flex: 1 }}>
+          <this.expensePie />
+        </ScrollView>
+      </Fragment>
     );
   };
   render() {

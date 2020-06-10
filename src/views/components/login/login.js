@@ -342,7 +342,6 @@ export default LoginScreen;
 // import Spinner from 'react-native-loading-spinner-overlay';
 // import { CONNECTION_ABORTED,INVALID_CREDENTIALS,TRY_AGAIN } from "../../../api/message";
 
-
 // class LoginScreen extends React.Component {
 //   constructor(props) {
 //     super(props);

@@ -107,7 +107,7 @@ class CategoryScreen extends Component {
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     // error = true;
     const { isEdit } = this.state;
-    let antDesignIcon = isEdit == true ? `close` : "left";
+    let antDesignIcon = isEdit == true ? `left` : "left";
     const showEditTray = this.props.navigation.getParam("showEditTray");
     return (
       <View style={styles.header}>
@@ -120,7 +120,14 @@ class CategoryScreen extends Component {
           {error == true ? (
             <View style={styles.editTrayWidth} />
           ) : isEdit == true ? (
-            <View style={styles.editTrayWidth} />
+            <TouchableOpacity
+              style={{ paddingRight: 7 }}
+              onPress={() => {
+                this.setState({ isEdit: false, toggle: false });
+              }}
+            >
+              <Text style={styles.editHeaderTitle}>Done</Text>
+            </TouchableOpacity>
           ) : showEditTray == true ? (
             <TouchableOpacity
               style={{ ...styles.editTrayWidth, paddingRight: 2 }}
@@ -195,13 +202,14 @@ class CategoryScreen extends Component {
     if (this.state.toggle) {
       const {
         clientCategoryObjectId: transactionCategory,
+        _id
       } = this.props.navigation.getParam("currentExecutingTransaction");
       let axiosBody = {};
       //axiosBody.oldCategoryId = getCategoryId(transactionCategory);
       //axiosBody.updateCategoryId = getCategoryId(categoryName);
       axiosBody.oldCategoryId = transactionCategory;
       axiosBody.updateCategoryId = categoryId;
-
+      axiosBody.transactionId = _id;
       console.log("Axios Body Before Send - ", axiosBody);
 
       changeAllSimilarTransaction(axiosBody)
@@ -769,88 +777,91 @@ class CategoryScreen extends Component {
       showPleaseEnterCategory,
     } = this.state;
     return (
-      <ScrollView keyboardShouldPersistTaps={"always"}>
+      <Fragment>
         <this.header />
         <this.addCategory />
-        <DialogInput
-          dialogStyle={{ marginTop: -80 }}
-          isDialogVisible={addCategoryDialogVisible}
-          title={"Add Category"}
-          message={
-            <Fragment>
-              <Text>{"Please Add New Category Here..."}</Text>
-              {showPleaseEnterCategory == true ? (
-                <Text
-                  style={{ color: "red" }}
-                >{`\n\nPlease Enter Category Name`}</Text>
-              ) : null}
-            </Fragment>
-          }
-          hintInput={"Name of the Category"}
-          submitInput={(categoryInput) => {
-            let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
-              categoryInput,
-              "add"
-            );
-            if (!isCategoryAlreadyExist) {
-              this.addNewCategory(categoryInput);
+        <View style={{ marginTop: 20 }} />
+        <ScrollView keyboardShouldPersistTaps={"always"}>
+          <DialogInput
+            dialogStyle={{ marginTop: -80 }}
+            isDialogVisible={addCategoryDialogVisible}
+            title={"Add Category"}
+            message={
+              <Fragment>
+                <Text>{"Please Add New Category Here..."}</Text>
+                {showPleaseEnterCategory == true ? (
+                  <Text
+                    style={{ color: "red" }}
+                  >{`\n\nPlease Enter Category Name`}</Text>
+                ) : null}
+              </Fragment>
             }
-          }}
-          closeDialog={() => {
-            this.setState({
-              addCategoryDialogVisible: false,
-              showPleaseEnterCategory: false,
-            });
-          }}
-        />
+            hintInput={"Name of the Category"}
+            submitInput={(categoryInput) => {
+              let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
+                categoryInput,
+                "add"
+              );
+              if (!isCategoryAlreadyExist) {
+                this.addNewCategory(categoryInput);
+              }
+            }}
+            closeDialog={() => {
+              this.setState({
+                addCategoryDialogVisible: false,
+                showPleaseEnterCategory: false,
+              });
+            }}
+          />
 
-        <DialogInput
-          dialogStyle={{ marginTop: -80 }}
-          isDialogVisible={editCategoryDialogVisible}
-          initValueTextInput={editInitDialogValue}
-          title={"Edit Category"}
-          message={
-            <Fragment>
-              <Text>{"Please Edit Category Here..."}</Text>
-              {showPleaseEnterCategory == true ? (
-                <Text
-                  style={{ color: "red" }}
-                >{`\n\nPlease Enter Category Name`}</Text>
-              ) : null}
-            </Fragment>
-          }
-          hintInput={"Name of the Category"}
-          submitInput={(editInitDialogNewValue) => {
-            let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
-              editInitDialogNewValue,
-              "edit"
-            );
-            if (!isCategoryAlreadyExist) {
-              this.handleEditPlaidCategoryApi(editInitDialogNewValue);
+          <DialogInput
+            dialogStyle={{ marginTop: -80 }}
+            isDialogVisible={editCategoryDialogVisible}
+            initValueTextInput={editInitDialogValue}
+            title={"Edit Category"}
+            message={
+              <Fragment>
+                <Text>{"Please Edit Category Here..."}</Text>
+                {showPleaseEnterCategory == true ? (
+                  <Text
+                    style={{ color: "red" }}
+                  >{`\n\nPlease Enter Category Name`}</Text>
+                ) : null}
+              </Fragment>
             }
-            return false;
-            this.setState(
-              { isSpinner: true, editCategoryDialogVisible: false },
-              () => {
+            hintInput={"Name of the Category"}
+            submitInput={(editInitDialogNewValue) => {
+              let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
+                editInitDialogNewValue,
+                "edit"
+              );
+              if (!isCategoryAlreadyExist) {
                 this.handleEditPlaidCategoryApi(editInitDialogNewValue);
               }
-            );
-          }}
-          closeDialog={() => {
-            this.setState({ editCategoryDialogVisible: false });
-          }}
-        />
-
-        {loading == false ? (
-          <this.renderCategories />
-        ) : (
-          <ActivityIndicator
-            style={{ marginTop: 50 }}
-            animating={true}
-            size={"large"}
+              return false;
+              this.setState(
+                { isSpinner: true, editCategoryDialogVisible: false },
+                () => {
+                  this.handleEditPlaidCategoryApi(editInitDialogNewValue);
+                }
+              );
+            }}
+            closeDialog={() => {
+              this.setState({ editCategoryDialogVisible: false });
+            }}
           />
-        )}
-      </ScrollView>
+
+          {loading == false ? (
+            <this.renderCategories />
+          ) : (
+            <ActivityIndicator
+              style={{ marginTop: 50 }}
+              animating={true}
+              size={"large"}
+            />
+          )}
+        </ScrollView>
+      </Fragment>
     );
   };
   render() {
@@ -897,7 +908,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 5,
     width: "90%",
-    marginTop: 25,
+    marginTop: 10,
     marginBottom: 40,
     borderColor: "black",
     borderWidth: 0,

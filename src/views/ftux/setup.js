@@ -206,7 +206,7 @@ class Setup extends Component {
   };
   registerMyCronJob = () => {
     console.log("cron job registration started");
-    const JOB_TIMER = 300000;
+    const JOB_TIMER = 240000;
     let currentDT = new Date();
     let tillDT = new Date();
     tillDT.setMilliseconds(currentDT.getMilliseconds() + JOB_TIMER);
@@ -216,7 +216,7 @@ class Setup extends Component {
         this.obsInstance.assigned = true;
         this.obsInstance.instance = obs;
       }
-      this.jobInterval = interval(15000)
+      this.jobInterval = interval(10000)
         .pipe(takeUntil(timer$))
         .subscribe(
           (intervalObs) => {
@@ -240,6 +240,21 @@ class Setup extends Component {
             this.jobInterval.unsubscribe();
             obs.complete();
             console.log("Interval Job Completed");
+            setTimeout(() => {
+              this.setState(
+                {
+                  isQuestionOverlayVisible: false,
+                  registerCron: false,
+                },
+                () => {
+                  setTimeout(() => {
+                    this.props.navigation.navigate("Dashboard", {
+                      fromValueProp: true,
+                    });
+                  }, 300);
+                }
+              );
+            }, 1000);
           }
         );
     });
@@ -1017,7 +1032,9 @@ class Setup extends Component {
                   style={{ width: 50, height: 50 }}
                 />
                 <View style={styles.textContainer}>
-                  <Text style={styles.bold}>Accounting integration</Text>
+                  <Text style={styles.bold}>
+                    Accounting integration (optional)
+                  </Text>
                   <Text style={{ fontSize: 12, marginTop: 7 }}>
                     connect your accounting software.
                   </Text>

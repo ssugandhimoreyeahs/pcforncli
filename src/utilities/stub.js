@@ -17,5 +17,5 @@ export const HISTORICAL_FINANACES = {
   "2019-05-01": { cash: 61000, expenses: 16000, revenue: 10000 },
   "2019-06-01": { cash: 60000, expenses: 10000, revenue: 11000 },
   "2019-07-01": { cash: 55000, expenses: 15000, revenue: 8000 },
-  "2019-08-01": { cash: 52000, expenses: 15000, revenue: 11000 }
+  "2019-08-01": { cash: 52000, expenses: 15000, revenue: 11000 },
 };
