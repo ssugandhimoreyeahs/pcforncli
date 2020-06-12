@@ -6,7 +6,6 @@ import {
   Text,
   SafeAreaView,
   Platform,
-  StatusBar,
   BackHandler,
 } from "react-native";
 import Button from "./button";
@@ -16,7 +15,7 @@ import { colors } from "react-native-elements";
 import { isUserLoggedIn } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
 import { StackActions, NavigationActions } from "react-navigation";
-
+import {Root} from '@components';
 Text.defaultProps = {
   allowFontScaling: false,
 };
@@ -78,6 +77,7 @@ class ValueProp extends React.Component {
   render() {
     const { isSpinner } = this.state;
     return (
+      <Root headerColor={"#070640"} footerColor={"#070640"} barStyle={"light"}>
       <View style={styles.container}>
         <Spinner visible={isSpinner} />
         {this.state.isBodyLoaded == true ? (
@@ -122,6 +122,7 @@ class ValueProp extends React.Component {
           </SafeAreaView>
         ) : null}
       </View>
+      </Root>
     );
   }
 }

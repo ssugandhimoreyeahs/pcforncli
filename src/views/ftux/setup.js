@@ -3,13 +3,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
-  SafeAreaView,
-  StatusBar,
-  Dimensions,
   ScrollView,
-  Platform,
   BackHandler,
-  ActivityIndicator,
 } from "react-native";
 import { Observable, interval, timer } from "rxjs";
 import { takeUntil } from "rxjs/operators";
@@ -34,6 +29,8 @@ import {
   heightPercentageToDP as Height,
 } from "react-native-responsive-screen";
 import { getUser } from "../../api/api";
+import { Root } from "@components";
+
 FontAwesome.loadFont();
 Entypo.loadFont();
 
@@ -854,216 +851,217 @@ class Setup extends Component {
       directionalOffsetThreshold: 80,
     };
     return (
-      <ScrollView
-        style={[
-          {
-            width: "100%",
-            paddingBottom: 0,
-          },
-          styles.container,
-        ]}
-      >
-        <Spinner visible={isSpinner} />
-        {dataSecuredModal == true ? (
-          <this.dataSecuredModal isVisible={dataSecuredModal} />
-        ) : null}
-        <Text
-          h3
-          style={{ marginTop: 40, textAlign: "center" }}
-        >{`Welcome, ${firstName}`}</Text>
-        {this.state.onBoardingData.isFetched == true &&
-        this.state.isQuestionOverlayVisible == true ? (
-          <GestureRecognizer
-            onSwipeLeft={this.onSwipeLeft}
-            onSwipeRight={this.onSwipeRight}
-            config={config}
-            style={{
-              flex: 1,
-              backgroundColor: this.state.backgroundColor,
-            }}
-          >
-            <this.questionOverlayRender />
-          </GestureRecognizer>
-        ) : null}
-        <Text h4 style={{ textAlign: "center" }}>
-          Let's set up your PocketCFO
-        </Text>
+      <Root headerColor={"#F1F3F5"} footerColor={"#F1F3F5"} barStyle={"dark"}>
+        <ScrollView
+          style={[
+            {
+              width: "100%",
+              paddingBottom: 0,
+            },
+            styles.container,
+          ]}
+        >
+          <Spinner visible={isSpinner} />
+          {dataSecuredModal == true ? (
+            <this.dataSecuredModal isVisible={dataSecuredModal} />
+          ) : null}
+          <Text
+            h3
+            style={{ marginTop: 40, textAlign: "center" }}
+          >{`Welcome, ${firstName}`}</Text>
+          {this.state.onBoardingData.isFetched == true &&
+          this.state.isQuestionOverlayVisible == true ? (
+            <GestureRecognizer
+              onSwipeLeft={this.onSwipeLeft}
+              onSwipeRight={this.onSwipeRight}
+              config={config}
+              style={{
+                flex: 1,
+                backgroundColor: this.state.backgroundColor,
+              }}
+            >
+              <this.questionOverlayRender />
+            </GestureRecognizer>
+          ) : null}
+          <Text h4 style={{ textAlign: "center" }}>
+            Let's set up your PocketCFO
+          </Text>
 
-        <View style={styles.cardContainer}>
-          {this.state.hasSetupBusinessProfile ? (
-            <View
-              style={{
-                flexDirection: "row",
-                alignSelf: "flex-end",
-                flex: 1,
-                marginTop: 0,
-                position: "absolute",
-                zIndex: 10,
-              }}
-            >
-              <Image
-                source={require("../../assets/icon_checked.png")}
+          <View style={styles.cardContainer}>
+            {this.state.hasSetupBusinessProfile ? (
+              <View
                 style={{
-                  width: 25,
-                  height: 25,
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  flex: 1,
+                  marginTop: 0,
+                  position: "absolute",
+                  zIndex: 10,
                 }}
-              />
-            </View>
-          ) : null}
-          <TouchableOpacity onPress={this.handlePressCreateBusinessProfile}>
-            <Card
-              containerStyle={styles.cardEnabled}
-              onPress={this.handlePress}
-            >
-              <View style={styles.flexRow}>
+              >
                 <Image
-                  source={require("../../assets/create_business_profile.png")}
-                  style={{ width: 50, height: 50 }}
+                  source={require("../../assets/icon_checked.png")}
+                  style={{
+                    width: 25,
+                    height: 25,
+                  }}
                 />
-                <View style={styles.textContainer}>
-                  <Text style={styles.bold}>Create business profile</Text>
-                  <Text style={{ fontSize: 12, marginTop: 7 }}>
-                    provide information on your business.
-                  </Text>
-                </View>
               </View>
-            </Card>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.cardContainer2}>
-          {this.state.hasSetupBankingIntegration ? (
-            <View
-              style={{
-                flexDirection: "row",
-                alignSelf: "flex-end",
-                flex: 1,
-                marginTop: 10,
-                position: "absolute",
-                zIndex: 10,
-              }}
-            >
-              <Image
-                source={require("../../assets/icon_checked.png")}
-                style={{
-                  width: 25,
-                  height: 25,
-                }}
-              />
-            </View>
-          ) : null}
-          <TouchableOpacity
-            onPress={this.handlePressCreateBankIntegration}
-            disabled={!this.state.hasSetupBusinessProfile}
-          >
-            <Card
-              containerStyle={
-                this.state.hasSetupBusinessProfile
-                  ? styles.cardEnabled
-                  : styles.cardDisabled
-              }
-            >
-              <View style={styles.flexRow}>
-                <Image
-                  source={require("../../assets/bank_integration.png")}
-                  style={{ width: 50, height: 50 }}
-                />
-                <View style={styles.textContainer}>
-                  <View style={styles.dataSecuredParentContainer}>
-                    <Text style={styles.bold}>Bank integration</Text>
-                    <TouchableOpacity
-                      onPress={this.toggleDataSecuredModal}
-                      style={styles.dataSecuredContainer}
-                    >
-                      <FontAwesome name={"lock"} color={"#7C7C7C"} />
-                      <Text
-                        style={{
-                          color: "#7C7C7C",
-                          fontSize: 10,
-                          textAlign: "right",
-                        }}
-                      >
-                        Data Secured
-                      </Text>
-                    </TouchableOpacity>
+            ) : null}
+            <TouchableOpacity onPress={this.handlePressCreateBusinessProfile}>
+              <Card
+                containerStyle={styles.cardEnabled}
+                onPress={this.handlePress}
+              >
+                <View style={styles.flexRow}>
+                  <Image
+                    source={require("../../assets/create_business_profile.png")}
+                    style={{ width: 50, height: 50 }}
+                  />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.bold}>Create business profile</Text>
+                    <Text style={{ fontSize: 12, marginTop: 7 }}>
+                      provide information on your business.
+                    </Text>
                   </View>
-                  <Text style={{ fontSize: 12, marginTop: 7 }}>
-                    connect your business bank account.
-                  </Text>
                 </View>
-              </View>
-            </Card>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.cardContainer2}>
-          {this.state.hasSetupAccountingIntegration ? (
-            <View
-              style={{
-                flexDirection: "row",
-                alignSelf: "flex-end",
-                flex: 1,
-                marginTop: 10,
-                position: "absolute",
-                zIndex: 10,
-              }}
-            >
-              <Image
-                source={require("../../assets/icon_checked.png")}
+              </Card>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.cardContainer2}>
+            {this.state.hasSetupBankingIntegration ? (
+              <View
                 style={{
-                  width: 25,
-                  height: 25,
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  flex: 1,
+                  marginTop: 10,
+                  position: "absolute",
+                  zIndex: 10,
                 }}
-              />
-            </View>
-          ) : null}
-          <TouchableOpacity
-            onPress={this.handlePressLedgetIntegration}
-            disabled={!this.state.hasSetupBankingIntegration}
-          >
-            <Card
-              containerStyle={
-                this.state.hasSetupBankingIntegration
-                  ? styles.cardEnabled
-                  : styles.cardDisabled
-              }
-            >
-              <View style={styles.flexRow}>
+              >
                 <Image
-                  source={require("../../assets/accounting_integration.png")}
-                  style={{ width: 50, height: 50 }}
+                  source={require("../../assets/icon_checked.png")}
+                  style={{
+                    width: 25,
+                    height: 25,
+                  }}
                 />
-                <View style={styles.textContainer}>
-                  <Text style={styles.bold}>
-                    Accounting integration (optional)
-                  </Text>
-                  <Text style={{ fontSize: 12, marginTop: 7 }}>
-                    connect your accounting software.
-                  </Text>
-                </View>
               </View>
-            </Card>
-          </TouchableOpacity>
-        </View>
-        <Button
-          // disabled={
-          //   !this.state.hasSetupBusinessProfile ||
-          //   !this.state.hasSetupBankingIntegration ||
-          //   !this.state.hasSetupAccountingIntegration
-          // }
-          disabled={!this.state.showFinishButton}
-          loading={this.state.isSpinner}
-          buttonStyle={{ borderRadius: 20 }}
-          containerStyle={{
-            marginTop: "13%",
-            width: "85%",
-            height: "15%",
-            alignSelf: "center",
-          }}
-          title="Finish"
-          onPress={() => {
-            this.handleFinishSetup(true);
-          }}
-        />
-      </ScrollView>
+            ) : null}
+            <TouchableOpacity
+              onPress={this.handlePressCreateBankIntegration}
+              disabled={!this.state.hasSetupBusinessProfile}
+            >
+              <Card
+                containerStyle={
+                  this.state.hasSetupBusinessProfile
+                    ? styles.cardEnabled
+                    : styles.cardDisabled
+                }
+              >
+                <View style={styles.flexRow}>
+                  <Image
+                    source={require("../../assets/bank_integration.png")}
+                    style={{ width: 50, height: 50 }}
+                  />
+                  <View style={styles.textContainer}>
+                    <View style={styles.dataSecuredParentContainer}>
+                      <Text style={styles.bold}>Bank integration</Text>
+                      <TouchableOpacity
+                        onPress={this.toggleDataSecuredModal}
+                        style={styles.dataSecuredContainer}
+                      >
+                        <FontAwesome name={"lock"} color={"#7C7C7C"} />
+                        <Text
+                          style={{
+                            color: "#7C7C7C",
+                            fontSize: 10,
+                            textAlign: "right",
+                          }}
+                        >
+                          Data Secured
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                    <Text style={{ fontSize: 12, marginTop: 7 }}>
+                      connect your business bank account.
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.cardContainer2}>
+            {this.state.hasSetupAccountingIntegration ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignSelf: "flex-end",
+                  flex: 1,
+                  marginTop: 10,
+                  position: "absolute",
+                  zIndex: 10,
+                }}
+              >
+                <Image
+                  source={require("../../assets/icon_checked.png")}
+                  style={{
+                    width: 25,
+                    height: 25,
+                  }}
+                />
+              </View>
+            ) : null}
+            <TouchableOpacity
+              onPress={this.handlePressLedgetIntegration}
+              disabled={!this.state.hasSetupBankingIntegration}
+            >
+              <Card
+                containerStyle={
+                  this.state.hasSetupBankingIntegration
+                    ? styles.cardEnabled
+                    : styles.cardDisabled
+                }
+              >
+                <View style={styles.flexRow}>
+                  <Image
+                    source={require("../../assets/accounting_integration.png")}
+                    style={{ width: 50, height: 50 }}
+                  />
+                  <View style={styles.textContainer}>
+                    <Text style={styles.bold}>Accounting integration</Text>
+                    <Text style={{ fontSize: 12, marginTop: 7 }}>
+                      connect your accounting software (optional).
+                    </Text>
+                  </View>
+                </View>
+              </Card>
+            </TouchableOpacity>
+          </View>
+          <Button
+            // disabled={
+            //   !this.state.hasSetupBusinessProfile ||
+            //   !this.state.hasSetupBankingIntegration ||
+            //   !this.state.hasSetupAccountingIntegration
+            // }
+            disabled={!this.state.showFinishButton}
+            loading={this.state.isSpinner}
+            buttonStyle={{ borderRadius: 20 }}
+            containerStyle={{
+              marginTop: "13%",
+              width: "85%",
+              height: "15%",
+              alignSelf: "center",
+            }}
+            title="Finish"
+            onPress={() => {
+              this.handleFinishSetup(true);
+            }}
+          />
+          <View style={{ marginVertical: 20 }} />
+        </ScrollView>
+      </Root>
     );
   }
 }

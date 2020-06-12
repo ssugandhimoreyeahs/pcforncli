@@ -428,13 +428,11 @@ export default class App extends Component {
 
   render() {
     return (
-      <Root>
-        <Provider store={Store}>
-          <ErrorBoundry>
-            <NavigationApp />
-          </ErrorBoundry>
-        </Provider>
-      </Root>
+      <Provider store={Store}>
+        <ErrorBoundry>
+          <NavigationApp />
+        </ErrorBoundry>
+      </Provider>
     );
   }
 }

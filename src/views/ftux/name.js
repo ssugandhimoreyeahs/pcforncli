@@ -9,7 +9,7 @@ import {
   BackHandler,
 } from "react-native";
 import { Button, Input, Text } from "react-native-elements";
-
+import { Root } from "@components";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 
@@ -66,65 +66,67 @@ class Name extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate("ValueProp")}
-        >
-          <Ionicons
-            size={30}
-            name="md-close"
-            style={{ alignSelf: "flex-start", marginLeft: 25, marginTop: 5 }}
+      <Root headerColor={"#FFFFFF"} footerColor={"#FFFFFF"} barStyle={"dark"}>
+        <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate("ValueProp")}
+          >
+            <Ionicons
+              size={30}
+              name="md-close"
+              style={{ alignSelf: "flex-start", marginLeft: 25, marginTop: 5 }}
+            />
+          </TouchableOpacity>
+          <Text style={{ alignSelf: "center", marginTop: "10%" }} h4>
+            What's your name?
+          </Text>
+          <Input
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.input}
+            placeholder={"First name"}
+            value={this.state.firstName}
+            onChangeText={(text) => this.setState({ firstName: text })}
           />
-        </TouchableOpacity>
-        <Text style={{ alignSelf: "center", marginTop: "10%" }} h4>
-          What's your name?
-        </Text>
-        <Input
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
-          placeholder={"First name"}
-          value={this.state.firstName}
-          onChangeText={(text) => this.setState({ firstName: text })}
-        />
-        <Input
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
-          placeholder={"Last name"}
-          value={this.state.lastName}
-          onChangeText={(text) => this.setState({ lastName: text })}
-        />
-        <View
-          style={{ marginTop: 50, alignItems: "center", marginBottom: "3%" }}
-        >
-          <Text style={styles.text}>By continuing, you accept our</Text>
-          <View style={{ flexDirection: "row" }}>
-            <Text
-              style={(styles.text, { color: "#007AFF" })}
-              onPress={this.handleLegalPressTOS}
-            >
-              Terms of Service
-            </Text>
-            <Text style={styles.text}> and </Text>
-            <Text
-              style={(styles.text, { color: "#007AFF" })}
-              onPress={this.handleLegalPressPP}
-            >
-              Privacy Policy
-            </Text>
+          <Input
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.input}
+            placeholder={"Last name"}
+            value={this.state.lastName}
+            onChangeText={(text) => this.setState({ lastName: text })}
+          />
+          <View
+            style={{ marginTop: 50, alignItems: "center", marginBottom: "3%" }}
+          >
+            <Text style={styles.text}>By continuing, you accept our</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text
+                style={(styles.text, { color: "#007AFF" })}
+                onPress={this.handleLegalPressTOS}
+              >
+                Terms of Service
+              </Text>
+              <Text style={styles.text}> and </Text>
+              <Text
+                style={(styles.text, { color: "#007AFF" })}
+                onPress={this.handleLegalPressPP}
+              >
+                Privacy Policy
+              </Text>
+            </View>
           </View>
+          <Button
+            disabled={
+              !this.state.firstName.trim().length ||
+              !this.state.lastName.trim().length
+            }
+            buttonStyle={styles.button}
+            disabledStyle={{ backgroundColor: "#7FBDFF" }}
+            containerStyle={styles.buttonContainer}
+            title="Continue"
+            onPress={this.handlePress}
+          />
         </View>
-        <Button
-          disabled={
-            !this.state.firstName.trim().length ||
-            !this.state.lastName.trim().length
-          }
-          buttonStyle={styles.button}
-          disabledStyle={{ backgroundColor: "#7FBDFF" }}
-          containerStyle={styles.buttonContainer}
-          title="Continue"
-          onPress={this.handlePress}
-        />
-      </View>
+      </Root>
     );
   }
 }

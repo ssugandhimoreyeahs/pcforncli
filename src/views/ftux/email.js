@@ -13,8 +13,7 @@ import { Button, Input, Text } from "react-native-elements";
 import { isUserAlreadyExist } from "../../api/api";
 import { CONNECTION_ABORTED, TRY_AGAIN } from "../../api/message";
 import Spinner from "react-native-loading-spinner-overlay";
-//import {  } from "react-native-gesture-handler";
-//import {AntDesign} from "@expo/vector-icons"
+import { Root } from "@components";
 
 import AntDesign from "react-native-vector-icons/AntDesign";
 
@@ -137,44 +136,46 @@ class Email extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <Spinner
-          visible={this.state.isSpinner}
-          textStyle={styles.spinnerTextStyle}
-        />
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.goBack();
-          }}
-        >
-          <AntDesign
-            size={30}
-            name="left"
-            style={{ alignSelf: "flex-start", marginLeft: 10, marginTop: 5 }}
+      <Root headerColor={"#FFFFFF"} footerColor={"#FFFFFF"} barStyle={"dark"}>
+        <View style={styles.container}>
+          <Spinner
+            visible={this.state.isSpinner}
+            textStyle={styles.spinnerTextStyle}
           />
-        </TouchableOpacity>
-        <Text style={styles.text}>What's your business email address?</Text>
-        <Input
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
-          placeholder={"Business email address"}
-          value={this.state.email}
-          onChangeText={(text) => this.handleChangeText(text)}
-        />
-        {this.state.isUserExistFlag && (
-          <Text style={{ color: "red", alignSelf: "center" }}>
-            Sorry, that username already exists!
-          </Text>
-        )}
-        <Button
-          disabled={!this.state.isButtonEnabled}
-          buttonStyle={styles.button}
-          disabledStyle={{ backgroundColor: "#7FBDFF" }}
-          containerStyle={styles.buttonContainer}
-          title="Continue"
-          onPress={this.handlePress}
-        />
-      </View>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          >
+            <AntDesign
+              size={30}
+              name="left"
+              style={{ alignSelf: "flex-start", marginLeft: 10, marginTop: 5 }}
+            />
+          </TouchableOpacity>
+          <Text style={styles.text}>What's your business email address?</Text>
+          <Input
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.input}
+            placeholder={"Business email address"}
+            value={this.state.email}
+            onChangeText={(text) => this.handleChangeText(text)}
+          />
+          {this.state.isUserExistFlag && (
+            <Text style={{ color: "red", alignSelf: "center" }}>
+              Sorry, that username already exists!
+            </Text>
+          )}
+          <Button
+            disabled={!this.state.isButtonEnabled}
+            buttonStyle={styles.button}
+            disabledStyle={{ backgroundColor: "#7FBDFF" }}
+            containerStyle={styles.buttonContainer}
+            title="Continue"
+            onPress={this.handlePress}
+          />
+        </View>
+      </Root>
     );
   }
 }

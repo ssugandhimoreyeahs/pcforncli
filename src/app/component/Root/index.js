@@ -12,6 +12,7 @@ const MyWrapper = Platform.select({
   android: View,
 });
 const Root = ({ children }) => {
+  
   return (
     <Fragment>
       <StatusBar barStyle="dark-content" />
