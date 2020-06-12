@@ -18,6 +18,7 @@ import {
   Icon,
 } from "react-native-elements";
 
+import { Root } from "@components";
 // import {AntDesign} from "@expo/vector-icons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Dropdown } from "react-native-material-dropdown";
@@ -87,11 +88,12 @@ class Businesspro extends React.Component {
         : { type: "uri" };
 
     return (
-      <View style={styles.container}>
-        <Spinner visible={loading && !isFetched} />
-        {!loading && isFetched && !isError && (
-          <Fragment>
-            {/* <View style={{flexDirection:'row', width:'100%',marginTop:'1%',justifyContent:'space-between'}}>
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"dark"}>
+        <View style={styles.container}>
+          <Spinner visible={loading && !isFetched} />
+          {!loading && isFetched && !isError && (
+            <Fragment>
+              {/* <View style={{flexDirection:'row', width:'100%',marginTop:'1%',justifyContent:'space-between'}}>
           <TouchableOpacity onPress={()=> this.props.navigation.navigate("Contact")}>
             <AntDesign size={30} name='left' style={{alignSelf:'flex-start', marginLeft: 10,}} />
           </TouchableOpacity>
@@ -101,73 +103,77 @@ class Businesspro extends React.Component {
           </TouchableOpacity>
         </View> */}
 
-            <View
-              style={{
-                paddingHorizontal: 10,
-                alignSelf: "center",
-                marginTop: 15,
-                flexDirection: "row",
-                width: "100%",
-                justifyContent: "space-between",
-                borderWidth: 0,
-                borderColor: "black",
-              }}
-            >
               <View
-                style={{ justifyContent: "center", alignItems: "flex-end" }}
+                style={{
+                  paddingHorizontal: 10,
+                  alignSelf: "center",
+                  marginTop: 15,
+                  flexDirection: "row",
+                  width: "100%",
+                  justifyContent: "space-between",
+                  borderWidth: 0,
+                  borderColor: "black",
+                }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    this.props.navigation.goBack();
-                  }}
+                <View
+                  style={{ justifyContent: "center", alignItems: "flex-end" }}
                 >
-                  <AntDesign name="left" size={25} color={"#000000"} />
-                </TouchableOpacity>
-              </View>
-              <View style={{ justifyContent: "center", alignItems: "center" }}>
-                {/* <Text style={{ fontSize:20,fontWeight:"bold",color:"black" }}>{ `Settings` }</Text> */}
-                <Text style={styles.header}>Business Profile</Text>
-              </View>
-              <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.props.navigation.navigate("BusinessproEdit", {
-                      userData: userData,
-                    });
-                  }}
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.goBack();
+                    }}
+                  >
+                    <AntDesign name="left" size={25} color={"#000000"} />
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
                 >
-                  <Text style={styles.editView}>Edit</Text>
-                </TouchableOpacity>
+                  {/* <Text style={{ fontSize:20,fontWeight:"bold",color:"black" }}>{ `Settings` }</Text> */}
+                  <Text style={styles.header}>Business Profile</Text>
+                </View>
+                <View
+                  style={{ justifyContent: "center", alignItems: "center" }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate("BusinessproEdit", {
+                        userData: userData,
+                      });
+                    }}
+                  >
+                    <Text style={styles.editView}>Edit</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
 
-            <View style={styles.imgView}>
-              {/* <Image source={{uri:`${this.state.userData.profilePic}`}} style={{height:92,width:92,alignSelf:'center',borderRadius:48}}></Image> */}
+              <View style={styles.imgView}>
+                {/* <Image source={{uri:`${this.state.userData.profilePic}`}} style={{height:92,width:92,alignSelf:'center',borderRadius:48}}></Image> */}
 
-              {readyImageAssets.type == "uri" ? (
-                <Image
-                  source={{ uri: userData.logo }}
-                  style={{
-                    height: 92,
-                    width: 92,
-                    alignSelf: "center",
-                    borderRadius: 48,
-                  }}
-                />
-              ) : (
-                <Image
-                  source={require("../../../assets/avatar1.png")}
-                  style={{
-                    height: 92,
-                    width: 92,
-                    alignSelf: "center",
-                    borderRadius: 48,
-                  }}
-                />
-              )}
-            </View>
-            {/* <Text style={styles.header}>Create Business Profile</Text> */}
-            {/* <Card containerStyle={styles.card}>
+                {readyImageAssets.type == "uri" ? (
+                  <Image
+                    source={{ uri: userData.logo }}
+                    style={{
+                      height: 92,
+                      width: 92,
+                      alignSelf: "center",
+                      borderRadius: 48,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={require("../../../assets/avatar1.png")}
+                    style={{
+                      height: 92,
+                      width: 92,
+                      alignSelf: "center",
+                      borderRadius: 48,
+                    }}
+                  />
+                )}
+              </View>
+              {/* <Text style={styles.header}>Create Business Profile</Text> */}
+              {/* <Card containerStyle={styles.card}>
             <Icon
               name="image"
               type="font-awesome"
@@ -176,101 +182,102 @@ class Businesspro extends React.Component {
             />
           </Card>
           <Button title="Add company logo" type="clear" /> */}
-            <Input
-              disabled={isDisabled}
-              style={{ marginTop: "50px" }}
-              placeholder={"Company Name"}
-              inputContainerStyle={styles.inputContainer}
-              inputStyle={styles.input}
-              value={userData.company}
-            />
-            <View style={styles.detailsContainer}>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Industry</Text>
-                <Dropdown
-                  label={
-                    this.renderValues(userData.industry).length == 0
-                      ? "Select                   v"
-                      : ""
-                  }
-                  disabled={isDisabled}
-                  data={INDUSTRY_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={this.renderValues(userData.industry)}
-                />
+              <Input
+                disabled={isDisabled}
+                style={{ marginTop: "50px" }}
+                placeholder={"Company Name"}
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.input}
+                value={userData.company}
+              />
+              <View style={styles.detailsContainer}>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Industry</Text>
+                  <Dropdown
+                    label={
+                      this.renderValues(userData.industry).length == 0
+                        ? "Select                   v"
+                        : ""
+                    }
+                    disabled={isDisabled}
+                    data={INDUSTRY_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={this.renderValues(userData.industry)}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Business Model</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={
+                      this.renderValues(userData.businessModel).length == 0
+                        ? "Select                   v"
+                        : ""
+                    }
+                    data={BUSINESS_MODEL_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={this.renderValues(userData.businessModel)}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Company Size</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={
+                      this.renderValues(userData.companySize).length == 0
+                        ? "Select                   v"
+                        : ""
+                    }
+                    data={COMPANY_SIZE_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={this.renderValues(userData.companySize)}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Year Founded</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={
+                      this.renderValues(userData.yearFounded).length == 0
+                        ? "Select                   v"
+                        : ""
+                    }
+                    data={YEAR_FOUNDED_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={this.renderValues(userData.yearFounded)}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text
+                    style={{ fontSize: 15, width: "60%" }}
+                  >{`State of Incorporation`}</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={
+                      this.renderValues(userData.stateIncorporated).length == 0
+                        ? "Select            v"
+                        : ""
+                    }
+                    data={STATE_OF_INCORP_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={{ width: "40%", marginTop: "-15%" }}
+                    renderAccessory={() => null}
+                    value={this.renderValues(userData.stateIncorporated)}
+                  />
+                </View>
               </View>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Business Model</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={
-                    this.renderValues(userData.businessModel).length == 0
-                      ? "Select                   v"
-                      : ""
-                  }
-                  data={BUSINESS_MODEL_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={this.renderValues(userData.businessModel)}
-                />
-              </View>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Company Size</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={
-                    this.renderValues(userData.companySize).length == 0
-                      ? "Select                   v"
-                      : ""
-                  }
-                  data={COMPANY_SIZE_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={this.renderValues(userData.companySize)}
-                />
-              </View>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Year Founded</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={
-                    this.renderValues(userData.yearFounded).length == 0
-                      ? "Select                   v"
-                      : ""
-                  }
-                  data={YEAR_FOUNDED_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={this.renderValues(userData.yearFounded)}
-                />
-              </View>
-              <View style={styles.detailsRow}>
-                <Text
-                  style={{ fontSize: 15, width: "60%" }}
-                >{`State of Incorporation`}</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={
-                    this.renderValues(userData.stateIncorporated).length == 0
-                      ? "Select            v"
-                      : ""
-                  }
-                  data={STATE_OF_INCORP_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={{ width: "40%", marginTop: "-15%" }}
-                  renderAccessory={() => null}
-                  value={this.renderValues(userData.stateIncorporated)}
-                />
-              </View>
-            </View>
-          </Fragment>
-        )}
-      </View>
+            </Fragment>
+          )}
+        </View>
+      </Root>
     );
   }
 }

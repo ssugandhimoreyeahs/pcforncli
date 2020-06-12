@@ -4,6 +4,7 @@ import { PLAID } from "../../constants/constants";
 import { sendPlaidToken } from "../../api/api";
 import { BackHandler } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
+import {Root} from '@components';
 
 export default class BankIntegration extends Component {
   constructor(props) {
@@ -169,7 +170,7 @@ export default class BankIntegration extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <Root headerColor={"#fff"} footerColor={"#fff"} barStyle={"dark"}>
         <Spinner visible={this.state.isSpinner} />
         <PlaidAuthenticator
           onMessage={(data) => {
@@ -182,7 +183,7 @@ export default class BankIntegration extends Component {
           selectAccount={PLAID.selectAccount}
           //connected={console.log("Completed")}
         />
-      </React.Fragment>
+      </Root>
     );
   }
 }

@@ -7,12 +7,21 @@ const NETWORKINSTANCE = {
   PRODUCTIONINSTANCE: "http://3.132.213.123:8081/v0.1", // code for the production
   NGROK: "https://aaffa9c4.ngrok.io/v0.1",
 };
-const APIENDPOINT = {
-  endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
-  isQuickBookProduction: true,
-  isPlaidProduction: true,
-  //isPlaidProduction: false,
-};
+
+let isProduction = true;
+//isProduction = false;
+
+const APIENDPOINT = isProduction
+  ? {
+      endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
+      isQuickBookProduction: true,
+      isPlaidProduction: true,
+    }
+  : {
+      endPoint: NETWORKINSTANCE.SANDBOXINSTANCE,
+      isQuickBookProduction: true,
+      isPlaidProduction: false,
+    };
 
 const USERDATAAPIS = {
   userSignUp: APIENDPOINT.endPoint + "/auth/signup",

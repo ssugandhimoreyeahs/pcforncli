@@ -11,6 +11,7 @@ import {
   BackHandler,
 } from "react-native";
 import { Button } from "react-native-elements";
+import {Root} from '@components';
 import {
   Ionicons,
   AntDesign,
@@ -49,6 +50,7 @@ class OopsSorry extends Component {
 
   render() {
     return (
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"light"}>
       <View style={styles.container}>
         <Image
           style={{
@@ -76,6 +78,7 @@ class OopsSorry extends Component {
           }}
         />
       </View>
+      </Root>
     );
   }
 }

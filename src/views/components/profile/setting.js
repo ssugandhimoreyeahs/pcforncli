@@ -15,7 +15,7 @@ import { getUser } from "../../../api/api";
 import { ScrollView } from "react-native-gesture-handler";
 import { connect } from "react-redux";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import { Root } from "@components";
 AntDesign.loadFont();
 class Setting extends React.Component {
   constructor(props) {
@@ -65,12 +65,13 @@ class Setting extends React.Component {
       isError,
     } = this.props.reduxState.userData;
     return (
-      <View style={styles.margins}>
-        <Spinner visible={loading && !isFetched} />
-        {!loading && isFetched && !isError && (
-          <Fragment>
-            <ScrollView>
-              {/* <View style={{flexDirection:'row', width:'100%',marginTop:'1%',justifyContent:'space-between'}}>
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"dark"}>
+        <View style={styles.margins}>
+          <Spinner visible={loading && !isFetched} />
+          {!loading && isFetched && !isError && (
+            <Fragment>
+              <ScrollView>
+                {/* <View style={{flexDirection:'row', width:'100%',marginTop:'1%',justifyContent:'space-between'}}>
           <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
             <AntDesign size={30} name='left' style={{alignSelf:'flex-start', marginLeft: 10,}} />
           </TouchableOpacity>
@@ -80,109 +81,114 @@ class Setting extends React.Component {
           </TouchableOpacity>
         </View> */}
 
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                  alignSelf: "center",
-                  marginTop: 15,
-                  flexDirection: "row",
-                  width: "100%",
-                  justifyContent: "space-between",
-                  borderWidth: 0,
-                  borderColor: "black",
-                }}
-              >
                 <View
-                  style={{ justifyContent: "center", alignItems: "flex-end" }}
+                  style={{
+                    paddingHorizontal: 10,
+                    alignSelf: "center",
+                    marginTop: 15,
+                    flexDirection: "row",
+                    width: "100%",
+                    justifyContent: "space-between",
+                    borderWidth: 0,
+                    borderColor: "black",
+                  }}
                 >
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.goBack();
-                    }}
-                  >
-                    <AntDesign name="left" size={25} color={"#000000"} />
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <Text
-                    style={{ fontSize: 17, fontWeight: "bold", color: "black" }}
-                  >{`Settings`}</Text>
-                </View>
-                <View
-                  style={{ justifyContent: "center", alignItems: "center" }}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.navigate("SettingEdit", {
-                        ...userData,
-                      });
-                    }}
-                  >
-                    <Text style={styles.editView}>Edit</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-
-              <View style={styles.container}>
-                <View style={styles.vname}>
-                  <Text style={styles.texttitle}>First Name</Text>
-                  <Text style={styles.textdata}>{userData.firstname}</Text>
-                </View>
-
-                <View style={styles.vtitle}>
-                  <Text style={styles.texttitle}>Last Name</Text>
-                  <Text style={styles.textdata}>{userData.lastname}</Text>
-                </View>
-
-                <View style={styles.vtitle}>
-                  <Text style={styles.texttitle}>Title</Text>
-                  <Text style={styles.textdata}>{userData.title}</Text>
-                </View>
-
-                <View style={styles.vemail}>
-                  <Text style={styles.texttitle}>Business Email</Text>
-                  <Text style={styles.textdata}>{userData.username}</Text>
-                </View>
-
-                <View style={styles.vpass}>
-                  <Text style={styles.texttitle}>Password</Text>
                   <View
-                    style={{
-                      width: 148,
-                      height: 20,
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                    }}
+                    style={{ justifyContent: "center", alignItems: "flex-end" }}
                   >
                     <TouchableOpacity
                       onPress={() => {
-                        this.props.navigation.navigate("ChangePassword", {
+                        this.props.navigation.goBack();
+                      }}
+                    >
+                      <AntDesign name="left" size={25} color={"#000000"} />
+                    </TouchableOpacity>
+                  </View>
+                  <View
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 17,
+                        fontWeight: "bold",
+                        color: "black",
+                      }}
+                    >{`Settings`}</Text>
+                  </View>
+                  <View
+                    style={{ justifyContent: "center", alignItems: "center" }}
+                  >
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.navigate("SettingEdit", {
                           ...userData,
                         });
                       }}
-                      style={{ flexDirection: "row" }}
                     >
-                      <Text
-                        placeholderTextColor="#000000"
-                        style={styles.textdata}
-                      >
-                        Change password
-                      </Text>
-                      <AntDesign name="right" size={15} alignSelf="center" />
+                      <Text style={styles.editView}>Edit</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
-              </View>
 
-              <View style={styles.delview}>
-                <Text style={styles.subhead}>Deactivate my account</Text>
-              </View>
-            </ScrollView>
-          </Fragment>
-        )}
-      </View>
+                <View style={styles.container}>
+                  <View style={styles.vname}>
+                    <Text style={styles.texttitle}>First Name</Text>
+                    <Text style={styles.textdata}>{userData.firstname}</Text>
+                  </View>
+
+                  <View style={styles.vtitle}>
+                    <Text style={styles.texttitle}>Last Name</Text>
+                    <Text style={styles.textdata}>{userData.lastname}</Text>
+                  </View>
+
+                  <View style={styles.vtitle}>
+                    <Text style={styles.texttitle}>Title</Text>
+                    <Text style={styles.textdata}>{userData.title}</Text>
+                  </View>
+
+                  <View style={styles.vemail}>
+                    <Text style={styles.texttitle}>Business Email</Text>
+                    <Text style={styles.textdata}>{userData.username}</Text>
+                  </View>
+
+                  <View style={styles.vpass}>
+                    <Text style={styles.texttitle}>Password</Text>
+                    <View
+                      style={{
+                        width: 148,
+                        height: 20,
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => {
+                          this.props.navigation.navigate("ChangePassword", {
+                            ...userData,
+                          });
+                        }}
+                        style={{ flexDirection: "row" }}
+                      >
+                        <Text
+                          placeholderTextColor="#000000"
+                          style={styles.textdata}
+                        >
+                          Change password
+                        </Text>
+                        <AntDesign name="right" size={15} alignSelf="center" />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                </View>
+
+                <View style={styles.delview}>
+                  <Text style={styles.subhead}>Deactivate my account</Text>
+                </View>
+              </ScrollView>
+            </Fragment>
+          )}
+        </View>
+      </Root>
     );
   }
 }

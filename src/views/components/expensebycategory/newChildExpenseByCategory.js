@@ -35,7 +35,7 @@ import SVG from "react-native-svg";
 import { connect } from "react-redux";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 import { fetchExpensesAsyncCreator } from "../../../reducers/expensecategory";
-
+import {Root} from '@components';
 FontAwesome.loadFont();
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -1017,7 +1017,7 @@ class ExpenseByCategoryChild extends Component {
     );
   };
   handleOnPressOnButton = (items) => {
-   // console.log("Item recieve here - ", items);
+    // console.log("Item recieve here - ", items);
     let userData = { ...this.props.reduxState.userData.userData };
     const { expenseType } = this.props.navigation.getParam(
       "currentExpenseCategory"
@@ -1184,6 +1184,7 @@ class ExpenseByCategoryChild extends Component {
     let { loading, error } = this.state;
 
     return (
+      <Root headerColor={"#F8F8F8"} footerColor={"#FFF"} barStyle={"dark"}>
       <View style={styles.container}>
         {error == true ? (
           <this.errorView />
@@ -1193,6 +1194,7 @@ class ExpenseByCategoryChild extends Component {
           <this.renderBody />
         )}
       </View>
+      </Root>
     );
   }
 }

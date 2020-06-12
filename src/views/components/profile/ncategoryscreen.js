@@ -39,6 +39,7 @@ import {
   ADDEDCATEGORY,
   DELETECATEGORY,
 } from "../../../api/message";
+import {Root} from '@components';
 import {
   getCategoryId,
   getCategoryName,
@@ -868,6 +869,7 @@ class CategoryScreen extends Component {
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
 
     return (
+      <Root headerColor={"#F8F8F8"} footerColor={"#EFEFF1"} barStyle={"dark"}>
       <View style={styles.container}>
         <Spinner visible={this.state.isSpinner} />
         {error == true ? (
@@ -879,6 +881,7 @@ class CategoryScreen extends Component {
           <this.renderBody />
         )}
       </View>
+      </Root>
     );
   }
 }

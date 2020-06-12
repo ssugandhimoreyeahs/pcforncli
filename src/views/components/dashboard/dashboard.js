@@ -26,7 +26,7 @@ import {
   getUserPromise,
   getUser,
 } from "../../../api/api";
-
+import {Root} from '@components';
 import Spinner from "react-native-loading-spinner-overlay";
 import TryAgainScreen from "../../ftux/somethingWrong";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
@@ -677,7 +677,7 @@ class Dashboard extends Component {
     const { isSpinner } = this.state;
     const { bankIntegrationStatus, qbIntegrationStatus } = this.state.userData;
     return (
-      <Fragment>
+      <Root headerColor={"#070640"} footerColor={"#FFF"} barStyle={"light"}>
         <NavigationEvents
           onWillFocus={(payload) => {
             this.onDashBoardFocused = true;
@@ -706,7 +706,7 @@ class Dashboard extends Component {
             />
           )
         ) : null}
-      </Fragment>
+      </Root>
     );
   }
 }

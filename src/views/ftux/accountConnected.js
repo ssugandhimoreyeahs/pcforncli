@@ -12,6 +12,7 @@ import {
 import { Button } from "react-native-elements";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 // import Button from "../components/login/button";
+import { Root } from "@components";
 
 class AccountConnected extends Component {
   constructor(props) {
@@ -43,58 +44,62 @@ class AccountConnected extends Component {
 
   render() {
     return (
-      <View style={styles.margins}>
-        <View
-          style={{
-            justifyContent: "center",
-            width: "70%",
-            height: "50%",
-            alignSelf: "center",
-          }}
-        >
-          <Text
+      <Root headerColor={"#F5F6F7"} footerColor={"#F5F6F7"} barStyle={"dark"}>
+        <View style={styles.margins}>
+          <View
             style={{
-              fontWeight: "bold",
-              textAlign: "center",
-              fontSize: 20,
+              justifyContent: "center",
+              width: "70%",
+              height: "50%",
               alignSelf: "center",
             }}
           >
-            Your account has been successfully connected to PocketCFO
-          </Text>
-        </View>
-        <View
-          style={{
-            justifyContent: "flex-end",
-            width: "70%",
-            height: "50%",
-            marginBottom: "10%",
-            alignSelf: "center",
-          }}
-        >
-          {/* <Button 
+            <Text
+              style={{
+                fontWeight: "bold",
+                textAlign: "center",
+                fontSize: 20,
+                alignSelf: "center",
+              }}
+            >
+              Your account has been successfully connected to PocketCFO
+            </Text>
+          </View>
+          <View
+            style={{
+              justifyContent: "flex-end",
+              width: "70%",
+              height: "50%",
+              marginBottom: "10%",
+              alignSelf: "center",
+            }}
+          >
+            {/* <Button 
                   buttonStyle={styles.button}  
                   onPress={()=>{ this.props.navigation.getParam("redirectTo")(); }} 
                   title={"Back"}
                   titleStyle={{textAlign:'center'}}
                   containerStyle={styles.buttonContainer} /> */}
-          <TouchableOpacity
-            onPress={() => {
-              this.props.navigation.getParam("redirectTo")();
-            }}
-            style={{
-              backgroundColor: "#007AFF",
-              height: 48,
-              width: "50%",
-              borderRadius: 25,
-              alignSelf: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text style={{ textAlign: "center", color: "#FFFFFF" }}>Back</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.props.navigation.getParam("redirectTo")();
+              }}
+              style={{
+                backgroundColor: "#007AFF",
+                height: 48,
+                width: "50%",
+                borderRadius: 25,
+                alignSelf: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={{ textAlign: "center", color: "#FFFFFF" }}>
+                Back
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      </Root>
     );
   }
 }

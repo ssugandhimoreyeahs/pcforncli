@@ -29,10 +29,8 @@ import {
   YEAR_FOUNDED_OPTIONS,
 } from "../../../constants/constants";
 import { ERROR, BUSINESS_PROFILE_UPDATED } from "../../../api/message";
+import { Root } from "@components";
 
-import * as ImagePicker from "expo-image-picker";
-
-import * as Permissions from "expo-permissions";
 import { connect } from "react-redux";
 import { fetchUserAsyncActionCreator } from "../../../reducers/getUser";
 import ImagePickerRN from "react-native-image-picker";
@@ -364,94 +362,95 @@ class BusinessproEdit extends React.Component {
         : { type: "uri", uri: selectLogoByUser.uri });
 
     return (
-      <View style={styles.container}>
-        <Spinner visible={isSpinner} />
-        {this.state.isBodyLoaded && (
-          <ScrollView>
-            {/* <View style={{flexDirection:'row', width:'71%',marginTop:'1%',justifyContent:'space-between'}}>
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"dark"}>
+        <View style={styles.container}>
+          <Spinner visible={isSpinner} />
+          {this.state.isBodyLoaded && (
+            <ScrollView>
+              {/* <View style={{flexDirection:'row', width:'71%',marginTop:'1%',justifyContent:'space-between'}}>
           <TouchableOpacity onPress={()=> this.props.navigation.goBack()}>
             <AntDesign size={30} name='left' style={{alignSelf:'flex-start', marginLeft: 10,}} />
           </TouchableOpacity>
           <Text style={styles.header}>Business Profile</Text>
         </View> */}
 
-            <View
-              style={{ marginTop: 15, flexDirection: "row", width: "100%" }}
-            >
               <View
-                style={{
-                  width: "10%",
-                  justifyContent: "center",
-                  alignItems: "flex-end",
-                }}
+                style={{ marginTop: 15, flexDirection: "row", width: "100%" }}
               >
-                <TouchableOpacity
-                  onPress={() => {
-                    this.props.navigation.goBack();
+                <View
+                  style={{
+                    width: "10%",
+                    justifyContent: "center",
+                    alignItems: "flex-end",
                   }}
                 >
-                  <AntDesign name="left" size={25} color={"#000000"} />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.goBack();
+                    }}
+                  >
+                    <AntDesign name="left" size={25} color={"#000000"} />
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    width: "80%",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 17, fontWeight: "bold", color: "black" }}
+                  >{`Business Profile`}</Text>
+                </View>
               </View>
-              <View
-                style={{
-                  width: "80%",
-                  justifyContent: "center",
-                  alignItems: "center",
+
+              <View style={styles.imgView}>
+                {/* <Image source={{uri:"https://pbs.twimg.com/profile_images/486929358120964097/gNLINY67_400x400.png"}} style={{height:50,width:50,alignSelf:'center'}}></Image> */}
+
+                {readyProfileUrl != null &&
+                readyProfileUrl.type != undefined &&
+                readyProfileUrl.type == "uri" ? (
+                  <Image
+                    source={{ uri: readyProfileUrl.uri }}
+                    style={{
+                      height: 92,
+                      width: 92,
+                      alignSelf: "center",
+                      borderRadius: 48,
+                    }}
+                  />
+                ) : (
+                  <Image
+                    source={require("../../../assets/avatar1.png")}
+                    style={{
+                      height: 92,
+                      width: 92,
+                      alignSelf: "center",
+                      borderRadius: 48,
+                    }}
+                  />
+                )}
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  this.handleEditImage();
                 }}
               >
                 <Text
-                  style={{ fontSize: 17, fontWeight: "bold", color: "black" }}
-                >{`Business Profile`}</Text>
-              </View>
-            </View>
-
-            <View style={styles.imgView}>
-              {/* <Image source={{uri:"https://pbs.twimg.com/profile_images/486929358120964097/gNLINY67_400x400.png"}} style={{height:50,width:50,alignSelf:'center'}}></Image> */}
-
-              {readyProfileUrl != null &&
-              readyProfileUrl.type != undefined &&
-              readyProfileUrl.type == "uri" ? (
-                <Image
-                  source={{ uri: readyProfileUrl.uri }}
                   style={{
-                    height: 92,
-                    width: 92,
+                    color: "#007AFF",
                     alignSelf: "center",
-                    borderRadius: 48,
+                    marginVertical: "3%",
+                    fontSize: 15,
+                    fontWeight: "bold",
                   }}
-                />
-              ) : (
-                <Image
-                  source={require("../../../assets/avatar1.png")}
-                  style={{
-                    height: 92,
-                    width: 92,
-                    alignSelf: "center",
-                    borderRadius: 48,
-                  }}
-                />
-              )}
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                this.handleEditImage();
-              }}
-            >
-              <Text
-                style={{
-                  color: "#007AFF",
-                  alignSelf: "center",
-                  marginVertical: "3%",
-                  fontSize: 15,
-                  fontWeight: "bold",
-                }}
-              >
-                Edit Logo
-              </Text>
-            </TouchableOpacity>
-            {/* <Text style={styles.header}>Create Business Profile</Text> */}
-            {/* <Card containerStyle={styles.card}>
+                >
+                  Edit Logo
+                </Text>
+              </TouchableOpacity>
+              {/* <Text style={styles.header}>Create Business Profile</Text> */}
+              {/* <Card containerStyle={styles.card}>
             <Icon
               name="image"
               type="font-awesome"
@@ -460,142 +459,143 @@ class BusinessproEdit extends React.Component {
             />
           </Card>
           <Button title="Add company logo" type="clear" /> */}
-            <Input
-              disabled={isDisabled}
-              style={{ marginTop: "50px" }}
-              placeholder={"Company Name"}
-              inputContainerStyle={styles.inputContainer}
-              inputStyle={styles.input}
-              value={company}
-              onChangeText={(text) => {
-                this.setState({ company: text });
-              }}
-            />
-            <View style={styles.detailsContainer}>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Industry</Text>
-                <Dropdown
-                  label={"Select                   v"}
-                  disabled={isDisabled}
-                  data={INDUSTRY_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={industry}
-                  onChangeText={(text) => {
-                    this.setState({ industry: text });
-                  }}
-                  onBlur={() => {
-                    Keyboard.dismiss();
-                  }}
-                  onFocus={() => {
-                    Keyboard.dismiss();
-                  }}
-                  dropdownPosition={-5.4}
-                />
+              <Input
+                disabled={isDisabled}
+                style={{ marginTop: "50px" }}
+                placeholder={"Company Name"}
+                inputContainerStyle={styles.inputContainer}
+                inputStyle={styles.input}
+                value={company}
+                onChangeText={(text) => {
+                  this.setState({ company: text });
+                }}
+              />
+              <View style={styles.detailsContainer}>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Industry</Text>
+                  <Dropdown
+                    label={"Select                   v"}
+                    disabled={isDisabled}
+                    data={INDUSTRY_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={industry}
+                    onChangeText={(text) => {
+                      this.setState({ industry: text });
+                    }}
+                    onBlur={() => {
+                      Keyboard.dismiss();
+                    }}
+                    onFocus={() => {
+                      Keyboard.dismiss();
+                    }}
+                    dropdownPosition={-5.4}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Business Model</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={"Select                   v"}
+                    data={BUSINESS_MODEL_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={businessModel}
+                    onChangeText={(text) => {
+                      this.setState({ businessModel: text });
+                    }}
+                    onBlur={() => {
+                      Keyboard.dismiss();
+                    }}
+                    onFocus={() => {
+                      Keyboard.dismiss();
+                    }}
+                    dropdownPosition={-5.4}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Company Size</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={"Select                   v"}
+                    data={COMPANY_SIZE_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={companySize}
+                    onChangeText={(text) => {
+                      this.setState({ companySize: text });
+                    }}
+                    onBlur={() => {
+                      Keyboard.dismiss();
+                    }}
+                    onFocus={() => {
+                      Keyboard.dismiss();
+                    }}
+                    dropdownPosition={-5.4}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text style={styles.detailsText}>Year Founded</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={"Select                   v"}
+                    data={YEAR_FOUNDED_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={styles.dropdown}
+                    renderAccessory={() => null}
+                    value={yearFounded}
+                    onChangeText={(text) => {
+                      this.setState({ yearFounded: text });
+                    }}
+                    onBlur={() => {
+                      Keyboard.dismiss();
+                    }}
+                    onFocus={() => {
+                      Keyboard.dismiss();
+                    }}
+                    dropdownPosition={-5.4}
+                  />
+                </View>
+                <View style={styles.detailsRow}>
+                  <Text
+                    style={{ fontSize: 15, width: "60%" }}
+                  >{`State of Incorporation`}</Text>
+                  <Dropdown
+                    disabled={isDisabled}
+                    label={"Select            v"}
+                    data={STATE_OF_INCORP_OPTIONS}
+                    inputContainerStyle={styles.detailsInputContainer}
+                    containerStyle={{ width: "40%", marginTop: "-15%" }}
+                    renderAccessory={() => null}
+                    value={stateIncorporated}
+                    onChangeText={(text) => {
+                      this.setState({ stateIncorporated: text });
+                    }}
+                    onBlur={() => {
+                      Keyboard.dismiss();
+                    }}
+                    onFocus={() => {
+                      Keyboard.dismiss();
+                    }}
+                    dropdownPosition={-5.4}
+                  />
+                </View>
               </View>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Business Model</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={"Select                   v"}
-                  data={BUSINESS_MODEL_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={businessModel}
-                  onChangeText={(text) => {
-                    this.setState({ businessModel: text });
-                  }}
-                  onBlur={() => {
-                    Keyboard.dismiss();
-                  }}
-                  onFocus={() => {
-                    Keyboard.dismiss();
-                  }}
-                  dropdownPosition={-5.4}
-                />
-              </View>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Company Size</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={"Select                   v"}
-                  data={COMPANY_SIZE_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={companySize}
-                  onChangeText={(text) => {
-                    this.setState({ companySize: text });
-                  }}
-                  onBlur={() => {
-                    Keyboard.dismiss();
-                  }}
-                  onFocus={() => {
-                    Keyboard.dismiss();
-                  }}
-                  dropdownPosition={-5.4}
-                />
-              </View>
-              <View style={styles.detailsRow}>
-                <Text style={styles.detailsText}>Year Founded</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={"Select                   v"}
-                  data={YEAR_FOUNDED_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={styles.dropdown}
-                  renderAccessory={() => null}
-                  value={yearFounded}
-                  onChangeText={(text) => {
-                    this.setState({ yearFounded: text });
-                  }}
-                  onBlur={() => {
-                    Keyboard.dismiss();
-                  }}
-                  onFocus={() => {
-                    Keyboard.dismiss();
-                  }}
-                  dropdownPosition={-5.4}
-                />
-              </View>
-              <View style={styles.detailsRow}>
-                <Text
-                  style={{ fontSize: 15, width: "60%" }}
-                >{`State of Incorporation`}</Text>
-                <Dropdown
-                  disabled={isDisabled}
-                  label={"Select            v"}
-                  data={STATE_OF_INCORP_OPTIONS}
-                  inputContainerStyle={styles.detailsInputContainer}
-                  containerStyle={{ width: "40%", marginTop: "-15%" }}
-                  renderAccessory={() => null}
-                  value={stateIncorporated}
-                  onChangeText={(text) => {
-                    this.setState({ stateIncorporated: text });
-                  }}
-                  onBlur={() => {
-                    Keyboard.dismiss();
-                  }}
-                  onFocus={() => {
-                    Keyboard.dismiss();
-                  }}
-                  dropdownPosition={-5.4}
-                />
-              </View>
-            </View>
-            <Button
-              buttonStyle={styles.button}
-              disabledStyle={{ backgroundColor: "#7FBDFF" }}
-              onPress={this.handleUpdateBtn}
-              title={"Save"}
-              containerStyle={styles.buttonContainer}
-              disabled={this.handleButtonDisabled()}
-            />
-          </ScrollView>
-        )}
-      </View>
+              <Button
+                buttonStyle={styles.button}
+                disabledStyle={{ backgroundColor: "#7FBDFF" }}
+                onPress={this.handleUpdateBtn}
+                title={"Save"}
+                containerStyle={styles.buttonContainer}
+                disabled={this.handleButtonDisabled()}
+              />
+            </ScrollView>
+          )}
+        </View>
+      </Root>
     );
   }
 }

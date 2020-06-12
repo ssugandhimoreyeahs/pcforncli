@@ -20,6 +20,7 @@ import AntDesign from "react-native-vector-icons/AntDesign";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import Constants from "expo-constants";
 import { Button } from "react-native-elements";
+import { Root } from "@components";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
   getUserTransactions,
@@ -72,9 +73,9 @@ const TransactionComponent = (props) => {
   }
 
   if (props.transactionTypes == "INFLOW") {
-    readyAmount = `$${amount}`;
+    readyAmount = `$${numberWithCommas(amount)}`;
   } else if (props.transactionTypes == "OUTFLOW") {
-    readyAmount = `-$${amount}`;
+    readyAmount = `-$${numberWithCommas(amount)}`;
   } else {
     if (props.fullTransactionObj.transactionType == "Debit") {
       readyAmount = `-$${numberWithCommas(amount)}`;
@@ -1733,27 +1734,29 @@ class Checking extends React.PureComponent {
   render() {
     const { transactions, isBodyLoaded } = this.state;
     return (
-      <View style={styles.margins}>
-        <Spinner
-          visible={this.state.isSpinner}
-          textStyle={styles.spinnerTextStyle}
-        />
-
-        {this.state.isUserLinkedWithBank
-          ? isBodyLoaded && this.checkingBody()
-          : null}
-
-        {this.state.showTimeoutScreen && (
-          <Timeout 
-            navigation={this.props.navigation}
-            reloadPlaid={() => {
-              if (this.props.navigation.getParam("reloadPlaid")) {
-                this.props.navigation.getParam("reloadPlaid")();
-              }
-            }}
+      <Root headerColor={"#070640"} footerColor={"#F6F7F8"} barStyle={"light"}>
+        <View style={styles.margins}>
+          <Spinner
+            visible={this.state.isSpinner}
+            textStyle={styles.spinnerTextStyle}
           />
-        )}
-      </View>
+
+          {this.state.isUserLinkedWithBank
+            ? isBodyLoaded && this.checkingBody()
+            : null}
+
+          {this.state.showTimeoutScreen && (
+            <Timeout
+              navigation={this.props.navigation}
+              reloadPlaid={() => {
+                if (this.props.navigation.getParam("reloadPlaid")) {
+                  this.props.navigation.getParam("reloadPlaid")();
+                }
+              }}
+            />
+          )}
+        </View>
+      </Root>
     );
   }
 }
