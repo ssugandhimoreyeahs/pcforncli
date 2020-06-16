@@ -25,7 +25,7 @@ export async function sendPlaidToken(public_token, institution, accounts) {
   }
 }
 
-export async function getUserTransactions(SKIP = null, LIMIT = null) {
+export async function getUserTransactions(SKIP = 0, LIMIT = 25) {
   try {
     const token = await AsyncStorage.getItem("authToken");
     let readyUrl = APINETWORK.getTransactions;
@@ -47,10 +47,10 @@ export async function getUserTransactions(SKIP = null, LIMIT = null) {
         accountType: data.accountType,
       };
     } else {
-      return { result: false, response: data };
+      return Promise.reject({ result: false, response: data });
     }
   } catch (error) {
-    return { result: "error", error };
+    return Promise.reject({ result: "error", error });
   }
 }
 
@@ -342,10 +342,13 @@ export async function getUserOutFlowTransactions(skip = 0, limit = 0) {
         outflowTransactions: outflowTransactionsResponse.data,
       };
     } else {
-      return { result: false };
+      return Promise.reject({
+        result: false,
+        response: outflowTransactionsResponse.data,
+      });
     }
   } catch (error) {
-    return { result: "error", error };
+    return Promise.reject({ result: false, error });
   }
 }
 
@@ -376,10 +379,13 @@ export async function getUserInflowTransactions(skip = 0, limit = 0) {
         inflowTransactions: inflowTransactionsResponse.data,
       };
     } else {
-      return { result: false };
+      return Promise.reject({
+        result: false,
+        response: inflowTransactionsResponse.data,
+      });
     }
   } catch (error) {
-    return { result: "error", error };
+    return Promise.reject({ result: false, error });
   }
 }
 

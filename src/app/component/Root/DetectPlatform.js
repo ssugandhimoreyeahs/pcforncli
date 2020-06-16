@@ -12,7 +12,9 @@ const MyWrapper = Platform.select({
   android: View,
 });
 const RootComponent = ({ children, headerColor, footerColor, barStyle }) => {
-  StatusBar.setBackgroundColor(headerColor);
+  if (Platform.OS === "android") {
+    StatusBar.setBackgroundColor(headerColor);
+  }
   const setBarStyle =
     barStyle === "dark"
       ? "dark-content"
