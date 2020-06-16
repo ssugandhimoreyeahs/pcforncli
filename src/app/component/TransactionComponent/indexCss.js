@@ -23,12 +23,12 @@ export default StyleSheet.create({
   transactionTitleText: {
     color: "#1D1E1F",
     fontSize: 15,
-    width: "60%",
+    width: "65%",
   },
   amountTransactionText: {
     fontSize: 17,
     color: "#1D1E1F",
-    width: "40%",
+    width: "35%",
     textAlign: "right",
   },
   childTransactionLowerContainer: {

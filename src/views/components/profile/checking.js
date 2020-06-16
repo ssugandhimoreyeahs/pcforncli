@@ -279,6 +279,7 @@ class TransactionScreen extends PureComponent {
       }
     }
   }catch(error){
+    console.log("Error here - ",error);
     this.setState({
       spinner: false,
       all: {
