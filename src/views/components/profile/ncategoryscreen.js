@@ -75,7 +75,7 @@ class CategoryScreen extends Component {
     let recievedData = this.props.navigation.getParam(
       "currentExecutingTransaction"
     );
-    console.log("Recieve data from the transaction change - ", recievedData);
+    //console.log("Recieve data from the transaction change - ", recievedData);
   }
 
   componentWillMount() {
@@ -211,7 +211,7 @@ class CategoryScreen extends Component {
       axiosBody.oldCategoryId = transactionCategory;
       axiosBody.updateCategoryId = categoryId;
       axiosBody.transactionId = _id;
-      console.log("Axios Body Before Send - ", axiosBody);
+      //console.log("Axios Body Before Send - ", axiosBody);
 
       changeAllSimilarTransaction(axiosBody)
         .then((response) => {
@@ -374,12 +374,12 @@ class CategoryScreen extends Component {
     const { isEdit, pointIconToDefaultCategory } = this.state;
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     let { categoryName, index, customcategories, id } = categoryData;
-    console.log(
-      "Here - ",
-      executingTransactionDetails.clientDefaultCategory,
-      " category Name ",
-      categoryName
-    );
+    // console.log(
+    //   "Here - ",
+    //   executingTransactionDetails.clientDefaultCategory,
+    //   " category Name ",
+    //   categoryName
+    // );
     let showCheckIcon =
       pointIconToDefaultCategory == true
         ? categoryName == executingTransactionDetails.clientDefaultCategory

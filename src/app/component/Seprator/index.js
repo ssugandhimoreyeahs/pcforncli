@@ -11,7 +11,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#1D1E1F",
     borderBottomWidth: StyleSheet.hairlineWidth,
     opacity: 0.2,
-    width: "90%",
+    width: "100%",
     alignSelf: "center",
     marginVertical: 20,
   },

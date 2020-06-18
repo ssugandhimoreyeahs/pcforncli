@@ -1,5 +1,13 @@
-import React, { Fragment, memo, useRef } from "react";
-import { Text, View, FlatList, StyleSheet } from "react-native";
+import React, {
+  Fragment,
+  memo,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+  useCallback,
+} from "react";
+import { Text, View, FlatList, StyleSheet, Dimensions } from "react-native";
 import styles from "./indexCss";
 import PropTypes from "prop-types";
 import { ALL_MONTHS } from "@constants";
@@ -10,6 +18,7 @@ import {
   PLAID_EXPENSE_CATEGORIES,
 } from "@api";
 import { Seprator } from "@components";
+import { off } from "superagent";
 
 const computeTransaction = (singleTransaction, transactionType) => {
   let finalAmount = ``;
@@ -78,22 +87,25 @@ const TransactionComponent = memo((props) => {
     touchableText,
     touchableColor,
     touchableBorder,
-    touchableOnPress,
+    onPress,
+    rootTransactionObj,
     touchableTextColor,
+    transactionType = "",
   } = props;
-
   return (
     <Fragment>
-      <View style={styles.parentTransactionComponent}>
-        <View style={styles.childTransactionUpperContainer}>
-          <Text style={styles.transactionTitleText}>{transactionTitle}</Text>
-          <Text style={styles.amountTransactionText}>{transactionAmount}</Text>
-        </View>
+      <View style={styles.childTransactionUpperContainer}>
+        <Text style={styles.transactionTitleText}>{transactionTitle}</Text>
+        <Text style={styles.amountTransactionText}>{transactionAmount}</Text>
+      </View>
 
-        <View style={styles.childTransactionLowerContainer}>
-          <Text style={styles.detailsInfoText}>{detailInfoText}</Text>
-
+      <View style={styles.childTransactionLowerContainer}>
+        <Text style={styles.detailsInfoText}>{detailInfoText}</Text>
+        <View style={{ maxWidth: "70%" }}>
           <TouchableOpacity
+            onPress={() => {
+              onPress(rootTransactionObj, transactionType);
+            }}
             style={{
               ...styles.touchableOpacityStyles,
               backgroundColor: touchableColor,
@@ -116,7 +128,7 @@ const TransactionComponent = memo((props) => {
 });
 
 const TransactionComponentDate = memo((props) => {
-  const { item = null, transactionType = null, loader } = props;
+  const { item = null, transactionType = null, onPress } = props;
   if (item != null) {
     const { date, transactions } = item;
     let splitDate = date.split("-");
@@ -136,13 +148,19 @@ const TransactionComponentDate = memo((props) => {
               transactionType
             );
             return (
-              <Fragment key={singleTransaction._id}>
+              <View
+                style={styles.parentTransactionComponent}
+                key={singleTransaction._id}
+              >
                 <TransactionComponent
+                  transactionType={transactionType}
+                  onPress={onPress}
+                  rootTransactionObj={singleTransaction}
                   transactionTitle={singleTransaction.name}
                   {...computedResult}
                 />
                 {transactions.length - 1 !== index ? <Seprator /> : null}
-              </Fragment>
+              </View>
             );
           })}
         </View>
@@ -157,22 +175,49 @@ const TransactionComponentDate = memo((props) => {
   }
 });
 const TransactionComponentWithDate = memo((props) => {
+  const [contentOffset, setContentOffset] = useState(0);
+  const flatlistRef = useRef();
+  const scrollOffset = useRef({ x: 0, y: 0 });
   const onEndReachedCalledDuringMomentum = useRef(false);
-  const { items, transactionType = "All", onEndReached, loader } = props;
+  const {
+    items,
+    transactionType = "All",
+    onEndReached,
+    loader,
+    onPress,
+  } = props;
+  // const getCurrentScrollOffset = useCallback(() => {
+  //   return scrollOffset.current;
+  // }, [scrollOffset.current]);
+  // useImperativeHandle(refs, () => ({
+  //   getData(offset) {
+  //     console.log("Code works - ", offset);
+  //     setTimeout(() => {
+  //       // flatlistRef.current.scrollToOffset({ offset: 15450, animated: true });
+  //       setContentOffset(offset+500);
+  //     }, 200);
+  //   },
+  // }));
+
   return (
     <Fragment>
       <FlatList
+        // contentOffset={{ y: contentOffset }}
+        // ref={flatlistRef}
+        // onScroll={(events) => {
+        //   scrollOffset.current = events.nativeEvent.contentOffset;
+        // }}
         onMomentumScrollBegin={() => {
           onEndReachedCalledDuringMomentum.current = false;
         }}
         keyExtractor={(item, index) => item.id}
         onEndReached={() => {
           if (!onEndReachedCalledDuringMomentum.current) {
-            onEndReached();
             onEndReachedCalledDuringMomentum.current = true;
+            onEndReached();
           }
         }}
-        onEndReachedThreshold={1.0}
+        onEndReachedThreshold={2.0}
         data={items}
         renderItem={({ item, index }) => (
           <Fragment>
@@ -180,6 +225,7 @@ const TransactionComponentWithDate = memo((props) => {
               item={item}
               transactionType={transactionType}
               loader={loader}
+              onPress={onPress}
             />
             {items.length - 1 === index ? loader : null}
           </Fragment>
@@ -189,7 +235,14 @@ const TransactionComponentWithDate = memo((props) => {
   );
 });
 
-TransactionComponentWithDate.defaultProps = {
+TransactionComponentWithDate.propTypes = {
   date: PropTypes.string.isRequired,
+  onPress: PropTypes.func.isRequired,
+};
+TransactionComponentWithDate.defaultProps = {
+  date: "",
+  onPress: () => {
+    console.log("Add On Press ");
+  },
 };
 export { TransactionComponent, TransactionComponentWithDate };

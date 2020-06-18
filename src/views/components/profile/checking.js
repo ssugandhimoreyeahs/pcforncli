@@ -1,4 +1,10 @@
-import React, { PureComponent, Fragment, Component } from "react";
+import React, {
+  PureComponent,
+  Fragment,
+  Component,
+  useRef,
+  createRef,
+} from "react";
 import {
   Text,
   View,
@@ -26,12 +32,11 @@ import {
 } from "../../../api/api";
 import { CustomTabs, TransactionComponentWithDate } from "@components";
 import { Spinner as NativeBaseSpinner } from "native-base";
+import { extendWith } from "lodash";
 AntDesign.loadFont();
 class TransactionScreen extends PureComponent {
-  constructor(props) {
-    super(props);
-
-    this.state = {
+  getInitialState = () => {
+    return {
       spinner: true,
       accountType: "",
       all: {
@@ -49,6 +54,35 @@ class TransactionScreen extends PureComponent {
         transactionsRender: [],
         transactionsResponse: [],
       },
+    };
+  };
+  resetAllDataMembers = () => {
+    this.fetchTransactionPerScroll = 25;
+    this.all = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+    };
+
+    this.outflow = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+      onTimeRun: false,
+    };
+
+    this.inflow = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+      onTimeRun: false,
+    };
+  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      ...this.getInitialState(),
     };
     this.fetchTransactionPerScroll = 25;
     this.all = {
@@ -84,6 +118,11 @@ class TransactionScreen extends PureComponent {
         component: this.inflowTabNavigator,
       },
     ];
+    // this.allRef = createRef();
+    // this.updateAll = {
+    //   skipPoint: this.all.skipPoint,
+    //   limitPoint: this.all.limitPoint,
+    // };
   }
   splitTransactions = (transactionsResponse) => {
     let allDatesArray = [];
@@ -109,30 +148,62 @@ class TransactionScreen extends PureComponent {
     return updatedTransactionsRender;
   };
   transactionStore = async (requestType = false, transactionType = "All") => {
-    try{
+    try {
+      if (transactionType === "All") {
+        const {
+          all: { transactionsResponse, transactionsRender, loader },
+          accountType,
+        } = this.state;
+        let updatedAccountType = accountType;
+        if (this.all.process) {
+          let transactionAPIResponse = await getUserTransactions(
+            this.all.skipPoint,
+            this.all.limitPoint
+          );
+          if (requestType) {
+            updatedAccountType = transactionAPIResponse.accountType;
+          }
+          this.all.skipPoint =
+            this.all.skipPoint + this.fetchTransactionPerScroll;
+          if (
+            transactionAPIResponse.transactions.length === 0 ||
+            transactionAPIResponse.transactions.length < 25
+          ) {
+            this.all.process = false;
+            this.setState((prevState) => {
+              return {
+                all: {
+                  ...prevState.all,
+                  loader: false,
+                },
+              };
+            });
+          }
+          if (transactionAPIResponse.transactions.length > 0) {
+            const updatedTransactionsRender = this.splitTransactions([
+              ...transactionsResponse,
+              ...transactionAPIResponse.transactions,
+            ]);
 
-    
-    if (transactionType === "All") {
-      const {
-        all: { transactionsResponse, transactionsRender, loader },
-        accountType,
-      } = this.state;
-      let updatedAccountType = accountType;
-      if (this.all.process) {
-        let transactionAPIResponse = await getUserTransactions(
-          this.all.skipPoint,
-          this.all.limitPoint
-        );
-        if (requestType) {
-          updatedAccountType = transactionAPIResponse.accountType;
-        }
-        this.all.skipPoint =
-          this.all.skipPoint + this.fetchTransactionPerScroll;
-        if (
-          transactionAPIResponse.transactions.length === 0 ||
-          transactionAPIResponse.transactions.length < 25
-        ) {
-          this.all.process = false;
+            this.setState((prevState) => {
+              return {
+                spinner: false,
+                accountType: updatedAccountType,
+                all: {
+                  loader:
+                    transactionAPIResponse.transactions.length < 25
+                      ? false
+                      : true,
+                  transactionsRender: updatedTransactionsRender,
+                  transactionsResponse: [
+                    ...prevState.all.transactionsResponse,
+                    ...transactionAPIResponse.transactions,
+                  ],
+                },
+              };
+            });
+          }
+        } else {
           this.setState((prevState) => {
             return {
               all: {
@@ -142,163 +213,141 @@ class TransactionScreen extends PureComponent {
             };
           });
         }
-        if (transactionAPIResponse.transactions.length > 0) {
-          const updatedTransactionsRender = this.splitTransactions([
-            ...transactionsResponse,
-            ...transactionAPIResponse.transactions,
-          ]);
-
-          this.setState((prevState) => {
-            return {
-              spinner: false,
-              accountType: updatedAccountType,
-              all: {
-                loader:
-                  transactionAPIResponse.transactions.length < 25
-                    ? false
-                    : true,
-                transactionsRender: updatedTransactionsRender,
-                transactionsResponse: [
-                  ...prevState.all.transactionsResponse,
-                  ...transactionAPIResponse.transactions,
-                ],
-              },
-            };
-          });
-        }
-      }
-    } else if (transactionType === "Outflow") {
-      const {
-        outflow: { transactionsResponse },
-      } = this.state;
-      if (this.outflow.process) {
-        let transactionOutflowAPIResponse = await getUserOutFlowTransactions(
-          this.outflow.skipPoint,
-          this.outflow.limitPoint
-        );
-        this.outflow.skipPoint =
-          this.outflow.skipPoint + this.fetchTransactionPerScroll;
-        if (
-          transactionOutflowAPIResponse.outflowTransactions.transactions
-            .length === 0 ||
-          transactionOutflowAPIResponse.outflowTransactions.transactions
-            .length < 25
-        ) {
-          this.outflow.process = false;
-          this.setState((prevState) => {
-            return {
-              outflow: {
-                ...prevState.outflow,
-                loader: false,
-              },
-            };
-          });
-        }
-        if (
-          transactionOutflowAPIResponse.outflowTransactions.transactions
-            .length > 0
-        ) {
-          const updatedOutFlowTransactionsRender = this.splitTransactions([
-            ...transactionsResponse,
-            ...transactionOutflowAPIResponse.outflowTransactions.transactions,
-          ]);
-
-          this.setState((prevState) => {
-            return {
-              outflow: {
-                loader:
-                  transactionOutflowAPIResponse.outflowTransactions.transactions
-                    .length < 25
-                    ? false
-                    : true,
-                transactionsRender: updatedOutFlowTransactionsRender,
-                transactionsResponse: [
-                  ...prevState.outflow.transactionsResponse,
-                  ...transactionOutflowAPIResponse.outflowTransactions
-                    .transactions,
-                ],
-              },
-            };
-          });
-        }
-      }
-    } else {
-      const {
-        inflow: { transactionsResponse },
-      } = this.state;
-      if (this.inflow.process) {
-        let transactionInflowAPIResponse = await getUserInflowTransactions(
-          this.inflow.skipPoint,
-          this.inflow.limitPoint
-        );
-        this.inflow.skipPoint =
-          this.inflow.skipPoint + this.fetchTransactionPerScroll;
-        if (
-          transactionInflowAPIResponse.inflowTransactions.transactions
-            .length === 0 ||
-          transactionInflowAPIResponse.inflowTransactions.transactions.length <
-            25
-        ) {
-          this.inflow.process = false;
-          this.setState((prevState) => {
-            return {
-              inflow: {
-                ...prevState.inflow,
-                loader: false,
-              },
-            };
-          });
-        }
-        if (
-          transactionInflowAPIResponse.inflowTransactions.transactions.length >
-          0
-        ) {
-          const updatedInflowTransactionsRender = this.splitTransactions([
-            ...transactionsResponse,
-            ...transactionInflowAPIResponse.inflowTransactions.transactions,
-          ]);
-
-          this.setState((prevState) => {
-            return {
-              inflow: {
-                loader:
-                  transactionInflowAPIResponse.inflowTransactions.transactions
-                    .length < 25
-                    ? false
-                    : true,
-                transactionsRender: updatedInflowTransactionsRender,
-                transactionsResponse: [
-                  ...prevState.inflow.transactionsResponse,
-                  ...transactionInflowAPIResponse.inflowTransactions
-                    .transactions,
-                ],
-              },
-            };
-          });
-        }
-      }
-    }
-  }catch(error){
-    console.log("Error here - ",error);
-    this.setState({
-      spinner: false,
-      all: {
-        ...this.state.all,
-        loader: false
-      }
-    },()=>{
-      setTimeout(()=>{
-        Alert.alert("Message","Something went wrong",[
-          {
-            text: 'Okay',
-            onPress:()=>{
-              this.props.navigation.goBack();
-            }
+      } else if (transactionType === "Outflow") {
+        const {
+          outflow: { transactionsResponse },
+        } = this.state;
+        if (this.outflow.process) {
+          let transactionOutflowAPIResponse = await getUserOutFlowTransactions(
+            this.outflow.skipPoint,
+            this.outflow.limitPoint
+          );
+          this.outflow.skipPoint =
+            this.outflow.skipPoint + this.fetchTransactionPerScroll;
+          if (
+            transactionOutflowAPIResponse.outflowTransactions.transactions
+              .length === 0 ||
+            transactionOutflowAPIResponse.outflowTransactions.transactions
+              .length < 25
+          ) {
+            this.outflow.process = false;
+            this.setState((prevState) => {
+              return {
+                outflow: {
+                  ...prevState.outflow,
+                  loader: false,
+                },
+              };
+            });
           }
-        ]);
-      },100);
-    })
-  }
+          if (
+            transactionOutflowAPIResponse.outflowTransactions.transactions
+              .length > 0
+          ) {
+            const updatedOutFlowTransactionsRender = this.splitTransactions([
+              ...transactionsResponse,
+              ...transactionOutflowAPIResponse.outflowTransactions.transactions,
+            ]);
+
+            this.setState((prevState) => {
+              return {
+                outflow: {
+                  loader:
+                    transactionOutflowAPIResponse.outflowTransactions
+                      .transactions.length < 25
+                      ? false
+                      : true,
+                  transactionsRender: updatedOutFlowTransactionsRender,
+                  transactionsResponse: [
+                    ...prevState.outflow.transactionsResponse,
+                    ...transactionOutflowAPIResponse.outflowTransactions
+                      .transactions,
+                  ],
+                },
+              };
+            });
+          }
+        }
+      } else {
+        const {
+          inflow: { transactionsResponse },
+        } = this.state;
+        if (this.inflow.process) {
+          let transactionInflowAPIResponse = await getUserInflowTransactions(
+            this.inflow.skipPoint,
+            this.inflow.limitPoint
+          );
+          this.inflow.skipPoint =
+            this.inflow.skipPoint + this.fetchTransactionPerScroll;
+          if (
+            transactionInflowAPIResponse.inflowTransactions.transactions
+              .length === 0 ||
+            transactionInflowAPIResponse.inflowTransactions.transactions
+              .length < 25
+          ) {
+            this.inflow.process = false;
+            this.setState((prevState) => {
+              return {
+                inflow: {
+                  ...prevState.inflow,
+                  loader: false,
+                },
+              };
+            });
+          }
+          if (
+            transactionInflowAPIResponse.inflowTransactions.transactions
+              .length > 0
+          ) {
+            const updatedInflowTransactionsRender = this.splitTransactions([
+              ...transactionsResponse,
+              ...transactionInflowAPIResponse.inflowTransactions.transactions,
+            ]);
+
+            this.setState((prevState) => {
+              return {
+                inflow: {
+                  loader:
+                    transactionInflowAPIResponse.inflowTransactions.transactions
+                      .length < 25
+                      ? false
+                      : true,
+                  transactionsRender: updatedInflowTransactionsRender,
+                  transactionsResponse: [
+                    ...prevState.inflow.transactionsResponse,
+                    ...transactionInflowAPIResponse.inflowTransactions
+                      .transactions,
+                  ],
+                },
+              };
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.log("Error here - ", error);
+      this.setState(
+        {
+          spinner: false,
+          all: {
+            ...this.state.all,
+            loader: false,
+          },
+        },
+        () => {
+          setTimeout(() => {
+            Alert.alert("Message", "Something went wrong", [
+              {
+                text: "Okay",
+                onPress: () => {
+                  this.props.navigation.goBack();
+                },
+              },
+            ]);
+          }, 100);
+        }
+      );
+    }
   };
   readyTransactionScreen = async () => {
     const { userData } = this.props.reduxState.userData;
@@ -367,6 +416,44 @@ class TransactionScreen extends PureComponent {
       </View>
     );
   };
+  handleOnCategoryTapPress = (
+    rootTransactionObj,
+    transactionType 
+  ) => { 
+    const { cohReducer, userData: userDataMain } = this.props.reduxState;
+    const { userData } = userDataMain;
+    if (userData.bankStatus == "linked") {
+      this.props.navigation.navigate("NCategoryScreen", {
+        showEditTray: true,
+        transactionType,
+        currentExecutingTransaction: rootTransactionObj,
+        resetTransactionScreen: (reciever1 = false, reciever2 = false) => {
+          this.setState({ ...this.getInitialState() }, () => {
+            this.resetAllDataMembers();
+            setTimeout(() => {
+              this.readyTransactionScreen();
+            }, 1000);
+          });
+        },
+      });
+    } else {
+      Alert.alert(
+        "Bank Disconnected",
+        `Your bank account has been disconnected. Please reconnect again.`,
+        [
+          { text: "Cancel" },
+          {
+            text: "Reconnect",
+            onPress: () => {
+              this.props.navigation.navigate("Integration");
+            },
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
   allTabNavigator = () => {
     const {
       all: { transactionsRender, loader },
@@ -381,7 +468,7 @@ class TransactionScreen extends PureComponent {
             <AntDesign
               name="exclamationcircle"
               size={20}
-              style={{ color: "#070640", alignSelf: "center" }}
+              style={styles.noTransactionAntDesign}
             />
             <Text style={styles.noTransactionAvailableText}>
               Oops There are No Transactions!
@@ -389,6 +476,7 @@ class TransactionScreen extends PureComponent {
           </View>
         ) : (
           <TransactionComponentWithDate
+            onPress={this.handleOnCategoryTapPress}
             items={transactionsRender}
             transactionType={"ALL"}
             onEndReached={() => {
@@ -414,7 +502,7 @@ class TransactionScreen extends PureComponent {
             <AntDesign
               name="exclamationcircle"
               size={20}
-              style={{ color: "#070640", alignSelf: "center" }}
+              style={styles.noTransactionAntDesign}
             />
             <Text style={styles.noTransactionAvailableText}>
               Oops There are No Outflow Transactions!
@@ -422,6 +510,7 @@ class TransactionScreen extends PureComponent {
           </View>
         ) : (
           <TransactionComponentWithDate
+            onPress={this.handleOnCategoryTapPress}
             items={transactionsRender}
             transactionType={"OUTFLOW"}
             onEndReached={() => {
@@ -447,7 +536,7 @@ class TransactionScreen extends PureComponent {
             <AntDesign
               name="exclamationcircle"
               size={20}
-              style={{ color: "#070640", alignSelf: "center" }}
+              style={styles.noTransactionAntDesign}
             />
             <Text style={styles.noTransactionAvailableText}>
               Oops There are No Inflow Transactions!
@@ -455,6 +544,7 @@ class TransactionScreen extends PureComponent {
           </View>
         ) : (
           <TransactionComponentWithDate
+            onPress={this.handleOnCategoryTapPress}
             items={transactionsRender}
             transactionType={"INFLOW"}
             onEndReached={() => {
@@ -561,7 +651,7 @@ const styles = StyleSheet.create({
   renderAccountTypeStyle: {
     alignSelf: "center",
     borderRadius: 100,
-    height: 28,
+    paddingVertical: 8,
     marginTop: 7,
     paddingHorizontal: 10,
     backgroundColor: "#FFF",
@@ -609,6 +699,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   noTransactionAvailableText: { marginLeft: 10, alignSelf: "center" },
+  noTransactionAntDesign: { color: "#070640", alignSelf: "center" },
 });
 const mapStateToProps = (state) => {
   return {
@@ -630,6 +721,7 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps

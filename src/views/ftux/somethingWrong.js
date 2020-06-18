@@ -11,12 +11,17 @@ import {
 import { Button } from "react-native-elements";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import { StackActions, NavigationActions } from "react-navigation";
 import { loggedOutUser } from "../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
 
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
+
+const resetAction = StackActions.reset({
+  index: 0,
+  actions: [NavigationActions.navigate({ routeName: "ValueProp" })],
+});
 class SomethingWrong extends Component {
   constructor(props) {
     super(props);
@@ -33,7 +38,7 @@ class SomethingWrong extends Component {
           return { spinner: !prevState.spinner };
         },
         () => {
-          this.props.navigation.navigate("ValueProp");
+          this.props.navigation.dispatch(resetAction);
         }
       );
     }
