@@ -329,7 +329,7 @@ class ExpenseByCategory extends Component {
                     </Text>
                   </TouchableOpacity>
                   <Text style={styles.expenseTotalMonth}>
-                    {`Total ${expenseCurrentMonth}`}
+                    {`${expenseCurrentMonth} Total`}
                   </Text>
                 </View>
               </View>

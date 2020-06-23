@@ -207,7 +207,7 @@ class ChangeInCash extends Component {
             }}
           >
             <Text style={{ paddingTop: 15, color: "#1D1E1F", fontSize: 12 }}>
-              {this.state.cocMonths}{" "}
+              {this.state.cocMonths}{" Total"}
             </Text>
           </View>
           {isCICGraphEmpty == true ? (

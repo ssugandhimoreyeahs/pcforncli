@@ -557,6 +557,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "pocket_cfo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -631,6 +632,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
 				SWIFT_OBJC_BRIDGING_HEADER = "pocket_cfo-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 			};

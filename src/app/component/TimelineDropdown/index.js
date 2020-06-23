@@ -4,7 +4,7 @@ import { Dropdown } from "react-native-material-dropdown";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import PropTypes from "prop-types";
 
-import { Button_Months } from "@constants/constants";
+import { Button_Months } from "appconstants/constants";
 import styles from "./indexCss";
 SimpleLineIcons.loadFont();
 

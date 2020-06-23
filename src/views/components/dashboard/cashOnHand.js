@@ -30,17 +30,19 @@ import {
   widthPercentageToDP as Width,
 } from "react-native-responsive-screen";
 import AntDesign from "react-native-vector-icons/AntDesign";
-
+import { ShowAlert, TimeDifference } from "@utils";
 AntDesign.loadFont();
 Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 
-class CashOnHand extends PureComponent {
+class CashOnHand extends Component {
   constructor(props) {
     super(props);
     this.state = {
       arrowStyle: "arrow-down",
       //showInsightsCart: true,
+      startedCheckPoint: new Date(),
+      endCheckPoint: new Date(),
     };
     this.dropdownRef = React.createRef();
   }
@@ -51,27 +53,6 @@ class CashOnHand extends PureComponent {
     return getHealthScoreColor(oocMonths, true);
   }
 
-  showAlert1() {
-    Alert.alert(
-      TERMINOLOGY.OUTOFCASHDATE.title,
-      TERMINOLOGY.OUTOFCASHDATE.message,
-      [
-        {
-          text: TERMINOLOGY.OUTOFCASHDATE.button1,
-          style: "cancel",
-        },
-      ]
-    );
-  }
-
-  showAlert2() {
-    Alert.alert(TERMINOLOGY.CASHONHAND.title, TERMINOLOGY.CASHONHAND.message, [
-      {
-        text: TERMINOLOGY.CASHONHAND.button1,
-        style: "cancel",
-      },
-    ]);
-  }
   handleArrowStyle = () => {
     if (this.state.arrowStyle == "arrow-down") {
       this.setState({ arrowStyle: "arrow-up" });
@@ -90,9 +71,23 @@ class CashOnHand extends PureComponent {
         ? 6
         : 12;
     if (monthRequestType != cohCurrentRange) {
-      this.props.triggerCohRequestApi(monthRequestType);
+      this.props.triggerCohRequestApi(monthRequestType, () => {
+        this.setState({ startedCheckPoint: new Date() });
+      });
     }
   };
+  mutateEndCheckPoint = () => {
+    this.setState({
+      endCheckPoint: new Date(),
+    });
+  };
+  componentDidMount = () => {
+    this.timeInterval = setInterval(this.mutateEndCheckPoint, 1000 * 60.5);
+  };
+  componentWillUnmount = () => {
+    clearInterval(this.timeInterval);
+  };
+
   renderOutOfCashDate = React.memo(({ outOfCashDate }) => {
     return (
       <View
@@ -101,90 +96,93 @@ class CashOnHand extends PureComponent {
           ...styles.outOfCashDateDateStyle,
         }}
       >
-        <TouchableOpacity onPress={this.showAlert1}>
+        <TouchableOpacity
+          onPress={() => {
+            ShowAlert("OUT_TERMINOLOGY");
+          }}
+        >
           <View style={{ flexDirection: "row" }}>
-            <Text style={{ fontSize: 14, fontWeight: "bold", color: "#FFF" }}>
-              Out-of-Cash Date
-            </Text>
+            <Text style={styles.outOfCashDateTextStyle}>Out-of-Cash Date</Text>
             <Ionicons
               name="md-information-circle-outline"
-              style={{ height: 12, width: 12, margin: 4, color: "#fff" }}
+              style={styles.outOfCashDateIconStyle}
             />
           </View>
         </TouchableOpacity>
-        <Text style={{ fontSize: 14, fontWeight: "bold", color: "#FFF" }}>
-          {`${outOfCashDate}`}
-        </Text>
+        <Text style={styles.outOfCashDateTextStyle}>{`${outOfCashDate}`}</Text>
       </View>
     );
   });
   childLoader = React.memo(({ height }) => {
     return (
-      <View style={{ height, justifyContent: "center", alignItems: "center" }}>
+      <View style={[styles.cohLoaderStyle, { height }]}>
         <ActivityIndicator size="large" color="#070640" />
       </View>
     );
   });
   parentLoaderRender = React.memo(({ height }) => {
     return (
-      <View style={{ height, justifyContent: "center", alignItems: "center" }}>
+      <View style={[styles.cohLoaderStyle, { height }]}>
         <ActivityIndicator size="large" color="#070640" />
       </View>
     );
   });
-  cashOnHandBody = React.memo(
-    ({ height, cashOnHandGraphData, past, future, currentBalance }) => {
-      return (
-        <View style={{ height }}>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignSelf: "center",
-              width: "90%",
+  cashOnHandBody = ({
+    height,
+    cashOnHandGraphData,
+    past,
+    future,
+    currentBalance,
+  }) => {
+    const { startedCheckPoint, endCheckPoint } = this.state;
+    return (
+      <View style={{ height }}>
+        <View style={styles.cohBodyContainer}>
+          <TouchableOpacity
+            style={{ flexDirection: "row" }}
+            onPress={() => {
+              ShowAlert("COH_TERMINOLOGY");
             }}
           >
-            <TouchableOpacity
-              style={{ flexDirection: "row" }}
-              onPress={this.showAlert2}
-            >
-              <Text
-                style={{ fontWeight: "500", fontSize: 13, color: "#1D1E1F" }}
-              >{`CASH ON HAND`}</Text>
-              <Ionicons
-                name="md-information-circle-outline"
-                style={{ height: 12, width: 12, marginLeft: 3, marginTop: 2 }}
-              />
-            </TouchableOpacity>
-
-            <View>
-              <Text
-                style={{ fontSize: 22, color: "#1D1E1F", fontWeight: "700" }}
-              >{`$${numberWithCommas(currentBalance) || 0.0}`}</Text>
-              {/* <Text style={{ marginTop:7,fontSize:12,color:"#1D1E1F",textAlign:"right" }}>{`7 minutes ago`}</Text> */}
-            </View>
-          </View>
-
-          <View
-            style={{
-              marginTop: "-4.9%",
-              marginLeft: "-6.5%",
-              borderColor: "red",
-              borderWidth: 0,
-            }}
-            accessible={true}
-            pointerEvents="none"
-          >
-            <CashOnHandChart
-              cashOnHandGraphData={cashOnHandGraphData}
-              cohPast={past}
-              cohFuture={future}
+            <Text style={styles.cohText}>{`CASH ON HAND`}</Text>
+            <Ionicons
+              name="md-information-circle-outline"
+              style={styles.cohTextIcon}
             />
+          </TouchableOpacity>
+
+          <View>
+            <Text style={styles.cohBalanceStyle}>{`$${numberWithCommas(
+              currentBalance
+            ) || 0.0}`}</Text>
+            <Text
+              style={{
+                marginTop: 7,
+                fontSize: 12,
+                color: "#1D1E1F",
+                textAlign: "right",
+              }}
+            >{`${TimeDifference(
+              startedCheckPoint,
+              endCheckPoint
+            )} minutes ago`}</Text>
           </View>
         </View>
-      );
-    }
-  );
+
+        <View
+          style={styles.cohGraphContainer}
+          accessible={true}
+          pointerEvents="none"
+        >
+          <CashOnHandChart
+            cashOnHandGraphData={cashOnHandGraphData}
+            cohPast={past}
+            cohFuture={future}
+          />
+        </View>
+      </View>
+    );
+  };
 
   cashOnHandFooter = React.memo(({ btnText, arrowStyle }) => {
     const { showInsightsCart } = this.state;
@@ -223,23 +221,18 @@ class CashOnHand extends PureComponent {
               <SimpleLineIcons
                 name={arrowStyle}
                 color="#030538"
-                style={{ marginTop: 10, marginRight: 20 }}
+                style={styles.SimpleLineIconsArrowStyle}
               />
             </TouchableOpacity>
 
-            <View style={{ width: "40%", height: "100%" }}>
+            <View style={styles.viewInsightButtonContainer}>
               <Button
                 title="View Insights"
                 type="solid"
                 buttonStyle={styles.btnstyle1}
                 titleStyle={styles.buttontextt1}
                 onPress={() => {
-                  Alert.alert(
-                    INSIGHTS.title,
-                    INSIGHTS.message,
-                    [{ text: INSIGHTS.button1 }],
-                    false
-                  );
+                  ShowAlert("INSIGHTS_COMMINGSOON");
                 }}
               />
             </View>
@@ -271,70 +264,65 @@ class CashOnHand extends PureComponent {
 
   emptyCashOnHandView = React.memo(({ height }) => {
     return (
-      <View style={{ height, justifyContent: "center", alignItems: "center" }}>
-        <Text style={{ fontSize: 14, color: "#070640" }}>
-          No Data Available!
-        </Text>
+      <View style={[styles.emptyCashOnHandViewStyle, { height }]}>
+        <Text style={styles.noDataAvailableStyle}>No Data Available!</Text>
       </View>
     );
   });
-  renderCashOnHand = React.memo(
-    ({
-      currentBalance,
-      parentLoader,
-      isCOHGraphEmpty,
-      childLoader,
-      arrowStyle,
-      btnText,
-      cashOnHandGraphData,
-      past,
-      future,
-    }) => {
-      let heightRatio = this.state.showInsightsCart ? "66%" : "88%";
-      return (
-        <View
-          style={{
-            ...styles.cashOnHandNewCantainer,
-            height: this.state.showInsightsCart ? 490 : 350,
-          }}
-        >
-          <Fragment>
-            {parentLoader ? (
-              <this.parentLoaderRender
-                height={this.state.showInsightsCart ? 465 : 360}
-              />
-            ) : (
-              <Fragment>
-                {childLoader ? (
-                  <this.childLoader height={heightRatio} />
-                ) : isCOHGraphEmpty ? (
-                  <this.emptyCashOnHandView height={heightRatio} />
-                ) : (
-                  <this.cashOnHandBody
-                    height={heightRatio}
-                    cashOnHandGraphData={cashOnHandGraphData}
-                    past={past}
-                    future={future}
-                    currentBalance={currentBalance}
-                  />
-                )}
-                <this.cashOnHandFooter
-                  btnText={btnText}
-                  arrowStyle={arrowStyle}
+  renderCashOnHand = ({
+    currentBalance,
+    parentLoader,
+    isCOHGraphEmpty,
+    childLoader,
+    arrowStyle,
+    btnText,
+    cashOnHandGraphData,
+    past,
+    future,
+  }) => {
+    let heightRatio = this.state.showInsightsCart ? "66%" : "88%";
+    return (
+      <View
+        style={{
+          ...styles.cashOnHandNewCantainer,
+          height: this.state.showInsightsCart ? 490 : 365,
+        }}
+      >
+        <Fragment>
+          {parentLoader ? (
+            <this.parentLoaderRender
+              height={this.state.showInsightsCart ? 465 : 360}
+            />
+          ) : (
+            <Fragment>
+              {childLoader ? (
+                <this.childLoader height={heightRatio} />
+              ) : isCOHGraphEmpty ? (
+                <this.emptyCashOnHandView height={heightRatio} />
+              ) : (
+                <this.cashOnHandBody
+                  height={heightRatio}
+                  cashOnHandGraphData={cashOnHandGraphData}
+                  past={past}
+                  future={future}
+                  currentBalance={currentBalance}
                 />
-              </Fragment>
-            )}
-          </Fragment>
-        </View>
-      );
-    }
-  );
+              )}
+              <this.cashOnHandFooter
+                btnText={btnText}
+                arrowStyle={arrowStyle}
+              />
+            </Fragment>
+          )}
+        </Fragment>
+      </View>
+    );
+  };
   render() {
     const {
       outOfCashDateResponse,
       fetched: outOfCashDateIsFetched,
-    } = this.props.outOfCashDateRedux;
-    const gw = Dimensions.get("window").width;
+    } = this.props.outOfCashDateRedux; 
     const {
       isFetched,
       cohData,
@@ -377,7 +365,7 @@ class CashOnHand extends PureComponent {
     }
 
     return (
-      <View style={{ alignSelf: "center", marginTop: -20, width: "95%" }}>
+      <View style={styles.cohCartContainer}>
         {this.props.healthScoreIndicator == true ? (
           <View style={styles.offOutOfCashDate} />
         ) : (
@@ -400,6 +388,7 @@ class CashOnHand extends PureComponent {
 }
 
 const styles = StyleSheet.create({
+  cohCartContainer: { alignSelf: "center", marginTop: -20, width: "95%" },
   cohContainer: {
     backgroundColor: "#EEEFF1",
     marginTop: 15,
@@ -516,6 +505,34 @@ const styles = StyleSheet.create({
     marginLeft: 3,
     marginTop: 2,
   },
+  emptyCashOnHandViewStyle: { justifyContent: "center", alignItems: "center" },
+  noDataAvailableStyle: { fontSize: 14, color: "#070640" },
+  SimpleLineIconsArrowStyle: { marginTop: 10, marginRight: 20 },
+  viewInsightButtonContainer: { width: "40%", height: "100%" },
+  cohBodyContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignSelf: "center",
+    width: "90%",
+  },
+  cohText: { fontWeight: "500", fontSize: 13, color: "#1D1E1F" },
+  cohTextIcon: { height: 12, width: 12, marginLeft: 3, marginTop: 2 },
+  cohBalanceStyle: { fontSize: 22, color: "#1D1E1F", fontWeight: "700" },
+  cohGraphContainer: {
+    marginTop: "-4.9%",
+    marginLeft: "-6.5%",
+    borderColor: "red",
+    borderWidth: 0,
+  },
+  cohLoaderStyle: { justifyContent: "center", alignItems: "center" },
+  outOfCashDateTextStyle: { fontSize: 14, fontWeight: "bold", color: "#FFF" },
+  outOfCashDateIconStyle: {
+    height: 12,
+    width: 12,
+    marginTop: 3.3,
+    marginLeft: 3,
+    color: "#fff",
+  },
 });
 
 const mapStateToProps = (state) => {
@@ -527,8 +544,8 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    triggerCohRequestApi: (cohCurrentRange) => {
-      dispatch(cohAsyncCreator(cohCurrentRange));
+    triggerCohRequestApi: (cohCurrentRange, cbToInitializedate) => {
+      dispatch(cohAsyncCreator(cohCurrentRange, false, cbToInitializedate));
     },
   };
 };
@@ -536,74 +553,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(CashOnHand);
-
-// render2() {
-//   const { outOfCashDateResponse,fetched: outOfCashDateIsFetched } = this.props.outOfCashDateRedux;
-//   const gw=Dimensions.get("window").width;
-//   const { isFetched,cohData,parentLoader,childLoader,cohCurrentRange } = this.props.cashOnHandRedux;
-//   let instanceObj = { past: 0, future: 0 };
-//   instanceObj = cohCurrentRange == 1 ? { past: 0, future: 0 } :
-//                 cohCurrentRange == 3 ? { past: 3, future: 1 } :
-//                 cohCurrentRange == 6 ? { past: 3, future: 3 } :
-//                 { past: 12, future: 0 };
-
-//   let cashOnHandGraphData = isFetched == true ? cohData.data : [];
-//   let isCOHGraphEmpty = true;
-//   let btnText = cohCurrentRange == 1 ? "This Month" : cohCurrentRange == 3 ? "3 Months" : cohCurrentRange == 6 ? "6 Months" : "12 Months";
-//   for(let i=0;i<cashOnHandGraphData.length; i++){
-
-//     if( cashOnHandGraphData[i].amount != 0 && cashOnHandGraphData[i].amount > 0 ){
-
-//       isCOHGraphEmpty = false;
-//       break;
-//     }
-//   }
-
-//   let outOfCashDate = "";
-//   if(outOfCashDateIsFetched){
-//     outOfCashDate = outOfCashDateResponse.days;
-//   }
-//   return (
-//     <View style={{alignSelf:'center',marginTop:-20, width:'95%'}}>
-//       {
-//         this.props.healthScoreIndicator == true ?
-//         <View style={ styles.offOutOfCashDate }></View> :
-//         <this.renderOutOfCashDate outOfCashDate = {outOfCashDate} />
-//       }
-
-//       <View style={styles.cohContainer}/>
-//           {
-//             parentLoader == true ? <this.parentLoader /> :
-//             <View style={{ ...styles.cashOnHandCart,
-//             height:this.state.showInsightsCart ? 432 : 340  }}>
-//           {
-//             childLoader == true ? <this.childLoader /> :
-//             <View style={{ height: "90%" }}>
-//               <View style={styles.heading}>
-//               <TouchableOpacity onPress={this.showAlert2}>
-//                   <View style={{flexDirection:'row'}}>
-//                     <Text style={{ fontSize: 12 }}>CASH ON HAND</Text>
-//                     <Ionicons name='md-information-circle-outline' style={{height:12,width:12,margin:2}}/>
-//                   </View>
-//                 </TouchableOpacity>
-//                 <Text style={{ textAlign:"right",fontSize: 22, fontWeight: "bold" }}>
-//                   {`$${ numberWithCommas(cohData.currentBalance) || 0.0}`}
-//                 </Text>
-//               </View>
-//               {
-//                 isCOHGraphEmpty == true ? <this.emptyGraph /> :
-//                 <View style={{marginTop:"-4.9%",marginLeft:"3%"}} accessible={true} pointerEvents="none">
-//                   <CashOnHandChart
-//                   cashOnHandGraphData={cashOnHandGraphData}
-//                   cohPast={instanceObj.past}
-//                   cohFuture={instanceObj.future} />
-//                 </View>
-//               }
-//             </View>
-//           }
-//             <this.cohFooter btnText={btnText} arrowStyle={this.state.arrowStyle} />
-//           </View>
-//           }
-//     </View>
-//   );
-// }

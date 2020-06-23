@@ -10,7 +10,7 @@ import React, {
 import { Text, View, FlatList, StyleSheet, Dimensions } from "react-native";
 import styles from "./indexCss";
 import PropTypes from "prop-types";
-import { ALL_MONTHS } from "@constants";
+import { ALL_MONTHS } from "appconstants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import {
   numberWithCommas,
@@ -26,18 +26,23 @@ const computeTransaction = (singleTransaction, transactionType) => {
   let amount = Math.abs(singleTransaction.amount);
   let detailInfo = ``;
   let categoryBackgroundColor = `#FFF`;
-  //add category button text
-  if (
-    singleTransaction.clientCategory == singleTransaction.clientDefaultCategory
-  ) {
-    categoryButtonText = `+ Category`;
-    detailInfo = firstLetterCapital(singleTransaction.clientCategory);
-  } else {
-    detailInfo = `Detail Info`;
-    categoryButtonText = `${firstLetterCapital(
-      singleTransaction.clientCategory
-    )}`;
-  }
+  //add category button text changes we did not have to render the detailsInfo text
+  // if (
+  //   singleTransaction.clientCategory == singleTransaction.clientDefaultCategory
+  // ) {
+  //   categoryButtonText = `+ Category`;
+  //   detailInfo = firstLetterCapital(singleTransaction.clientCategory);
+  // } else {
+  //   detailInfo = `Detail Info`;
+  //   categoryButtonText = `${firstLetterCapital(
+  //     singleTransaction.clientCategory
+  //   )}`;
+  // }
+
+  detailInfo = ``;
+  categoryButtonText = `${firstLetterCapital(
+    singleTransaction.clientCategory
+  )}`;
 
   if (transactionType == "INFLOW") {
     finalAmount = `$${numberWithCommas(amount)}`;

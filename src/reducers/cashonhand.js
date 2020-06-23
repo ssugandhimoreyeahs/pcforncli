@@ -98,7 +98,8 @@ export const cohReducer = (state = initialState, action) => {
 
 export const cohAsyncCreator = (
   cohCurrentRange = 3,
-  isInitialRequest = false
+  isInitialRequest = false,
+  cbToInitializedate = () => {}
 ) => (dispatch) => {
   if (isInitialRequest) {
     dispatch(cohFetchRequest(cohCurrentRange));
@@ -120,6 +121,7 @@ export const cohAsyncCreator = (
     .then((response) => {
       if (response.result == true) {
         dispatch(cohFetchSuccess(response.cohResponse, cohCurrentRange));
+        cbToInitializedate();
       }
     })
     .catch((error) => {
