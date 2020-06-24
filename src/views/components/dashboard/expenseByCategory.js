@@ -23,7 +23,7 @@ import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { TERMINOLOGY } from "../../../api/message";
-
+import { EXPENSE_INSIGHTS_DATA } from "@constants";
 MaterialCommunityIcons.loadFont();
 AntDesign.loadFont();
 Ionicons.loadFont();
@@ -196,7 +196,12 @@ class ExpenseByCategory extends Component {
         <View style={{ ...styles.insightCartBody, backgroundColor }}>
           <Text style={styles.insightCartBodyText}>{insightText} </Text>
 
-          <TouchableOpacity style={styles.insightCartBodyGotoButton}>
+          <TouchableOpacity
+            style={styles.insightCartBodyGotoButton}
+            onPress={() => {
+              this.props.navigation.navigate("ExpenseByCategoryInsights");
+            }}
+          >
             <Text style={styles.insightCartBodyGotoButtonText}>
               {insightButtonText}
             </Text>
@@ -212,7 +217,16 @@ class ExpenseByCategory extends Component {
     }
   );
 
-  expenseFooterRender = React.memo(() => {
+  expenseFooterRender = React.memo(({ showInsight }) => {
+    const { insightsData } = this.props.insightsStore;
+    let insightsDataRender = {};
+    if (insightsData?.Expense?.insightText) {
+      if (insightsData?.Expense?.type === 30) {
+        insightsDataRender = EXPENSE_INSIGHTS_DATA.EXPENSE30;
+      }else if(insightsData?.Expense?.type === 10){
+        insightsDataRender = EXPENSE_INSIGHTS_DATA.EXPENSE10;
+      }
+    }
     return (
       <Fragment>
         <View style={styles.expenseFooter}>
@@ -244,7 +258,7 @@ class ExpenseByCategory extends Component {
             />
           </View>
           <View style={{ width: "40%", height: "100%" }}>
-            <Button
+            {/* <Button
               title="View Insights"
               type="solid"
               buttonStyle={styles.btnstyle1}
@@ -252,26 +266,24 @@ class ExpenseByCategory extends Component {
               onPress={() => {
                 this.props.navigation.navigate("ExpenseByCategoryInsights");
               }}
-            />
+            /> */}
           </View>
         </View>
 
-        {this.state.showInsightCart && (
+        {showInsight && (
           <this.cicInsightFooter
-            backgroundColor={"#E5FCEA"}
-            insightText={
-              "Your cash balance has increased from last months cash balance."
-            }
+            backgroundColor={insightsDataRender.color}
+            insightText={insightsDataRender.insightText}
             insightButtonText={"Keep on improving"}
           />
         )}
       </Fragment>
     );
   });
-  renderExepensesByCategory = () => {
+  renderExepensesByCategory = ({ showInsight }) => {
     const { expenseByCategoryRedux: expenseByCategory } = this.props;
-    const { expenseCurrentMonth, showInsightCart } = this.state;
-    let heightRatio = showInsightCart ? "66%" : "88.5%";
+    const { expenseCurrentMonth } = this.state;
+    let heightRatio = showInsight ? "67%" : "88.5%";
     return (
       <Fragment>
         {expenseByCategory.childLoader == false ? (
@@ -361,7 +373,7 @@ class ExpenseByCategory extends Component {
         ) : (
           <this.expenseChildLoader height={heightRatio} />
         )}
-        <this.expenseFooterRender />
+        <this.expenseFooterRender showInsight={showInsight} />
       </Fragment>
     );
   };
@@ -423,9 +435,10 @@ class ExpenseByCategory extends Component {
   });
   render() {
     let { expenseByCategoryRedux: expenseByCategory } = this.props;
-    const { showInsightCart } = this.state;
-    const height = showInsightCart ? 490 : 395;
 
+    const { isFetched, insightsData } = this.props.insightsStore;
+    let showInsight = isFetched && insightsData?.Expense.insightText;
+    const height = showInsight ? 490 : 395;
     return (
       <View style={{ ...styles.mainContainerStyle, height }}>
         {expenseByCategory.error == true ? (
@@ -433,7 +446,7 @@ class ExpenseByCategory extends Component {
         ) : expenseByCategory.loading == true ? (
           <this.parentLoader />
         ) : expenseByCategory.isFetched == true ? (
-          this.renderExepensesByCategory()
+          <this.renderExepensesByCategory showInsight={showInsight} />
         ) : null}
       </View>
     );
@@ -443,6 +456,7 @@ class ExpenseByCategory extends Component {
 const mapStateToProps = (state) => {
   return {
     expenseByCategoryRedux: state.expenseByCategory,
+    insightsStore: state.insightsRedux,
   };
 };
 const mapDispatchToProps = (dispatch) => {

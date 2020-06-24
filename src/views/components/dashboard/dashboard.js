@@ -417,7 +417,7 @@ class Dashboard extends Component {
           this.props.fetchCashInChange(3);
           this.props.fetchExpenseByCategory(3);
           this.props.fetchMainExepenseByCategory(0);
-          // this.props.fetchInsights();
+          this.props.fetchInsights();
           this.props.healthScoreAsyncCreator(
             userResponse.userData.qbIntegrationStatus
           );

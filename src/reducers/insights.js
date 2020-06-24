@@ -75,6 +75,12 @@ export const fetchInsightsAsyncCreator = () => {
       .then((insightsResponse) => {
         if (insightsResponse.result == true) {
           const { insightsResponse: insightsData } = insightsResponse;
+          // console.log("Insight response recieve - ",insightsData);
+          // insightsData.Expense = {
+          //   insightText: true,
+          //   type: 10,
+          //   message: "expense increased 30%",
+          // };
           dispatch(fetchInsightsSuccess({ insightsData }));
         } else {
           dispatch(
