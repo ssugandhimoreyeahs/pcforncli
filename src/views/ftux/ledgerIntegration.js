@@ -22,6 +22,8 @@ import Spinner from "react-native-loading-spinner-overlay";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import BenchLogo from "../../assets/bench_updated.jpeg";
+import { Root } from "@components";
+
 AntDesign.loadFont();
 Ionicons.loadFont();
 class LedgerIntegration extends Component {
@@ -223,358 +225,370 @@ class LedgerIntegration extends Component {
         this.state.xero) &&
       !this.props.navigation.getParam("isOneTimeNoQbSend");
     return (
-      <View style={styles.container}>
-        <Spinner visible={this.state.isSpinner} />
-        <View
-          style={{
-            flexDirection: "row",
-            width: "73%",
-            marginTop: "1%",
-            alignSelf: "flex-start",
-            justifyContent: "space-between",
-          }}
-        >
-          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-            <Ionicons
-              size={30}
-              name="md-close"
-              style={{ alignSelf: "flex-start", marginLeft: 10 }}
-            />
-          </TouchableOpacity>
-          <Text style={styles.header}>Accounting Integration</Text>
-        </View>
-        <Text style={styles.text}>
-          {
-            "We get data from your accounting software to\n provide insights on your incoming cash."
-          }
-        </Text>
+      <Root headerColor={"#F1F3F5"} footerColor={"#F1F3F5"} barStyle={"dark"}>
+        <View style={styles.container}>
+          <Spinner visible={this.state.isSpinner} />
+          <View
+            style={{
+              flexDirection: "row",
+              width: "73%",
+              marginTop: "1%",
+              alignSelf: "flex-start",
+              justifyContent: "space-between",
+            }}
+          >
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <Ionicons
+                size={30}
+                name="md-close"
+                style={{ alignSelf: "flex-start", marginLeft: 10 }}
+              />
+            </TouchableOpacity>
+            <Text style={styles.header}>Accounting Integration</Text>
+          </View>
+          <Text style={styles.text}>
+            {
+              "We get data from your accounting software to\n provide insights on your incoming cash."
+            }
+          </Text>
 
-        {!this.props.navigation.getParam("isOneTimeNoQbSend") && (
+          {!this.props.navigation.getParam("isOneTimeNoQbSend") && (
+            <View
+              style={{
+                flexDirection: "column",
+                alignSelf: "center",
+                justifyContent: "center",
+                width: "85%",
+              }}
+            >
+              {LEDGERS.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => {
+                      this.handleQuickBookIntegration();
+                    }}
+                  >
+                    <Card
+                      containerStyle={{
+                        borderRadius: 5,
+                        borderWidth: 0,
+                        width: "92%",
+                        shadowOpacity: 0,
+                      }}
+                    >
+                      {item.name === "Quickbooks" ? (
+                        <Image
+                          source={{
+                            uri:
+                              "https://www.intuit.com/content/dam/intuit/intuitcom/company/images/logo-intuit-quickbooks-preferred.jpg",
+                          }}
+                          style={{
+                            alignSelf: "center",
+                            height: 25,
+                            width: 150,
+                          }}
+                        />
+                      ) : (
+                        undefined
+                      )}
+                    </Card>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
           <View
             style={{
               flexDirection: "column",
+              alignItems: "center",
+              marginTop: "7%",
+              height: 34,
+            }}
+          >
+            <Text
+              style={{
+                alignSelf: "center",
+                fontFamily: "System",
+                fontSize: 15,
+                fontWeight: "bold",
+                height: 30,
+              }}
+            >
+              {"---Not Quickbooks? Tell us what you have.---"}
+            </Text>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
               alignSelf: "center",
-              justifyContent: "center",
+              justifyContent: "space-between",
               width: "85%",
             }}
           >
-            {LEDGERS.map((item, index) => {
-              return (
-                <TouchableOpacity
-                  key={index}
-                  onPress={() => {
-                    this.handleQuickBookIntegration();
-                  }}
-                >
-                  <Card
-                    containerStyle={{
-                      borderRadius: 5,
-                      borderWidth: 0,
-                      width: "92%",
-                      shadowOpacity: 0,
-                    }}
-                  >
-                    {item.name === "Quickbooks" ? (
-                      <Image
-                        source={{
-                          uri:
-                            "https://www.intuit.com/content/dam/intuit/intuitcom/company/images/logo-intuit-quickbooks-preferred.jpg",
-                        }}
-                        style={{ alignSelf: "center", height: 25, width: 150 }}
-                      />
-                    ) : (
-                      undefined
-                    )}
-                  </Card>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-        )}
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "center",
-            marginTop: "7%",
-            height: 34,
-          }}
-        >
-          <Text
-            style={{
-              alignSelf: "center",
-              fontFamily: "System",
-              fontSize: 15,
-              fontWeight: "bold",
-              height: 30,
-            }}
-          >
-            {"---Not Quickbooks? Tell us what you have.---"}
-          </Text>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "center",
-            justifyContent: "space-between",
-            width: "85%",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              this.setState((prevState) => ({
-                xero: !prevState.xero,
-                sage: false,
-                bench: false,
-                wave: false,
-              }));
-            }}
-          >
-            <Card
-              containerStyle={{
-                borderRadius: 5,
-                borderWidth: 1,
-                width: 120,
-                height: 60,
-                shadowOpacity: 0,
-                borderColor: this.state.xero ? "#007AFF" : "#ffffff",
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={require("../../assets/logo_xero.png")}
-                style={{ alignSelf: "center", width: 30, height: 30 }}
-                resizeMode="contain"
-              />
-            </Card>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              this.setState((prevState) => ({
-                sage: !prevState.sage,
-                xero: false,
-                bench: false,
-                wave: false,
-              }));
-            }}
-          >
-            <Card
-              containerStyle={{
-                borderRadius: 5,
-                borderWidth: 1,
-                width: 120,
-                height: 60,
-                shadowOpacity: 0,
-                borderColor: this.state.sage ? "#007AFF" : "#ffffff",
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={require("../../assets/logo_sage.png")}
-                style={{ alignItems: "center", width: 80, height: 30 }}
-                resizeMode="contain"
-              />
-            </Card>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            alignSelf: "center",
-            justifyContent: "space-between",
-            width: "85%",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              this.setState((prevState) => ({
-                xero: false,
-                sage: false,
-                bench: !prevState.bench,
-                wave: false,
-              }));
-            }}
-          >
-            <Card
-              containerStyle={{
-                borderRadius: 5,
-                borderWidth: 1,
-                borderColor: this.state.bench ? "#007AFF" : "#ffffff",
-                width: 120,
-                height: 60,
-                shadowOpacity: 0,
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={BenchLogo}
-                style={{ alignSelf: "center", width: 100, height: 50 }}
-                resizeMode="center"
-              />
-            </Card>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => {
-              this.setState((prevState) => ({
-                xero: false,
-                sage: false,
-                bench: false,
-                wave: !prevState.wave,
-              }));
-            }}
-          >
-            <Card
-              containerStyle={{
-                borderRadius: 5,
-                borderWidth: 1,
-                borderColor: this.state.wave ? "#007AFF" : "#ffffff",
-                width: 120,
-                height: 60,
-                shadowOpacity: 0,
-                justifyContent: "center",
-              }}
-            >
-              <Image
-                source={require("../../assets/logo_wave.png")}
-                style={{ alignSelf: "center", width: 80, height: 30 }}
-                resizeMode="contain"
-              />
-            </Card>
-          </TouchableOpacity>
-        </View>
-        <View
-          style={{
-            flexDirection: "column",
-            alignSelf: "center",
-            justifyContent: "center",
-            marginTop: "10%",
-            width: "85%",
-            height: "15%",
-          }}
-        >
-          {!this.props.navigation.getParam("isOneTimeNoQbSend") && (
             <TouchableOpacity
               onPress={() => {
-                this.setState({ isDialogVisible: true });
+                this.setState((prevState) => ({
+                  xero: !prevState.xero,
+                  sage: false,
+                  bench: false,
+                  wave: false,
+                }));
               }}
             >
               <Card
                 containerStyle={{
                   borderRadius: 5,
-                  borderWidth: 0,
-                  width: "92%",
+                  borderWidth: 1,
+                  width: 120,
+                  height: 60,
                   shadowOpacity: 0,
+                  borderColor: this.state.xero ? "#007AFF" : "#ffffff",
+                  justifyContent: "center",
                 }}
               >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    fontFamily: "System",
-                    fontSize: 12,
-                    fontWeight: "bold",
-                  }}
-                >
-                  Other
-                </Text>
+                <Image
+                  source={require("../../assets/logo_xero.png")}
+                  style={{ alignSelf: "center", width: 30, height: 30 }}
+                  resizeMode="contain"
+                />
               </Card>
             </TouchableOpacity>
-          )}
-
-          {buttonCondition && (
-            <Button
-              containerStyle={{
-                width: "92%",
-                alignSelf: "center",
-                marginTop: "8%",
+            <TouchableOpacity
+              onPress={() => {
+                this.setState((prevState) => ({
+                  sage: !prevState.sage,
+                  xero: false,
+                  bench: false,
+                  wave: false,
+                }));
               }}
-              buttonStyle={{ backgroundColor: "#007AFF", borderRadius: 20 }}
-              title="Continue"
-              type="solid"
-              onPress={this.handleNoQbButton}
-            />
-          )}
-        </View>
-        <DialogInput
-          isDialogVisible={this.state.isDialogVisible}
-          title={"Other"}
-          message={
-            <Fragment>
-              <Text>
-                Please tell us which accounting software you are using for your
-                business.
-              </Text>
-              {isShowPleaseEnter == true ? (
-                <Text
-                  style={{ color: "red" }}
-                >{`\n\nPlease Enter Software Name`}</Text>
-              ) : null}
-            </Fragment>
-          }
-          hintInput={"Name of the software"}
-          submitInput={(inputText) => {
-            this.handleOtherPress(inputText);
-          }}
-          closeDialog={() => {
-            this.setState({ isDialogVisible: false, isShowPleaseEnter: false });
-          }}
-          disabled={!this.state.otherSoftware}
-        />
-        <Overlay
-          width={"75%"}
-          height={"33%"}
-          isVisible={this.state.isModalVisible}
-          onBackdropPress={() => {
-            this.setState({ isModalVisible: false });
-          }}
-        >
+            >
+              <Card
+                containerStyle={{
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  width: 120,
+                  height: 60,
+                  shadowOpacity: 0,
+                  borderColor: this.state.sage ? "#007AFF" : "#ffffff",
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={require("../../assets/logo_sage.png")}
+                  style={{ alignItems: "center", width: 80, height: 30 }}
+                  resizeMode="contain"
+                />
+              </Card>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: "row",
+              alignSelf: "center",
+              justifyContent: "space-between",
+              width: "85%",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                this.setState((prevState) => ({
+                  xero: false,
+                  sage: false,
+                  bench: !prevState.bench,
+                  wave: false,
+                }));
+              }}
+            >
+              <Card
+                containerStyle={{
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: this.state.bench ? "#007AFF" : "#ffffff",
+                  width: 120,
+                  height: 60,
+                  shadowOpacity: 0,
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={BenchLogo}
+                  style={{ alignSelf: "center", width: 100, height: 50 }}
+                  resizeMode="center"
+                />
+              </Card>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                this.setState((prevState) => ({
+                  xero: false,
+                  sage: false,
+                  bench: false,
+                  wave: !prevState.wave,
+                }));
+              }}
+            >
+              <Card
+                containerStyle={{
+                  borderRadius: 5,
+                  borderWidth: 1,
+                  borderColor: this.state.wave ? "#007AFF" : "#ffffff",
+                  width: 120,
+                  height: 60,
+                  shadowOpacity: 0,
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={require("../../assets/logo_wave.png")}
+                  style={{ alignSelf: "center", width: 80, height: 30 }}
+                  resizeMode="contain"
+                />
+              </Card>
+            </TouchableOpacity>
+          </View>
           <View
             style={{
               flexDirection: "column",
-              borderWidth: 1,
-              borderColor: "#000",
+              alignSelf: "center",
+              justifyContent: "center",
+              marginTop: "10%",
+              width: "85%",
+              height: "15%",
             }}
           >
-            <Text
-              style={{ fontSize: 17, fontWeight: "bold", textAlign: "center" }}
-            >
-              Other
-            </Text>
-            <Text style={{ textAlign: "center", paddingVertical: "5%" }}>
-              Please tell us which accounting software you are using for your
-              business.
-            </Text>
-            <Input
-              placeholder="Name of the software"
-              containerStyle={{ paddingVertical: 40, alignSelf: "center" }}
-              onChange={(text) => this.setState({ otherSoftware: text })}
-            />
+            {!this.props.navigation.getParam("isOneTimeNoQbSend") && (
+              <TouchableOpacity
+                onPress={() => {
+                  this.setState({ isDialogVisible: true });
+                }}
+              >
+                <Card
+                  containerStyle={{
+                    borderRadius: 5,
+                    borderWidth: 0,
+                    width: "92%",
+                    shadowOpacity: 0,
+                  }}
+                >
+                  <Text
+                    style={{
+                      textAlign: "center",
+                      fontFamily: "System",
+                      fontSize: 12,
+                      fontWeight: "bold",
+                    }}
+                  >
+                    Other
+                  </Text>
+                </Card>
+              </TouchableOpacity>
+            )}
+
+            {buttonCondition && (
+              <Button
+                containerStyle={{
+                  width: "92%",
+                  alignSelf: "center",
+                  marginTop: "8%",
+                }}
+                buttonStyle={{ backgroundColor: "#007AFF", borderRadius: 20 }}
+                title="Continue"
+                type="solid"
+                onPress={this.handleNoQbButton}
+              />
+            )}
+          </View>
+          <DialogInput
+            isDialogVisible={this.state.isDialogVisible}
+            title={"Other"}
+            message={
+              <Fragment>
+                <Text>
+                  Please tell us which accounting software you are using for
+                  your business.
+                </Text>
+                {isShowPleaseEnter == true ? (
+                  <Text
+                    style={{ color: "red" }}
+                  >{`\n\nPlease Enter Software Name`}</Text>
+                ) : null}
+              </Fragment>
+            }
+            hintInput={"Name of the software"}
+            submitInput={(inputText) => {
+              this.handleOtherPress(inputText);
+            }}
+            closeDialog={() => {
+              this.setState({
+                isDialogVisible: false,
+                isShowPleaseEnter: false,
+              });
+            }}
+            disabled={!this.state.otherSoftware}
+          />
+          <Overlay
+            width={"75%"}
+            height={"33%"}
+            isVisible={this.state.isModalVisible}
+            onBackdropPress={() => {
+              this.setState({ isModalVisible: false });
+            }}
+          >
             <View
               style={{
-                justifyContent: "space-between",
-                flexDirection: "row",
-                marginTop: -10,
+                flexDirection: "column",
+                borderWidth: 1,
+                borderColor: "#000",
               }}
             >
-              <Button
-                containerStyle={{ width: "48%", alignSelf: "center" }}
-                title="back"
-                type="outline"
-                onPress={() => {
-                  this.setState({ isModalVisible: false });
+              <Text
+                style={{
+                  fontSize: 17,
+                  fontWeight: "bold",
+                  textAlign: "center",
                 }}
+              >
+                Other
+              </Text>
+              <Text style={{ textAlign: "center", paddingVertical: "5%" }}>
+                Please tell us which accounting software you are using for your
+                business.
+              </Text>
+              <Input
+                placeholder="Name of the software"
+                containerStyle={{ paddingVertical: 40, alignSelf: "center" }}
+                onChange={(text) => this.setState({ otherSoftware: text })}
               />
-              <Button
-                containerStyle={{ width: "48%", alignSelf: "center" }}
-                title="submit"
-                type="outline"
-                titleStyle={{ color: "#000" }}
-                disabled={!this.state.otherSoftware}
-                onPress={() => {
-                  this.setState({ isModalVisible: false, otherSoftware: "" });
-                  this.props.navigation.navigate("Setup");
+              <View
+                style={{
+                  justifyContent: "space-between",
+                  flexDirection: "row",
+                  marginTop: -10,
                 }}
-              />
-            </View>
-            {/* <View style={{ flexDirection: "row", width: "100%", justifyContent:'space-between', backgroundColor:'#fff',marginTop:"-4.5%" }}>
+              >
+                <Button
+                  containerStyle={{ width: "48%", alignSelf: "center" }}
+                  title="back"
+                  type="outline"
+                  onPress={() => {
+                    this.setState({ isModalVisible: false });
+                  }}
+                />
+                <Button
+                  containerStyle={{ width: "48%", alignSelf: "center" }}
+                  title="submit"
+                  type="outline"
+                  titleStyle={{ color: "#000" }}
+                  disabled={!this.state.otherSoftware}
+                  onPress={() => {
+                    this.setState({ isModalVisible: false, otherSoftware: "" });
+                    this.props.navigation.navigate("Setup");
+                  }}
+                />
+              </View>
+              {/* <View style={{ flexDirection: "row", width: "100%", justifyContent:'space-between', backgroundColor:'#fff',marginTop:"-4.5%" }}>
               <Button
                 containerStyle={{ width: "50%", alignSelf:'flex-start' }}
                 title="back"
@@ -596,9 +610,10 @@ class LedgerIntegration extends Component {
               />
               <Text></Text>
             </View> */}
-          </View>
-        </Overlay>
-      </View>
+            </View>
+          </Overlay>
+        </View>
+      </Root>
     );
   }
 }

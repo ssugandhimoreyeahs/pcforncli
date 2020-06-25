@@ -36,7 +36,7 @@ class ChangeInCash extends Component {
     this.state = {
       cocMonths: "This Month",
       arrowStyle: "arrow-down",
-      showInsightsCart: true,
+      //showInsightsCart: true,
     };
     this.dropdownRef = React.createRef();
   }
@@ -207,7 +207,7 @@ class ChangeInCash extends Component {
             }}
           >
             <Text style={{ paddingTop: 15, color: "#1D1E1F", fontSize: 12 }}>
-              {this.state.cocMonths}{" "}
+              {this.state.cocMonths}{" Total"}
             </Text>
           </View>
           {isCICGraphEmpty == true ? (
@@ -302,19 +302,21 @@ class ChangeInCash extends Component {
             />
           </View>
         </View>
-        <this.cicInsightFooter
-          backgroundColor={"#E5FCEA"}
-          insightText={
-            "Your cash balance has increased from last months cash balance."
-          }
-          insightButtonText={"Keep on improving"}
-        />
+        {this.state.showInsightsCart && (
+          <this.cicInsightFooter
+            backgroundColor={"#E5FCEA"}
+            insightText={
+              "Your cash balance has increased from last months cash balance."
+            }
+            insightButtonText={"Keep on improving"}
+          />
+        )}
       </Fragment>
     );
   });
   render() {
     const { showInsightsCart } = this.state;
-    let heightRatio = showInsightsCart ? "68%" : "90%";
+    let heightRatio = showInsightsCart ? "68%" : "89%";
     let { cashInChangeData } = this.props;
     let total = 0;
     if (
@@ -340,7 +342,7 @@ class ChangeInCash extends Component {
 
     return (
       <View
-        style={{ ...styles.cicCharts, height: showInsightsCart ? 480 : 360 }}
+        style={{ ...styles.cicCharts, height: showInsightsCart ? 490 : 380 }}
       >
         {cashInChangeData.error == true ? (
           <this.cashInChangeError />

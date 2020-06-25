@@ -1,26 +1,28 @@
-// updated
-
-import React, { Component } from "react";
+import React, {
+  PureComponent,
+  Fragment,
+  Component,
+  useRef,
+  createRef,
+} from "react";
 import {
-  View,
-  Image,
   Text,
-  ScrollView,
-  TextInput,
-  StyleSheet,
-  Alert,
-  TouchableOpacity,
+  View,
   BackHandler,
-  StatusBar,
-  ActivityIndicator,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-//import { AntDesign,SimpleLineIcons} from '@expo/vector-icons';
-import AntDesign from "react-native-vector-icons/AntDesign";
-import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
-import Constants from "expo-constants";
-import { Button } from "react-native-elements";
+import { connect } from "react-redux";
+import { Root } from "@components";
 import Spinner from "react-native-loading-spinner-overlay";
+import Timeout from "./timeout";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import {
+  numberWithCommas,
+  firstLetterCapital,
+  PLAID_EXPENSE_CATEGORIES,
+} from "../../../api/common";
 import {
   getUserTransactions,
   getUser,
@@ -28,587 +30,341 @@ import {
   getUserOutFlowTransactions,
   getUserInflowTransactions,
 } from "../../../api/api";
-import Timeout from "./timeout";
-import { SafeAreaView } from "react-navigation";
-//import { getUser } from "../../../api/api";
-import {
-  numberWithCommas,
-  firstLetterCapital,
-  PLAID_EXPENSE_CATEGORIES,
-} from "../../../api/common";
-import { connect } from "react-redux";
-import { fetchCurrentBalancePromise } from "../../../api/api";
-import { ALL_MONTHS } from "../../../constants/constants";
-import { fetchExpensesAsyncCreator } from "../../../reducers/expensecategory";
-import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
-import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
+import { CustomTabs, TransactionComponentWithDate } from "@components";
+import { Spinner as NativeBaseSpinner } from "native-base";
 
-SimpleLineIcons.loadFont();
 AntDesign.loadFont();
+class TransactionScreen extends PureComponent {
+  getInitialState = () => {
+    return {
+      spinner: true,
+      accountType: "",
+      all: {
+        loader: true,
+        transactionsRender: [],
+        transactionsResponse: [],
+      },
+      outflow: {
+        loader: true,
+        transactionsRender: [],
+        transactionsResponse: [],
+      },
+      inflow: {
+        loader: true,
+        transactionsRender: [],
+        transactionsResponse: [],
+      },
+    };
+  };
+  resetAllDataMembers = () => {
+    this.fetchTransactionPerScroll = 25;
+    this.all = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+    };
 
-function Separator() {
-  return <View style={styles.separator} />;
-}
+    this.outflow = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+      onTimeRun: false,
+    };
 
-const TransactionComponent = (props) => {
-  console.log("props recieve here - for the testin - ", props);
-  const { userData } = props;
-  let readyAmount = ``;
-  let categoryButtonText = ``;
-  let amount = Math.abs(props.price);
-  let detailInfo = ``;
-  //add category button text
-  if (
-    props.fullTransactionObj.category ==
-    props.fullTransactionObj.defaultCategory
-  ) {
-    categoryButtonText = `+ Category`;
-    detailInfo = props.fullTransactionObj.category;
-  } else {
-    detailInfo = `Detail Info`;
-    categoryButtonText = `${props.fullTransactionObj.category}`;
-  }
-
-  if (props.transactionTypes == "INFLOW") {
-    readyAmount = `$${amount}`;
-  } else if (props.transactionTypes == "OUTFLOW") {
-    readyAmount = `-$${amount}`;
-  } else {
-    if (props.fullTransactionObj.transactionType == "Debit") {
-      readyAmount = `-$${numberWithCommas(amount)}`;
-    } else {
-      readyAmount = `$${numberWithCommas(amount)}`;
-    }
-  }
-  let categoryBackgroundColor = `#6C5BC1`;
-  for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
-    if (
-      props.fullTransactionObj.category.toLowerCase() ===
-      PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()
-    ) {
-      categoryBackgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
-      break;
-    }
-  }
-
-  return (
-    <React.Fragment>
-      <View
-        style={{
-          marginTop: 20,
-          borderWidth: 0,
-          borderColor: "red",
-          width: "90%",
-          alignSelf: "center",
-        }}
-      >
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <Text
-            style={{
-              color: "#1D1E1F",
-              fontSize: 15,
-              width: "60%",
-            }}
-          >
-            {props.name}
-          </Text>
-          <Text
-            style={{
-              fontSize: 17,
-              color: "#1D1E1F",
-              width: "40%",
-              textAlign: "right",
-            }}
-          >
-            {readyAmount}
-          </Text>
-        </View>
-
-        <View
-          style={{
-            marginTop: 15,
-            borderWidth: 0,
-            borderColor: "blue",
-            flexDirection: "row",
-            justifyContent: "space-between",
-          }}
-        >
-          <View style={{ justifyContent: "center", alignItems: "center" }}>
-            <Text
-              style={{
-                fontSize: 11,
-                opacity: 0.5,
-                color: "#1D1E1F",
-              }}
-            >
-              {detailInfo}
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => {
-              if (userData.bankStatus == "linked") {
-                //console.log("Full transaction obj - ",props.fullTransactionObj);
-                props.navigation.navigate("NCategoryScreen", {
-                  showEditTray: true,
-                  currentExecutingTransaction: props.fullTransactionObj,
-                  resetTransactionScreen: (
-                    reciever1 = false,
-                    reciever2 = false
-                  ) => {
-                    props.resetTransactionScreen();
-                  },
-                });
-              } else {
-                Alert.alert(
-                  "Bank Disconnected",
-                  `Your bank account has been disconnected. Please reconnect again.`,
-                  [
-                    { text: "Cancel" },
-                    {
-                      text: "Reconnect",
-                      onPress: () => {
-                        props.navigation.navigate("Integration");
-                      },
-                      style: "cancel",
-                    },
-                  ],
-                  { cancelable: false }
-                );
-              }
-            }}
-            style={{
-              backgroundColor:
-                categoryButtonText == "+ Category"
-                  ? "#FFF"
-                  : categoryBackgroundColor,
-              borderColor:
-                categoryButtonText == "+ Category"
-                  ? "#000"
-                  : categoryBackgroundColor,
-              borderWidth: 0.3,
-              height: 24,
-              justifyContent: "center",
-              alignItems: "center",
-              paddingHorizontal: 20,
-              borderRadius: 50,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 11,
-                color: categoryButtonText == "+ Category" ? "#000" : "#FFF",
-              }}
-            >
-              {firstLetterCapital(categoryButtonText)}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View
-        style={{
-          borderBottomColor: "#1D1E1F",
-          borderBottomWidth: StyleSheet.hairlineWidth,
-          opacity: 0.2,
-          width: "90%",
-          alignSelf: "center",
-          marginTop: 15,
-        }}
-      />
-    </React.Fragment>
-  );
-};
-const ShowDateHeadings = ({ date }) => {
-  ////console.log("Date Recieved in Transactions - ",date);
-  //let currentTransactionDateObj = new Date(date);
-  let currentTransactionDateObj = date.split("-");
-  //console.log("Test here - ",currentTransactionDateObj);
-  // return(
-  // <Text style={{width: 100, height:13, fontSize:11,color:"#000000", marginTop:14,marginLeft:18,paddingHorizontal:5}}>{`${ALL_MONTHS[currentTransactionDateObj.getMonth()]} ${currentTransactionDateObj.getDate()}, ${currentTransactionDateObj.getFullYear()}`}</Text>
-  // );
-
-  //update using the split logic
-  return (
-    <Text
-      style={{
-        width: 100,
-        height: 13,
-        fontSize: 11,
-        color: "#000000",
-        marginTop: 14,
-        marginLeft: 18,
-        paddingHorizontal: 5,
-      }}
-    >{`${ALL_MONTHS[parseInt(currentTransactionDateObj[1]) - 1]} ${
-      currentTransactionDateObj[2]
-    }, ${currentTransactionDateObj[0]}`}</Text>
-  );
-};
-class Checking extends React.PureComponent {
+    this.inflow = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+      onTimeRun: false,
+    };
+  };
   constructor(props) {
     super(props);
+
     this.state = {
-      userAccountType: "",
-      isNoAllTransaction: false,
-      activityIndicatorColor: "#070640",
-      isSpinner: true,
-      transactions: [],
-      isBodyLoaded: false,
-      isUserLinkedWithBank: false,
-      showTimeoutScreen: false,
-      seprateDate: [],
-      currentBalance: "0",
-
-      //states for managing the pagination
+      ...this.getInitialState(),
+    };
+    this.fetchTransactionPerScroll = 25;
+    this.all = {
       skipPoint: 0,
       limitPoint: 25,
-      totalSlotsForCovering: 0,
-      currentSlot: 0,
-      remaningTransactions: 0,
-      totalNumOfTransactions: 0,
-      fetchTransactionsPerScroll: 25,
-      isShowActivityIndicator: true,
-
-      allowStartSearch: true,
-
-      outflowinflowstate: {
-        currentAction: "All",
-
-        inflowData: {
-          isNoInflowTransactions: false,
-          seprateDate: [],
-          inflowTransactions: [],
-
-          isFetchedFirstTime: false,
-          inflowTotalTransactions: 0,
-          totalTransactionSlotsToBeCovered: 0,
-          skipPoint: 0,
-          limitPoint: 25,
-
-          lastTransactionalSlot: 0,
-          inflowIndicator: true,
-          currentExecutingSlot: 0,
-          isAllActionCompleted: false,
-        },
-        outflowData: {
-          isNoOutflowTransactions: false,
-          seprateDate: [],
-          outflowTransactions: [],
-
-          isFetchedFirstTime: false,
-          outflowTotalTransactions: 0,
-          totalTransactionSlotsToBeCovered: 0,
-          skipPoint: 0,
-          limitPoint: 25,
-
-          lastTransactionalSlot: 0,
-          outflowIndicator: true,
-          currentExecutingSlot: 0,
-          isAllActionCompleted: false,
-        },
-        outflowinflowSpinner: false,
-      },
+      process: true,
     };
+
+    this.outflow = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+      onTimeRun: false,
+    };
+
+    this.inflow = {
+      skipPoint: 0,
+      limitPoint: 25,
+      process: true,
+      onTimeRun: false,
+    };
+    this.tabs = [
+      {
+        heading: "All",
+        component: this.allTabNavigator,
+      },
+      {
+        heading: "Outflow",
+        component: this.outflowTabNavigator,
+      },
+      {
+        heading: "Inflow",
+        component: this.inflowTabNavigator,
+      },
+    ];
+    // this.allRef = createRef();
+    // this.updateAll = {
+    //   skipPoint: this.all.skipPoint,
+    //   limitPoint: this.all.limitPoint,
+    // };
   }
-
-  resetState = () => {
-    return {
-      isNoAllTransaction: false,
-      activityIndicatorColor: "#070640",
-      isSpinner: true,
-      transactions: [],
-      isBodyLoaded: false,
-      isUserLinkedWithBank: false,
-      showTimeoutScreen: false,
-      seprateDate: [],
-      currentBalance: "0",
-
-      //states for managing the pagination
-      skipPoint: 0,
-      limitPoint: 25,
-      totalSlotsForCovering: 0,
-      currentSlot: 0,
-      remaningTransactions: 0,
-      totalNumOfTransactions: 0,
-      fetchTransactionsPerScroll: 25,
-      isShowActivityIndicator: true,
-
-      allowStartSearch: true,
-
-      outflowinflowstate: {
-        currentAction: "All",
-
-        inflowData: {
-          isNoInflowTransactions: false,
-          seprateDate: [],
-          inflowTransactions: [],
-
-          isFetchedFirstTime: false,
-          inflowTotalTransactions: 0,
-          totalTransactionSlotsToBeCovered: 0,
-          skipPoint: 0,
-          limitPoint: 25,
-
-          lastTransactionalSlot: 0,
-          inflowIndicator: true,
-          currentExecutingSlot: 0,
-          isAllActionCompleted: false,
-        },
-        outflowData: {
-          isNoOutflowTransactions: false,
-          seprateDate: [],
-          outflowTransactions: [],
-
-          isFetchedFirstTime: false,
-          outflowTotalTransactions: 0,
-          totalTransactionSlotsToBeCovered: 0,
-          skipPoint: 0,
-          limitPoint: 25,
-
-          lastTransactionalSlot: 0,
-          outflowIndicator: true,
-          currentExecutingSlot: 0,
-          isAllActionCompleted: false,
-        },
-        outflowinflowSpinner: false,
-      },
-    };
-  };
-  resetTransactionScreen = () => {
-    this.setState(this.resetState(), () => {
-      setTimeout(() => {
-        this.readyTransactionPage();
-        setTimeout(() => {
-          this.props.fetchExpenseByCategory(3);
-          //for the expenses inner screen
-          this.props.fetchMainExepenseByCategory(0);
-        }, 500);
-      }, 100);
+  splitTransactions = (transactionsResponse) => {
+    let allDatesArray = [];
+    transactionsResponse.map((singleTransaction, index) => {
+      allDatesArray.push(singleTransaction.date);
     });
-  };
-  getUnique = (array) => {
-    var uniqueArray = [];
-
-    // Loop through array values
-    for (i = 0; i < array.length; i++) {
-      if (uniqueArray.indexOf(array[i]) === -1) {
-        uniqueArray.push(array[i]);
+    var uniqueDatesArray = [];
+    for (i = 0; i < allDatesArray.length; i++) {
+      if (uniqueDatesArray.indexOf(allDatesArray[i]) === -1) {
+        uniqueDatesArray.push(allDatesArray[i]);
       }
     }
-    return uniqueArray;
+    let updatedTransactionsRender = [];
+    uniqueDatesArray.map((singleUniqueDate, index) => {
+      let obj = {};
+      obj.id = index + 1;
+      obj.date = singleUniqueDate;
+      obj.transactions = transactionsResponse.filter((singleFilter, index) => {
+        return singleFilter.date === singleUniqueDate;
+      });
+      updatedTransactionsRender.push(obj);
+    });
+    return updatedTransactionsRender;
   };
-
-  showUserIsNotConnectedToBankAlert = () => {
-    Alert.alert(
-      "Bank Disconnected",
-      `Your bank account has been disconnected. Please reconnect again.`,
-      [
-        { text: "Cancel" },
-        {
-          text: "Reconnect",
-          onPress: () => {
-            this.props.navigation.navigate("Integration");
-          },
-          style: "cancel",
-        },
-      ],
-      { cancelable: false }
-    );
-  };
-
-  fetchTransactionsOnEachScroll = async (
-    isDisableActivityIndicator = false,
-    isDisableSearch = false
-  ) => {
-    if (isDisableSearch == false) {
-      const userTransactions = await getUserTransactions(
-        this.state.skipPoint,
-        this.state.limitPoint
-      );
-      ////console.log(userTransactions.transactions.allTransactions.transactions[0]);
-      if (userTransactions.result == true) {
-        const seprateDates = [];
-        userTransactions.transactions.map((res) => {
-          seprateDates.push(res.date);
-        });
-        const seprateDate = this.getUnique([...seprateDates]);
-        ////console.log("Current Slot ",this.state.currentSlot);
-        this.setState(
-          {
-            seprateDate: [...this.state.seprateDate, ...seprateDate],
-            transactions: [
-              ...this.state.transactions,
-              ...userTransactions.transactions,
-            ],
-          },
-          () => {
-            if (isDisableActivityIndicator == true) {
-              this.setState({ isShowActivityIndicator: false });
-            }
+  transactionStore = async (requestType = false, transactionType = "All") => {
+    try {
+      if (transactionType === "All") {
+        const {
+          all: { transactionsResponse, transactionsRender, loader },
+          accountType,
+        } = this.state;
+        let updatedAccountType = accountType;
+        if (this.all.process) {
+          let transactionAPIResponse = await getUserTransactions(
+            this.all.skipPoint,
+            this.all.limitPoint
+          );
+          if (requestType) {
+            updatedAccountType = transactionAPIResponse.accountType;
           }
-        );
-      }
-    }
-  };
-  fetchTransactionsFirstTime = async (userData) => {
-    const userTransactions = await getUserTransactions(
-      this.state.skipPoint,
-      this.state.limitPoint
-    );
-    ////console.log(userTransactions.transactions.allTransactions.transactions[0]);
-    if (userTransactions.result == true) {
-      if (
-        userTransactions.accountType != undefined &&
-        userTransactions.accountType != null &&
-        userTransactions.accountType != ""
-      ) {
-        this.setState({ userAccountType: userTransactions.accountType });
-      }
-      if (userTransactions.totalTransactions == 0) {
-        this.setState({
-          isNoAllTransaction: true,
-          allowStartSearch: false,
-          isShowActivityIndicator: false,
-          isSpinner: false,
-          isUserLinkedWithBank: true,
-          isBodyLoaded: true,
-          outflowinflowstate: {
-            ...this.state.outflowinflowstate,
-            inflowData: {
-              ...this.state.outflowinflowstate.inflowData,
-              inflowIndicator: false,
-            },
-          },
-        });
+          this.all.skipPoint =
+            this.all.skipPoint + this.fetchTransactionPerScroll;
+          if (
+            transactionAPIResponse.transactions.length === 0 ||
+            transactionAPIResponse.transactions.length < 25
+          ) {
+            this.all.process = false;
+            this.setState((prevState) => {
+              return {
+                all: {
+                  ...prevState.all,
+                  loader: false,
+                },
+              };
+            });
+          }
+          if (transactionAPIResponse.transactions.length > 0) {
+            const updatedTransactionsRender = this.splitTransactions([
+              ...transactionsResponse,
+              ...transactionAPIResponse.transactions,
+            ]);
 
-        if (userData.bankStatus != "linked") {
-          setTimeout(() => {
-            this.showUserIsNotConnectedToBankAlert();
-          }, 200);
+            this.setState((prevState) => {
+              return {
+                spinner: false,
+                accountType: updatedAccountType,
+                all: {
+                  loader:
+                    transactionAPIResponse.transactions.length < 25
+                      ? false
+                      : true,
+                  transactionsRender: updatedTransactionsRender,
+                  transactionsResponse: [
+                    ...prevState.all.transactionsResponse,
+                    ...transactionAPIResponse.transactions,
+                  ],
+                },
+              };
+            });
+          }
+        } else {
+          this.setState((prevState) => {
+            return {
+              all: {
+                ...prevState.all,
+                loader: false,
+              },
+            };
+          });
         }
-      } else if (
-        userTransactions.totalTransactions <=
-        this.state.fetchTransactionsPerScroll
-      ) {
-        const seprateDates = [];
-        userTransactions.transactions.map((res) => {
-          seprateDates.push(res.date);
-        });
-        const seprateDate = this.getUnique(seprateDates);
-        // //console.log("Total slots to be covering ",totalSlotsForCovering);
-        this.setState(
-          {
-            isShowActivityIndicator: false,
-            allowStartSearch: false,
-            seprateDate,
-            transactions: userTransactions.transactions,
-            totalNumOfTransactions: userTransactions.totalTransactions,
-            isSpinner: false,
-            isUserLinkedWithBank: true,
-            isBodyLoaded: true,
-          },
-          () => {
-            //code for showing alert that the user is not connected to the bank
-            if (userData.bankStatus != "linked") {
-              setTimeout(() => {
-                this.showUserIsNotConnectedToBankAlert();
-              }, 200);
-            }
+      } else if (transactionType === "Outflow") {
+        const {
+          outflow: { transactionsResponse },
+        } = this.state;
+        if (this.outflow.process) {
+          let transactionOutflowAPIResponse = await getUserOutFlowTransactions(
+            this.outflow.skipPoint,
+            this.outflow.limitPoint
+          );
+          this.outflow.skipPoint =
+            this.outflow.skipPoint + this.fetchTransactionPerScroll;
+          if (
+            transactionOutflowAPIResponse.outflowTransactions.transactions
+              .length === 0 ||
+            transactionOutflowAPIResponse.outflowTransactions.transactions
+              .length < 25
+          ) {
+            this.outflow.process = false;
+            this.setState((prevState) => {
+              return {
+                outflow: {
+                  ...prevState.outflow,
+                  loader: false,
+                },
+              };
+            });
           }
-        );
-      } else {
-        const seprateDates = [];
-        userTransactions.transactions.map((res) => {
-          seprateDates.push(res.date);
-        });
-        const seprateDate = this.getUnique(seprateDates);
+          if (
+            transactionOutflowAPIResponse.outflowTransactions.transactions
+              .length > 0
+          ) {
+            const updatedOutFlowTransactionsRender = this.splitTransactions([
+              ...transactionsResponse,
+              ...transactionOutflowAPIResponse.outflowTransactions.transactions,
+            ]);
 
-        const totalSlotsForCovering = parseInt(
-          userTransactions.totalTransactions /
-            this.state.fetchTransactionsPerScroll
-        );
-        const remaningTransactions = parseInt(
-          userTransactions.totalTransactions %
-            this.state.fetchTransactionsPerScroll
-        );
-        ////console.log("Total slots to be covering ",totalSlotsForCovering);
-        this.setState(
-          {
-            seprateDate,
-            transactions: userTransactions.transactions,
-            totalSlotsForCovering,
-            remaningTransactions,
-            totalNumOfTransactions: userTransactions.totalTransactions,
-            isSpinner: false,
-            isUserLinkedWithBank: true,
-            isBodyLoaded: true,
-          },
-          () => {
-            //code for showing alert that the user is not connected to the bank
-            if (userData.bankStatus != "linked") {
-              setTimeout(() => {
-                this.showUserIsNotConnectedToBankAlert();
-              }, 200);
-            }
+            this.setState((prevState) => {
+              return {
+                outflow: {
+                  loader:
+                    transactionOutflowAPIResponse.outflowTransactions
+                      .transactions.length < 25
+                      ? false
+                      : true,
+                  transactionsRender: updatedOutFlowTransactionsRender,
+                  transactionsResponse: [
+                    ...prevState.outflow.transactionsResponse,
+                    ...transactionOutflowAPIResponse.outflowTransactions
+                      .transactions,
+                  ],
+                },
+              };
+            });
           }
-        );
+        }
+      } else {
+        const {
+          inflow: { transactionsResponse },
+        } = this.state;
+        if (this.inflow.process) {
+          let transactionInflowAPIResponse = await getUserInflowTransactions(
+            this.inflow.skipPoint,
+            this.inflow.limitPoint
+          );
+          this.inflow.skipPoint =
+            this.inflow.skipPoint + this.fetchTransactionPerScroll;
+          if (
+            transactionInflowAPIResponse.inflowTransactions.transactions
+              .length === 0 ||
+            transactionInflowAPIResponse.inflowTransactions.transactions
+              .length < 25
+          ) {
+            this.inflow.process = false;
+            this.setState((prevState) => {
+              return {
+                inflow: {
+                  ...prevState.inflow,
+                  loader: false,
+                },
+              };
+            });
+          }
+          if (
+            transactionInflowAPIResponse.inflowTransactions.transactions
+              .length > 0
+          ) {
+            const updatedInflowTransactionsRender = this.splitTransactions([
+              ...transactionsResponse,
+              ...transactionInflowAPIResponse.inflowTransactions.transactions,
+            ]);
+
+            this.setState((prevState) => {
+              return {
+                inflow: {
+                  loader:
+                    transactionInflowAPIResponse.inflowTransactions.transactions
+                      .length < 25
+                      ? false
+                      : true,
+                  transactionsRender: updatedInflowTransactionsRender,
+                  transactionsResponse: [
+                    ...prevState.inflow.transactionsResponse,
+                    ...transactionInflowAPIResponse.inflowTransactions
+                      .transactions,
+                  ],
+                },
+              };
+            });
+          }
+        }
       }
-    } else {
+    } catch (error) {
+      console.log("Error here - ", error);
       this.setState(
         {
-          isSpinner: false,
+          spinner: false,
+          all: {
+            ...this.state.all,
+            loader: false,
+          },
         },
         () => {
           setTimeout(() => {
-            Alert.alert(
-              "Message",
-              "Error Try Again!",
-              [
-                {
-                  text: "Ok",
-                  onPress: () => {
-                    this.props.navigation.goBack();
-                  },
-                },
-              ],
+            Alert.alert("Message", "Something went wrong", [
               {
-                cancelable: false,
-              }
-            );
+                text: "Okay",
+                onPress: () => {
+                  this.props.navigation.goBack();
+                },
+              },
+            ]);
           }, 100);
         }
       );
     }
   };
-
-  readyTransactionPage = () => {
+  readyTransactionScreen = async () => {
     const { userData } = this.props.reduxState.userData;
     if (userData.bankIntegrationStatus == true) {
-      fetchCurrentBalancePromise()
-        .then((userBalance) => {
-          if (userBalance.result == true) {
-            this.setState({ currentBalance: userBalance.available_balance });
-          }
-        })
-        .catch((error) => {
-          //console.log("current Balance promise error - on the checking transaction page resposne - ",error);
-          this.setState({ currentBalance: 0 });
-        });
-
-      this.fetchTransactionsFirstTime(userData);
+      await this.transactionStore(true, "All");
     } else {
-      this.setState({ isSpinner: false, showTimeoutScreen: true });
+      this.setState({
+        spinner: false,
+      });
     }
   };
   componentDidMount() {
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
     );
-    //const response = await getUser();
-    this.readyTransactionPage();
+    this.readyTransactionScreen();
   }
-
   componentWillUnmount() {
     this.setState({
       isBodyLoaded: false,
@@ -619,7 +375,6 @@ class Checking extends React.PureComponent {
       this.handleBackButton(this.props.navigation)
     );
   }
-
   handleBackButton = (nav) => {
     if (!nav.isFocused()) {
       BackHandler.removeEventListener("hardwareBackPress", () =>
@@ -632,1189 +387,320 @@ class Checking extends React.PureComponent {
       return true;
     }
   };
-  handleScroll = (event) => {
-    // //console.log(event.nativeEvent.contentOffset.y);
-  };
-  isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
-    //console.log("---------------------------------------onScroll testing-----------------------------");
-    //console.log(layoutMeasurement.height);
-    //console.log(contentOffset.y);
-    //console.log(contentSize.height);
-    //console.log("--------------------------------------------------------------------------------------");
-    return layoutMeasurement.height + contentOffset.y >= contentSize.height - 1;
-  };
-
-  triggerOutflowInflowFetch = async () => {
-    const { currentAction } = this.state.outflowinflowstate;
-
-    if (currentAction == "All") {
-      this.setState((prevState) => {
-        return {
-          outflowinflowstate: {
-            ...prevState.outflowinflowstate,
-            currentAction: "All",
-            outflowinflowSpinner: false,
-          },
-        };
-      });
-    } else if (currentAction == "Outflow") {
-      //console.log("Triggering outflow 1st Time");
-      if (
-        this.state.outflowinflowstate.outflowData.isFetchedFirstTime == false
-      ) {
-        const outflowResponse = await getUserOutFlowTransactions(
-          this.state.outflowinflowstate.outflowData.skipPoint,
-          this.state.outflowinflowstate.outflowData.limitPoint
-        );
-
-        if (outflowResponse.result == true) {
-          if (outflowResponse.outflowTransactions.totalTransactions == 0) {
-            this.setState((prevState) => {
-              return {
-                outflowinflowstate: {
-                  ...prevState.outflowinflowstate,
-                  outflowData: {
-                    ...prevState.outflowinflowstate.outflowData,
-                    outflowIndicator: false,
-                    isNoOutflowTransactions: true,
-                    isFetchedFirstTime: true,
-                    isAllActionCompleted: true,
-                  },
-                  outflowinflowSpinner: false,
-                },
-              };
-            });
-          } else if (
-            outflowResponse.outflowTransactions.totalTransactions > 0
-          ) {
-            if (
-              outflowResponse.outflowTransactions.totalTransactions <=
-              this.state.fetchTransactionsPerScroll
-            ) {
-              //console.log("outflow total transaction length triggered less than or equal to 25- ",outflowResponse.outflowTransactions.totalTransactions);
-              let seprateOutflowDates = [];
-              outflowResponse.outflowTransactions.transactions.map(
-                (singleOutflowTransaction) => {
-                  seprateOutflowDates.push(singleOutflowTransaction.date);
-                }
-              );
-
-              let filteredSepreateOutflowDates = this.getUnique(
-                seprateOutflowDates
-              );
-
-              let totalTransactionSlotsToBeCovered = parseInt(
-                outflowResponse.outflowTransactions.transactions.length /
-                  this.state.fetchTransactionsPerScroll
-              );
-              let lastTransactionalSlot =
-                outflowResponse.outflowTransactions.transactions.length %
-                this.state.fetchTransactionsPerScroll;
-              this.setState((prevState) => {
-                return {
-                  outflowinflowstate: {
-                    ...prevState.outflowinflowstate,
-                    outflowData: {
-                      ...prevState.outflowinflowstate.outflowData,
-                      seprateDate: filteredSepreateOutflowDates,
-                      outflowTransactions:
-                        outflowResponse.outflowTransactions.transactions,
-
-                      isFetchedFirstTime: true,
-                      outflowTotalTransactions:
-                        outflowResponse.outflowTransactions.totalTransactions,
-                      totalTransactionSlotsToBeCovered: 0,
-
-                      skipPoint: 25,
-                      limitPoint: 25,
-
-                      lastTransactionalSlot: 0,
-
-                      outflowIndicator: false,
-
-                      currentExecutingSlot: 0,
-                      isAllActionCompleted: true,
-                    },
-                    outflowinflowSpinner: false,
-                  },
-                };
-              });
-            } else {
-              //console.log("outflow total transaction length triggered more than 25- ",outflowResponse.outflowTransactions.totalTransactions);
-              let seprateOutflowDates = [];
-              outflowResponse.outflowTransactions.transactions.map(
-                (singleOutflowTransaction) => {
-                  seprateOutflowDates.push(singleOutflowTransaction.date);
-                }
-              );
-
-              let filteredSepreateOutflowDates = this.getUnique(
-                seprateOutflowDates
-              );
-
-              let totalTransactionSlotsToBeCovered = parseInt(
-                outflowResponse.outflowTransactions.totalTransactions /
-                  this.state.fetchTransactionsPerScroll
-              );
-              let lastTransactionalSlot =
-                outflowResponse.outflowTransactions.totalTransactions %
-                this.state.fetchTransactionsPerScroll;
-              this.setState((prevState) => {
-                return {
-                  outflowinflowstate: {
-                    ...prevState.outflowinflowstate,
-                    outflowData: {
-                      ...prevState.outflowinflowstate.outflowData,
-                      seprateDate: filteredSepreateOutflowDates,
-                      outflowTransactions:
-                        outflowResponse.outflowTransactions.transactions,
-                      isFetchedFirstTime: true,
-                      outflowTotalTransactions:
-                        outflowResponse.outflowTransactions.totalTransactions,
-                      totalTransactionSlotsToBeCovered,
-                      lastTransactionalSlot,
-                      currentExecutingSlot: 1,
-                    },
-                    outflowinflowSpinner: false,
-                  },
-                };
-              });
-            }
-          } else {
-            this.setState((prevState) => {
-              return {
-                outflowinflowstate: {
-                  ...prevState.outflowinflowstate,
-                  outflowinflowSpinner: false,
-                },
-              };
-            });
-          }
-        }
-      } else {
-        this.setState((prevState) => {
-          return {
-            outflowinflowstate: {
-              ...prevState.outflowinflowstate,
-              outflowinflowSpinner: false,
-              outflowData: {
-                ...prevState.outflowinflowstate.outflowData,
-                isFetchedFirstTime: true,
-                isAllActionCompleted: true,
-                isNoOutflowTransactions: true,
-              },
-            },
-          };
-        });
-      }
-    } else {
-      //code here for the inflow transactions to be fetched from the api once time
-
-      //console.log("Triggering inflow transactions 1st Time");
-      if (
-        this.state.outflowinflowstate.inflowData.isFetchedFirstTime == false
-      ) {
-        const inflowResponse = await getUserInflowTransactions(
-          this.state.outflowinflowstate.inflowData.skipPoint,
-          this.state.outflowinflowstate.inflowData.limitPoint
-        );
-
-        if (inflowResponse.result == true) {
-          if (inflowResponse.inflowTransactions.totalTransactions == 0) {
-            this.setState((prevState) => {
-              return {
-                outflowinflowstate: {
-                  ...prevState.outflowinflowstate,
-                  inflowData: {
-                    ...prevState.outflowinflowstate.inflowData,
-                    inflowIndicator: false,
-                    isNoInflowTransactions: true,
-                    isFetchedFirstTime: true,
-                    isAllActionCompleted: true,
-                  },
-                  outflowinflowSpinner: false,
-                },
-              };
-            });
-          } else if (inflowResponse.inflowTransactions.totalTransactions > 0) {
-            if (
-              inflowResponse.inflowTransactions.totalTransactions <=
-              this.state.fetchTransactionsPerScroll
-            ) {
-              //console.log("inflow total transaction length triggered less than or equal to 25- ",inflowResponse.inflowTransactions.totalTransactions);
-              let seprateOutflowDates = [];
-              inflowResponse.inflowTransactions.transactions.map(
-                (singleOutflowTransaction) => {
-                  seprateOutflowDates.push(singleOutflowTransaction.date);
-                }
-              );
-
-              let filteredSepreateInflowDates = this.getUnique(
-                seprateOutflowDates
-              );
-
-              // let totalTransactionSlotsToBeCovered = parseInt(outflowResponse.outflowTransactions.transactions.length / this.state.fetchTransactionsPerScroll);
-              // let lastTransactionalSlot = outflowResponse.outflowTransactions.transactions.length % this.state.fetchTransactionsPerScroll;
-              this.setState((prevState) => {
-                return {
-                  outflowinflowstate: {
-                    ...prevState.outflowinflowstate,
-                    inflowData: {
-                      ...prevState.outflowinflowstate.inflowData,
-                      seprateDate: filteredSepreateInflowDates,
-                      inflowTransactions:
-                        inflowResponse.inflowTransactions.transactions,
-
-                      isFetchedFirstTime: true,
-                      inflowTotalTransactions:
-                        inflowResponse.inflowTransactions.totalTransactions,
-                      totalTransactionSlotsToBeCovered: 0,
-
-                      skipPoint: 25,
-                      limitPoint: 25,
-
-                      lastTransactionalSlot: 0,
-
-                      inflowIndicator: false,
-
-                      currentExecutingSlot: 0,
-                      isAllActionCompleted: true,
-                    },
-                    outflowinflowSpinner: false,
-                  },
-                };
-              });
-            } else {
-              //console.log("inflow total transaction length triggered more than 25- ",inflowResponse.inflowTransactions.totalTransactions);
-              let seprateOutflowDates = [];
-              inflowResponse.inflowTransactions.transactions.map(
-                (singleOutflowTransaction) => {
-                  seprateOutflowDates.push(singleOutflowTransaction.date);
-                }
-              );
-
-              let filteredSepreateInflowflowDates = this.getUnique(
-                seprateOutflowDates
-              );
-
-              let totalTransactionSlotsToBeCovered = parseInt(
-                inflowResponse.inflowTransactions.totalTransactions /
-                  this.state.fetchTransactionsPerScroll
-              );
-              let lastTransactionalSlot =
-                inflowResponse.inflowTransactions.totalTransactions %
-                this.state.fetchTransactionsPerScroll;
-              this.setState((prevState) => {
-                return {
-                  outflowinflowstate: {
-                    ...prevState.outflowinflowstate,
-                    inflowData: {
-                      ...prevState.outflowinflowstate.inflowData,
-                      seprateDate: filteredSepreateInflowflowDates,
-                      inflowTransactions:
-                        inflowResponse.inflowTransactions.transactions,
-                      isFetchedFirstTime: true,
-                      inflowTotalTransactions:
-                        inflowResponse.inflowTransactions.totalTransactions,
-                      totalTransactionSlotsToBeCovered,
-                      lastTransactionalSlot,
-                      currentExecutingSlot: 1,
-                    },
-                    outflowinflowSpinner: false,
-                  },
-                };
-              });
-            }
-          } else {
-            this.setState((prevState) => {
-              return {
-                outflowinflowstate: {
-                  ...prevState.outflowinflowstate,
-                  outflowinflowSpinner: false,
-                },
-              };
-            });
-          }
-        }
-      } else {
-        this.setState((prevState) => {
-          return {
-            outflowinflowstate: {
-              ...prevState.outflowinflowstate,
-              outflowinflowSpinner: false,
-            },
-          };
-        });
-      }
-    }
-  };
-  chooseTransactionSelectType = (actionType) => {
-    const { currentAction } = this.state.outflowinflowstate;
-    if (currentAction != actionType) {
-      if (
-        actionType == "Outflow" &&
-        this.state.outflowinflowstate.outflowData.isFetchedFirstTime == false
-      ) {
-        this.setState(
-          (prevState) => {
-            return {
-              outflowinflowstate: {
-                ...prevState.outflowinflowstate,
-                currentAction: actionType,
-                outflowinflowSpinner: true,
-              },
-            };
-          },
-          () => {
-            this.triggerOutflowInflowFetch();
-          }
-        );
-      } else if (
-        actionType == "Inflow" &&
-        this.state.outflowinflowstate.inflowData.isFetchedFirstTime == false
-      ) {
-        this.setState(
-          (prevState) => {
-            return {
-              outflowinflowstate: {
-                ...prevState.outflowinflowstate,
-                currentAction: actionType,
-                outflowinflowSpinner: true,
-              },
-            };
-          },
-          () => {
-            this.triggerOutflowInflowFetch();
-          }
-        );
-      } else {
-        this.setState((prevState) => {
-          return {
-            outflowinflowstate: {
-              ...prevState.outflowinflowstate,
-              currentAction: actionType,
-            },
-          };
-        });
-      }
-    }
-  };
-
-  fetchInflowTransactionsOnEachScroll = async (isAllLoaded = false) => {
-    const appendStateData =
-      isAllLoaded == true
-        ? { isAllActionCompleted: true, inflowIndicator: false }
-        : {};
-
-    const inflowResponse = await getUserInflowTransactions(
-      this.state.outflowinflowstate.inflowData.skipPoint,
-      this.state.outflowinflowstate.inflowData.limitPoint
-    );
-
-    if (inflowResponse.result == true) {
-      if (inflowResponse.inflowTransactions.transactions.length > 0) {
-        let seprateOutflowDates = [];
-        inflowResponse.inflowTransactions.transactions.map(
-          (singleOutflowTransaction) => {
-            seprateOutflowDates.push(singleOutflowTransaction.date);
-          }
-        );
-
-        let filteredSepreateInflowDates = this.getUnique([
-          ...this.state.outflowinflowstate.inflowData.seprateDate,
-          ...seprateOutflowDates,
-        ]);
-
-        this.setState((prevState) => {
-          return {
-            outflowinflowstate: {
-              ...prevState.outflowinflowstate,
-              inflowData: {
-                ...prevState.outflowinflowstate.inflowData,
-                seprateDate: filteredSepreateInflowDates,
-                inflowTransactions: [
-                  ...this.state.outflowinflowstate.inflowData
-                    .inflowTransactions,
-                  ...inflowResponse.inflowTransactions.transactions,
-                ],
-                currentExecutingSlot:
-                  prevState.outflowinflowstate.inflowData.currentExecutingSlot +
-                  1,
-                ...appendStateData,
-              },
-              outflowinflowSpinner: false,
-            },
-          };
-        });
-      } else {
-        this.setState({
-          outflowinflowstate: {
-            ...this.state.outflowinflowstate,
-            inflowData: {
-              ...this.state.outflowinflowstate.inflowData,
-              inflowIndicator: false,
-            },
-          },
-        });
-      }
-    } else {
-      this.setState({
-        outflowinflowstate: {
-          ...this.state.outflowinflowstate,
-          inflowData: {
-            ...this.state.outflowinflowstate.inflowData,
-            inflowIndicator: false,
-          },
-        },
-      });
-    }
-  };
-  fetchOutFlowTransactionsOnEachScroll = async (isAllLoaded = false) => {
-    const appendStateData =
-      isAllLoaded == true
-        ? { isAllActionCompleted: true, outflowIndicator: false }
-        : {};
-
-    const outflowResponse = await getUserOutFlowTransactions(
-      this.state.outflowinflowstate.outflowData.skipPoint,
-      this.state.outflowinflowstate.outflowData.limitPoint
-    );
-    // //console.log("outflow responses - ",outflowResponse.result);
-    if (outflowResponse.result == true) {
-      if (outflowResponse.outflowTransactions.transactions.length > 0) {
-        //console.log("Getting outflow transactions on each scroll length - ",outflowResponse.outflowTransactions.transactions.length);
-        let seprateOutflowDates = [];
-        outflowResponse.outflowTransactions.transactions.map(
-          (singleOutflowTransaction) => {
-            seprateOutflowDates.push(singleOutflowTransaction.date);
-          }
-        );
-
-        let filteredSepreateOutflowDates = this.getUnique([
-          ...this.state.outflowinflowstate.outflowData.seprateDate,
-          ...seprateOutflowDates,
-        ]);
-
-        this.setState((prevState) => {
-          return {
-            outflowinflowstate: {
-              ...prevState.outflowinflowstate,
-              outflowData: {
-                ...prevState.outflowinflowstate.outflowData,
-                seprateDate: filteredSepreateOutflowDates,
-                outflowTransactions: [
-                  ...this.state.outflowinflowstate.outflowData
-                    .outflowTransactions,
-                  ...outflowResponse.outflowTransactions.transactions,
-                ],
-                currentExecutingSlot:
-                  prevState.outflowinflowstate.outflowData
-                    .currentExecutingSlot + 1,
-                ...appendStateData,
-              },
-              outflowinflowSpinner: false,
-            },
-          };
-        });
-      } else {
-        this.setState({
-          outflowinflowstate: {
-            ...this.state.outflowinflowstate,
-            outflowData: {
-              ...this.state.outflowinflowstate.outflowData,
-              outflowIndicator: false,
-            },
-          },
-        });
-      }
-    } else {
-      this.setState({
-        outflowinflowstate: {
-          ...this.state.outflowinflowstate,
-          outflowData: {
-            ...this.state.outflowinflowstate.outflowData,
-            outflowIndicator: false,
-          },
-        },
-      });
-    }
-  };
-  checkingBody = () => {
-    const { currentAction } = this.state.outflowinflowstate;
-    const { userData } = this.props.reduxState.userData;
+  renderHeader = ({ currentBalance }) => {
     return (
-      <React.Fragment>
-        <View style={StyleSheet.absoluteFill}>
-          <View
-            style={{
-              flexDirection: "column",
-              backgroundColor: "#070640",
-              width: "100%",
-              height: 120,
+      <View style={styles.parentHeader}>
+        <View style={styles.backButtonContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
             }}
           >
-            <TouchableOpacity
-              onPress={() => this.props.navigation.goBack()}
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#070640",
-                width: 50,
-                height: 44,
-                marginTop: 10,
-                marginLeft: 14,
-              }}
-            >
-              <AntDesign
-                name="left"
-                size={24}
-                alignSelf="center"
-                color="#FFFFFF"
-              />
-            </TouchableOpacity>
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#070640",
-                justifyContent: "space-between",
-                marginTop: 4,
-                marginRight: 19,
-                marginLeft: 18,
-              }}
-            >
-              <Text
-                style={{
-                  width: "35%",
-                  fontSize: 20,
-                  color: "#FFFFFF",
-                  height: 23,
-                }}
-              >
-                ${numberWithCommas(this.state.currentBalance)}
-              </Text>
-              {this.state.userAccountType.length > 2 ? (
-                <TouchableOpacity
-                  disabled={true}
-                  style={{ ...styles.SubmitButtonStyle }}
-                  activeOpacity={0.5}
-                >
-                  <Text
-                    style={{ ...styles.TextStyle, paddingHorizontal: 20 }}
-                  >{`${firstLetterCapital(
-                    this.state.userAccountType
-                  )} Account`}</Text>
-                </TouchableOpacity>
-              ) : null}
-            </View>
-            <View
-              style={{
-                flexDirection: "row",
-                backgroundColor: "#070640",
-                marginTop: 11,
-                marginLeft: 18,
-              }}
-            >
-              <Text
-                style={{
-                  width: 121,
-                  height: 16,
-                  fontSize: 12,
-                  color: "#FFFFFF",
-                }}
-              >
-                CASH
-              </Text>
-            </View>
-          </View>
-
-          <ScrollView
-            onScroll={({ nativeEvent }) => {
-              const { currentAction } = this.state.outflowinflowstate;
-              if (currentAction == "All") {
-                if (this.isCloseToBottom(nativeEvent)) {
-                  //fetch Transaction on each Scroll
-                  if (this.state.allowStartSearch == true) {
-                    if (
-                      this.state.currentSlot <
-                      this.state.totalSlotsForCovering - 1
-                    ) {
-                      this.setState(
-                        (prevState) => {
-                          return {
-                            skipPoint:
-                              prevState.skipPoint +
-                              this.state.fetchTransactionsPerScroll,
-                            limitPoint: this.state.fetchTransactionsPerScroll,
-                            currentSlot: this.state.currentSlot + 1,
-                          };
-                        },
-                        () => {
-                          setTimeout(() => {
-                            this.fetchTransactionsOnEachScroll();
-                          }, 50);
-                        }
-                      );
-                    } else if (
-                      this.state.currentSlot ==
-                      this.state.totalSlotsForCovering - 1
-                    ) {
-                      this.setState(
-                        (prevState) => {
-                          return {
-                            skipPoint:
-                              prevState.skipPoint +
-                              this.state.fetchTransactionsPerScroll,
-                            limitPoint: this.state.remaningTransactions,
-                            currentSlot: this.state.currentSlot + 1,
-                          };
-                        },
-                        () => {
-                          setTimeout(() => {
-                            this.fetchTransactionsOnEachScroll(true);
-                          }, 50);
-                        }
-                      );
-                    } else {
-                      this.fetchTransactionsOnEachScroll(true, true);
-                    }
-                  }
-                }
-              } else if (currentAction == "Outflow") {
-                if (this.isCloseToBottom(nativeEvent)) {
-                  const { outflowinflowstate } = this.state;
-                  const { outflowData } = outflowinflowstate;
-                  if (outflowData.isAllActionCompleted == false) {
-                    if (
-                      outflowData.currentExecutingSlot <
-                      outflowData.totalTransactionSlotsToBeCovered
-                    ) {
-                      //console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
-                      this.setState(
-                        (prevState) => {
-                          return {
-                            outflowinflowstate: {
-                              ...prevState.outflowinflowstate,
-                              outflowData: {
-                                ...prevState.outflowinflowstate.outflowData,
-                                skipPoint:
-                                  prevState.outflowinflowstate.outflowData
-                                    .skipPoint + 25,
-                              },
-                            },
-                          };
-                        },
-                        () => {
-                          this.fetchOutFlowTransactionsOnEachScroll(false);
-                        }
-                      );
-                    } else {
-                      //console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
-                      this.setState(
-                        (prevState) => {
-                          return {
-                            outflowinflowstate: {
-                              ...prevState.outflowinflowstate,
-                              outflowData: {
-                                ...prevState.outflowinflowstate.outflowData,
-                                skipPoint:
-                                  prevState.outflowinflowstate.outflowData
-                                    .skipPoint + 25,
-                                limitPoint:
-                                  prevState.outflowinflowstate.outflowData
-                                    .lastTransactionalSlot,
-                              },
-                            },
-                          };
-                        },
-                        () => {
-                          this.fetchOutFlowTransactionsOnEachScroll(true);
-                        }
-                      );
-                    }
-                  }
-                }
-              } else {
-                if (this.isCloseToBottom(nativeEvent)) {
-                  const { outflowinflowstate } = this.state;
-                  const { inflowData } = outflowinflowstate;
-                  if (inflowData.isAllActionCompleted == false) {
-                    if (
-                      inflowData.currentExecutingSlot <
-                      inflowData.totalTransactionSlotsToBeCovered
-                    ) {
-                      // //console.log("Checking slot in side true - ",outflowData.currentExecutingSlot);
-                      this.setState(
-                        (prevState) => {
-                          return {
-                            outflowinflowstate: {
-                              ...prevState.outflowinflowstate,
-                              inflowData: {
-                                ...prevState.outflowinflowstate.inflowData,
-                                skipPoint:
-                                  prevState.outflowinflowstate.inflowData
-                                    .skipPoint + 25,
-                              },
-                            },
-                          };
-                        },
-                        () => {
-                          this.fetchInflowTransactionsOnEachScroll(false);
-                        }
-                      );
-                    } else {
-                      ////console.log("Checking slot in side false - ",outflowData.currentExecutingSlot);
-                      this.setState(
-                        (prevState) => {
-                          return {
-                            outflowinflowstate: {
-                              ...prevState.outflowinflowstate,
-                              inflowData: {
-                                ...prevState.outflowinflowstate.inflowData,
-                                skipPoint:
-                                  prevState.outflowinflowstate.inflowData
-                                    .skipPoint + 25,
-                                limitPoint:
-                                  prevState.outflowinflowstate.inflowData
-                                    .lastTransactionalSlot,
-                              },
-                            },
-                          };
-                        },
-                        () => {
-                          this.fetchInflowTransactionsOnEachScroll(true);
-                        }
-                      );
-                    }
-                  }
-                }
-              }
-            }}
-          >
-            <View
-              style={{
-                backgroundColor: "#FFFFFF",
-                height: 80,
-                width: "99%",
-                justifyContent: "space-between",
-                alignSelf: "center",
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  width: "99%",
-                  marginTop: "3%",
-                  justifyContent: "space-between",
-                  alignSelf: "center",
-                  alignContent: "center",
-                }}
-              >
-                <View
-                  style={{
-                    flexDirection: "row",
-                    width: "60%",
-                    height: 26,
-                    marginLeft: "2%",
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.chooseTransactionSelectType("All");
-                    }}
-                    style={{
-                      width: "20%",
-                      height: "99.9%",
-                      backgroundColor:
-                        currentAction == "All" ? "#070640" : "#FFFFFF",
-                      justifyContent: "center",
-                      borderColor: "#737373",
-                      borderWidth: 1,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: currentAction == "All" ? "#fff" : "#07053E",
-                        textAlign: "center",
-                      }}
-                    >
-                      All
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.chooseTransactionSelectType("Outflow");
-                    }}
-                    style={{
-                      width: "30%",
-                      height: "99.9%",
-                      borderWidth: 1,
-                      borderColor: "#737373",
-                      justifyContent: "center",
-                      backgroundColor:
-                        currentAction == "Outflow" ? "#070640" : "#FFFFFF",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: currentAction == "Outflow" ? "#fff" : "#07053E",
-                        textAlign: "center",
-                      }}
-                    >
-                      Outflow
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.chooseTransactionSelectType("Inflow");
-                    }}
-                    style={{
-                      width: "30%",
-                      height: "99.9%",
-                      borderWidth: 1,
-                      borderColor: "#737373",
-                      justifyContent: "center",
-                      backgroundColor:
-                        currentAction == "Inflow" ? "#070640" : "#FFFFFF",
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        color: currentAction == "Inflow" ? "#fff" : "#07053E",
-                        textAlign: "center",
-                      }}
-                    >
-                      Inflow
-                    </Text>
-                  </TouchableOpacity>
-                  {/* <TouchableOpacity disabled={true} style={{width:'30%', height: '99.9%', backgroundColor:currentAction == 'Transfer' ? '#070640': '#FFFFFF', justifyContent:'center',borderColor:'#737373',borderWidth:1,}}>
-                  <Text style={{fontSize:12, color: currentAction == 'Transfer' ? "#fff" : "#07053E", textAlign:'center'}}>Transfer</Text>
-                </TouchableOpacity> */}
-                </View>
-
-                {/* <Button title="Uncategoried" type="outline" 
-                buttonStyle={{flexDirection:'row-reverse'}}
-                containerStyle={{height:26, marginRight:'2%',justifyContent:'space-between',width:'28%',borderRadius:5,
-                borderColor:'#318FE9'}}
-                titleStyle={{color:'#4A90E2',fontSize:12,marginTop:-6}} 
-                icon={<SimpleLineIcons name="arrow-down" size={10} color="#4A90E2" style={{marginTop:-3}} />} /> */}
-              </View>
-              {/* <Text style={{color:'#1D1E1F', width:93,height:15,fontSize:11,alignSelf:"flex-end",marginBottom:13,marginRight:'2%'}}>26 uncategorized</Text> */}
-            </View>
-
-            {!this.state.outflowinflowstate.outflowinflowSpinner ? (
-              this.state.outflowinflowstate.currentAction == "All" ? (
-                <React.Fragment>
-                  {this.state.seprateDate.map((singleDate, dateIndex) => {
-                    return (
-                      <React.Fragment key={dateIndex}>
-                        <ShowDateHeadings key={dateIndex} date={singleDate} />
-                        <View
-                          style={{
-                            marginTop: 20,
-                            backgroundColor: "#FFFFFF",
-                            flexDirection: "column",
-                            width: "100%",
-                            alignSelf: "center",
-                          }}
-                        >
-                          {this.state.transactions.map(
-                            (transaction, transactionIndex) => {
-                              if (singleDate === transaction.date) {
-                                return (
-                                  <TransactionComponent
-                                    transactionTypes={"ALL"}
-                                    resetTransactionScreen={
-                                      this.resetTransactionScreen
-                                    }
-                                    navigation={this.props.navigation}
-                                    userData={userData}
-                                    navigation={this.props.navigation}
-                                    key={transactionIndex}
-                                    name={transaction.name}
-                                    date={transaction.category}
-                                    price={transaction.amount}
-                                    fullTransactionObj={transaction}
-                                  />
-                                );
-                              }
-                            }
-                          )}
-                        </View>
-                      </React.Fragment>
-                    );
-                  })}
-                  {this.state.isShowActivityIndicator ? (
-                    <ActivityIndicator
-                      size="large"
-                      style={{ paddingVertical: 30 }}
-                      color={this.state.activityIndicatorColor}
-                    />
-                  ) : null}
-                  {this.state.isNoAllTransaction == true ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginTop: 35,
-                      }}
-                    >
-                      <AntDesign
-                        name="exclamationcircle"
-                        size={20}
-                        style={{ color: "#070640", alignSelf: "center" }}
-                      />
-                      <Text style={{ marginLeft: 10, alignSelf: "center" }}>
-                        Oops There are No Transactions!
-                      </Text>
-                    </View>
-                  ) : null}
-                </React.Fragment>
-              ) : this.state.outflowinflowstate.currentAction == "Outflow" ? (
-                <React.Fragment>
-                  {this.state.outflowinflowstate.outflowData.seprateDate.map(
-                    (singleDate, dateIndex) => {
-                      return (
-                        <React.Fragment key={dateIndex}>
-                          <ShowDateHeadings key={dateIndex} date={singleDate} />
-                          <View
-                            style={{
-                              marginTop: 20,
-                              backgroundColor: "#FFFFFF",
-                              flexDirection: "column",
-                              width: "100%",
-                              alignSelf: "center",
-                            }}
-                          >
-                            {this.state.outflowinflowstate.outflowData.outflowTransactions.map(
-                              (transaction, transactionIndex) => {
-                                if (singleDate === transaction.date) {
-                                  return (
-                                    <TransactionComponent
-                                      transactionTypes={"OUTFLOW"}
-                                      resetTransactionScreen={
-                                        this.resetTransactionScreen
-                                      }
-                                      navigation={this.props.navigation}
-                                      userData={userData}
-                                      navigation={this.props.navigation}
-                                      key={transactionIndex}
-                                      name={transaction.name}
-                                      date={transaction.category}
-                                      price={transaction.amount}
-                                      fullTransactionObj={transaction}
-                                    />
-                                  );
-                                }
-                              }
-                            )}
-                          </View>
-                        </React.Fragment>
-                      );
-                    }
-                  )}
-                  <ActivityIndicator
-                    animating={
-                      this.state.outflowinflowstate.outflowData.outflowIndicator
-                    }
-                    color={this.state.activityIndicatorColor}
-                    size={`large`}
-                    style={{ paddingVertical: 10 }}
-                  />
-                  {this.state.outflowinflowstate.outflowData
-                    .isNoOutflowTransactions == true ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <AntDesign
-                        name="exclamationcircle"
-                        size={20}
-                        style={{ color: "#070640", alignSelf: "center" }}
-                      />
-                      <Text style={{ marginLeft: 10, alignSelf: "center" }}>
-                        Oops There are No Outflow Transactions!
-                      </Text>
-                    </View>
-                  ) : null}
-                </React.Fragment>
-              ) : (
-                <React.Fragment>
-                  {this.state.outflowinflowstate.inflowData.seprateDate.map(
-                    (singleDate, dateIndex) => {
-                      return (
-                        <React.Fragment key={dateIndex}>
-                          <ShowDateHeadings key={dateIndex} date={singleDate} />
-                          <View
-                            style={{
-                              marginTop: 20,
-                              backgroundColor: "#FFFFFF",
-                              flexDirection: "column",
-                              width: "100%",
-                              alignSelf: "center",
-                            }}
-                          >
-                            {this.state.outflowinflowstate.inflowData.inflowTransactions.map(
-                              (transaction, transactionIndex) => {
-                                if (singleDate === transaction.date) {
-                                  return (
-                                    <TransactionComponent
-                                      transactionTypes={"INFLOW"}
-                                      resetTransactionScreen={
-                                        this.resetTransactionScreen
-                                      }
-                                      navigation={this.props.navigation}
-                                      userData={userData}
-                                      navigation={this.props.navigation}
-                                      key={transactionIndex}
-                                      name={transaction.name}
-                                      date={transaction.category}
-                                      price={transaction.amount}
-                                      fullTransactionObj={transaction}
-                                    />
-                                  );
-                                }
-                              }
-                            )}
-                          </View>
-                        </React.Fragment>
-                      );
-                    }
-                  )}
-                  <ActivityIndicator
-                    animating={
-                      this.state.outflowinflowstate.inflowData.inflowIndicator
-                    }
-                    color={this.state.activityIndicatorColor}
-                    size={`large`}
-                    style={{ paddingVertical: 10 }}
-                  />
-                  {this.state.outflowinflowstate.inflowData
-                    .isNoInflowTransactions == true ? (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <AntDesign
-                        name="exclamationcircle"
-                        size={20}
-                        style={{ color: "#070640", alignSelf: "center" }}
-                      />
-                      <Text style={{ marginLeft: 10, alignSelf: "center" }}>
-                        Oops There are No Inflow Transactions!
-                      </Text>
-                    </View>
-                  ) : null}
-                </React.Fragment>
-              )
-            ) : (
-              <ActivityIndicator
-                animating={this.state.outflowinflowstate.outflowinflowSpinner}
-                color={this.state.activityIndicatorColor}
-                style={{ paddingVertical: 30 }}
-                size={"large"}
-              />
-            )}
-          </ScrollView>
+            <AntDesign name="left" size={24} color="#FFFFFF" />
+          </TouchableOpacity>
         </View>
-      </React.Fragment>
+        <View style={styles.renderUpperHeader}>
+          <Text style={styles.renderCurrentBalance}>{`$${numberWithCommas(
+            currentBalance
+          )}`}</Text>
+
+          <View style={styles.renderAccountTypeStyle}>
+            <Text style={styles.accountTypeTextStyle}>
+              {firstLetterCapital(this.state.accountType)}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.renderUpperHeader}>
+          <Text style={styles.cashTextStyle}>CASH</Text>
+        </View>
+      </View>
     );
   };
-  render() {
-    const { transactions, isBodyLoaded } = this.state;
+  handleOnCategoryTapPress = (
+    rootTransactionObj,
+    transactionType 
+  ) => { 
+    const { cohReducer, userData: userDataMain } = this.props.reduxState;
+    const { userData } = userDataMain;
+    if (userData.bankStatus == "linked") {
+      this.props.navigation.navigate("NCategoryScreen", {
+        showEditTray: true,
+        transactionType,
+        currentExecutingTransaction: rootTransactionObj,
+        resetTransactionScreen: (reciever1 = false, reciever2 = false) => {
+          this.setState({ ...this.getInitialState() }, () => {
+            this.resetAllDataMembers();
+            setTimeout(() => {
+              this.readyTransactionScreen();
+            }, 1000);
+          });
+        },
+      });
+    } else {
+      Alert.alert(
+        "Bank Disconnected",
+        `Your bank account has been disconnected. Please reconnect again.`,
+        [
+          { text: "Cancel" },
+          {
+            text: "Reconnect",
+            onPress: () => {
+              this.props.navigation.navigate("Integration");
+            },
+            style: "cancel",
+          },
+        ],
+        { cancelable: false }
+      );
+    }
+  };
+  allTabNavigator = () => {
+    const {
+      all: { transactionsRender, loader },
+    } = this.state;
+
     return (
-      <View style={styles.margins}>
-        <Spinner
-          visible={this.state.isSpinner}
-          textStyle={styles.spinnerTextStyle}
-        />
-
-        {this.state.isUserLinkedWithBank
-          ? isBodyLoaded && this.checkingBody()
-          : null}
-
-        {this.state.showTimeoutScreen && (
-          <Timeout
-            navigation={this.props.navigation}
-            reloadDashBoardData={() => {
-              if (this.props.navigation.getParam("reloadDashBoardData")) {
-                this.props.navigation.getParam("reloadDashBoardData")();
-              }
+      <View style={styles.parentTabChild}>
+        {transactionsRender.length === 0 && loader === true ? (
+          <NativeBaseSpinner color={"#070640"} />
+        ) : transactionsRender.length === 0 && loader === false ? (
+          <View style={styles.noTransactionAvailableParent}>
+            <AntDesign
+              name="exclamationcircle"
+              size={20}
+              style={styles.noTransactionAntDesign}
+            />
+            <Text style={styles.noTransactionAvailableText}>
+              Oops There are No Transactions!
+            </Text>
+          </View>
+        ) : (
+          <TransactionComponentWithDate
+            onPress={this.handleOnCategoryTapPress}
+            items={transactionsRender}
+            transactionType={"ALL"}
+            onEndReached={() => {
+              this.transactionStore(false, "All");
             }}
+            loader={loader ? <NativeBaseSpinner color="#070640" /> : null}
           />
         )}
       </View>
     );
+  };
+  outflowTabNavigator = () => {
+    const {
+      outflow: { transactionsRender, loader },
+    } = this.state;
+
+    return (
+      <View style={styles.parentTabChild}>
+        {transactionsRender.length === 0 && loader === true ? (
+          <NativeBaseSpinner color={"#070640"} />
+        ) : transactionsRender.length === 0 && loader === false ? (
+          <View style={styles.noTransactionAvailableParent}>
+            <AntDesign
+              name="exclamationcircle"
+              size={20}
+              style={styles.noTransactionAntDesign}
+            />
+            <Text style={styles.noTransactionAvailableText}>
+              Oops There are No Outflow Transactions!
+            </Text>
+          </View>
+        ) : (
+          <TransactionComponentWithDate
+            onPress={this.handleOnCategoryTapPress}
+            items={transactionsRender}
+            transactionType={"OUTFLOW"}
+            onEndReached={() => {
+              this.transactionStore(false, "Outflow");
+            }}
+            loader={loader ? <NativeBaseSpinner color="#070640" /> : null}
+          />
+        )}
+      </View>
+    );
+  };
+  inflowTabNavigator = () => {
+    const {
+      inflow: { transactionsRender, loader },
+    } = this.state;
+
+    return (
+      <View style={styles.parentTabChild}>
+        {transactionsRender.length === 0 && loader === true ? (
+          <NativeBaseSpinner color={"#070640"} />
+        ) : transactionsRender.length === 0 && loader === false ? (
+          <View style={styles.noTransactionAvailableParent}>
+            <AntDesign
+              name="exclamationcircle"
+              size={20}
+              style={styles.noTransactionAntDesign}
+            />
+            <Text style={styles.noTransactionAvailableText}>
+              Oops There are No Inflow Transactions!
+            </Text>
+          </View>
+        ) : (
+          <TransactionComponentWithDate
+            onPress={this.handleOnCategoryTapPress}
+            items={transactionsRender}
+            transactionType={"INFLOW"}
+            onEndReached={() => {
+              this.transactionStore(false, "Inflow");
+            }}
+            loader={loader ? <NativeBaseSpinner color="#070640" /> : null}
+          />
+        )}
+      </View>
+    );
+  };
+  onChangeTab = (param) => {
+    if (param.i === 1) {
+      if (!this.outflow.onTimeRun) {
+        this.outflow.onTimeRun = true;
+        this.transactionStore(false, "Outflow");
+      }
+    } else if (param.i === 2) {
+      if (!this.inflow.onTimeRun) {
+        this.inflow.onTimeRun = true;
+        this.transactionStore(false, "Inflow");
+      }
+    }
+  };
+  renderTransactionScreen = ({ currentBalance }) => {
+    return (
+      <Fragment>
+        <this.renderHeader currentBalance={currentBalance} />
+        <View style={styles.tabContainerParent}>
+          <CustomTabs
+            locked={true}
+            items={this.tabs}
+            onChangeTab={this.onChangeTab}
+          />
+
+          {/* <View style={styles.tabRightStyle}>
+            <Text>Hello World</Text>
+          </View> */}
+        </View>
+      </Fragment>
+    );
+  };
+  render() {
+    let currentBalance = "";
+    const { cohReducer, userData: userDataMain } = this.props.reduxState;
+    const { userData } = userDataMain;
+    const { bankIntegrationStatus = null } = userData;
+    if (bankIntegrationStatus) {
+      currentBalance = cohReducer?.cohData?.currentBalance;
+    }
+    const { spinner } = this.state;
+    return (
+      <Root headerColor={"#070640"} footerColor={"#FFF"} barStyle={"light"}>
+        <Spinner visible={spinner} textStyle={styles.spinnerTextStyle} />
+        <View style={styles.margins}>
+          {spinner === false ? (
+            bankIntegrationStatus != null && bankIntegrationStatus === true ? (
+              <this.renderTransactionScreen currentBalance={currentBalance} />
+            ) : (
+              <Timeout
+                navigation={this.props.navigation}
+                reloadPlaid={() => {
+                  if (this.props.navigation.getParam("reloadPlaid")) {
+                    this.props.navigation.getParam("reloadPlaid")();
+                  }
+                }}
+              />
+            )
+          ) : null}
+        </View>
+      </Root>
+    );
   }
 }
-
 const styles = StyleSheet.create({
   margins: {
     flex: 1,
-    backgroundColor: "#F6F7F8",
+    backgroundColor: "#FFF",
   },
-  btn: {
+  parentHeader: {
+    height: 132,
+    width: "100%",
+    backgroundColor: "#07053E",
+  },
+  backButtonContainer: {
+    height: 40,
+    maxWidth: 55,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  renderUpperHeader: {
+    alignItems: "center",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    alignSelf: "center",
+  },
+  renderCurrentBalance: {
+    fontSize: 23,
+    color: "#FFF",
+    fontWeight: "bold",
+    alignSelf: "center",
+  },
+  renderAccountTypeStyle: {
+    alignSelf: "center",
+    borderRadius: 100,
+    paddingVertical: 8,
+    marginTop: 7,
     paddingHorizontal: 10,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "#FFFFFF",
-    borderWidth: 1,
-    borderColor: "#737373",
+    backgroundColor: "#FFF",
     justifyContent: "center",
     alignItems: "center",
   },
-  separator: {
-    marginTop: 8,
-    borderBottomColor: "#737373",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    marginLeft: 18,
+  accountTypeTextStyle: {
+    fontSize: 13,
+    color: "#07053E",
+    paddingHorizontal: 15,
   },
-  SubmitButtonStyle: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 20,
-    // width:139,
+  cashTextStyle: {
+    fontSize: 13,
+    color: "#FFF",
+    marginTop: 6,
+  },
+  tabContainerParent: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 25,
+    width: "100%",
+    alignSelf: "center",
+    flex: 1,
+    // borderWidth:1,
+    // borderColor:'blue'
+  },
+  parentTabChild: {
+    flex: 1,
+    borderColor: "red",
+    borderWidth: 0,
+    marginTop: 30,
+  },
+  tabRightStyle: {
+    zIndex: -10,
     height: 25,
+    alignItems: "center",
+    position: "absolute",
+    flexDirection: "row-reverse",
+    width: "100%",
+  },
+  noTransactionAvailableParent: {
+    marginTop: 40,
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
   },
-  TextStyle: {
-    color: "#07053E",
-    textAlign: "center",
-  },
-  uncategorized: {
-    width: 80,
-    height: 17,
-    color: "#4A90E2",
-    fontSize: 12,
-  },
-  SubmitButtonStyle1: {
-    width: 116,
-    height: 25,
-    borderRadius: 4,
-    borderColor: "#4A90E2",
-    backgroundColor: "#FFFFFF",
-  },
-  TextStyle1: {
-    color: "#4A90E2",
-    textAlign: "center",
-  },
-  viewtext: {
-    fontSize: 12,
-    color: "#07053E",
-    textAlign: "center",
-  },
+  noTransactionAvailableText: { marginLeft: 10, alignSelf: "center" },
+  noTransactionAntDesign: { color: "#070640", alignSelf: "center" },
 });
-
-//const mapStateToProps = state =>  ({ reduxState:state });
-
 const mapStateToProps = (state) => {
   return {
     reduxState: state,
@@ -1835,7 +721,8 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
+
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Checking);
+)(TransactionScreen);

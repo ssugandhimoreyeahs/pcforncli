@@ -15,7 +15,7 @@ import {
 import { Button } from "react-native-elements";
 import { editUserSetting } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
-
+import {Root} from '@components';
 import {
   SETTING_UPDATED,
   CONNECTION_ABORTED,
@@ -183,6 +183,7 @@ class SettingEdit extends React.Component {
   render() {
     const { getParam } = this.props.navigation;
     return (
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"dark"}>
       <View style={styles.margins}>
         <Spinner
           visible={this.state.isSpinner}
@@ -391,6 +392,7 @@ borderBottomWidth:1,borderBottomEndRadius:5, borderBottomStartRadius:5,height:27
           />
         </View>
       </View>
+      </Root>
     );
   }
 }

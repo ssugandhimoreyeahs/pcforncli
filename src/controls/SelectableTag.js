@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginRight: 10,
     marginLeft: 10,
-    flex: 1
+    flex: 1,
   },
   unselected: {
     borderRadius: 30,
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     paddingLeft: 10,
     paddingRight: 10,
-    alignItems: "center"
+    alignItems: "center",
   },
   selected: {
     borderRadius: 30,
@@ -47,6 +47,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
     alignItems: "center",
-    backgroundColor: "#007AFF"
-  }
+    backgroundColor: "#007AFF",
+  },
 });

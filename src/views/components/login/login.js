@@ -20,6 +20,7 @@ import FormTextInput from "./input";
 import imageLogo from "../../../assets/logo.png";
 import { login } from "../../../api/api";
 import tandc from "../../legal/legal";
+import {Root} from '@components';
 import Spinner from "react-native-loading-spinner-overlay";
 import {
   CONNECTION_ABORTED,
@@ -179,6 +180,7 @@ class LoginScreen extends React.Component {
 
   render() {
     return (
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"dark"}>
       <View style={styles.container}>
         <Spinner
           visible={this.state.isSpinner}
@@ -276,6 +278,7 @@ class LoginScreen extends React.Component {
           </KeyboardAvoidingView>
         </ScrollView>
       </View>
+      </Root>
     );
   }
 }
@@ -341,7 +344,6 @@ export default LoginScreen;
 // import tandc from "../../legal/legal";
 // import Spinner from 'react-native-loading-spinner-overlay';
 // import { CONNECTION_ABORTED,INVALID_CREDENTIALS,TRY_AGAIN } from "../../../api/message";
-
 
 // class LoginScreen extends React.Component {
 //   constructor(props) {

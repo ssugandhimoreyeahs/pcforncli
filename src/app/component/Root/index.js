@@ -12,8 +12,10 @@ const MyWrapper = Platform.select({
   android: View,
 });
 const Root = ({ children }) => {
+  
   return (
     <Fragment>
+      <StatusBar barStyle="dark-content" />
       <MyWrapper style={style.customStatusBar} />
       <SafeAreaView style={style.body}>{children}</SafeAreaView>
     </Fragment>
@@ -23,10 +25,11 @@ const Root = ({ children }) => {
 const style = StyleSheet.create({
   customStatusBar: {
     flex: 0,
-    backgroundColor: "#9c9a9a",
+    backgroundColor: "#F8F8F8",
   },
   body: {
     flex: 1,
+    backgroundColor: "#F8F8F8",
   },
 });
 export default Root;

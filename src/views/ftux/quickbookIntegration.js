@@ -14,7 +14,7 @@ import { triggerQbDataCopyDb } from "../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
 import Url from "url";
 import Ionicons from "react-native-vector-icons/Ionicons";
-
+import { Root } from "@components";
 Ionicons.loadFont();
 
 class QuickbookIntegration extends Component {
@@ -108,74 +108,52 @@ class QuickbookIntegration extends Component {
   };
   render() {
     return (
-      <View style={styles.container}>
-        <Spinner visible={this.state.spinner} />
-        {this.state.isBodyLoaded ? (
-          <Fragment>
-            <View
-              style={{
-                height: "100%",
-                width: "100%",
-                backgroundColor: "#ECEEF1",
-              }}
-            >
-              <View
-                style={{
-                  paddingVertical: 5,
-                  flexDirection: "row",
-                  width: "100%",
-                }}
-              >
-                <View
-                  style={{
-                    width: "10%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.goBack();
-                    }}
-                  >
-                    <Ionicons name="md-close" size={25} color={"#000000"} />
-                  </TouchableOpacity>
+      <Root headerColor={"#ECEEF1"} footerColor={"#ECEEF1"} barStyle={"dark"}>
+        <View style={styles.container}>
+          <Spinner visible={this.state.spinner} />
+          {this.state.isBodyLoaded ? (
+            <Fragment>
+              <View style={styles.rootComponent}>
+                <View style={styles.headerView}>
+                  <View style={styles.backButtonView}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.goBack();
+                      }}
+                    >
+                      <Ionicons name="md-close" size={25} color={"#000000"} />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.centerheaderTextView}>
+                    <Text
+                      style={styles.textView}
+                    >{`Quickbooks Integration`}</Text>
+                  </View>
                 </View>
-                <View
-                  style={{
-                    width: "80%",
-                    justifyContent: "center",
-                    alignItems: "center",
+                {/* <View style={{ paddingVertical:7,backgroundColor:"#ECEEF1" }}></View> */}
+
+                <WebView
+                  incognito={true}
+                  source={{
+                    uri: APINETWORK.quickbooks,
+                    headers: { Authorization: this.state.Authorization },
                   }}
-                >
-                  <Text
-                    style={{ fontSize: 17, fontWeight: "bold", color: "black" }}
-                  >{`Quickbooks Integration`}</Text>
-                </View>
+                  onNavigationStateChange={(navEvent) => {
+                    this.handleUrlResponses(navEvent);
+                  }}
+                  onMessage={(e) => {
+                    this.onMessageCalls(e);
+                  }}
+
+                  //  cacheEnabled={false}
+                  //  sharedCookiesEnabled={false}
+                  //  thirdPartyCookiesEnabled={false}
+                />
               </View>
-              {/* <View style={{ paddingVertical:7,backgroundColor:"#ECEEF1" }}></View> */}
-
-              <WebView
-                incognito={true}
-                source={{
-                  uri: APINETWORK.quickbooks,
-                  headers: { Authorization: this.state.Authorization },
-                }}
-                onNavigationStateChange={(navEvent) => {
-                  this.handleUrlResponses(navEvent);
-                }}
-                onMessage={(e) => {
-                  this.onMessageCalls(e);
-                }}
-
-                //  cacheEnabled={false}
-                //  sharedCookiesEnabled={false}
-                //  thirdPartyCookiesEnabled={false}
-              />
-            </View>
-          </Fragment>
-        ) : null}
-      </View>
+            </Fragment>
+          ) : null}
+        </View>
+      </Root>
     );
   }
 }
@@ -183,6 +161,31 @@ const styles = {
   container: {
     flex: 1,
     // backgroundColor: "#F1F3F5",
+  },
+  rootComponent: {
+    height: "100%",
+    width: "100%",
+    backgroundColor: "#ECEEF1",
+  },
+  headerView: {
+    paddingVertical: 5,
+    flexDirection: "row",
+    width: "100%",
+  },
+  backButtonView: {
+    width: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  centerheaderTextView: {
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textView: {
+    fontSize: 17,
+    fontWeight: "bold",
+    color: "black",
   },
 };
 

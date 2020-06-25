@@ -14,7 +14,7 @@ import { getHealthScoreColor } from "../../utilities/gradient";
 import { getOutOfCashDate } from "../../utilities/cash";
 import { fetchForecastAsyncCreator } from "../../reducers/forecast";
 //import { MaterialCommunityIcons,AntDesign } from "@expo/vector-icons";
-
+import { Root } from "@components";
 import { connect } from "react-redux";
 import Spinner from "react-native-loading-spinner-overlay";
 import { getForecastData } from "../../api/api";
@@ -263,219 +263,233 @@ class Forecasting extends Component {
     // isBodyLoaded = false;
     // isError = true;
     return (
-      <BottomNavLayout navigation={this.props.navigation}>
-        {isSpinner == true ? (
-          <View>
-            <Spinner visible={this.state.isSpinner} />
-          </View>
-        ) : userData.bankIntegrationStatus == false ? (
-          <View style={styles.container}>
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "60%",
-                height: 300,
-              }}
-            >
+      <Root
+        headerColor={
+          this.state.isSpinner
+            ? "#F1F3F5"
+            : this.getRunwayColor(
+                this.state.cash,
+                this.state.expenses,
+                this.state.sales
+              )
+        }
+        footerColor={"#FFF"}
+        barStyle={"light"}
+      >
+        <BottomNavLayout navigation={this.props.navigation}>
+          {isSpinner == true ? (
+            <View>
+              <Spinner visible={this.state.isSpinner} />
+            </View>
+          ) : userData.bankIntegrationStatus == false ? (
+            <View style={styles.container}>
               <View
                 style={{
-                  flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
+                  marginTop: "60%",
+                  height: 300,
                 }}
               >
-                <AntDesign
-                  name="exclamationcircle"
-                  size={20}
-                  style={{ color: "#070640", alignSelf: "center" }}
-                />
-                <Text style={{ marginLeft: 10, alignSelf: "center" }}>
-                  You are not connected to Bank!
-                </Text>
-              </View>
-              {/* <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
-                <TouchableOpacity onPress={()=>{ this.handleReloadForecast(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
-                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Reload</Text></View>
-                </TouchableOpacity>
-            </View> */}
-            </View>
-          </View>
-        ) : isBodyLoaded == true ? (
-          <View style={styles.container}>
-            <View
-              style={{
-                backgroundColor: this.getRunwayColor(
-                  this.state.cash,
-                  this.state.expenses,
-                  this.state.sales
-                ),
-                height: 156,
-                width: "100%",
-                padding: 30,
-              }}
-            >
-              <Text style={styles.headerLabel}>Out-of-Cash Date</Text>
-              <Text style={styles.headerValue}>
-                {this.state.isCommingPositiveCashFlow == true
-                  ? `Positive Cash Flow`
-                  : this.state.isPositiveCashFlow == true
-                  ? `Positive Cash Flow`
-                  : getFormatedDate(this.state.oocLabel)}
-              </Text>
-            </View>
-            <View
-              style={{
-                height: 471,
-                width: "90%",
-                marginTop: -20,
-                marginBottom: 35,
-                alignSelf: "center",
-              }}
-            >
-              <SliderField
-                ref={this.cohRef}
-                resetForecast={() => {
-                  this.handleResetForecast();
-                }}
-                isShowReset={this.state.showReset}
-                label="Cash on Hand"
-                min={0}
-                max={this.state.cash * 2}
-                value={this.state.cash}
-                valuePrefix="$"
-                steps={100}
-                trackTint={"#1B238E"}
-                onChange={(value) => {
-                  let isPositive = value > this.state.cash ? true : false;
-                  this.setState({
-                    cash: value,
-                    oocLabel: this.getUpdatedForecastLocal(
-                      this.state.oocLabel,
-                      value,
-                      this.state.expenses,
-                      this.state.sales,
-                      isPositive
-                    ),
-                  });
-                }}
-              />
-              <SliderField
-                ref={this.expenseRef}
-                label="Average Monthly Expenses"
-                min={0}
-                max={this.state.expenses * 2}
-                value={this.state.expenses}
-                valuePrefix={this.state.expenses > 0 ? "-$" : "$"}
-                steps={100}
-                trackTint={"#A30014"}
-                onChange={(value) =>
-                  this.setState({
-                    expenses: value,
-                    oocLabel: this.getUpdatedForecastLocal(
-                      this.state.oocLabel,
-                      this.state.cash,
-                      value,
-                      this.state.sales
-                    ),
-                  })
-                }
-              />
-              <SliderField
-                ref={this.salesRef}
-                label="Average Monthly Sales"
-                min={0}
-                max={this.state.sales * 2}
-                value={this.state.sales}
-                valuePrefix="$"
-                steps={100}
-                trackTint={"#1B238E"}
-                onChange={(value) =>
-                  this.setState({
-                    sales: value,
-                    oocLabel: this.getUpdatedForecastLocal(
-                      this.state.oocLabel,
-                      this.state.cash,
-                      this.state.expenses,
-                      value
-                    ),
-                  })
-                }
-              />
-            </View>
-          </View>
-        ) : isError == true ? (
-          <View style={styles.container}>
-            <View
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                marginTop: "60%",
-                height: 300,
-              }}
-            >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <AntDesign
-                  name="exclamationcircle"
-                  size={20}
-                  style={{ color: "#070640", alignSelf: "center" }}
-                />
-                <Text style={{ marginLeft: 10, alignSelf: "center" }}>
-                  Error Try Again!
-                </Text>
-              </View>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginTop: 15,
-                }}
-              >
-                <TouchableOpacity
-                  onPress={() => {
-                    this.handleReloadForecast();
-                  }}
+                <View
                   style={{
-                    height: 35,
-                    width: 170,
-                    borderRadius: 20,
-                    backgroundColor: "#090643",
-                    borderColor: "#090643",
-                    borderWidth: 2,
+                    flexDirection: "row",
                     justifyContent: "center",
                     alignItems: "center",
                   }}
                 >
-                  <View
+                  <AntDesign
+                    name="exclamationcircle"
+                    size={20}
+                    style={{ color: "#070640", alignSelf: "center" }}
+                  />
+                  <Text style={{ marginLeft: 10, alignSelf: "center" }}>
+                    You are not connected to Bank!
+                  </Text>
+                </View>
+                {/* <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center",marginTop:15 }}>
+                <TouchableOpacity onPress={()=>{ this.handleReloadForecast(); }} style={{ height:35,width:170,borderRadius:20,backgroundColor:"#090643",borderColor:"#090643",borderWidth:2,justifyContent:"center",alignItems:"center" }}>
+                    <View style={{ flexDirection:"row",justifyContent:"center",alignItems:"center" }} ><MaterialCommunityIcons style={{ marginTop:4 }} name='reload' size={20} color="white"/><Text style={{ color:"white",paddingLeft:5 }}>Reload</Text></View>
+                </TouchableOpacity>
+            </View> */}
+              </View>
+            </View>
+          ) : isBodyLoaded == true ? (
+            <View style={styles.container}>
+              <View
+                style={{
+                  backgroundColor: this.getRunwayColor(
+                    this.state.cash,
+                    this.state.expenses,
+                    this.state.sales
+                  ),
+                  height: 156,
+                  width: "100%",
+                  padding: 30,
+                }}
+              >
+                <Text style={styles.headerLabel}>Out-of-Cash Date</Text>
+                <Text style={styles.headerValue}>
+                  {this.state.isCommingPositiveCashFlow == true
+                    ? `Positive Cash Flow`
+                    : this.state.isPositiveCashFlow == true
+                    ? `Positive Cash Flow`
+                    : getFormatedDate(this.state.oocLabel)}
+                </Text>
+              </View>
+              <View
+                style={{
+                  height: 471,
+                  width: "90%",
+                  marginTop: -20,
+                  marginBottom: 35,
+                  alignSelf: "center",
+                }}
+              >
+                <SliderField
+                  ref={this.cohRef}
+                  resetForecast={() => {
+                    this.handleResetForecast();
+                  }}
+                  isShowReset={this.state.showReset}
+                  label="Cash on Hand"
+                  min={0}
+                  max={this.state.cash * 2}
+                  value={this.state.cash}
+                  valuePrefix="$"
+                  steps={100}
+                  trackTint={"#1B238E"}
+                  onChange={(value) => {
+                    let isPositive = value > this.state.cash ? true : false;
+                    this.setState({
+                      cash: value,
+                      oocLabel: this.getUpdatedForecastLocal(
+                        this.state.oocLabel,
+                        value,
+                        this.state.expenses,
+                        this.state.sales,
+                        isPositive
+                      ),
+                    });
+                  }}
+                />
+                <SliderField
+                  ref={this.expenseRef}
+                  label="Average Monthly Expenses"
+                  min={0}
+                  max={this.state.expenses * 2}
+                  value={this.state.expenses}
+                  valuePrefix={this.state.expenses > 0 ? "-$" : "$"}
+                  steps={100}
+                  trackTint={"#A30014"}
+                  onChange={(value) =>
+                    this.setState({
+                      expenses: value,
+                      oocLabel: this.getUpdatedForecastLocal(
+                        this.state.oocLabel,
+                        this.state.cash,
+                        value,
+                        this.state.sales
+                      ),
+                    })
+                  }
+                />
+                <SliderField
+                  ref={this.salesRef}
+                  label="Average Monthly Sales"
+                  min={0}
+                  max={this.state.sales * 2}
+                  value={this.state.sales}
+                  valuePrefix="$"
+                  steps={100}
+                  trackTint={"#1B238E"}
+                  onChange={(value) =>
+                    this.setState({
+                      sales: value,
+                      oocLabel: this.getUpdatedForecastLocal(
+                        this.state.oocLabel,
+                        this.state.cash,
+                        this.state.expenses,
+                        value
+                      ),
+                    })
+                  }
+                />
+              </View>
+            </View>
+          ) : isError == true ? (
+            <View style={styles.container}>
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  marginTop: "60%",
+                  height: 300,
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <AntDesign
+                    name="exclamationcircle"
+                    size={20}
+                    style={{ color: "#070640", alignSelf: "center" }}
+                  />
+                  <Text style={{ marginLeft: 10, alignSelf: "center" }}>
+                    Error Try Again!
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    marginTop: 15,
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.handleReloadForecast();
+                    }}
                     style={{
-                      flexDirection: "row",
+                      height: 35,
+                      width: 170,
+                      borderRadius: 20,
+                      backgroundColor: "#090643",
+                      borderColor: "#090643",
+                      borderWidth: 2,
                       justifyContent: "center",
                       alignItems: "center",
                     }}
                   >
-                    <MaterialCommunityIcons
-                      style={{ marginTop: 4 }}
-                      name="reload"
-                      size={20}
-                      color="white"
-                    />
-                    <Text style={{ color: "white", paddingLeft: 5 }}>
-                      Reload
-                    </Text>
-                  </View>
-                </TouchableOpacity>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <MaterialCommunityIcons
+                        style={{ marginTop: 4 }}
+                        name="reload"
+                        size={20}
+                        color="white"
+                      />
+                      <Text style={{ color: "white", paddingLeft: 5 }}>
+                        Reload
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
-          </View>
-        ) : null}
-      </BottomNavLayout>
+          ) : null}
+        </BottomNavLayout>
+      </Root>
     );
   }
 }

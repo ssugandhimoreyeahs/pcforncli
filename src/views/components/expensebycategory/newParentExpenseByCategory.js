@@ -18,7 +18,7 @@ import { PieChart } from "react-native-svg-charts";
 import { Circle, G, Image } from "react-native-svg";
 import { connect } from "react-redux";
 import { ALL_MONTHS, FULL_MONTH } from "../../../constants/constants";
-
+import {Root} from '@components';
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 import {
   numberWithCommas,
@@ -385,7 +385,7 @@ class ExpenseByCategory extends Component {
               left: -75,
               borderWidth: 0,
               borderColor: "red",
-              width: "32%",
+              width: "29%",
               justifyContent: "center",
               alignItems: "flex-end",
             }}
@@ -585,16 +585,19 @@ class ExpenseByCategory extends Component {
   };
   loadExpenseScreen = () => {
     return (
-      <ScrollView style={{ flex: 1 }}>
+      <Fragment>
         <this.header />
-        <this.expensePie />
-      </ScrollView>
+        <ScrollView style={{ flex: 1 }}>
+          <this.expensePie />
+        </ScrollView>
+      </Fragment>
     );
   };
   render() {
     let { error, loader, isFetched } = this.props.mainExpenseByCategoryRedux;
 
     return (
+      <Root headerColor={"#F8F8F8"} footerColor={"#EEEFF1"} barStyle={"dark"}>
       <View style={styles.container}>
         {error == true ? (
           <this.errorView />
@@ -604,6 +607,7 @@ class ExpenseByCategory extends Component {
           <this.loadExpenseScreen />
         ) : null}
       </View>
+      </Root>
     );
   }
 }

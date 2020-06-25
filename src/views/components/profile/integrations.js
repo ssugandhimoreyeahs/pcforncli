@@ -25,6 +25,7 @@ import {
   ERROR,
 } from "../../../api/message";
 import { ERRORCATEGORY } from "../../../api/common";
+import {Root} from '@components'
 AntDesign.loadFont();
 
 class Integration extends Component {
@@ -521,6 +522,7 @@ class Integration extends Component {
     } = this.props.reduxState.userData.userData;
     //console.log("Current Qb Integraiton Status - ",qbIntegrationStatus);
     return (
+      <Root headerColor={"#FFF"} footerColor={"#FF"} barStyle={"dark"}>
       <View style={styles.container}>
         <Spinner visible={isSpinner} />
         {this.state.isBodyLoaded == true ? (
@@ -554,6 +556,7 @@ class Integration extends Component {
           </React.Fragment>
         ) : null}
       </View>
+      </Root>
     );
   }
 }

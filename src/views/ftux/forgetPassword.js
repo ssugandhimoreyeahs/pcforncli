@@ -14,7 +14,7 @@ import { forgetPassword } from "../../api/api";
 import { FORGET_PASSWORD_SEND, TRY_AGAIN } from "../../api/message";
 import Spinner from "react-native-loading-spinner-overlay";
 //import {AntDesign} from "@expo/vector-icons"
-
+import {Root} from '@components';
 import AntDesign from "react-native-vector-icons/AntDesign";
 
 AntDesign.loadFont();
@@ -199,6 +199,7 @@ class Forgetpassword extends Component {
 
   render() {
     return (
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"dark"}>
       <View style={styles.container}>
         <Spinner
           visible={this.state.isSpinner}
@@ -233,6 +234,7 @@ class Forgetpassword extends Component {
           onPress={this.handlePress}
         />
       </View>
+      </Root>
     );
   }
 }
@@ -267,7 +269,7 @@ const styles = StyleSheet.create({
     width: "75%",
   },
   input: {
-    marginVertical: "5%",
+    marginVertical: "8%",
     textAlign: "center",
   },
 });

@@ -235,6 +235,7 @@ export async function isUserLoggedIn() {
 export async function loggedOutUser() {
   const response = await AsyncStorage.getItem("isUserLoggedInStorage");
   if (response != undefined && response == "true") {
+    console.log("Auth token remove - ");
     await AsyncStorage.removeItem("authToken");
     await AsyncStorage.removeItem("isUserLoggedInStorage");
     return true;

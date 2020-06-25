@@ -39,6 +39,7 @@ import {
   ADDEDCATEGORY,
   DELETECATEGORY,
 } from "../../../api/message";
+import {Root} from '@components';
 import {
   getCategoryId,
   getCategoryName,
@@ -74,7 +75,7 @@ class CategoryScreen extends Component {
     let recievedData = this.props.navigation.getParam(
       "currentExecutingTransaction"
     );
-    console.log("Recieve data from the transaction change - ", recievedData);
+    //console.log("Recieve data from the transaction change - ", recievedData);
   }
 
   componentWillMount() {
@@ -107,45 +108,38 @@ class CategoryScreen extends Component {
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     // error = true;
     const { isEdit } = this.state;
-    let antDesignIcon = isEdit == true ? `close` : "left";
+    let antDesignIcon = isEdit == true ? `left` : "left";
     const showEditTray = this.props.navigation.getParam("showEditTray");
     return (
       <View style={styles.header}>
-        <View
-          style={{
-            //borderWidth:1,borderColor:"red",
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "92%",
-            marginTop: 30,
-            alignSelf: "center",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            onPress={() => {
-              this.handleHeaderButton();
-            }}
-          >
+        <View style={styles.myHeaderParent}>
+          <TouchableOpacity onPress={this.handleHeaderButton}>
             <AntDesign name={`${antDesignIcon}`} size={22} color={"#000000"} />
           </TouchableOpacity>
 
-          <Text style={{ fontSize: 17, color: "#000" }}>Select Category</Text>
+          <Text style={styles.headerTitle}>Select Category</Text>
           {error == true ? (
-            <View style={{ width: 35 }} />
+            <View style={styles.editTrayWidth} />
           ) : isEdit == true ? (
-            <View style={{ width: 35 }} />
+            <TouchableOpacity
+              style={{ paddingRight: 7 }}
+              onPress={() => {
+                this.setState({ isEdit: false, toggle: false });
+              }}
+            >
+              <Text style={styles.editHeaderTitle}>Done</Text>
+            </TouchableOpacity>
           ) : showEditTray == true ? (
             <TouchableOpacity
-              style={{ paddingRight: 2, width: 35 }}
+              style={{ ...styles.editTrayWidth, paddingRight: 2 }}
               onPress={() => {
                 this.setState({ isEdit: true, toggle: false });
               }}
             >
-              <Text style={{ color: "#4A90E2", fontSize: 17 }}>Edit</Text>
+              <Text style={styles.editHeaderTitle}>Edit</Text>
             </TouchableOpacity>
           ) : (
-            <View style={{ width: 35 }} />
+            <View style={styles.editTrayWidth} />
           )}
         </View>
       </View>
@@ -155,20 +149,7 @@ class CategoryScreen extends Component {
   addCategory = () => {
     const { isEdit, toggle } = this.state;
     return (
-      <View
-        style={{
-          paddingHorizontal: 10,
-          paddingVertical: 17,
-          marginTop: 25,
-          height: 70,
-          backgroundColor: "#FFF",
-          width: "90%",
-          alignSelf: "center",
-          borderRadius: 5,
-          flexDirection: "row",
-          justifyContent: "space-between",
-        }}
-      >
+      <View style={styles.addCategoryParentView}>
         {isEdit == false ? (
           <Fragment>
             <View
@@ -208,9 +189,7 @@ class CategoryScreen extends Component {
             }}
             style={{ justifyContent: "center", paddingLeft: 4 }}
           >
-            <Text style={{ fontSize: 13, color: "#000", fontWeight: "600" }}>
-              Add Category
-            </Text>
+            <Text style={styles.addCategoryTitle}>Add Category</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -222,14 +201,17 @@ class CategoryScreen extends Component {
 
   handleChangeCategory = async (categoryId, categoryName) => {
     if (this.state.toggle) {
-      const { category: transactionCategory } = this.props.navigation.getParam(
-        "currentExecutingTransaction"
-      );
+      const {
+        clientCategoryObjectId: transactionCategory,
+        _id
+      } = this.props.navigation.getParam("currentExecutingTransaction");
       let axiosBody = {};
-      axiosBody.oldCategoryId = getCategoryId(transactionCategory);
-      axiosBody.updateCategoryId = getCategoryId(categoryName);
-
-      console.log("Axios Body Before Send - ", axiosBody);
+      //axiosBody.oldCategoryId = getCategoryId(transactionCategory);
+      //axiosBody.updateCategoryId = getCategoryId(categoryName);
+      axiosBody.oldCategoryId = transactionCategory;
+      axiosBody.updateCategoryId = categoryId;
+      axiosBody.transactionId = _id;
+      //console.log("Axios Body Before Send - ", axiosBody);
 
       changeAllSimilarTransaction(axiosBody)
         .then((response) => {
@@ -239,11 +221,11 @@ class CategoryScreen extends Component {
                 true,
                 true
               );
-              setTimeout(() => {
-                this.props.navigation.goBack();
-              }, 600);
+              //setTimeout(() => {
+              this.props.navigation.goBack();
+              //}, 600);
             });
-          }, 500);
+          }, 1000);
         })
         .catch((error) => {
           this.setState({ isSpinner: false }, () => {
@@ -272,11 +254,11 @@ class CategoryScreen extends Component {
               true,
               false
             );
-            setTimeout(() => {
-              this.props.navigation.goBack();
-            }, 600);
+            // setTimeout(() => {
+            this.props.navigation.goBack();
+            // }, 600);
           });
-        }, 500);
+        }, 1000);
       } else {
         this.setState({ isSpinner: false }, () => {
           setTimeout(() => {
@@ -364,11 +346,12 @@ class CategoryScreen extends Component {
           text: DELETECATEGORY.button2,
           onPress: () => {
             //Api Trigers here for deleting the Category Data
-            let { category } = this.props.navigation.getParam(
+            let { clientCategory } = this.props.navigation.getParam(
               "currentExecutingTransaction"
             );
             let pointIconToDefaultCategory = false;
-            if (categoryName == category) {
+            //console.log("For delete request - ",categoryName," ",clientCategory)
+            if (categoryName.toLowerCase() == clientCategory.toLowerCase()) {
               pointIconToDefaultCategory = true;
             }
             this.setState(
@@ -387,15 +370,22 @@ class CategoryScreen extends Component {
     let executingTransactionDetails = this.props.navigation.getParam(
       "currentExecutingTransaction"
     );
+
     const { isEdit, pointIconToDefaultCategory } = this.state;
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     let { categoryName, index, customcategories, id } = categoryData;
+    // console.log(
+    //   "Here - ",
+    //   executingTransactionDetails.clientDefaultCategory,
+    //   " category Name ",
+    //   categoryName
+    // );
     let showCheckIcon =
       pointIconToDefaultCategory == true
-        ? categoryName == executingTransactionDetails.defaultCategory
+        ? categoryName == executingTransactionDetails.clientDefaultCategory
           ? true
           : false
-        : categoryName == executingTransactionDetails.category
+        : categoryName == executingTransactionDetails.clientCategory
         ? true
         : false;
     let isIconAvailable = false;
@@ -420,12 +410,7 @@ class CategoryScreen extends Component {
             onPress={() => {
               this.handleChangeCategoryAlert(id, categoryName);
             }}
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "93%",
-              paddingLeft: 6,
-            }}
+            style={styles.renderSingleCategoryParentView}
           >
             <View style={{ width: "15%" }}>
               {isIconAvailable == true ? (
@@ -438,12 +423,7 @@ class CategoryScreen extends Component {
               ) : (
                 <View
                   style={{
-                    borderRadius: 50,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 36,
-                    height: 36,
-                    borderColor: "#FFF",
+                    ...styles.renderSingleCategoryCustomIconView,
                     backgroundColor: categoryBackgroundColor,
                   }}
                 >
@@ -454,55 +434,21 @@ class CategoryScreen extends Component {
               )}
             </View>
 
-            <View
-              style={{
-                width: "79%",
-                borderWidth: 0,
-                borderColor: "red",
-                justifyContent: "center",
-                paddingLeft: 13,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "left",
-                  fontSize: 12,
-                  color: "#000",
-                  fontWeight: "600",
-                }}
-              >
+            <View style={styles.renderSingleCategoryTitleView}>
+              <Text style={styles.renderSingleCategoryTitleText}>
                 {firstLetterCapital(categoryName)}
               </Text>
             </View>
             {showCheckIcon == true ? (
-              <View
-                style={{
-                  width: "10%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
+              <View style={styles.renderSingleCategoryCheckView}>
                 <MaterialIcons name="check" size={20} color={"#000000"} />
               </View>
             ) : (
-              <View
-                style={{
-                  width: "10%",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              />
+              <View style={styles.emptyCheckView} />
             )}
           </TouchableOpacity>
         ) : (
-          <View
-            style={{
-              paddingLeft: 6,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: "95%",
-            }}
-          >
+          <View style={styles.viewRenderSingleCategoryParent}>
             <View style={{ width: "15%" }}>
               {isIconAvailable == true ? (
                 <Image
@@ -514,12 +460,7 @@ class CategoryScreen extends Component {
               ) : (
                 <View
                   style={{
-                    borderRadius: 50,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    width: 36,
-                    height: 36,
-                    borderColor: "#FFF",
+                    ...styles.viewRenderSingleCategoryParentView,
                     backgroundColor: categoryBackgroundColor,
                   }}
                 >
@@ -530,40 +471,21 @@ class CategoryScreen extends Component {
               )}
             </View>
 
-            <View
-              style={{
-                width: "70%",
-                borderWidth: 0,
-                borderColor: "red",
-                justifyContent: "center",
-                paddingLeft: 8,
-              }}
-            >
-              <Text
-                style={{
-                  textAlign: "left",
-                  fontSize: 12,
-                  color: "#000",
-                  fontWeight: "600",
-                }}
-              >
+            <View style={styles.viewRenderSingleCategoryTitleBody}>
+              <Text style={styles.viewRenderSingleCategoryText}>
                 {firstLetterCapital(categoryName)}
               </Text>
             </View>
 
-            <View
-              style={{
-                width: "15%",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={styles.viewRenderSingleCategoryLeftBody}>
               {customcategories == true ? (
                 <Fragment>
                   <TouchableOpacity
                     onPress={() => {
-                      this.handleCategoryDataEdit(id, categoryName);
+                      this.handleCategoryDataEdit(
+                        id,
+                        firstLetterCapital(categoryName)
+                      );
                     }}
                     style={{ paddingRight: 7 }}
                   >
@@ -572,7 +494,10 @@ class CategoryScreen extends Component {
 
                   <TouchableOpacity
                     onPress={() => {
-                      this.handleCategoryDataDelete(id, categoryName);
+                      this.handleCategoryDataDelete(
+                        id,
+                        firstLetterCapital(categoryName)
+                      );
                     }}
                   >
                     <MaterialIcons name="delete" size={23} color={"#000"} />
@@ -698,6 +623,7 @@ class CategoryScreen extends Component {
         const addCategoryResponse = await addPlaidCategory(
           categoryInput.toLowerCase()
         );
+        console.log("Add category Response here - ", addCategoryResponse);
         if (addCategoryResponse.result == true) {
           setTimeout(() => {
             this.setState(
@@ -852,94 +778,98 @@ class CategoryScreen extends Component {
       showPleaseEnterCategory,
     } = this.state;
     return (
-      <ScrollView keyboardShouldPersistTaps={"always"}>
+      <Fragment>
         <this.header />
         <this.addCategory />
-        <DialogInput
-          dialogStyle={{ marginTop: -80 }}
-          isDialogVisible={addCategoryDialogVisible}
-          title={"Add Category"}
-          message={
-            <Fragment>
-              <Text>{"Please Add New Category Here..."}</Text>
-              {showPleaseEnterCategory == true ? (
-                <Text
-                  style={{ color: "red" }}
-                >{`\n\nPlease Enter Category Name`}</Text>
-              ) : null}
-            </Fragment>
-          }
-          hintInput={"Name of the Category"}
-          submitInput={(categoryInput) => {
-            let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
-              categoryInput,
-              "add"
-            );
-            if (!isCategoryAlreadyExist) {
-              this.addNewCategory(categoryInput);
+        <View style={{ marginTop: 20 }} />
+        <ScrollView keyboardShouldPersistTaps={"always"}>
+          <DialogInput
+            dialogStyle={{ marginTop: -80 }}
+            isDialogVisible={addCategoryDialogVisible}
+            title={"Add Category"}
+            message={
+              <Fragment>
+                <Text>{"Please Add New Category Here..."}</Text>
+                {showPleaseEnterCategory == true ? (
+                  <Text
+                    style={{ color: "red" }}
+                  >{`\n\nPlease Enter Category Name`}</Text>
+                ) : null}
+              </Fragment>
             }
-          }}
-          closeDialog={() => {
-            this.setState({
-              addCategoryDialogVisible: false,
-              showPleaseEnterCategory: false,
-            });
-          }}
-        />
+            hintInput={"Name of the Category"}
+            submitInput={(categoryInput) => {
+              let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
+                categoryInput,
+                "add"
+              );
+              if (!isCategoryAlreadyExist) {
+                this.addNewCategory(categoryInput);
+              }
+            }}
+            closeDialog={() => {
+              this.setState({
+                addCategoryDialogVisible: false,
+                showPleaseEnterCategory: false,
+              });
+            }}
+          />
 
-        <DialogInput
-          dialogStyle={{ marginTop: -80 }}
-          isDialogVisible={editCategoryDialogVisible}
-          initValueTextInput={editInitDialogValue}
-          title={"Edit Category"}
-          message={
-            <Fragment>
-              <Text>{"Please Edit Category Here..."}</Text>
-              {showPleaseEnterCategory == true ? (
-                <Text
-                  style={{ color: "red" }}
-                >{`\n\nPlease Enter Category Name`}</Text>
-              ) : null}
-            </Fragment>
-          }
-          hintInput={"Name of the Category"}
-          submitInput={(editInitDialogNewValue) => {
-            let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
-              editInitDialogNewValue,
-              "edit"
-            );
-            if (!isCategoryAlreadyExist) {
-              this.handleEditPlaidCategoryApi(editInitDialogNewValue);
+          <DialogInput
+            dialogStyle={{ marginTop: -80 }}
+            isDialogVisible={editCategoryDialogVisible}
+            initValueTextInput={editInitDialogValue}
+            title={"Edit Category"}
+            message={
+              <Fragment>
+                <Text>{"Please Edit Category Here..."}</Text>
+                {showPleaseEnterCategory == true ? (
+                  <Text
+                    style={{ color: "red" }}
+                  >{`\n\nPlease Enter Category Name`}</Text>
+                ) : null}
+              </Fragment>
             }
-            return false;
-            this.setState(
-              { isSpinner: true, editCategoryDialogVisible: false },
-              () => {
+            hintInput={"Name of the Category"}
+            submitInput={(editInitDialogNewValue) => {
+              let isCategoryAlreadyExist = this.isCategoryAlreadyExistOnClient(
+                editInitDialogNewValue,
+                "edit"
+              );
+              if (!isCategoryAlreadyExist) {
                 this.handleEditPlaidCategoryApi(editInitDialogNewValue);
               }
-            );
-          }}
-          closeDialog={() => {
-            this.setState({ editCategoryDialogVisible: false });
-          }}
-        />
-
-        {loading == false ? (
-          <this.renderCategories />
-        ) : (
-          <ActivityIndicator
-            style={{ marginTop: 50 }}
-            animating={true}
-            size={"large"}
+              return false;
+              this.setState(
+                { isSpinner: true, editCategoryDialogVisible: false },
+                () => {
+                  this.handleEditPlaidCategoryApi(editInitDialogNewValue);
+                }
+              );
+            }}
+            closeDialog={() => {
+              this.setState({ editCategoryDialogVisible: false });
+            }}
           />
-        )}
-      </ScrollView>
+
+          {loading == false ? (
+            <this.renderCategories />
+          ) : (
+            <ActivityIndicator
+              style={{ marginTop: 50 }}
+              animating={true}
+              size={"large"}
+            />
+          )}
+        </ScrollView>
+      </Fragment>
     );
   };
   render() {
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
 
     return (
+      <Root headerColor={"#F8F8F8"} footerColor={"#EFEFF1"} barStyle={"dark"}>
       <View style={styles.container}>
         <Spinner visible={this.state.isSpinner} />
         {error == true ? (
@@ -951,6 +881,7 @@ class CategoryScreen extends Component {
           <this.renderBody />
         )}
       </View>
+      </Root>
     );
   }
 }
@@ -980,7 +911,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     borderRadius: 5,
     width: "90%",
-    marginTop: 25,
+    marginTop: 10,
     marginBottom: 40,
     borderColor: "black",
     borderWidth: 0,
@@ -994,6 +925,113 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 20,
     alignSelf: "center",
+  },
+  myHeaderParent: {
+    //borderWidth:1,borderColor:"red",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "92%",
+    marginTop: 30,
+    alignSelf: "center",
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 17,
+    color: "#000",
+  },
+  editHeaderTitle: {
+    color: "#4A90E2",
+    fontSize: 17,
+  },
+  editTrayWidth: {
+    width: 35,
+  },
+  addCategoryParentView: {
+    paddingHorizontal: 10,
+    paddingVertical: 17,
+    marginTop: 25,
+    height: 70,
+    backgroundColor: "#FFF",
+    width: "90%",
+    alignSelf: "center",
+    borderRadius: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  addCategoryTitle: {
+    fontSize: 13,
+    color: "#000",
+    fontWeight: "600",
+  },
+  renderSingleCategoryParentView: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "93%",
+    paddingLeft: 6,
+  },
+  renderSingleCategoryCustomIconView: {
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 36,
+    height: 36,
+    borderColor: "#FFF",
+  },
+  renderSingleCategoryTitleView: {
+    width: "79%",
+    borderWidth: 0,
+    borderColor: "red",
+    justifyContent: "center",
+    paddingLeft: 13,
+  },
+  renderSingleCategoryTitleText: {
+    textAlign: "left",
+    fontSize: 12,
+    color: "#000",
+    fontWeight: "600",
+  },
+  renderSingleCategoryCheckView: {
+    width: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyCheckView: {
+    width: "10%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  viewRenderSingleCategoryParent: {
+    paddingLeft: 6,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "95%",
+  },
+  viewRenderSingleCategoryParentView: {
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    width: 36,
+    height: 36,
+    borderColor: "#FFF",
+  },
+  viewRenderSingleCategoryTitleBody: {
+    width: "70%",
+    borderWidth: 0,
+    borderColor: "red",
+    justifyContent: "center",
+    paddingLeft: 8,
+  },
+  viewRenderSingleCategoryText: {
+    textAlign: "left",
+    fontSize: 12,
+    color: "#000",
+    fontWeight: "600",
+  },
+  viewRenderSingleCategoryLeftBody: {
+    width: "15%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

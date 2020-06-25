@@ -10,6 +10,7 @@ import {
 import { Button, Input, Text } from "react-native-elements";
 // import {  } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { Root } from "@components";
 
 Ionicons.loadFont();
 
@@ -56,37 +57,39 @@ class Title extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.navigate("ValueProp");
-          }}
-        >
-          <Ionicons
-            size={30}
-            name="md-close"
-            style={{ alignSelf: "flex-start", marginLeft: 25, marginTop: 5 }}
+      <Root headerColor={"#FFFFFF"} footerColor={"#FFFFFF"} barStyle={"dark"}>
+        <View style={styles.container}>
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.navigate("ValueProp");
+            }}
+          >
+            <Ionicons
+              size={30}
+              name="md-close"
+              style={{ alignSelf: "flex-start", marginLeft: 25, marginTop: 5 }}
+            />
+          </TouchableOpacity>
+          <Text style={{ alignSelf: "center", marginTop: "10%" }} h4>
+            What's your title?
+          </Text>
+          <Input
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.input}
+            placeholder={"Ex: Founder"}
+            value={this.state.title}
+            onChangeText={(text) => this.setState({ title: text })}
           />
-        </TouchableOpacity>
-        <Text style={{ alignSelf: "center", marginTop: "10%" }} h4>
-          What's your title?
-        </Text>
-        <Input
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
-          placeholder={"Ex: Founder"}
-          value={this.state.title}
-          onChangeText={(text) => this.setState({ title: text })}
-        />
-        <Button
-          disabled={!this.state.title.trim().length}
-          buttonStyle={styles.button}
-          disabledStyle={{ backgroundColor: "#7FBDFF" }}
-          containerStyle={styles.buttonContainer}
-          title="Continue"
-          onPress={(text) => this.handlePress(text)}
-        />
-      </View>
+          <Button
+            disabled={!this.state.title.trim().length}
+            buttonStyle={styles.button}
+            disabledStyle={{ backgroundColor: "#7FBDFF" }}
+            containerStyle={styles.buttonContainer}
+            title="Continue"
+            onPress={(text) => this.handlePress(text)}
+          />
+        </View>
+      </Root>
     );
   }
 }

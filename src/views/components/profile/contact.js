@@ -19,7 +19,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { updateUserWithCompany, getUser } from "../../../api/api";
 import { loggedOutUser } from "../../../api/api";
 import { APP_VERSION } from "../../../constants/constants";
-
+import {Root} from '@components';
 import { connect } from "react-redux";
 import { StackActions, NavigationActions } from "react-navigation";
 Ionicons.loadFont();
@@ -91,6 +91,7 @@ class Contact extends Component {
   render() {
     const { userData } = this.props.reduxState.userData;
     return (
+      <Root headerColor={"#070640"} footerColor={"#FFF"} barStyle={"light"}>
       <View style={styles.margins}>
         <ScrollView style={{ backgroundColor: "#FFF" }}>
           <Spinner
@@ -310,6 +311,7 @@ class Contact extends Component {
           </TouchableOpacity>
         </ScrollView>
       </View>
+      </Root>
     );
   }
 }

@@ -14,8 +14,7 @@ import { Button, Input, Text, Icon } from "react-native-elements";
 import { createUser } from "../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
 import { CONNECTION_ABORTED, USER_EXIST, TRY_AGAIN } from "../../api/message";
-//import {  } from "react-native-gesture-handler";
-//import {AntDesign} from "@expo/vector-icons";
+import { Root } from "@components";
 
 import { APP_VERSION } from "../../constants/constants";
 
@@ -162,83 +161,85 @@ class Password extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {/* <View style={{ backgroundColor: '#070640', height: StatusBar.currentHeight, width:'100%' }} />
+      <Root headerColor={"#FFFFFF"} footerColor={"#FFFFFF"} barStyle={"dark"}>
+        <View style={styles.container}>
+          {/* <View style={{ backgroundColor: '#070640', height: StatusBar.currentHeight, width:'100%' }} />
       <View style={styles.container}> */}
 
-        <Spinner
-          visible={this.state.isSpinner}
-          textStyle={styles.spinnerTextStyle}
-        />
-        {/* {this.state.err ? (
+          <Spinner
+            visible={this.state.isSpinner}
+            textStyle={styles.spinnerTextStyle}
+          />
+          {/* {this.state.err ? (
           <Text style={styles.err}>{this.state.err}</Text>
         ) : (
           undefined
         )} */}
-        <TouchableOpacity
-          onPress={() => {
-            this.props.navigation.goBack();
-          }}
-        >
-          <AntDesign
-            size={30}
-            name="left"
-            style={{ alignSelf: "flex-start", marginLeft: 10, marginTop: 5 }}
+          <TouchableOpacity
+            onPress={() => {
+              this.props.navigation.goBack();
+            }}
+          >
+            <AntDesign
+              size={30}
+              name="left"
+              style={{ alignSelf: "flex-start", marginLeft: 10, marginTop: 5 }}
+            />
+          </TouchableOpacity>
+          <Text style={styles.text1}>Create a strong password</Text>
+          <Input
+            inputContainerStyle={styles.inputContainer}
+            inputStyle={styles.input}
+            placeholder={"Password"}
+            secureTextEntry={true}
+            value={this.state.password}
+            onChangeText={(text) => this.handleChangeText(text)}
           />
-        </TouchableOpacity>
-        <Text style={styles.text1}>Create a strong password</Text>
-        <Input
-          inputContainerStyle={styles.inputContainer}
-          inputStyle={styles.input}
-          placeholder={"Password"}
-          secureTextEntry={true}
-          value={this.state.password}
-          onChangeText={(text) => this.handleChangeText(text)}
-        />
-        <View style={{ flexDirection: "row", alignSelf: "center" }}>
-          <View style={{ flexDirection: "row" }}>
-            <Icon
-              name={this.fetchIcon(this.state.hasUpperCase)}
-              size={15}
-              type="font-awesome"
-              color="gray"
-            />
-            <Text style={styles.text}>1 capital letter*</Text>
+          <View style={{ flexDirection: "row", alignSelf: "center" }}>
+            <View style={{ flexDirection: "row" }}>
+              <Icon
+                name={this.fetchIcon(this.state.hasUpperCase)}
+                size={15}
+                type="font-awesome"
+                color="gray"
+              />
+              <Text style={styles.text}>1 capital letter*</Text>
+            </View>
+            <View style={{ flexDirection: "row", marginHorizontal: "4%" }}>
+              <Icon
+                name={this.fetchIcon(this.state.hasNumber)}
+                size={15}
+                type="font-awesome"
+                color="gray"
+              />
+              <Text style={styles.text}>1 number*</Text>
+            </View>
+            <View style={{ flexDirection: "row" }}>
+              <Icon
+                name={this.fetchIcon(this.state.hasMinimumLength)}
+                size={15}
+                type="font-awesome"
+                color="gray"
+              />
+              <Text style={styles.text}>Min. 10 characters*</Text>
+            </View>
           </View>
-          <View style={{ flexDirection: "row", marginHorizontal: "4%" }}>
-            <Icon
-              name={this.fetchIcon(this.state.hasNumber)}
-              size={15}
-              type="font-awesome"
-              color="gray"
-            />
-            <Text style={styles.text}>1 number*</Text>
-          </View>
-          <View style={{ flexDirection: "row" }}>
-            <Icon
-              name={this.fetchIcon(this.state.hasMinimumLength)}
-              size={15}
-              type="font-awesome"
-              color="gray"
-            />
-            <Text style={styles.text}>Min. 10 characters*</Text>
-          </View>
+          <Button
+            disabled={
+              !this.state.hasUpperCase ||
+              !this.state.hasNumber ||
+              !this.state.hasMinimumLength ||
+              this.state.loading
+            }
+            buttonStyle={styles.button}
+            containerStyle={styles.buttonContainer}
+            disabledStyle={{ backgroundColor: "#7FBDFF" }}
+            title="Create Account"
+            onPress={this.handleCreateAccount}
+          />
+          {/* </View> */}
         </View>
-        <Button
-          disabled={
-            !this.state.hasUpperCase ||
-            !this.state.hasNumber ||
-            !this.state.hasMinimumLength ||
-            this.state.loading
-          }
-          buttonStyle={styles.button}
-          containerStyle={styles.buttonContainer}
-          disabledStyle={{ backgroundColor: "#7FBDFF" }}
-          title="Create Account"
-          onPress={this.handleCreateAccount}
-        />
-        {/* </View> */}
-      </View>
+      </Root>
     );
   }
 }

@@ -4,6 +4,7 @@ import { PLAID } from "../../constants/constants";
 import { sendPlaidToken } from "../../api/api";
 import { BackHandler } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
+import {Root} from '@components';
 
 export default class BankIntegration extends Component {
   constructor(props) {
@@ -20,6 +21,7 @@ export default class BankIntegration extends Component {
     } else if (data.action === "plaid_link-undefined::connected") {
       try {
         this.setState({ isSpinner: true });
+        const { getParam, navigate } = this.props.navigation;
         //console.log(data);
         publicToken = data.metadata.public_token;
         institution = data.metadata.institution;
@@ -32,64 +34,51 @@ export default class BankIntegration extends Component {
         );
         console.log("Send Plaid Details Response", triggerPlaidPublicToken);
         if (triggerPlaidPublicToken.result == true) {
-          if (this.props.navigation.getParam("createBankIntegration")) {
+          if (getParam("createBankIntegration")) {
             this.setState({ isSpinner: false }, () => {
-              if (this.props.navigation.getParam("createBankIntegration")) {
-                this.props.navigation.getParam("createBankIntegration")();
+              if (getParam("createBankIntegration")) {
+                getParam("createBankIntegration")();
               }
-              this.props.navigation.navigate("AccountConnected", {
+              navigate("AccountConnected", {
                 redirectTo: () => {
-                  this.props.navigation.navigate("Setup");
+                  navigate("Setup");
                 },
               });
             });
-          } else if (this.props.navigation.getParam("comeFromTimeout")) {
+          } else if (getParam("comeFromTimeout")) {
             this.setState({ isSpinner: false }, () => {
               this.props.navigation.navigate("AccountConnected", {
                 redirectTo: () => {
                   this.setState({ isSpinner: true }, () => {
                     setTimeout(() => {
-                      if (
-                        this.props.navigation.getParam("reloadDashBoardData")
-                      ) {
-                        this.props.navigation.getParam("reloadDashBoardData")();
-                      }
-                      setTimeout(() => {
-                        this.setState({ isSpinner: false });
-                        this.props.navigation.navigate("Dashboard");
-                      }, 1500);
-                    }, 7000);
+                      this.setState({ isSpinner: false }, () => {
+                        setTimeout(() => {
+                          getParam("reloadPlaid")();
+                        }, 50);
+                        navigate("Dashboard", {
+                          comeFromTheBank: true,
+                        });
+                      });
+                    }, 3000);
                   });
                 },
               });
             });
-          } else if (
-            this.props.navigation.getParam("comeFromInnerIntegration")
-          ) {
+          } else if (getParam("comeFromInnerIntegration")) {
             this.setState({ isSpinner: false }, () => {
-              this.props.navigation.navigate("AccountConnected", {
+              navigate("AccountConnected", {
                 redirectTo: () => {
                   this.setState({ isSpinner: true }, () => {
                     setTimeout(() => {
-                      if (this.props.navigation.getParam("reloadPlaid")) {
-                        this.props.navigation.getParam("reloadPlaid")();
-                      }
-
-                      setTimeout(() => {
-                        // if(this.props.navigation.getParam("reloadInnerIntegrationScreen")){
-                        //   this.props.navigation.getParam("reloadInnerIntegrationScreen")();
-                        // }
-                        //  setTimeout(()=>{
-                        //   //this.props.navigation.navigate("Integration");
-                        //   //change some flow on 28-mar-2020
-                        //   this.setState({ isSpinner: false });
-                        //   this.props.navigation.navigate("Contact");
-                        //  },1000);
-
-                        this.setState({ isSpinner: false });
-                        this.props.navigation.navigate("Contact");
-                      }, 1500);
-                    }, 8000);
+                      this.setState({ isSpinner: false }, () => {
+                        setTimeout(() => {
+                          getParam("reloadPlaid")();
+                        }, 50);
+                        navigate("Dashboard", {
+                          comeFromTheBank: true,
+                        });
+                      });
+                    }, 3000);
                   });
                 },
               });
@@ -181,7 +170,7 @@ export default class BankIntegration extends Component {
 
   render() {
     return (
-      <React.Fragment>
+      <Root headerColor={"#fff"} footerColor={"#fff"} barStyle={"dark"}>
         <Spinner visible={this.state.isSpinner} />
         <PlaidAuthenticator
           onMessage={(data) => {
@@ -194,7 +183,7 @@ export default class BankIntegration extends Component {
           selectAccount={PLAID.selectAccount}
           //connected={console.log("Completed")}
         />
-      </React.Fragment>
+      </Root>
     );
   }
 }

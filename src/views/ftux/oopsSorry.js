@@ -11,14 +11,12 @@ import {
   BackHandler,
 } from "react-native";
 import { Button } from "react-native-elements";
-import {
-  Ionicons,
-  AntDesign,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import {Root} from '@components';
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import Button from "../components/login/button";
 
-
+MaterialCommunityIcons.loadFont();
 class OopsSorry extends Component {
   constructor(props) {
     super(props);
@@ -49,6 +47,7 @@ class OopsSorry extends Component {
 
   render() {
     return (
+      <Root headerColor={"#FFF"} footerColor={"#FFF"} barStyle={"light"}>
       <View style={styles.container}>
         <Image
           style={{
@@ -76,6 +75,7 @@ class OopsSorry extends Component {
           }}
         />
       </View>
+      </Root>
     );
   }
 }

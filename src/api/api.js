@@ -1,11 +1,10 @@
-
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
-import { APINETWORK,API_TIMEOUT } from "../constants/constants";
+import { APINETWORK, API_TIMEOUT } from "../constants/constants";
 const timeout = API_TIMEOUT;
 
 //User Api's
-export { 
+export {
   createUser,
   login,
   updateUserWithCompany,
@@ -19,10 +18,10 @@ export {
   loggedOutUser,
   userLoginCounter,
   getUserPromise,
-  sendUserFeedbackData
- } from "./Apis/user";
+  sendUserFeedbackData,
+} from "./Apis/user";
 
- //Plaid Api's
+//Plaid Api's
 export {
   sendPlaidToken,
   getUserTransactions,
@@ -47,7 +46,7 @@ export {
   getSubCategories,
   getSubCategoryTransactions,
   getChangeInCash,
-  changeAllSimilarTransaction
+  changeAllSimilarTransaction,
 } from "./Apis/plaid";
 
 //QuickBooks Api's
@@ -55,21 +54,21 @@ export {
   getSalesData,
   getSalesDataPromise,
   triggerNoQbForm,
-  triggerQbDataCopyDb
+  triggerQbDataCopyDb,
 } from "./Apis/quickbooks";
 
 //Health Score API's
-export{
+export {
   getHealthScore,
   getHealthScoreUsingPromise,
-  getHealthScoreUsingWithOutQbPromise
+  getHealthScoreUsingWithOutQbPromise,
 } from "./Apis/healthscore";
 
 //CashOnHand Graph Api's
 
-export { 
+export {
   getCashOnHandGraph,
-  getCashOnHandGraphPromiseBased
+  getCashOnHandGraphPromiseBased,
 } from "./Apis/cashonhand";
 
 //all expense by category api's
@@ -77,62 +76,35 @@ export {
   getExpenseByCategoryPromise,
   getExpenseByCategoryScreenPromise,
   getExpenseByCategorySubScreenPromise,
-  getExpenseBySubCategoryGraphPromise
+  getExpenseBySubCategoryGraphPromise,
 } from "./Apis/expensecategory";
 
-export {
-  getARData
-} from "./Apis/incommingar";
+export { getARData } from "./Apis/incommingar";
 
-export { 
-  getInsights
-} from "./Apis/insights";
+export { getInsights } from "./Apis/insights";
 
-export {
-  getForecastData
-} from "./Apis/forecast";
+export { getForecastData } from "./Apis/forecast";
 
 //Uncategorized Api's
 
-export async function fetchQuestionsFromApi(){
-  try{
+export async function fetchQuestionsFromApi() {
+  try {
     const response = await axios.get(APINETWORK.getQuestions);
-    if(response.data.success == true){
-      return{ result:true,questions:response.data.data }
-    }else{
-      return { result:false };
+    if (response.data.success == true) {
+      return { result: true, questions: response.data.data };
+    } else {
+      return { result: false };
     }
-    
-  }catch(error){
-    return { result:false,error };
+  } catch (error) {
+    return { result: false, error };
   }
 }
- 
-export async function getCurrentAuthToken(){
-  try{
+
+export async function getCurrentAuthToken() {
+  try {
     const Authorization = await AsyncStorage.getItem("authToken");
-    return { result:true,Authorization };
-  } 
-  catch(error){
-    return { result:"error",error } ;
+    return { result: true, Authorization };
+  } catch (error) {
+    return { result: "error", error };
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
