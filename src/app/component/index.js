@@ -6,8 +6,8 @@ import {
   TransactionComponent,
   TransactionComponentWithDate,
 } from "./TransactionComponent";
-import Seprator from './Seprator';
-
+import Seprator from "./Seprator";
+import ErrorBoundry from "./ErrorBoundary";
 export {
   CashOnHand,
   ChangeInCash,
@@ -15,5 +15,6 @@ export {
   CustomTabs,
   TransactionComponent,
   TransactionComponentWithDate,
-  Seprator
+  Seprator,
+  ErrorBoundry,
 };

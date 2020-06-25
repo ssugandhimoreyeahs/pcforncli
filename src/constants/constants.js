@@ -9,7 +9,7 @@ const NETWORKINSTANCE = {
 };
 
 let isProduction = true;
-isProduction = false;
+//isProduction = false;
 
 const APIENDPOINT = isProduction
   ? {

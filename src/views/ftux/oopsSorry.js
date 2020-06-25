@@ -12,14 +12,11 @@ import {
 } from "react-native";
 import { Button } from "react-native-elements";
 import {Root} from '@components';
-import {
-  Ionicons,
-  AntDesign,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 // import Button from "../components/login/button";
 
-
+MaterialCommunityIcons.loadFont();
 class OopsSorry extends Component {
   constructor(props) {
     super(props);

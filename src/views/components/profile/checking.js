@@ -32,7 +32,7 @@ import {
 } from "../../../api/api";
 import { CustomTabs, TransactionComponentWithDate } from "@components";
 import { Spinner as NativeBaseSpinner } from "native-base";
-import { extendWith } from "lodash";
+
 AntDesign.loadFont();
 class TransactionScreen extends PureComponent {
   getInitialState = () => {

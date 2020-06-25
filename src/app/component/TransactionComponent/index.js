@@ -7,11 +7,11 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { Text, View, FlatList, StyleSheet, Dimensions } from "react-native";
+import { Text, View, FlatList, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import styles from "./indexCss";
 import PropTypes from "prop-types";
 import { ALL_MONTHS } from "appconstants";
-import { TouchableOpacity } from "react-native-gesture-handler";
+
 import {
   numberWithCommas,
   firstLetterCapital,
@@ -26,18 +26,6 @@ const computeTransaction = (singleTransaction, transactionType) => {
   let amount = Math.abs(singleTransaction.amount);
   let detailInfo = ``;
   let categoryBackgroundColor = `#FFF`;
-  //add category button text changes we did not have to render the detailsInfo text
-  // if (
-  //   singleTransaction.clientCategory == singleTransaction.clientDefaultCategory
-  // ) {
-  //   categoryButtonText = `+ Category`;
-  //   detailInfo = firstLetterCapital(singleTransaction.clientCategory);
-  // } else {
-  //   detailInfo = `Detail Info`;
-  //   categoryButtonText = `${firstLetterCapital(
-  //     singleTransaction.clientCategory
-  //   )}`;
-  // }
 
   detailInfo = ``;
   categoryButtonText = `${firstLetterCapital(
@@ -55,7 +43,9 @@ const computeTransaction = (singleTransaction, transactionType) => {
       finalAmount = `$${numberWithCommas(amount)}`;
     }
   }
-
+  let touchableTextColor = "#FFF";
+  let touchableBorder = categoryBackgroundColor;
+  let touchableColor = categoryBackgroundColor;
   if (categoryButtonText !== "+ Category") {
     for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
       if (
@@ -66,15 +56,19 @@ const computeTransaction = (singleTransaction, transactionType) => {
         break;
       }
     }
+
+    if (categoryBackgroundColor === "#FFF") {
+      // touchableBorder = "#000";
+      // touchableTextColor = "#000";
+      touchableBorder = "#6C5BC1";
+      touchableTextColor = "#FFF";
+      touchableColor = "#6C5BC1";
+    } else {
+      touchableBorder = categoryBackgroundColor;
+      touchableColor = categoryBackgroundColor;
+    }
   }
-  let touchableTextColor = "#FFF";
-  let touchableBorder = categoryBackgroundColor;
-  let touchableColor = categoryBackgroundColor;
-  if (categoryButtonText === "+ Category") {
-    touchableTextColor = "#000";
-    touchableBorder = "#000";
-    touchableColor = "#FFF";
-  }
+
   return {
     transactionAmount: finalAmount,
     touchableText: categoryButtonText,
