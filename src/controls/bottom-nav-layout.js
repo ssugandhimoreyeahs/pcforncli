@@ -1,16 +1,24 @@
 import React, { Component } from "react";
-import { StyleSheet, View, ScrollView, BackHandler, Alert, SafeAreaView, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  BackHandler,
+  Alert,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
 import Menu from "./menu";
-import DetectPlatform from "../DetectPlatform";
 
- class BottomNavLayout extends Component {
-  
+class BottomNavLayout extends Component {
   render() {
     return (
-    <React.Fragment>
-        <ScrollView style={{backgroundColor:'#f1f3f5'}}>{this.props.children}</ScrollView>
+      <View style={styles.wrapper}>
+        <ScrollView style={{ backgroundColor: "#f1f3f5" }}>
+          {this.props.children}
+        </ScrollView>
         <Menu navigation={this.props.navigation} />
-    </React.Fragment>
+      </View>
     );
   }
 }
@@ -20,8 +28,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "flex-end",
-    backgroundColor: "#F8F9FA"
-  }
+    backgroundColor: "#F8F9FA",
+  },
 });
 
-export default DetectPlatform(BottomNavLayout,styles.wrapper);
+export default BottomNavLayout;

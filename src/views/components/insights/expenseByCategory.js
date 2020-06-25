@@ -1,155 +1,257 @@
-import React,{ Component } from "react";
-import { Text,View,TouchableOpacity,StyleSheet, ScrollView, Alert } from "react-native";
-import DetectPlatform from "../../../DetectPlatform";
+import React, { PureComponent } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  Alert,
+} from "react-native";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Feather from "react-native-vector-icons/Feather";
+import { Root } from "@components";
+import { connect } from "react-redux";
+import { EXPENSE_INSIGHTS_DATA } from "@constants";
 
 Feather.loadFont();
 AntDesign.loadFont();
-class ExpenseByCategoryInsights extends Component{
-
-    renderBlock = ({ blockNo,blockText,marginTop }) => {
-
-        return(
-            <View style={{ 
-                marginTop: marginTop == true ? 25 : 14,
-                borderRadius:8,
-                backgroundColor:"#E0EBFF",
-                flexDirection: "row",
-                justifyContent:"space-between",
-                padding:17 }}>
-
-            
-                <View style={{ 
-                    marginTop:3,
-                    borderRadius:50,
-                    borderColor:"#185DFF",
-                    borderWidth:2,
-                    height:21,
-                    width:21,justifyContent:"center",alignItems:"center"
-                }}><Text style={{ fontWeight:"700",textAlign:'center',fontSize: 10,color: '#185DFF' }}>{ blockNo }</Text></View>
-            
-
-            <View style={{ width:"87%" }}>
-                { blockText }
-            </View>
-            </View>
-        );
+class ExpenseByCategoryInsights extends PureComponent {
+  constructor(props) {
+    super(props);
+  }
+  readyExpenseInsights = () => {
+    const { insightsData } = this.props.insightStore;
+    let { Expense = null } = insightsData; 
+    if (Expense != null) {
+      if (Expense.type === 30) {
+        return EXPENSE_INSIGHTS_DATA.EXPENSE30;
+      } else if (Expense.type === 10) {
+        return EXPENSE_INSIGHTS_DATA.EXPENSE10;
+      }
+    } else {
+      return null;
     }
-    render(){
-
-        return(
-            <ScrollView>
-                
-                <View style={{ height:70,width:"100%",flexDirection:"row"}}>
-                    <View style={{ flexDirection:"row",width:"100%" }}>
-                        <View style={{ width:"10%",justifyContent:"center",alignItems:"flex-end" }}>
-                            <TouchableOpacity  onPress={()=>{ this.props.navigation.goBack(); }} >
-                                <AntDesign name='left' size={25} color={'#000000'}/>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={{ width:"80%",justifyContent:"center",alignItems:"center" }}>
-                        <Text style={{ fontSize:18,color:"#000",fontWeight: "600" }}>{ 'Expense Insights' }</Text>
-                            
-                        </View>
-                    </View>
-                </View> 
-
-                <View style={{ marginTop: 3,
-                backgroundColor:"#FFE8DD",
-                height: 150,
-                justifyContent:'center',alignItems:'center'}}>
-                <Text style={{ width:"80%",textAlign:'left',color:'#1D1E1F',fontSize: 17,fontWeight:"bold" }}>{'Your cash balance has decreased more than 50% from last month.'}</Text>
-                </View>
-
-
-                <View style = {{ marginTop: 40,width:"90%",alignSelf:"center" }}>
-                    <View style={{ alignSelf:'flex-start' }}>
-                        <Text style={{ color: '#1D1E1F',fontSize: 17, fontWeight: "bold" }}>
-                            { 'How to improve' }
-                        </Text>
-                    </View>
-                    
-                    
-                    {
-                        staticInsight.map((singleInsight,index)=>{
-                            return  <this.renderBlock key={index}
-                                marginTop={index == 0 ? true : false}
-                                blockNo={singleInsight.sequence}
-                                blockText = {singleInsight.data(this.props.navigation)}
-                            />
-                        })
-                    }
-                    {/* <this.renderBlock 
-                        marginTop={true}
-                        blockNo={staticInsight[0].sequence}
-                        blockText = {staticInsight[0].data}
-                    /> */}
-
-                    
-                </View>
-                <View style = {{ backgroundColor: "#EEEFF1",height: 15,marginTop: 40 }}/>
-
-                <View style={{  paddingVertical: 40,justifyContent:'center',alignItems:"center", }}>
-                <Text style={{ fontSize:13, color:'#1D1E1F' }}>How do you like the insights?</Text> 
-                <View style={{ width:"100%",flexDirection:"row",justifyContent:"space-around",marginTop: 30 }}>
-                    <TouchableOpacity
-                    disabled={true}
-                    style ={{ 
-                        paddingHorizontal: 15,
-                        flexDirection:'row',
-                        backgroundColor:'#E0EBFF',
-                        height:40, width: 114, 
-                        borderRadius: 50, 
-                        justifyContent:'center',
-                        alignItems:'center' }}
-                    >
-                    <Feather name='thumbs-up' size={17} color='#1D1E1F' ></Feather>
-                    <Text style={{ fontSize: 12,paddingLeft:8,  }}>useful</Text></TouchableOpacity>
-
-                    <TouchableOpacity
-                    disabled={true}
-                    style ={{ paddingHorizontal:15,flexDirection:'row',backgroundColor:'#E0EBFF',height:40, width: 114, borderRadius: 50, justifyContent:'center',alignItems:'center' }}
-                    >
-                    <Feather name='thumbs-down' size={17} color='#1D1E1F' 
-                    style={{paddingTop:6,transform: [{rotateX: '360deg'},{rotateY: '180deg'}]}}
-                    ></Feather>
-                    <Text style={{ fontSize: 12,paddingLeft:8,  }}>not useful</Text></TouchableOpacity>
-
-                </View>
-                </View>
-            </ScrollView>
-        );
+  };
+  renderBlock = ({ blockNo, blockText, marginTop, index }) => {
+    return (
+      <View
+        style={{
+          ...styles.renderBlockContainer,
+          marginTop: marginTop == true ? 25 : 14,
+        }}
+      >
+        <View style={styles.childRenderBlockContainer}>
+          <Text style={styles.blockTextNo}>{blockNo}</Text>
+        </View>
+        <View style={styles.blockTextStyle}>
+          <Text style={styles.insightTextStyle}>
+            {`${blockText}  `}
+            {index == 0 && (
+              <Text
+                onPress={() => {
+                  this.props.navigation.navigate("NewExpenseByCategoryParent");
+                }}
+                style={styles.viewExpenseStyle}
+              >
+                View Expense
+              </Text>
+            )}
+          </Text>
+        </View>
+      </View>
+    );
+  };
+  render() {
+    let insightsData = this.readyExpenseInsights();
+    if(insightsData === null){
+      return this.props.navigation.goBack();
     }
+    return (
+      <Root headerColor={"#F8F8F8"} footerColor={"#FFF"} barStyle={"dark"}>
+        <ScrollView style={styles.container}>
+          <View style={styles.childContainer}>
+            <View style={styles.nestedChildContainer}>
+              <View style={styles.backButton}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.goBack();
+                  }}
+                >
+                  <AntDesign name="left" size={25} color={"#000000"} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.titleHeaderText}>
+                <Text style={styles.titleHeaderTextStyle}>
+                  {"Expense Insights"}
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View style={{...styles.bannerContantStyle,backgroundColor: insightsData.color}}>
+            <Text style={styles.bannerTextContentStyle}>
+              {`${insightsData?.insightText}`}
+            </Text>
+          </View>
+
+          <View style={styles.bannerImproveContainer}>
+            <View style={{ alignSelf: "flex-start" }}>
+              <Text style={styles.improveBannerTextStyle}>
+                {"How to improve"}
+              </Text>
+            </View>
+
+            {insightsData.howToImprove.map((singleInsight, index) => {
+              return (
+                <this.renderBlock
+                  index={index}
+                  key={index}
+                  marginTop={index == 0 ? true : false}
+                  blockNo={singleInsight.id}
+                  blockText={singleInsight.text}
+                />
+              );
+            })}
+          </View>
+          <View style={styles.likeContainerStyle} />
+
+          <View style={styles.likeNestedContainer}>
+            <Text style={styles.likeInsightsText}>
+              How do you like the insights?
+            </Text>
+            <View style={styles.likeInsightsButtonContainer}>
+              <TouchableOpacity
+                disabled={true}
+                style={styles.likeInsightsTouchable}
+              >
+                <Feather name="thumbs-up" size={17} color="#1D1E1F" />
+                <Text style={{ fontSize: 12, paddingLeft: 8 }}>useful</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                disabled={true}
+                style={styles.likeInsightsTouchable}
+              >
+                <Feather
+                  name="thumbs-down"
+                  size={17}
+                  color="#1D1E1F"
+                  style={{
+                    paddingTop: 6,
+                    transform: [{ rotateX: "360deg" }, { rotateY: "180deg" }],
+                  }}
+                />
+                <Text style={{ fontSize: 12, paddingLeft: 8 }}>not useful</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </Root>
+    );
+  }
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#FFF"
-    }
+  container: {
+    flex: 1,
+    backgroundColor: "#FFF",
+  },
+  renderBlockContainer: {
+    borderRadius: 8,
+    backgroundColor: "#E0EBFF",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    padding: 17,
+  },
+  childRenderBlockContainer: {
+    marginTop: 3,
+    borderRadius: 50,
+    borderColor: "#185DFF",
+    borderWidth: 2,
+    height: 21,
+    width: 21,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  blockTextNo: {
+    fontWeight: "700",
+    textAlign: "center",
+    fontSize: 10,
+    color: "#185DFF",
+  },
+  blockTextStyle: { width: "87%" },
+  childContainer: {
+    height: 70,
+    width: "100%",
+    flexDirection: "row",
+    backgroundColor: "#F8F8F8",
+  },
+  nestedChildContainer: { flexDirection: "row", width: "100%" },
+  backButton: {
+    width: "10%",
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+  titleHeaderText: {
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  titleHeaderTextStyle: { fontSize: 18, color: "#000", fontWeight: "600" },
+  bannerContantStyle: {
+    backgroundColor: "#FFE8DD",
+    height: 150,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bannerTextContentStyle: {
+    width: "80%",
+    textAlign: "left",
+    color: "#1D1E1F",
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+  bannerImproveContainer: { marginTop: 40, width: "90%", alignSelf: "center" },
+  improveBannerTextStyle: {
+    color: "#1D1E1F",
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+  likeContainerStyle: { backgroundColor: "#EEEFF1", height: 15, marginTop: 40 },
+  likeNestedContainer: {
+    paddingVertical: 40,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  likeInsightsText: { fontSize: 13, color: "#1D1E1F" },
+  likeInsightsButtonContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 30,
+  },
+  likeInsightsTouchable: {
+    paddingHorizontal: 15,
+    flexDirection: "row",
+    backgroundColor: "#E0EBFF",
+    height: 40,
+    width: 114,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  insightTextStyle: { fontSize: 16, color: "#000", textAlign: "left" },
+  viewExpenseStyle: {
+    fontWeight: "500",
+    textDecorationLine: "underline",
+  },
 });
 
-let staticInsight = [
-    {
-        sequence: 1,
-        data: (navigation) => {
-            return <Text style={{ fontSize: 16, color: "#000",textAlign: 'left' }}>
-                 {`Evaluate the highest expenses (non rent) and reduce unnecessary expenses to extend your runway. Identify one time expenses that are unlikely to be monthly expenses going forward  `}   
-                 <Text onPress={()=>{ navigation.navigate("NewExpenseByCategoryParent") }} 
-                    style={{ fontWeight: "500",textDecorationLine:'underline' }}>
-                        { `View expenses.`}
-                </Text> 
-            </Text>
-        }
-    },
-    {
-        sequence: 2,
-        data: (navigation) => {
-            return <Text style={{ fontSize: 16, color: "#000",textAlign: 'left' }}>
-            { `These expenses may be expected as you're growing the business, but keeping an eye on them monthly will help keep them in perspective.` }
-        </Text>
-        }
-    }
-]
-
-export default DetectPlatform(ExpenseByCategoryInsights,styles.container);
+const mapStateToProps = (state) => {
+  return {
+    insightStore: state.insightsRedux,
+  };
+};
+export default connect(
+  mapStateToProps,
+  null
+)(ExpenseByCategoryInsights);

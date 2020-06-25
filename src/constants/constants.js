@@ -7,12 +7,21 @@ const NETWORKINSTANCE = {
   PRODUCTIONINSTANCE: "http://3.132.213.123:8081/v0.1", // code for the production
   NGROK: "https://aaffa9c4.ngrok.io/v0.1",
 };
-const APIENDPOINT = {
-  endPoint: NETWORKINSTANCE.SANDBOXINSTANCE,
-  isQuickBookProduction: true,
-  //isPlaidProduction: true,
-  isPlaidProduction: false
-};
+
+let isProduction = true;
+//isProduction = false;
+
+const APIENDPOINT = isProduction
+  ? {
+      endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
+      isQuickBookProduction: true,
+      isPlaidProduction: true,
+    }
+  : {
+      endPoint: NETWORKINSTANCE.SANDBOXINSTANCE,
+      isQuickBookProduction: true,
+      isPlaidProduction: false,
+    };
 
 const USERDATAAPIS = {
   userSignUp: APIENDPOINT.endPoint + "/auth/signup",
@@ -93,7 +102,31 @@ const QUICKBOOKSAPIS = {
   qbNGROKCallBackUrl: APIENDPOINT.endPoint + "/quickBooks/callback",
   noQbForm: APIENDPOINT.endPoint + "/quickBooks/NoQbForm",
 };
-
+const NEW_CATEGORY_API = {
+  newGetCategory: APIENDPOINT.endPoint + "/plaid/getClientCategory",
+  newAddCategory: APIENDPOINT.endPoint + "/plaid/addClientCategory",
+  newDeleteCategory: APIENDPOINT.endPoint + "/plaid/deleteClientCategory",
+  newEditCategory: APIENDPOINT.endPoint + "/plaid/editClientCategory",
+  addClientCategoryToTransaction:
+    APIENDPOINT.endPoint + "/plaid/addClientCategoryToTransaction",
+  clientCategoryChangeInAllTransaction:
+    APIENDPOINT.endPoint + "/category/clientCategoryChangeInAllTransaction",
+  expenseByClientCategoryCurrentMonth:
+    APIENDPOINT.endPoint + "/plaid/ExpenseByClientCategory?currentMonth=true",
+  expenseByClientCategoryPastThreeMonth:
+    APIENDPOINT.endPoint + "/plaid/ExpenseByClientCategory?pastThreeMonth=true",
+  expenseByClientCategoryPastSixMonth:
+    APIENDPOINT.endPoint + "/plaid/ExpenseByClientCategory?pastSixMonth=true",
+  expenseByClientCategoryPastTweleMonth:
+    APIENDPOINT.endPoint +
+    "/plaid/ExpenseByClientCategory?pastTwelveMonth=true",
+  expenseByClientCategoryScreen: (past) =>
+    APIENDPOINT.endPoint + `/plaid/ExpenseByClientCategoryScreen?past=${past}`,
+  expenseByCategoryClientSubScreenGrpah:
+    APIENDPOINT.endPoint + `/category/getClientSubCategoryScreen/graph`,
+  getClientSubCategoryScreen: (past) =>
+    APIENDPOINT.endPoint + `/category/getClientSubCategoryScreen?past=${past}`,
+};
 export const APINETWORK = {
   getQuestions: APIENDPOINT.endPoint + "/questions/getQuestions",
   incommingAr: APIENDPOINT.endPoint + "/parcentage/incomingAr",
@@ -104,6 +137,7 @@ export const APINETWORK = {
   ...HEALTHSCOREAPI,
   ...PLAIDAPIS,
   ...QUICKBOOKSAPIS,
+  ...NEW_CATEGORY_API,
 };
 
 export const PLAID = {
