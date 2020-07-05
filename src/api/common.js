@@ -216,7 +216,8 @@ const EXPENSE_ICONS = {
   },
   uncategorized: {
     categoryIcon: require("../assets/CategoryIcon/uncategorized3.png"),
-    categoryColor: "#6C5BC1",
+    categoryColor: "#EEEFF1",
+    
   },
 };
 

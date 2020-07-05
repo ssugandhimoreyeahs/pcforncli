@@ -7,7 +7,14 @@ import React, {
   useState,
   useCallback,
 } from "react";
-import { Text, View, FlatList, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import {
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
 import styles from "./indexCss";
 import PropTypes from "prop-types";
 import { ALL_MONTHS } from "appconstants";
@@ -69,6 +76,9 @@ const computeTransaction = (singleTransaction, transactionType) => {
     }
   }
 
+  if(categoryButtonText.toLowerCase() == 'uncategorized'){
+    touchableTextColor = '#131213';
+  }
   return {
     transactionAmount: finalAmount,
     touchableText: categoryButtonText,

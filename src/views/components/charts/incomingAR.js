@@ -32,7 +32,7 @@ class IncomingAR extends Component {
     super(props);
 
     this.state = {
-      showInsights: true,
+      showInsights: false,
     };
   }
   showAlert() {

@@ -39,7 +39,7 @@ import {
   ADDEDCATEGORY,
   DELETECATEGORY,
 } from "../../../api/message";
-import {Root} from '@components';
+import { Root } from "@components";
 import {
   getCategoryId,
   getCategoryName,
@@ -108,8 +108,8 @@ class CategoryScreen extends Component {
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     // error = true;
     const { isEdit } = this.state;
-    let antDesignIcon = isEdit == true ? `left` : "left";
-    const showEditTray = this.props.navigation.getParam("showEditTray");
+    let antDesignIcon = isEdit == true ? `close` : "close";
+    const showEditTray = this.props.navigation.getParam("showEditTray", true);
     return (
       <View style={styles.header}>
         <View style={styles.myHeaderParent}>
@@ -117,12 +117,10 @@ class CategoryScreen extends Component {
             <AntDesign name={`${antDesignIcon}`} size={22} color={"#000000"} />
           </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>Select Category</Text>
           {error == true ? (
             <View style={styles.editTrayWidth} />
           ) : isEdit == true ? (
             <TouchableOpacity
-              style={{ paddingRight: 7 }}
               onPress={() => {
                 this.setState({ isEdit: false, toggle: false });
               }}
@@ -131,12 +129,11 @@ class CategoryScreen extends Component {
             </TouchableOpacity>
           ) : showEditTray == true ? (
             <TouchableOpacity
-              style={{ ...styles.editTrayWidth, paddingRight: 2 }}
               onPress={() => {
                 this.setState({ isEdit: true, toggle: false });
               }}
             >
-              <Text style={styles.editHeaderTitle}>Edit</Text>
+              <Text style={styles.editHeaderTitle}>Edit Categories</Text>
             </TouchableOpacity>
           ) : (
             <View style={styles.editTrayWidth} />
@@ -203,7 +200,7 @@ class CategoryScreen extends Component {
     if (this.state.toggle) {
       const {
         clientCategoryObjectId: transactionCategory,
-        _id
+        _id,
       } = this.props.navigation.getParam("currentExecutingTransaction");
       let axiosBody = {};
       //axiosBody.oldCategoryId = getCategoryId(transactionCategory);
@@ -870,17 +867,17 @@ class CategoryScreen extends Component {
 
     return (
       <Root headerColor={"#F8F8F8"} footerColor={"#EFEFF1"} barStyle={"dark"}>
-      <View style={styles.container}>
-        <Spinner visible={this.state.isSpinner} />
-        {error == true ? (
-          <Fragment>
-            <this.header />
-            <this.errorView />
-          </Fragment>
-        ) : (
-          <this.renderBody />
-        )}
-      </View>
+        <View style={styles.container}>
+          <Spinner visible={this.state.isSpinner} />
+          {error == true ? (
+            <Fragment>
+              <this.header />
+              <this.errorView />
+            </Fragment>
+          ) : (
+            <this.renderBody />
+          )}
+        </View>
       </Root>
     );
   }
@@ -942,9 +939,7 @@ const styles = StyleSheet.create({
   editHeaderTitle: {
     color: "#4A90E2",
     fontSize: 17,
-  },
-  editTrayWidth: {
-    width: 35,
+    textAlign: "left",
   },
   addCategoryParentView: {
     paddingHorizontal: 10,
