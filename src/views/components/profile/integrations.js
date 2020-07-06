@@ -25,7 +25,7 @@ import {
   ERROR,
 } from "../../../api/message";
 import { ERRORCATEGORY } from "../../../api/common";
-import {Root} from '@components'
+import { Root } from "@components";
 AntDesign.loadFont();
 
 class Integration extends Component {
@@ -65,10 +65,7 @@ class Integration extends Component {
       return;
     }
     const triggerValidPlaidToken = await validPlaidToken();
-    console.log("Getting user connected to bank");
-    console.log(userData);
-    console.log("Valid plait token obj Recieve - ", triggerValidPlaidToken);
-    console.log("Getting user connected to bank");
+
     if (userData.bankIntegrationStatus == false) {
       if (
         userData.qbIntegrationStatus == true &&
@@ -91,6 +88,13 @@ class Integration extends Component {
         triggerValidPlaidToken.response.isValidPlaidToken == true
       ) {
         const userConnectedToBank = await isCheckUserConnectedToBank();
+        console.log("Getting user connected to bank");
+        console.log(userData);
+        console.log("Valid plait token obj Recieve - ", triggerValidPlaidToken);
+        console.log("Getting user connected to bank");
+        console.log("Checking isCheckUserConnectedToBank() - ");
+        console.log(userConnectedToBank);
+        console.log("All transaciton ends - ");
         if (userConnectedToBank.result == true) {
           if (userData.bankStatus == "linked") {
             //Code if the Bank is integrated already and the bank is linked successfully
@@ -523,39 +527,41 @@ class Integration extends Component {
     //console.log("Current Qb Integraiton Status - ",qbIntegrationStatus);
     return (
       <Root headerColor={"#FFF"} footerColor={"#FF"} barStyle={"dark"}>
-      <View style={styles.container}>
-        <Spinner visible={isSpinner} />
-        {this.state.isBodyLoaded == true ? (
-          <React.Fragment>
-            <View
-              style={{
-                flexDirection: "row",
-                width: "62%",
-                marginTop: "1%",
-                alignSelf: "flex-start",
-                justifyContent: "space-between",
-              }}
-            >
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <AntDesign
-                  size={30}
-                  name="left"
-                  style={{ alignSelf: "flex-start", marginLeft: 10 }}
-                />
-              </TouchableOpacity>
-              <Text style={styles.header}>Integrations</Text>
-            </View>
-            {isUserLinkedToBank == false && isUserUnlinkedToBank == false
-              ? this.BankNotConnectedView()
-              : onlyForRenderBankStatus == "linked"
-              ? this.BankLinkedView()
-              : this.BankUnlinkedView()}
-            {isUserConnectedToQuickBook
-              ? this.quickBookConnectedView()
-              : this.quickBookNotConnectedView()}
-          </React.Fragment>
-        ) : null}
-      </View>
+        <View style={styles.container}>
+          <Spinner visible={isSpinner} />
+          {this.state.isBodyLoaded == true ? (
+            <React.Fragment>
+              <View
+                style={{
+                  flexDirection: "row",
+                  width: "62%",
+                  marginTop: "1%",
+                  alignSelf: "flex-start",
+                  justifyContent: "space-between",
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}
+                >
+                  <AntDesign
+                    size={30}
+                    name="left"
+                    style={{ alignSelf: "flex-start", marginLeft: 10 }}
+                  />
+                </TouchableOpacity>
+                <Text style={styles.header}>Integrations</Text>
+              </View>
+              {isUserLinkedToBank == false && isUserUnlinkedToBank == false
+                ? this.BankNotConnectedView()
+                : onlyForRenderBankStatus == "linked"
+                ? this.BankLinkedView()
+                : this.BankUnlinkedView()}
+              {isUserConnectedToQuickBook
+                ? this.quickBookConnectedView()
+                : this.quickBookNotConnectedView()}
+            </React.Fragment>
+          ) : null}
+        </View>
       </Root>
     );
   }
