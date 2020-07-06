@@ -239,6 +239,8 @@ class ExpenseByCategory extends Component {
   renderCategory = () => {
     const { expensesData } = this.props.mainExpenseByCategoryRedux;
     const { ExpenseByCategory } = expensesData;
+    
+
     return (
       <Fragment>
         {ExpenseByCategory.length > 0 ? (
@@ -263,25 +265,41 @@ class ExpenseByCategory extends Component {
   renderSingleCategory = ({ currentIndex, item }) => {
     const { expensesData, expenseType } = this.props.mainExpenseByCategoryRedux;
     const { ExpenseByCategory } = expensesData;
-
+    const { category } = this.props.categoryReduxData;
+    console.log("Test here - ",category);
     //let categoryBackgroundColor = `#F98361`;
     let categoryIcon = {
       backgroundColor: `#6C5BC1`,
       isIcon: false,
       iconPath: null,
     };
-    for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
-      if (
-        item.category.toLowerCase() ===
-        PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()
-      ) {
-        categoryIcon.backgroundColor =
-          PLAID_EXPENSE_CATEGORIES[i].categoryColor;
-        categoryIcon.isIcon = true;
-        categoryIcon.iconPath = PLAID_EXPENSE_CATEGORIES[i].categoryIcon;
-        break;
-      }
-    }
+    //Chages for new category structure here
+
+    let categoryDetailsObj = category.find(
+      (itr) => itr.id === item.categoryId
+    );  
+    if (categoryDetailsObj != undefined && !categoryDetailsObj.customcategories) {
+      categoryIcon.backgroundColor = categoryDetailsObj.categoryColor;
+      categoryIcon.isIcon = true;
+      categoryIcon.iconPath = categoryDetailsObj.categoryIcon;
+    } else if(categoryDetailsObj != undefined && categoryDetailsObj?.customcategories) {
+      categoryIcon.backgroundColor = categoryDetailsObj.categoryColor;
+      categoryIcon.isIcon = false;
+      categoryIcon.iconPath = null;
+    } 
+    // console.log("Test for incomming data - ",item);
+    // for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
+    //   if (
+    //     item.category.toLowerCase() ===
+    //     PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()
+    //   ) {
+    //     categoryIcon.backgroundColor =
+    //       PLAID_EXPENSE_CATEGORIES[i].categoryColor;
+    //     categoryIcon.isIcon = true;
+    //     categoryIcon.iconPath = PLAID_EXPENSE_CATEGORIES[i].categoryIcon;
+    //     break;
+    //   }
+    // }
 
     let isShowUpDownIcon = {};
     isShowUpDownIcon.isShow = false;

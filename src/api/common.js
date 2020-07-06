@@ -15,6 +15,9 @@ export async function isUserLoggedIn() {
   }
 }
 
+export const randomElement = (array) => {
+  return array[Math.floor(Math.random() * array.length)];
+};
 export const numberWithCommas = (x = 0) => {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
@@ -217,7 +220,7 @@ const EXPENSE_ICONS = {
   uncategorized: {
     categoryIcon: require("../assets/CategoryIcon/uncategorized3.png"),
     categoryColor: "#EEEFF1",
-    
+    categoryTextColor: "#131213",
   },
 };
 
@@ -291,8 +294,8 @@ export const PLAID_EXPENSE_CATEGORIES = [
     ...EXPENSE_ICONS.repair_and_maintanence,
   },
   {
-    categoryName: "Repair & Maintanence",
-    ...EXPENSE_ICONS.repair_and_maintanence,
+    categoryName: "Licenses & Permits",
+    ...EXPENSE_ICONS.licenses_and_permits,
   },
   {
     categoryName: "Taxes",
@@ -320,6 +323,30 @@ export const PLAID_EXPENSE_CATEGORIES = [
   },
 ];
 
+export const PLAID_INCOME_CUSTOM_CATEGORIES_COLORS = [
+  { color: "#1458A8" },
+  { color: "#2457DC" },
+  { color: "#245582" },
+  { color: "#247E16" },
+  { color: "#6BB410" },
+  { color: "#1AA2B5" },
+  { color: "#128E5A" },
+  { color: "#18847D" },
+  { color: "#2E7B9C" },
+  { color: "#071E72" },
+];
+export const PLAID_EXPENSE_CUSTOM_CATEGORIES_COLORS = [
+  { color: "#B96A22" },
+  { color: "#AB5415" },
+  { color: "#7D2040" },
+  { color: "#B02C35" },
+  { color: "#922E10" },
+  { color: "#AF3000" },
+  { color: "#791010" },
+  { color: "#751884" },
+  { color: "#9C2E5C" },
+  { color: "#4F0772" },
+];
 export const getCategoryInitials = (str = "") => {
   let splitArray = str.split(" ");
   let forAcroyn = [];

@@ -1,9 +1,13 @@
+import { getPlaidCategoryUsingPromise } from "../api/api";
+import {
+  PLAID_EXPENSE_CATEGORIES,
+  PLAID_EXPENSE_CUSTOM_CATEGORIES_COLORS,
+  randomElement,
+} from "@api";
+
 export const FETCH_CATEGORY_REQUEST = "FETCH_CATEGORY_REQUEST";
 export const FETCH_CATEGORY_SUCCESS = "FETCH_CATEGORY_SUCCESS";
 export const FETCH_CATEGORY_ERROR = "FETCH_CATEGORY_ERROR";
-
-import Axios from "axios";
-import { getPlaidCategoryUsingPromise } from "../api/api";
 
 const initialCategoryState = {
   category: [],
@@ -34,7 +38,8 @@ export const plaidCategoryReducer = (state = initialCategoryState, action) => {
   switch (action.type) {
     case FETCH_CATEGORY_REQUEST:
       return {
-        category: [],
+        //category: [],
+        ...state,
         isFetched: false,
         loading: true,
         error: false,
@@ -64,9 +69,34 @@ export function triggerPlaidCategoryAsync() {
 
     getPlaidCategoryUsingPromise()
       .then((plaidCategoryData) => {
-        dispatch(fetchCategorySuccess(plaidCategoryData.plaidCategoryData));
+        let updatedPlaidCategoryData = plaidCategoryData.plaidCategoryData.map(
+          (singlePlaidCategory, index) => {
+            let categoryAssets = {};
+            if (!singlePlaidCategory.customcategories) {
+              let categoryAssetsData = PLAID_EXPENSE_CATEGORIES.find(
+                (itr) =>
+                  itr.categoryName.toLowerCase() ===
+                  singlePlaidCategory.categoryName.toLowerCase()
+              );
+              categoryAssets.categoryColor = categoryAssetsData.categoryColor;
+              categoryAssets.categoryIcon = categoryAssetsData.categoryIcon;
+              categoryAssets.categoryTextColor =
+                categoryAssetsData.categoryTextColor != undefined
+                  ? categoryAssetsData.categoryTextColor
+                  : "#FFF";
+            } else {
+              categoryAssets.categoryColor = randomElement(
+                PLAID_EXPENSE_CUSTOM_CATEGORIES_COLORS
+              ).color;
+              categoryAssets.categoryTextColor = "#FFF";
+            }
+            return { ...singlePlaidCategory, ...categoryAssets };
+          }
+        );
+        dispatch(fetchCategorySuccess(updatedPlaidCategoryData));
       })
       .catch((error) => {
+        console.log("Error here - ", error);
         dispatch(fetchCategoryError("Error While Fetching Category"));
       });
   };

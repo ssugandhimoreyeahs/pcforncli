@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "PCFOSplash.jpg",
+      "filename" : "splash.jpg",
       "idiom" : "iphone",
       "scale" : "1x"
     },
     {
-      "filename" : "PCFOSplash-1.jpg",
+      "filename" : "splash-1.jpg",
       "idiom" : "iphone",
       "scale" : "2x"
     },
     {
-      "filename" : "PCFOSplash-2.jpg",
+      "filename" : "splash-2.jpg",
       "idiom" : "iphone",
       "scale" : "3x"
     }
@@ -21,6 +21,7 @@
     "version" : 1
   },
   "properties" : {
-    "template-rendering-intent" : "original"
+    "localizable" : true,
+    "template-rendering-intent" : "template"
   }
 }

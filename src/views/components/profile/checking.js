@@ -416,10 +416,7 @@ class TransactionScreen extends PureComponent {
       </View>
     );
   };
-  handleOnCategoryTapPress = (
-    rootTransactionObj,
-    transactionType 
-  ) => { 
+  handleOnCategoryTapPress = (rootTransactionObj, transactionType) => {
     const { cohReducer, userData: userDataMain } = this.props.reduxState;
     const { userData } = userDataMain;
     if (userData.bankStatus == "linked") {
@@ -458,7 +455,7 @@ class TransactionScreen extends PureComponent {
     const {
       all: { transactionsRender, loader },
     } = this.state;
-
+    let category = [...this.props.categoryReduxData.category];
     return (
       <View style={styles.parentTabChild}>
         {transactionsRender.length === 0 && loader === true ? (
@@ -482,6 +479,7 @@ class TransactionScreen extends PureComponent {
             onEndReached={() => {
               this.transactionStore(false, "All");
             }}
+            categoryReduxData={category}
             loader={loader ? <NativeBaseSpinner color="#070640" /> : null}
           />
         )}
@@ -492,7 +490,7 @@ class TransactionScreen extends PureComponent {
     const {
       outflow: { transactionsRender, loader },
     } = this.state;
-
+    let category = [...this.props.categoryReduxData.category];
     return (
       <View style={styles.parentTabChild}>
         {transactionsRender.length === 0 && loader === true ? (
@@ -516,6 +514,7 @@ class TransactionScreen extends PureComponent {
             onEndReached={() => {
               this.transactionStore(false, "Outflow");
             }}
+            categoryReduxData={category}
             loader={loader ? <NativeBaseSpinner color="#070640" /> : null}
           />
         )}
@@ -526,7 +525,7 @@ class TransactionScreen extends PureComponent {
     const {
       inflow: { transactionsRender, loader },
     } = this.state;
-
+    let category = [...this.props.categoryReduxData.category];
     return (
       <View style={styles.parentTabChild}>
         {transactionsRender.length === 0 && loader === true ? (
@@ -550,6 +549,7 @@ class TransactionScreen extends PureComponent {
             onEndReached={() => {
               this.transactionStore(false, "Inflow");
             }}
+            categoryReduxData={category}
             loader={loader ? <NativeBaseSpinner color="#070640" /> : null}
           />
         )}
@@ -587,8 +587,20 @@ class TransactionScreen extends PureComponent {
       </Fragment>
     );
   };
+  handleErrorViewDueToCategory = () => {
+    Alert.alert("Message", "Something went wrong", [
+      {
+        text: "Okay",
+        onPress: () => {
+          this.props.navigation.goBack();
+        },
+      },
+    ]);
+    return null;
+  };
   render() {
     let currentBalance = "";
+    let { category, error, isFetched, loading } = this.props.categoryReduxData;
     const { cohReducer, userData: userDataMain } = this.props.reduxState;
     const { userData } = userDataMain;
     const { bankIntegrationStatus = null } = userData;
@@ -599,22 +611,27 @@ class TransactionScreen extends PureComponent {
     return (
       <Root headerColor={"#070640"} footerColor={"#FFF"} barStyle={"light"}>
         <Spinner visible={spinner} textStyle={styles.spinnerTextStyle} />
-        <View style={styles.margins}>
-          {spinner === false ? (
-            bankIntegrationStatus != null && bankIntegrationStatus === true ? (
-              <this.renderTransactionScreen currentBalance={currentBalance} />
-            ) : (
-              <Timeout
-                navigation={this.props.navigation}
-                reloadPlaid={() => {
-                  if (this.props.navigation.getParam("reloadPlaid")) {
-                    this.props.navigation.getParam("reloadPlaid")();
-                  }
-                }}
-              />
-            )
-          ) : null}
-        </View>
+        {error ? (
+          this.handleErrorViewDueToCategory()
+        ) : loading === false ? (
+          <View style={styles.margins}>
+            {spinner === false ? (
+              bankIntegrationStatus != null &&
+              bankIntegrationStatus === true ? (
+                <this.renderTransactionScreen currentBalance={currentBalance} />
+              ) : (
+                <Timeout
+                  navigation={this.props.navigation}
+                  reloadPlaid={() => {
+                    if (this.props.navigation.getParam("reloadPlaid")) {
+                      this.props.navigation.getParam("reloadPlaid")();
+                    }
+                  }}
+                />
+              )
+            ) : null}
+          </View>
+        ) : <Spinner visible={true} textStyle={styles.spinnerTextStyle} />}
       </Root>
     );
   }
