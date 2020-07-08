@@ -2,17 +2,17 @@
   "images" : [
     {
       "filename" : "splash.jpg",
-      "idiom" : "iphone",
+      "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "splash-1.jpg",
-      "idiom" : "iphone",
+      "filename" : "splash.v1.png",
+      "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "splash-2.jpg",
-      "idiom" : "iphone",
+      "filename" : "splash.v1-1.png",
+      "idiom" : "universal",
       "scale" : "3x"
     }
   ],
@@ -21,7 +21,6 @@
     "version" : 1
   },
   "properties" : {
-    "localizable" : true,
-    "template-rendering-intent" : "template"
+    "template-rendering-intent" : "original"
   }
 }
