@@ -496,7 +496,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = FS87CRZ2ZU;
 				HEADER_SEARCH_PATHS = (
@@ -573,7 +573,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_TEAM = FS87CRZ2ZU;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

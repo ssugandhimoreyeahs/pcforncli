@@ -39,7 +39,7 @@ import {
   ADDEDCATEGORY,
   DELETECATEGORY,
 } from "../../../api/message";
-import {Root} from '@components';
+import { Root } from "@components";
 import {
   getCategoryId,
   getCategoryName,
@@ -75,7 +75,7 @@ class CategoryScreen extends Component {
     let recievedData = this.props.navigation.getParam(
       "currentExecutingTransaction"
     );
-    //console.log("Recieve data from the transaction change - ", recievedData);
+    
   }
 
   componentWillMount() {
@@ -90,8 +90,7 @@ class CategoryScreen extends Component {
       );
       return false;
     } else {
-      nav.goBack();
-      ////console.log("Transaction")
+      nav.goBack(); 
       return true;
     }
   };
@@ -108,8 +107,8 @@ class CategoryScreen extends Component {
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
     // error = true;
     const { isEdit } = this.state;
-    let antDesignIcon = isEdit == true ? `left` : "left";
-    const showEditTray = this.props.navigation.getParam("showEditTray");
+    let antDesignIcon = isEdit == true ? `close` : "close";
+    const showEditTray = this.props.navigation.getParam("showEditTray", true);
     return (
       <View style={styles.header}>
         <View style={styles.myHeaderParent}>
@@ -117,12 +116,10 @@ class CategoryScreen extends Component {
             <AntDesign name={`${antDesignIcon}`} size={22} color={"#000000"} />
           </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>Select Category</Text>
           {error == true ? (
             <View style={styles.editTrayWidth} />
           ) : isEdit == true ? (
             <TouchableOpacity
-              style={{ paddingRight: 7 }}
               onPress={() => {
                 this.setState({ isEdit: false, toggle: false });
               }}
@@ -131,12 +128,11 @@ class CategoryScreen extends Component {
             </TouchableOpacity>
           ) : showEditTray == true ? (
             <TouchableOpacity
-              style={{ ...styles.editTrayWidth, paddingRight: 2 }}
               onPress={() => {
                 this.setState({ isEdit: true, toggle: false });
               }}
             >
-              <Text style={styles.editHeaderTitle}>Edit</Text>
+              <Text style={styles.editHeaderTitle}>Edit Categories</Text>
             </TouchableOpacity>
           ) : (
             <View style={styles.editTrayWidth} />
@@ -203,15 +199,14 @@ class CategoryScreen extends Component {
     if (this.state.toggle) {
       const {
         clientCategoryObjectId: transactionCategory,
-        _id
+        _id,
       } = this.props.navigation.getParam("currentExecutingTransaction");
       let axiosBody = {};
       //axiosBody.oldCategoryId = getCategoryId(transactionCategory);
       //axiosBody.updateCategoryId = getCategoryId(categoryName);
       axiosBody.oldCategoryId = transactionCategory;
       axiosBody.updateCategoryId = categoryId;
-      axiosBody.transactionId = _id;
-      //console.log("Axios Body Before Send - ", axiosBody);
+      axiosBody.transactionId = _id; 
 
       changeAllSimilarTransaction(axiosBody)
         .then((response) => {
@@ -295,18 +290,18 @@ class CategoryScreen extends Component {
         this.setState({ isSpinner: false }, () => {
           setTimeout(() => {
             this.props.fetchPlaidCategoryDispatch();
-
+            //this.props.navigation.getParam("resetTransactionScreen")();
             setTimeout(() => {
               this.props.navigation.getParam("resetTransactionScreen")();
             }, 500);
 
             setTimeout(() => {
               this.props.fetchExpenseByCategory(3);
-            }, 1000);
+            }, 2000);
 
             setTimeout(() => {
               this.props.fetchMainExepenseByCategory(0);
-            }, 1500);
+            }, 2500);
           }, 500);
         });
       }, 500);
@@ -350,7 +345,7 @@ class CategoryScreen extends Component {
               "currentExecutingTransaction"
             );
             let pointIconToDefaultCategory = false;
-            //console.log("For delete request - ",categoryName," ",clientCategory)
+            
             if (categoryName.toLowerCase() == clientCategory.toLowerCase()) {
               pointIconToDefaultCategory = true;
             }
@@ -373,13 +368,14 @@ class CategoryScreen extends Component {
 
     const { isEdit, pointIconToDefaultCategory } = this.state;
     let { category, error, isFetched, loading } = this.props.categoryReduxData;
-    let { categoryName, index, customcategories, id } = categoryData;
-    // console.log(
-    //   "Here - ",
-    //   executingTransactionDetails.clientDefaultCategory,
-    //   " category Name ",
-    //   categoryName
-    // );
+    let {
+      categoryName,
+      index,
+      customcategories,
+      categoryIcon,
+      id,
+      categoryColor,
+    } = categoryData; 
     let showCheckIcon =
       pointIconToDefaultCategory == true
         ? categoryName == executingTransactionDetails.clientDefaultCategory
@@ -388,19 +384,6 @@ class CategoryScreen extends Component {
         : categoryName == executingTransactionDetails.clientCategory
         ? true
         : false;
-    let isIconAvailable = false;
-    let iconPath = null;
-    let categoryBackgroundColor = `#6C5BC1`;
-    for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
-      if (
-        PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase() ===
-        categoryName.toLowerCase()
-      ) {
-        isIconAvailable = true;
-        iconPath = PLAID_EXPENSE_CATEGORIES[i].categoryIcon;
-        break;
-      }
-    }
 
     return (
       <Fragment>
@@ -413,9 +396,9 @@ class CategoryScreen extends Component {
             style={styles.renderSingleCategoryParentView}
           >
             <View style={{ width: "15%" }}>
-              {isIconAvailable == true ? (
+              {customcategories == false ? (
                 <Image
-                  source={iconPath}
+                  source={categoryIcon}
                   height={36}
                   width={36}
                   style={{ height: 36, width: 36 }}
@@ -424,7 +407,7 @@ class CategoryScreen extends Component {
                 <View
                   style={{
                     ...styles.renderSingleCategoryCustomIconView,
-                    backgroundColor: categoryBackgroundColor,
+                    backgroundColor: categoryColor,
                   }}
                 >
                   <Text style={{ color: "#FFF" }}>
@@ -450,9 +433,9 @@ class CategoryScreen extends Component {
         ) : (
           <View style={styles.viewRenderSingleCategoryParent}>
             <View style={{ width: "15%" }}>
-              {isIconAvailable == true ? (
+              {customcategories == false ? (
                 <Image
-                  source={iconPath}
+                  source={categoryIcon}
                   height={36}
                   width={36}
                   style={{ height: 36, width: 36 }}
@@ -461,7 +444,7 @@ class CategoryScreen extends Component {
                 <View
                   style={{
                     ...styles.viewRenderSingleCategoryParentView,
-                    backgroundColor: categoryBackgroundColor,
+                    backgroundColor: categoryColor,
                   }}
                 >
                   <Text style={{ color: "#FFF" }}>
@@ -545,23 +528,8 @@ class CategoryScreen extends Component {
   };
   errorView = () => {
     return (
-      <View
-        style={{
-          width: "100%",
-          height: "85%",
-          justifyContent: "center",
-          alignSelf: "center",
-          borderColor: "red",
-          borderWidth: 2,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+      <View style={styles.errorParentView}>
+        <View style={styles.errorChildView}>
           <AntDesign
             name="exclamationcircle"
             size={20}
@@ -571,36 +539,14 @@ class CategoryScreen extends Component {
             Something went wrong!
           </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 15,
-          }}
-        >
+        <View style={styles.errorCustomView}>
           <TouchableOpacity
             onPress={() => {
               this.handleReloadCategories();
             }}
-            style={{
-              height: 35,
-              width: 170,
-              borderRadius: 20,
-              backgroundColor: "#090643",
-              borderColor: "#090643",
-              borderWidth: 2,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            style={styles.errorTouchStyle}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={styles.errorTouchStyleChild}>
               <MaterialCommunityIcons
                 style={{ marginTop: 4 }}
                 name="reload"
@@ -622,8 +568,7 @@ class CategoryScreen extends Component {
         //const addCategoryResponse = await addPlaidCategory(allFirstWordCapital(categoryInput));
         const addCategoryResponse = await addPlaidCategory(
           categoryInput.toLowerCase()
-        );
-        console.log("Add category Response here - ", addCategoryResponse);
+        ); 
         if (addCategoryResponse.result == true) {
           setTimeout(() => {
             this.setState(
@@ -645,7 +590,7 @@ class CategoryScreen extends Component {
                     ],
                     { cancelable: false }
                   );
-                }, 100);
+                }, 500);
               }
             );
           }, 1300);
@@ -870,17 +815,17 @@ class CategoryScreen extends Component {
 
     return (
       <Root headerColor={"#F8F8F8"} footerColor={"#EFEFF1"} barStyle={"dark"}>
-      <View style={styles.container}>
-        <Spinner visible={this.state.isSpinner} />
-        {error == true ? (
-          <Fragment>
-            <this.header />
-            <this.errorView />
-          </Fragment>
-        ) : (
-          <this.renderBody />
-        )}
-      </View>
+        <View style={styles.container}>
+          <Spinner visible={this.state.isSpinner} />
+          {error == true ? (
+            <Fragment>
+              <this.header />
+              <this.errorView />
+            </Fragment>
+          ) : (
+            <this.renderBody />
+          )}
+        </View>
       </Root>
     );
   }
@@ -942,9 +887,7 @@ const styles = StyleSheet.create({
   editHeaderTitle: {
     color: "#4A90E2",
     fontSize: 17,
-  },
-  editTrayWidth: {
-    width: 35,
+    textAlign: "left",
   },
   addCategoryParentView: {
     paddingHorizontal: 10,
@@ -1029,6 +972,40 @@ const styles = StyleSheet.create({
   },
   viewRenderSingleCategoryLeftBody: {
     width: "15%",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorParentView: {
+    width: "100%",
+    height: "85%",
+    justifyContent: "center",
+    alignSelf: "center",
+    borderColor: "red",
+    borderWidth: 2,
+  },
+  errorChildView: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorCustomView: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 15,
+  },
+  errorTouchStyle: {
+    height: 35,
+    width: 170,
+    borderRadius: 20,
+    backgroundColor: "#090643",
+    borderColor: "#090643",
+    borderWidth: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorTouchStyleChild: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",

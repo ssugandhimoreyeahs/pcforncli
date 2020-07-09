@@ -34,7 +34,7 @@ class ChangeInCash extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      cocMonths: "This Month",
+      cocMonths: "3 Months",
       arrowStyle: "arrow-down",
       //showInsightsCart: true,
     };
@@ -54,8 +54,12 @@ class ChangeInCash extends Component {
     } else {
       renderButton = "12 Months";
     }
-
-    return { cocMonths: renderButton };
+    if(renderButton != state.cocMonths){
+      return { cocMonths: renderButton };
+    }else{
+      return null;
+    }
+    
   }
 
   changeCashInChangeData = (cocMonths) => {

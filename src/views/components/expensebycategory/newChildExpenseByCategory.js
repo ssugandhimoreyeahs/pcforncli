@@ -1097,7 +1097,9 @@ class ExpenseByCategoryChild extends Component {
                     borderColor: backgroundColor,
                   }}
                 >
-                  <Text style={styles.newTransactionCategoryButtonText}>
+                  <Text style={{...styles.newTransactionCategoryButtonText,
+                    color: backgroundColor === '#EEEFF1' ? '#000' : '#FFF'
+                  }}>
                     {firstLetterCapital(category)}
                   </Text>
                 </TouchableOpacity>
@@ -1116,7 +1118,7 @@ class ExpenseByCategoryChild extends Component {
     const { backgroundColor, category } = this.props.navigation.getParam(
       "currentExpenseCategory"
     );
-    //console.log(this.props.navigation.getParam("currentExpenseCategory"));
+    console.log(this.props.navigation.getParam("currentExpenseCategory"));
     return (
       <Fragment>
         <View style={{ height: 25, backgroundColor: "#EEEFF1" }} />

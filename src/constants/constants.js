@@ -2,6 +2,7 @@ import APPJSON from "../../app.json";
 
 export const API_TIMEOUT = 20000;
 export const APP_VERSION = APPJSON.version;
+const APP_DEPLOYMENT = APPJSON.appDeploypment;
 const NETWORKINSTANCE = {
   SANDBOXINSTANCE: "http://18.222.152.47:8081/v0.1", //code for the using the sandbox
   PRODUCTIONINSTANCE: "http://3.132.213.123:8081/v0.1", // code for the production
@@ -11,7 +12,7 @@ const NETWORKINSTANCE = {
 let isProduction = true;
 //isProduction = false;
 
-const APIENDPOINT = isProduction
+const APIENDPOINT = APP_DEPLOYMENT
   ? {
       endPoint: NETWORKINSTANCE.PRODUCTIONINSTANCE,
       isQuickBookProduction: true,
