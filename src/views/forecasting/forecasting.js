@@ -254,8 +254,6 @@ class Forecasting extends Component {
         );
       }
     );
-
-    console.log("Parent method successfully ends here ---");
   };
   render() {
     let { isBodyLoaded, isError, isSpinner } = this.state;
@@ -267,6 +265,8 @@ class Forecasting extends Component {
         headerColor={
           this.state.isSpinner
             ? "#F1F3F5"
+            : !userData.bankIntegrationStatus
+            ? "#F1F3F5"
             : this.getRunwayColor(
                 this.state.cash,
                 this.state.expenses,
@@ -274,7 +274,7 @@ class Forecasting extends Component {
               )
         }
         footerColor={"#FFF"}
-        barStyle={"light"}
+        barStyle={!userData.bankIntegrationStatus ? "dark" : "light"}
       >
         <BottomNavLayout navigation={this.props.navigation}>
           {isSpinner == true ? (

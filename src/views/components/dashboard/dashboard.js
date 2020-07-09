@@ -26,7 +26,7 @@ import {
   getUserPromise,
   getUser,
 } from "../../../api/api";
-import {Root} from '@components';
+import { Root } from "@components";
 import Spinner from "react-native-loading-spinner-overlay";
 import TryAgainScreen from "../../ftux/somethingWrong";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
@@ -49,6 +49,7 @@ import {
 } from "../../../api/message";
 import { Circle } from "react-native-progress";
 import NoPlaidView from "./noPlaidView";
+import { OnboardingQuestionScreen } from "@screens";
 import { heightPercentageToDP } from "react-native-responsive-screen";
 class Dashboard extends Component {
   constructor(props) {
@@ -555,6 +556,7 @@ class Dashboard extends Component {
     }
   };
   componentDidMount = async () => {
+    
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
     );
@@ -615,50 +617,16 @@ class Dashboard extends Component {
       );
     }
   );
-  renderOverlay = () => {
-    const { userData } = this.state;
-    console.log("User datahere - ", userData);
-    return (
-      <Overlay
-        overlayStyle={{
-          height: "100%",
-          width: "100%",
-          flex: 1,
-        }}
-        windowBackgroundColor="rgba(0, 0, 0, 0.7)"
-        overlayBackgroundColor="rgba(0, 0, 0, 0)"
-        isVisible={this.state.isInnerIntegrationStarted}
-        //isVisible={true}
-      >
-        <View style={{ marginTop: heightPercentageToDP(18) }}>
-          <Text style={styles.onBoardingTextStyle}>
-            Sit Tight {`${userData.firstname}`}
-          </Text>
-          <Text style={{ ...styles.onBoardingTextStyle, marginTop: 15 }}>
-            We're Building Your Dashboard
-          </Text>
-
-          <View
-            style={{ marginTop: heightPercentageToDP(8), alignSelf: "center" }}
-          >
-            <Circle
-              //borderColor={"rgba(0, 0, 0, 0)"}
-              size={heightPercentageToDP(10)}
-              color={"#FFFFFF"}
-              unfilledColor={"#4A4A4B"}
-              indeterminateAnimationDuration={1500}
-              indeterminate={true}
-              borderWidth={7}
-            />
-          </View>
-        </View>
-      </Overlay>
-    );
-  };
   renderNoPlaidDashboard = () => {
+    const { isInnerIntegrationStarted, userData } = this.state;
+
     return (
       <BottomNavLayout navigation={this.props.navigation}>
-        <this.renderOverlay />
+        <OnboardingQuestionScreen
+          userData={userData}
+          isVisible={isInnerIntegrationStarted}
+        />
+        
         <HealthScore
           navigation={this.props.navigation}
           reloadPlaid={() => {
@@ -668,14 +636,14 @@ class Dashboard extends Component {
             this.reloadQuickbooks();
           }}
         />
-
         <NoPlaidView />
       </BottomNavLayout>
     );
   };
   render() {
     const { isSpinner } = this.state;
-    const { bankIntegrationStatus, qbIntegrationStatus } = this.state.userData;
+    let { bankIntegrationStatus, qbIntegrationStatus } = this.state.userData;
+    //bankIntegrationStatus = false;
     return (
       <Root headerColor={"#070640"} footerColor={"#FFF"} barStyle={"light"}>
         <NavigationEvents
@@ -810,3 +778,40 @@ Do not remove it until it work
           //   }
           // }}
 */
+
+// return (
+//   <Overlay
+//     overlayStyle={{
+//       height: "100%",
+//       width: "100%",
+//       flex: 1,
+//     }}
+//     windowBackgroundColor="rgba(0, 0, 0, 0.7)"
+//     overlayBackgroundColor="rgba(0, 0, 0, 0)"
+//     isVisible={this.state.isInnerIntegrationStarted}
+//     //isVisible={true}
+//   >
+//     <View style={{ marginTop: heightPercentageToDP(18) }}>
+//       <Text style={styles.onBoardingTextStyle}>
+//         Sit Tight {`${userData.firstname}`}
+//       </Text>
+//       <Text style={{ ...styles.onBoardingTextStyle, marginTop: 15 }}>
+//         We're Building Your Dashboard
+//       </Text>
+
+//       <View
+//         style={{ marginTop: heightPercentageToDP(8), alignSelf: "center" }}
+//       >
+//         <Circle
+//           //borderColor={"rgba(0, 0, 0, 0)"}
+//           size={heightPercentageToDP(10)}
+//           color={"#FFFFFF"}
+//           unfilledColor={"#4A4A4B"}
+//           indeterminateAnimationDuration={1500}
+//           indeterminate={true}
+//           borderWidth={7}
+//         />
+//       </View>
+//     </View>
+//   </Overlay>
+// );
