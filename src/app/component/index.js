@@ -8,6 +8,12 @@ import {
 } from "./TransactionComponent";
 import Seprator from "./Seprator";
 import ErrorBoundry from "./ErrorBoundary";
+
+import {
+  OnboardingQuestionCount,
+  OnboardingQuestion,
+  OnboardingAnswer,
+} from "./OnboardingQuestion";
 export {
   CashOnHand,
   ChangeInCash,
@@ -17,4 +23,7 @@ export {
   TransactionComponentWithDate,
   Seprator,
   ErrorBoundry,
+  OnboardingQuestionCount,
+  OnboardingQuestion,
+  OnboardingAnswer,
 };

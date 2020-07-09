@@ -33,7 +33,7 @@ class Sales extends Component {
     this.state = {
       months: "3 Months",
       arrowStyle: "arrow-down",
-      showInsightCart: true,
+      showInsightCart: false,
     };
     this.dropdownRef = React.createRef();
   }
@@ -257,7 +257,7 @@ class Sales extends Component {
                   marginRight: 5,
                   marginTop: 8,
                 }}
-              >{` ${this.state.months}`}</Text>
+              >{` ${this.state.months} Total`}</Text>
             </View>
           </View>
           {isSalesGraphEmpty == true ? (

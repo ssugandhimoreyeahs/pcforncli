@@ -1,13 +1,5 @@
-import React, {
-  Fragment,
-  memo,
-  useRef,
-  useImperativeHandle,
-  forwardRef,
-  useState,
-  useCallback,
-} from "react";
-import { Text, View, FlatList, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import React, { Fragment, memo, useRef, useState } from "react";
+import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import styles from "./indexCss";
 import PropTypes from "prop-types";
 import { ALL_MONTHS } from "appconstants";
@@ -16,18 +8,17 @@ import {
   numberWithCommas,
   firstLetterCapital,
   PLAID_EXPENSE_CATEGORIES,
+  PLAID_EXPENSE_CUSTOM_CATEGORIES_COLORS,
+  randomElement,
 } from "@api";
 import { Seprator } from "@components";
-import { off } from "superagent";
+import Store from "@redux/store";
 
-const computeTransaction = (singleTransaction, transactionType) => {
+const computeTransaction = (singleTransaction, transactionType, categoryReduxData) => {
   let finalAmount = ``;
   let categoryButtonText = ``;
   let amount = Math.abs(singleTransaction.amount);
   let detailInfo = ``;
-  let categoryBackgroundColor = `#FFF`;
-
-  detailInfo = ``;
   categoryButtonText = `${firstLetterCapital(
     singleTransaction.clientCategory
   )}`;
@@ -43,32 +34,33 @@ const computeTransaction = (singleTransaction, transactionType) => {
       finalAmount = `$${numberWithCommas(amount)}`;
     }
   }
+
   let touchableTextColor = "#FFF";
-  let touchableBorder = categoryBackgroundColor;
-  let touchableColor = categoryBackgroundColor;
-  if (categoryButtonText !== "+ Category") {
-    for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
-      if (
-        singleTransaction.clientCategory.toLowerCase() ===
-        PLAID_EXPENSE_CATEGORIES[i].categoryName.toLowerCase()
-      ) {
-        categoryBackgroundColor = PLAID_EXPENSE_CATEGORIES[i].categoryColor;
-        break;
-      }
-    }
+  let touchableBorder = "#000";
+  let touchableColor = "#FFF";
 
-    if (categoryBackgroundColor === "#FFF") {
-      // touchableBorder = "#000";
-      // touchableTextColor = "#000";
-      touchableBorder = "#6C5BC1";
-      touchableTextColor = "#FFF";
-      touchableColor = "#6C5BC1";
-    } else {
-      touchableBorder = categoryBackgroundColor;
-      touchableColor = categoryBackgroundColor;
-    }
+  let categoryDetailsObj = categoryReduxData.find(
+    (itr) => itr.id === singleTransaction.clientCategoryObjectId
+  ); 
+  if(categoryDetailsObj == undefined){
+    categoryDetailsObj = {};
+    categoryDetailsObj.customcategories = null; 
+    categoryDetailsObj.categoryColor = '#FFF';
+    categoryDetailsObj.categoryTextColor = '#000';
   }
-
+  if (!categoryDetailsObj?.customcategories) {
+    touchableColor = categoryDetailsObj.categoryColor;
+    touchableBorder = categoryDetailsObj.categoryColor;
+    touchableTextColor = categoryDetailsObj.categoryTextColor;
+  } else if(categoryDetailsObj?.customcategories) {
+    touchableColor = categoryDetailsObj.categoryColor;
+    touchableBorder = categoryDetailsObj.categoryColor;
+    touchableTextColor = categoryDetailsObj.categoryTextColor;
+  }else{
+    touchableColor = '#FFF';
+    touchableBorder = '#000';
+    touchableTextColor = '#000';
+  }
   return {
     transactionAmount: finalAmount,
     touchableText: categoryButtonText,
@@ -127,7 +119,7 @@ const TransactionComponent = memo((props) => {
 });
 
 const TransactionComponentDate = memo((props) => {
-  const { item = null, transactionType = null, onPress } = props;
+  const { item = null, transactionType = null, onPress, categoryReduxData } = props;
   if (item != null) {
     const { date, transactions } = item;
     let splitDate = date.split("-");
@@ -144,7 +136,8 @@ const TransactionComponentDate = memo((props) => {
           {transactions.map((singleTransaction, index) => {
             let computedResult = computeTransaction(
               singleTransaction,
-              transactionType
+              transactionType,
+              categoryReduxData
             );
             return (
               <View
@@ -184,6 +177,7 @@ const TransactionComponentWithDate = memo((props) => {
     onEndReached,
     loader,
     onPress,
+    categoryReduxData
   } = props;
   // const getCurrentScrollOffset = useCallback(() => {
   //   return scrollOffset.current;
@@ -225,6 +219,7 @@ const TransactionComponentWithDate = memo((props) => {
               transactionType={transactionType}
               loader={loader}
               onPress={onPress}
+              categoryReduxData={categoryReduxData}
             />
             {items.length - 1 === index ? loader : null}
           </Fragment>
