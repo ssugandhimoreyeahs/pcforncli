@@ -135,6 +135,10 @@ class CashOnHand extends Component {
     currentBalance,
   }) => {
     const { startedCheckPoint, endCheckPoint } = this.state;
+    let tDiff = TimeDifference(
+      startedCheckPoint,
+      endCheckPoint
+    );
     return (
       <View style={{ height }}>
         <View style={styles.cohBodyContainer}>
@@ -162,10 +166,7 @@ class CashOnHand extends Component {
                 color: "#1D1E1F",
                 textAlign: "right",
               }}
-            >{`${TimeDifference(
-              startedCheckPoint,
-              endCheckPoint
-            )} minutes ago`}</Text>
+            >{`${tDiff} minute${tDiff < 2 ? '' : 's'} ago`}</Text>
           </View>
         </View>
 

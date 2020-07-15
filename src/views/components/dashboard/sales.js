@@ -115,60 +115,32 @@ class Sales extends Component {
   });
   salesErrorView = React.memo(() => {
     return (
-      <View style={{ width: "100%", justifyContent: "center" }}>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+      <View style={styles.errorViewContainer}>
+        <View style={styles.errorViewChildContainer}>
           <AntDesign
             name="exclamationcircle"
             size={20}
             style={{ color: "#070640", alignSelf: "center" }}
           />
-          <Text style={{ marginLeft: 10, alignSelf: "center" }}>
+          <Text style={styles.errorViewTextContainer}>
             Something went wrong!
           </Text>
         </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "center",
-            alignItems: "center",
-            marginTop: 15,
-          }}
-        >
+        <View style={styles.errorViewTouchableContainer}>
           <TouchableOpacity
             onPress={() => {
               this.handleErrorReloadSales();
             }}
-            style={{
-              height: 35,
-              width: 170,
-              borderRadius: 20,
-              backgroundColor: "#090643",
-              borderColor: "#090643",
-              borderWidth: 2,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
+            style={styles.errorViewOnPressContainer}
           >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={styles.errorViewOnPressChildContainer}>
               <SimpleLineIcons
                 style={{ marginTop: 4 }}
                 name="reload"
                 size={18}
                 color="white"
               />
-              <Text style={{ color: "white", paddingLeft: 5 }}>Try Again</Text>
+              <Text style={styles.errorViewTextTryAgain}>Try Again</Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -391,10 +363,10 @@ class Sales extends Component {
         }
       }
     }
-    //childLoader = true;
-    //isSalesGraphEmpty = true;
-    //masterLoader = true;
-    //error = true;
+    // childLoader = true;
+    // isSalesGraphEmpty = true;
+    // masterLoader = false;
+    // error = true;
 
     return (
       <View style={{ height, ...styles.salesContainer }}>
@@ -499,6 +471,39 @@ const styles = {
     marginLeft: 3,
     marginTop: 3,
   },
+  errorViewContainer: {
+    width: "100%",
+    justifyContent: "center",
+    height: "100%",
+  },
+  errorViewChildContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorViewTextContainer: { marginLeft: 10, alignSelf: "center" },
+  errorViewTouchableContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 15,
+  },
+  errorViewOnPressContainer: {
+    height: 35,
+    width: 170,
+    borderRadius: 20,
+    backgroundColor: "#090643",
+    borderColor: "#090643",
+    borderWidth: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorViewOnPressChildContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorViewTextTryAgain: { color: "white", paddingLeft: 5 }
 };
 
 const mapStateToProps = (state) => {

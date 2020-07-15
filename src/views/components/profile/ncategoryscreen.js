@@ -28,6 +28,7 @@ import {
   addCategoryToTransaction,
   changeAllSimilarTransaction,
 } from "../../../api/api";
+import { toTitleCase } from '@utils';
 import {
   PLAID_EXPENSE_CATEGORIES,
   EXPENSES_COLOR,
@@ -75,7 +76,6 @@ class CategoryScreen extends Component {
     let recievedData = this.props.navigation.getParam(
       "currentExecutingTransaction"
     );
-    
   }
 
   componentWillMount() {
@@ -90,7 +90,7 @@ class CategoryScreen extends Component {
       );
       return false;
     } else {
-      nav.goBack(); 
+      nav.goBack();
       return true;
     }
   };
@@ -206,7 +206,7 @@ class CategoryScreen extends Component {
       //axiosBody.updateCategoryId = getCategoryId(categoryName);
       axiosBody.oldCategoryId = transactionCategory;
       axiosBody.updateCategoryId = categoryId;
-      axiosBody.transactionId = _id; 
+      axiosBody.transactionId = _id;
 
       changeAllSimilarTransaction(axiosBody)
         .then((response) => {
@@ -345,7 +345,7 @@ class CategoryScreen extends Component {
               "currentExecutingTransaction"
             );
             let pointIconToDefaultCategory = false;
-            
+
             if (categoryName.toLowerCase() == clientCategory.toLowerCase()) {
               pointIconToDefaultCategory = true;
             }
@@ -375,7 +375,7 @@ class CategoryScreen extends Component {
       categoryIcon,
       id,
       categoryColor,
-    } = categoryData; 
+    } = categoryData;
     let showCheckIcon =
       pointIconToDefaultCategory == true
         ? categoryName == executingTransactionDetails.clientDefaultCategory
@@ -419,7 +419,7 @@ class CategoryScreen extends Component {
 
             <View style={styles.renderSingleCategoryTitleView}>
               <Text style={styles.renderSingleCategoryTitleText}>
-                {firstLetterCapital(categoryName)}
+                {toTitleCase(categoryName)}
               </Text>
             </View>
             {showCheckIcon == true ? (
@@ -456,7 +456,7 @@ class CategoryScreen extends Component {
 
             <View style={styles.viewRenderSingleCategoryTitleBody}>
               <Text style={styles.viewRenderSingleCategoryText}>
-                {firstLetterCapital(categoryName)}
+                {toTitleCase(categoryName)}
               </Text>
             </View>
 
@@ -568,7 +568,7 @@ class CategoryScreen extends Component {
         //const addCategoryResponse = await addPlaidCategory(allFirstWordCapital(categoryInput));
         const addCategoryResponse = await addPlaidCategory(
           categoryInput.toLowerCase()
-        ); 
+        );
         if (addCategoryResponse.result == true) {
           setTimeout(() => {
             this.setState(
