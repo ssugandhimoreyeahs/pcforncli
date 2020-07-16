@@ -143,7 +143,8 @@ export const APINETWORK = {
 
 export const PLAID = {
   publicKey: "57cd2ba0516d13d9638a8c49495510",
-  env: APIENDPOINT.isPlaidProduction == true ? "production" : "sandbox",
+  //env: APIENDPOINT.isPlaidProduction == true ? "production" : "sandbox",
+  env: APP_DEPLOYMENT == true ? "production" : "sandbox",
   product: "transactions",
   clientName: "Pocket CFO",
   selectAccount: true,
