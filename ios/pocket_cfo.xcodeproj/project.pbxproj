@@ -227,6 +227,7 @@
 				6C1F3BCB3711C59494397A59 /* [CP-User] [RNFB] Crashlytics Configuration */,
 				185A8DEA242E49A200EF6CB0 /* ShellScript */,
 				185A8DEC242E49BB00EF6CB0 /* ShellScript */,
+				C190B1985CCFF9A4A6018B17 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -407,6 +408,24 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-pocket_cfo/Pods-pocket_cfo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		C190B1985CCFF9A4A6018B17 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-pocket_cfo/Pods-pocket_cfo-frameworks.sh",
+				"${PODS_ROOT}/Plaid/LinkKit.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LinkKit.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-pocket_cfo/Pods-pocket_cfo-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		E09605CD69234F7232A5528A /* [CP-User] [RNFB] Core Configuration */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -493,8 +512,8 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: MOREYEAHS IT TECHNOLOGIES PRIVATE LIMITED (FS87CRZ2ZU)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: MOREYEAHS IT TECHNOLOGIES PRIVATE LIMITED (FS87CRZ2ZU)";
+				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 7;
 				DEAD_CODE_STRIPPING = NO;
@@ -553,7 +572,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
 				PRODUCT_NAME = PocketCFO;
-				PROVISIONING_PROFILE_SPECIFIER = "app-store-pocketcfo";
+				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
 				SWIFT_OBJC_BRIDGING_HEADER = "pocket_cfo-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -570,8 +589,8 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "iPhone Distribution: MOREYEAHS IT TECHNOLOGIES PRIVATE LIMITED (FS87CRZ2ZU)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: MOREYEAHS IT TECHNOLOGIES PRIVATE LIMITED (FS87CRZ2ZU)";
+				CODE_SIGN_IDENTITY = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "Apple Development: Sandeep Khore (62S9ZRM7Q6)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = FS87CRZ2ZU;
@@ -629,7 +648,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.moreyeahs.pocketcfo;
 				PRODUCT_NAME = PocketCFO;
-				PROVISIONING_PROFILE_SPECIFIER = "app-store-pocketcfo";
+				PROVISIONING_PROFILE_SPECIFIER = pocket_cfo_appdevelopment;
 				SWIFT_OBJC_BRIDGING_HEADER = "pocket_cfo-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

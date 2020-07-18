@@ -406,7 +406,7 @@ const MainNavigator = createStackNavigator(
     ...INSIGHTS,
   },
   {
-    initialRouteName: "ValueProp",
+    initialRouteName: "BankIntegration",
   }
 );
 

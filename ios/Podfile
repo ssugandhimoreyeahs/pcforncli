@@ -40,6 +40,7 @@ target 'pocket_cfo' do
 
   pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
 
+  pod 'Plaid', '~> 1.1.34'
 use_native_modules!
 end
 

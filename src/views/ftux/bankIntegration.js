@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { Text } from "react-native";
+import PlaidLink from "react-native-plaid-link-sdk";
 import PlaidAuthenticator from "react-native-plaid-link";
 import { PLAID } from "../../constants/constants";
 import { sendPlaidToken } from "../../api/api";
 import { BackHandler } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
-import {Root} from '@components';
+import { Root } from "@components";
 
 export default class BankIntegration extends Component {
   constructor(props) {
@@ -26,7 +28,12 @@ export default class BankIntegration extends Component {
         publicToken = data.metadata.public_token;
         institution = data.metadata.institution;
         accounts = data.metadata.accounts;
-
+        console.log("Plaid Information - ", data.metadata);
+        console.log("Plaid Data Information - ", {
+          publicToken,
+          institution,
+          accounts,
+        });
         const triggerPlaidPublicToken = await sendPlaidToken(
           publicToken,
           institution,
@@ -141,6 +148,8 @@ export default class BankIntegration extends Component {
           }
         );
       }
+    } else {
+      console.log("I am here for the Plaid Error - ", data);
     }
   };
 
@@ -171,7 +180,7 @@ export default class BankIntegration extends Component {
   render() {
     return (
       <Root headerColor={"#fff"} footerColor={"#fff"} barStyle={"dark"}>
-        <Spinner visible={this.state.isSpinner} />
+        <Spinner visible={this.state.isSpinner} /> 
         <PlaidAuthenticator
           onMessage={(data) => {
             this.onMessage(data);
@@ -183,6 +192,26 @@ export default class BankIntegration extends Component {
           selectAccount={PLAID.selectAccount}
           //connected={console.log("Completed")}
         />
+        {/* <PlaidLink
+          title="Add Account"
+          // Replace any of the following <#VARIABLE#>s according to your setup,
+          // for details see https://plaid.com/docs/quickstart/#client-side-link-configuration
+
+          publicKey={PLAID.publicKey}
+          clientName={PLAID.clientName}
+          env={PLAID.env}
+          onSuccess={(e) => console.log("success: ", e)}
+          product={PLAID.product}
+          // webviewRedirectUri="yourAppName://redirect"
+          // // Optional props
+          // countryCodes={["<# Country Code #>"]}
+          // language="<# Language #>"
+          // onExit={(e) => console.log("exit: ", e)}
+          // userEmailAddress="<# User Email #>"
+          // userLegalName="<# User Legal Name #>"
+          // userPhoneNumber="<# User Phone Number #>"
+          // webhook="<# Webhook URL #>"
+        /> */}
       </Root>
     );
   }
