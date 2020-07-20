@@ -9,9 +9,9 @@ import { ErrorBoundry } from "@components";
 
 console.disableYellowBox = true;
 
-// setJSExceptionHandler((error, isFatal) => {
-//   jsExceptionHandler(error, isFatal);
-// }, true);
+setJSExceptionHandler((error, isFatal) => {
+  jsExceptionHandler(error, isFatal);
+}, true);
 class App extends Component {
   componentDidMount = () => {
     setTimeout(() => {

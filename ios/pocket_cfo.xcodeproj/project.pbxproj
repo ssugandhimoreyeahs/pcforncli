@@ -226,7 +226,7 @@
 				E09605CD69234F7232A5528A /* [CP-User] [RNFB] Core Configuration */,
 				6C1F3BCB3711C59494397A59 /* [CP-User] [RNFB] Crashlytics Configuration */,
 				185A8DEA242E49A200EF6CB0 /* ShellScript */,
-				185A8DEC242E49BB00EF6CB0 /* ShellScript */,
+				185A8DEC242E49BB00EF6CB0 /* Run Script */,
 				C190B1985CCFF9A4A6018B17 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -333,7 +333,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Fabric/run\"\n";
 		};
-		185A8DEC242E49BB00EF6CB0 /* ShellScript */ = {
+		185A8DEC242E49BB00EF6CB0 /* Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -342,6 +342,7 @@
 			);
 			inputPaths = (
 			);
+			name = "Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
