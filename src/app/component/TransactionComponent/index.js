@@ -3,6 +3,7 @@ import { Text, View, FlatList, TouchableOpacity } from "react-native";
 import styles from "./indexCss";
 import PropTypes from "prop-types";
 import { ALL_MONTHS } from "appconstants";
+import { toTitleCase } from '@utils';
 
 import {
   numberWithCommas,
@@ -109,7 +110,7 @@ const TransactionComponent = memo((props) => {
                 color: touchableTextColor,
               }}
             >
-              {touchableText}
+              {toTitleCase(touchableText)}
             </Text>
           </TouchableOpacity>
         </View>

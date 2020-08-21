@@ -348,7 +348,7 @@ export default class CashOnHandChart extends PureComponent {
                     // x2={210}
                     style={{
                       stroke: (currentvalue) => {
-                        console.log("current Value h - ",currentvalue)
+                        //console.log("current Value h - ",currentvalue)
                         return currentvalue == 3 ? "grey": null;
                       },
                       strokeDasharray: [1, 3],

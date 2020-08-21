@@ -159,14 +159,14 @@ class CashOnHand extends Component {
             <Text style={styles.cohBalanceStyle}>{`$${numberWithCommas(
               currentBalance
             ) || 0.0}`}</Text>
-            <Text
+            {/* <Text
               style={{
                 marginTop: 7,
                 fontSize: 12,
                 color: "#1D1E1F",
                 textAlign: "right",
               }}
-            >{`${tDiff} minute${tDiff < 2 ? '' : 's'} ago`}</Text>
+            >{`${tDiff} minute${tDiff < 2 ? '' : 's'} ago`}</Text> */}
           </View>
         </View>
 

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Image, TouchableOpacity, Dimensions } from "react-native";
+import { View, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { VictoryPie } from "victory-native";
 import { Svg, Text, LinearGradient, Defs, Stop } from "react-native-svg";
 import { connect } from "react-redux";
@@ -16,12 +16,12 @@ class HealthScore extends Component {
   }
 
   render() {
+    
     let bankIntegrationStatus = false;
     const { userData } = this.props;
     if (userData.isFetched == true) {
       bankIntegrationStatus = userData.userData.bankIntegrationStatus;
-    }
-    console.log("Finalization Testing here - ", bankIntegrationStatus);
+    } 
     const { isFetched, healthScoreData, loading } = this.props.healthScoreRedux;
     let healthScoreDataOutput = 0;
     if (isFetched && bankIntegrationStatus == true) {
@@ -30,23 +30,10 @@ class HealthScore extends Component {
     const healthScore = healthScoreDataOutput;
     const healthScorecategory = getHealthScoreCategory(healthScore);
     const gaugeColor = getHealthScoreColor(healthScore);
+    console.log("TEST HERE - ",JSON.stringify(userData));
     return (
-      <View
-        style={{
-          backgroundColor: "#090643",
-          alignContent: "center",
-          height: 350,
-        }}
-      >
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            width: "100%",
-            height: 30,
-            marginTop: 20,
-          }}
-        >
+      <View style={styles.container}>
+        <View style={styles.childContainer}>
           <TouchableOpacity
             onPress={() =>
               this.props.navigation.navigate("Contact", {
@@ -59,53 +46,37 @@ class HealthScore extends Component {
               })
             }
           >
-            <View
-              style={{
-                height: 44,
-                width: 50,
-                alignItems: "center",
-                marginLeft: 1,
-              }}
-            >
+            <View style={styles.upperIconStyle}>
               <Image
                 source={require("../../../assets/icon_profile.png")}
-                style={{ height: 20, width: 20 }}
+                style={styles.iconStyleStyleWith}
               />
             </View>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.navigate("Checking", {
-                userCurrentBalance: this.props.userCurrentBalance,
-                reloadPlaid: () => {
-                  this.props.reloadPlaid();
-                },
-              })
-            }
-          >
-            <View
-              style={{
-                height: 44,
-                width: 50,
-                alignItems: "center",
-                marginRight: 1,
-              }}
+          {
+            userData.userData.bankIntegrationStatus && <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate("Checking", {
+                  userCurrentBalance: this.props.userCurrentBalance,
+                  reloadPlaid: () => {
+                    this.props.reloadPlaid();
+                  },
+                })
+              }
             >
-              <Image
-                source={require("../../../assets/icon_book.png")}
-                style={{ resizeMode: "contain", height: 20, width: 20 }}
-              />
-            </View>
-          </TouchableOpacity>
+              <View style={styles.subIconContainers}>
+                <Image
+                  source={require("../../../assets/icon_book.png")}
+                  style={{
+                    resizeMode: "contain",
+                    ...styles.iconStyleStyleWith,
+                  }}
+                />
+              </View>
+            </TouchableOpacity>
+          }
         </View>
-        <View
-          style={{
-            backgroundColor: "#090643",
-            alignItems: "center",
-            justifyContent: "center",
-            alignSelf: "center",
-          }}
-        >
+        <View style={styles.healthScoreContainer}>
           {loading == false ? (
             <Svg
               width={375}
@@ -196,7 +167,39 @@ class HealthScore extends Component {
     );
   }
 }
-
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "#090643",
+    alignContent: "center",
+    height: 350,
+  },
+  childContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    height: 30,
+    marginTop: 20,
+  },
+  upperIconStyle: {
+    height: 44,
+    width: 50,
+    alignItems: "center",
+    marginLeft: 1,
+  },
+  iconStyleStyleWith: { height: 20, width: 20 },
+  subIconContainers: {
+    height: 44,
+    width: 50,
+    alignItems: "center",
+    marginRight: 1,
+  },
+  healthScoreContainer: {
+    backgroundColor: "#090643",
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+  },
+});
 const mapStateToProps = (state) => {
   return {
     healthScoreRedux: state.healthScoreReducer,

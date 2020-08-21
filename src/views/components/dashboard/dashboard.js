@@ -537,7 +537,7 @@ class Dashboard extends Component {
   fetchUserServer = async (fromJob = false) => {
     try {
       let userResponse = await getUser();
-      console.log("Heres - ", userResponse);
+      console.log("fetchUserServer from ValueProp - ", JSON.stringify(userResponse));
       if (userResponse.result === true) {
         this.fetchUser(userResponse);
       } else {

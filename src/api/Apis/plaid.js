@@ -1,20 +1,29 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-community/async-storage";
 import { APINETWORK, API_TIMEOUT } from "../../constants/constants";
+ 
 const timeout = API_TIMEOUT;
 
-export async function sendPlaidToken(public_token, institution, accounts) {
+export async function sendPlaidToken(
+  public_token,
+  institution,
+  accounts,
+  //userId
+) {
   try {
     const body = {
       public_token,
+      //userId,
       institution,
       accounts,
     };
+    console.log("/plaid/getToken - REQUEST <<< ", JSON.stringify(body));
     const token = await AsyncStorage.getItem("authToken");
     const response = await axios.post(APINETWORK.pushToken, body, {
       headers: { Authorization: token, "Content-Type": "application/json" },
     });
     const res = response.data;
+    console.log("/plaid/getToken - RESPONSE >>> ", JSON.stringify(res));
     if (res.success == true) {
       return { result: true, response: response.data };
     } else {

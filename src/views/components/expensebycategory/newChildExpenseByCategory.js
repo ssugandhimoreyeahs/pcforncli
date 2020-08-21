@@ -35,7 +35,9 @@ import SVG from "react-native-svg";
 import { connect } from "react-redux";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 import { fetchExpensesAsyncCreator } from "../../../reducers/expensecategory";
-import {Root} from '@components';
+import { Root } from "@components";
+import { toTitleCase } from '@utils';
+
 FontAwesome.loadFont();
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -189,15 +191,9 @@ class ExpenseByCategoryChild extends Component {
           >
             <AntDesign name="left" size={22} color={"#000000"} />
           </TouchableOpacity>
-          <View
-            style={{
-              width: "80%",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ fontSize: 19, color: "#000", fontWeight: "600" }}>
-              {`${firstLetterCapital(category)}`}
+          <View style={styles.headerTextView}>
+            <Text style={styles.headerTitleText}>
+              {`${toTitleCase(category)}`}
             </Text>
           </View>
         </View>
@@ -413,14 +409,8 @@ class ExpenseByCategoryChild extends Component {
         </BarWraper>
         <View
           style={{
-            marginTop: -35,
-            marginLeft: 37,
+            ...styles.barChartContainer,
             width: deviceWidth - 115,
-            justifyContent: "space-between",
-            borderWidth: 0,
-            borderColor: "red",
-            flexDirection: "row",
-            marginBottom: 40,
           }}
         >
           {graphDataArray.map((singleMonth, index) => {
@@ -478,6 +468,10 @@ class ExpenseByCategoryChild extends Component {
       iconObj.text = subExepenseByCategory.isDown;
     }
     let isSubCategoryEmpty = ExpenseSubCategory.length == 0 ? true : false;
+    const { category } = this.props.navigation.getParam(
+      "currentExpenseCategory"
+    );
+
     return (
       <Fragment>
         <View style={styles.upperView}>
@@ -508,8 +502,10 @@ class ExpenseByCategoryChild extends Component {
                 alignItems: "center",
               }}
             >
-              <Text style={{ color: "#070640" }}>
-                You have not spent anything this month.
+              <Text style={{ color: "#070640", textAlign: "center" }}>
+                {`You don't have any transaction in ${toTitleCase(
+                  category
+                )} this month.`}
               </Text>
             </View>
           )}
@@ -1097,10 +1093,13 @@ class ExpenseByCategoryChild extends Component {
                     borderColor: backgroundColor,
                   }}
                 >
-                  <Text style={{...styles.newTransactionCategoryButtonText,
-                    color: backgroundColor === '#EEEFF1' ? '#000' : '#FFF'
-                  }}>
-                    {firstLetterCapital(category)}
+                  <Text
+                    style={{
+                      ...styles.newTransactionCategoryButtonText,
+                      color: backgroundColor === "#EEEFF1" ? "#000" : "#FFF",
+                    }}
+                  >
+                    {toTitleCase(category)}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -1187,15 +1186,15 @@ class ExpenseByCategoryChild extends Component {
 
     return (
       <Root headerColor={"#F8F8F8"} footerColor={"#FFF"} barStyle={"dark"}>
-      <View style={styles.container}>
-        {error == true ? (
-          <this.errorView />
-        ) : loading == true ? (
-          <this.loadingView />
-        ) : (
-          <this.renderBody />
-        )}
-      </View>
+        <View style={styles.container}>
+          {error == true ? (
+            <this.errorView />
+          ) : loading == true ? (
+            <this.loadingView />
+          ) : (
+            <this.renderBody />
+          )}
+        </View>
       </Root>
     );
   }
@@ -1216,6 +1215,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#F8F8F8",
     flexDirection: "row",
   },
+  headerTextView: {
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  headerTitleText: { fontSize: 19, color: "#000", fontWeight: "600" },
   headerChild: {
     flexDirection: "row",
     width: "100%",
@@ -1366,6 +1371,15 @@ const styles = StyleSheet.create({
     maxWidth: "40%",
     textAlign: "right",
     marginRight: 10,
+  },
+  barChartContainer: {
+    marginTop: -35,
+    marginLeft: 37,
+    justifyContent: "space-between",
+    borderWidth: 0,
+    borderColor: "red",
+    flexDirection: "row",
+    marginBottom: 40,
   },
   newTransactionChildContainer2: {
     marginTop: 10,

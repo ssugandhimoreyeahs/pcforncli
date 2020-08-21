@@ -10,7 +10,7 @@ const styles = StyleSheet.create({
   seprator: {
     borderBottomColor: "#1D1E1F",
     borderBottomWidth: StyleSheet.hairlineWidth,
-    opacity: 0.2,
+    opacity: 0.1,
     width: "100%",
     alignSelf: "center",
     marginVertical: 20,

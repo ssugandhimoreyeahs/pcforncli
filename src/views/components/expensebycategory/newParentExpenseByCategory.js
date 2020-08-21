@@ -18,7 +18,7 @@ import { PieChart } from "react-native-svg-charts";
 import { Circle, G, Image } from "react-native-svg";
 import { connect } from "react-redux";
 import { ALL_MONTHS, FULL_MONTH } from "../../../constants/constants";
-import {Root} from '@components';
+import { Root } from "@components";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
 import {
   numberWithCommas,
@@ -26,7 +26,7 @@ import {
   PLAID_EXPENSE_CATEGORIES,
   getCategoryInitials,
 } from "../../../api/common";
-
+import { toTitleCase } from "@utils";
 FontAwesome.loadFont();
 AntDesign.loadFont();
 MaterialCommunityIcons.loadFont();
@@ -190,7 +190,7 @@ class ExpenseByCategory extends Component {
               }}
             >
               <Text style={{ color: "#070640", fontWeight: "500" }}>
-                You have not spent anything this month.
+                {`You don't have any transaction in this month.`}
               </Text>
             </View>
           )}
@@ -239,7 +239,6 @@ class ExpenseByCategory extends Component {
   renderCategory = () => {
     const { expensesData } = this.props.mainExpenseByCategoryRedux;
     const { ExpenseByCategory } = expensesData;
-    
 
     return (
       <Fragment>
@@ -266,7 +265,7 @@ class ExpenseByCategory extends Component {
     const { expensesData, expenseType } = this.props.mainExpenseByCategoryRedux;
     const { ExpenseByCategory } = expensesData;
     const { category } = this.props.categoryReduxData;
-    console.log("Test here - ",category);
+    console.log("Test here - ", category);
     //let categoryBackgroundColor = `#F98361`;
     let categoryIcon = {
       backgroundColor: `#6C5BC1`,
@@ -275,18 +274,22 @@ class ExpenseByCategory extends Component {
     };
     //Chages for new category structure here
 
-    let categoryDetailsObj = category.find(
-      (itr) => itr.id === item.categoryId
-    );  
-    if (categoryDetailsObj != undefined && !categoryDetailsObj.customcategories) {
+    let categoryDetailsObj = category.find((itr) => itr.id === item.categoryId);
+    if (
+      categoryDetailsObj != undefined &&
+      !categoryDetailsObj.customcategories
+    ) {
       categoryIcon.backgroundColor = categoryDetailsObj.categoryColor;
       categoryIcon.isIcon = true;
       categoryIcon.iconPath = categoryDetailsObj.categoryIcon;
-    } else if(categoryDetailsObj != undefined && categoryDetailsObj?.customcategories) {
+    } else if (
+      categoryDetailsObj != undefined &&
+      categoryDetailsObj?.customcategories
+    ) {
       categoryIcon.backgroundColor = categoryDetailsObj.categoryColor;
       categoryIcon.isIcon = false;
       categoryIcon.iconPath = null;
-    } 
+    }
     // console.log("Test for incomming data - ",item);
     // for (let i = 0; i < PLAID_EXPENSE_CATEGORIES.length; i++) {
     //   if (
@@ -348,7 +351,7 @@ class ExpenseByCategory extends Component {
           <View style={styles.categoryRenderStyle}>
             <View style={styles.categoryTitleAmount}>
               <Text style={styles.categoryText}>
-                {`${firstLetterCapital(item.category)}`}
+                {`${toTitleCase(item.category)}`}
               </Text>
               <Text style={styles.categoryAmount}>
                 {`-$${numberWithCommas(item.amount)}`}
@@ -616,15 +619,15 @@ class ExpenseByCategory extends Component {
 
     return (
       <Root headerColor={"#F8F8F8"} footerColor={"#EEEFF1"} barStyle={"dark"}>
-      <View style={styles.container}>
-        {error == true ? (
-          <this.errorView />
-        ) : loader == true ? (
-          <this.loaderView />
-        ) : isFetched == true ? (
-          <this.loadExpenseScreen />
-        ) : null}
-      </View>
+        <View style={styles.container}>
+          {error == true ? (
+            <this.errorView />
+          ) : loader == true ? (
+            <this.loaderView />
+          ) : isFetched == true ? (
+            <this.loadExpenseScreen />
+          ) : null}
+        </View>
       </Root>
     );
   }

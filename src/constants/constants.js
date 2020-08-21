@@ -2,14 +2,14 @@ import APPJSON from "../../app.json";
 
 export const API_TIMEOUT = 20000;
 export const APP_VERSION = APPJSON.version;
-const APP_DEPLOYMENT = APPJSON.appDeploypment;
+const APP_DEPLOYMENT = APPJSON.appDeployment;
 const NETWORKINSTANCE = {
   SANDBOXINSTANCE: "http://18.222.152.47:8081/v0.1", //code for the using the sandbox
-  PRODUCTIONINSTANCE: "http://3.132.213.123:8081/v0.1", // code for the production
+  PRODUCTIONINSTANCE: "http://3.132.97.165:8081/v0.1", // code for the production
   NGROK: "https://aaffa9c4.ngrok.io/v0.1",
 };
 
-let isProduction = true;
+// let isProduction = true;
 //isProduction = false;
 
 const APIENDPOINT = APP_DEPLOYMENT
@@ -47,6 +47,9 @@ const HEALTHSCOREAPI = {
     APIENDPOINT.endPoint + "/parcentage/healthScoreWithoutQuick",
 };
 
+// APP_DEPLOYMENT
+//     ? `https://vpmr0k0z8e.execute-api.us-east-1.amazonaws.com/dev/plaid/getToken`
+//     :
 const PLAIDAPIS = {
   pushToken: APIENDPOINT.endPoint + "/plaid/getToken",
   getTransactions: APIENDPOINT.endPoint + "/plaid/getTransection",
@@ -146,7 +149,7 @@ export const PLAID = {
   //env: APIENDPOINT.isPlaidProduction == true ? "production" : "sandbox",
   env: APP_DEPLOYMENT == true ? "production" : "sandbox",
   product: "transactions",
-  clientName: "Pocket CFO",
+  clientName: "PocketCFO",
   selectAccount: true,
 };
 

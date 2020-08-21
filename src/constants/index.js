@@ -1,7 +1,2 @@
-import { ALL_MONTHS } from './constants';
-import DEFAULT_VIEWPORT  from './viewPort';
-export {
-    ALL_MONTHS,
-    DEFAULT_VIEWPORT
-    
-}
+import { ALL_MONTHS } from "./constants";
+export { ALL_MONTHS };

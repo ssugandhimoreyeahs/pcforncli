@@ -11,7 +11,12 @@ const MyWrapper = Platform.select({
   ios: SafeAreaView,
   android: View,
 });
-const RootComponent = ({ children, headerColor, footerColor, barStyle }) => {
+const RootComponent = ({
+  children,
+  headerColor,
+  footerColor,
+  barStyle 
+}) => {
   if (Platform.OS === "android") {
     StatusBar.setBackgroundColor(headerColor);
   }
