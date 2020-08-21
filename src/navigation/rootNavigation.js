@@ -59,8 +59,8 @@ import NewExpenseByCategoryParent from "@views/components/expensebycategory/newP
 import NewExpenseByCategoryChild from "@views/components/expensebycategory/newChildExpenseByCategory";
 import UncategorizedExpenseByCategory from "@views/components/expensebycategory/uncategorized";
 
-//App Levels Routes
-
+//Transactions Screens
+import { TransactionScreen } from "@screens";
 
 const HOME = {
   ValueProp: {
@@ -395,6 +395,16 @@ const INSIGHTS = {
     },
   },
 };
+
+const TransactionsScreens = {
+  TransactionScreen: {
+    screen: TransactionScreen,
+    navigationOptions: {
+      header: null,
+      gesturesEnabled: false,
+    },
+  },
+};
 const MainNavigator = createStackNavigator(
   {
     ...HOME,
@@ -404,6 +414,7 @@ const MainNavigator = createStackNavigator(
     ...PROFILE,
     ...EXPENSEBYCATEGORY,
     ...INSIGHTS,
+    ...TransactionsScreens,
   },
   {
     initialRouteName: "ValueProp",

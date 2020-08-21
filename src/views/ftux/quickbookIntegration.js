@@ -47,6 +47,7 @@ class QuickbookIntegration extends Component {
   handleUrlResponses = async (nativeEvent) => {
     let { isExecutedTimes } = this.state;
     let currentExecutingUrl = nativeEvent.url;
+    console.log("CURRENT EXECUTING URL - ", currentExecutingUrl);
     let currentExecutingUrlObjParse = Url.parse(currentExecutingUrl, true);
     let splitingUrl = currentExecutingUrl.split("?");
     let qbCallBackUrl = APINETWORK.qbCallBackUrl;

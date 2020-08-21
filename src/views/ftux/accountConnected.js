@@ -13,6 +13,7 @@ import { Button } from "react-native-elements";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 // import Button from "../components/login/button";
 import { Root } from "@components";
+import Spinner from "react-native-loading-spinner-overlay";
 
 class AccountConnected extends Component {
   constructor(props) {
@@ -22,6 +23,10 @@ class AccountConnected extends Component {
     BackHandler.addEventListener("hardwareBackPress", () =>
       this.handleBackButton(this.props.navigation)
     );
+
+    setTimeout(() => {
+      this.props.navigation.getParam("redirectTo")();
+    }, 2000);
   }
 
   componentWillUnmount() {
@@ -45,7 +50,34 @@ class AccountConnected extends Component {
   render() {
     return (
       <Root headerColor={"#F5F6F7"} footerColor={"#F5F6F7"} barStyle={"dark"}>
-        <View style={styles.margins}>
+        <Spinner visible={true} />
+      </Root>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  margins: {
+    flex: 1,
+    backgroundColor: "#F5F6F7",
+  },
+  button: {
+    borderRadius: 24,
+    height: 48,
+    width: "90%",
+    backgroundColor: "#007AFF",
+    alignSelf: "center",
+  },
+  buttonContainer: {
+    marginTop: 75,
+    alignSelf: "center",
+  },
+});
+
+export default AccountConnected;
+
+/*
+  <View style={styles.margins}>
           <View
             style={{
               justifyContent: "center",
@@ -74,12 +106,12 @@ class AccountConnected extends Component {
               alignSelf: "center",
             }}
           >
-            {/* <Button 
+            <Button 
                   buttonStyle={styles.button}  
                   onPress={()=>{ this.props.navigation.getParam("redirectTo")(); }} 
                   title={"Back"}
                   titleStyle={{textAlign:'center'}}
-                  containerStyle={styles.buttonContainer} /> */}
+                  containerStyle={styles.buttonContainer} /> 
             <TouchableOpacity
               onPress={() => {
                 this.props.navigation.getParam("redirectTo")();
@@ -99,27 +131,4 @@ class AccountConnected extends Component {
             </TouchableOpacity>
           </View>
         </View>
-      </Root>
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  margins: {
-    flex: 1,
-    backgroundColor: "#F5F6F7",
-  },
-  button: {
-    borderRadius: 24,
-    height: 48,
-    width: "90%",
-    backgroundColor: "#007AFF",
-    alignSelf: "center",
-  },
-  buttonContainer: {
-    marginTop: 75,
-    alignSelf: "center",
-  },
-});
-
-export default AccountConnected;
+*/

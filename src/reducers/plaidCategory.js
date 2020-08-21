@@ -69,6 +69,7 @@ export function triggerPlaidCategoryAsync() {
 
     getPlaidCategoryUsingPromise()
       .then((plaidCategoryData) => {
+        let categoryIndex = 0;
         let updatedPlaidCategoryData = plaidCategoryData.plaidCategoryData.map(
           (singlePlaidCategory, index) => {
             let categoryAssets = {};
@@ -85,10 +86,12 @@ export function triggerPlaidCategoryAsync() {
                   ? categoryAssetsData.categoryTextColor
                   : "#FFF";
             } else {
-              categoryAssets.categoryColor = randomElement(
-                PLAID_EXPENSE_CUSTOM_CATEGORIES_COLORS
-              ).color;
+              if(categoryIndex == PLAID_EXPENSE_CUSTOM_CATEGORIES_COLORS.length-1){
+                categoryIndex = 0;
+              }
+              categoryAssets.categoryColor = PLAID_EXPENSE_CUSTOM_CATEGORIES_COLORS[categoryIndex].color;
               categoryAssets.categoryTextColor = "#FFF";
+              categoryIndex++;
             }
             return { ...singlePlaidCategory, ...categoryAssets };
           }

@@ -32,6 +32,11 @@ import {
 } from "../../../api/api";
 import { CustomTabs, TransactionComponentWithDate } from "@components";
 import { Spinner as NativeBaseSpinner } from "native-base";
+import {
+  fetchExpensesAsyncCreator,
+  triggerPlaidCategoryAsync,
+  fetchMainExpenseAsyncCreator,
+} from "@redux/reducers";
 
 AntDesign.loadFont();
 class TransactionScreen extends PureComponent {
@@ -424,7 +429,13 @@ class TransactionScreen extends PureComponent {
         showEditTray: true,
         transactionType,
         currentExecutingTransaction: rootTransactionObj,
-        resetTransactionScreen: (reciever1 = false, reciever2 = false) => {
+        resetTransactionScreen: (
+          resetExpenseDashboardCart = false,
+          reciever2 = false
+        ) => {
+          if (resetExpenseDashboardCart) {
+            this.props.fetchExpenseByCategory(3);
+          }
           this.setState({ ...this.getInitialState() }, () => {
             this.resetAllDataMembers();
             setTimeout(() => {
@@ -631,7 +642,9 @@ class TransactionScreen extends PureComponent {
               )
             ) : null}
           </View>
-        ) : <Spinner visible={true} textStyle={styles.spinnerTextStyle} />}
+        ) : (
+          <Spinner visible={true} textStyle={styles.spinnerTextStyle} />
+        )}
       </Root>
     );
   }

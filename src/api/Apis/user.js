@@ -20,7 +20,7 @@ export async function createUser(body) {
       timeout,
     });
     const userCreatedResponse = response.data;
-    //console.log("mongo new Token ",userCreatedResponse.token);
+    console.log("CREATE USER RESPONSE - ",JSON.stringify(userCreatedResponse));
     if (userCreatedResponse.success == true) {
       await AsyncStorage.setItem("authToken", userCreatedResponse.token);
       return { result: true, response: userCreatedResponse };
@@ -135,7 +135,7 @@ export async function isUserAlreadyExist(username) {
       APINETWORK.isUserExist,
       { username },
       {
-        headers: { "Content-Type": "application/json " },
+        headers: { "Content-Type": "application/json" },
         timeout,
       }
     );

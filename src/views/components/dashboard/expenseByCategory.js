@@ -24,6 +24,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { TERMINOLOGY } from "../../../api/message";
 import { EXPENSE_INSIGHTS_DATA } from "@constants";
+import { toTitleCase } from '@utils';
+
 MaterialCommunityIcons.loadFont();
 AntDesign.loadFont();
 Ionicons.loadFont();
@@ -154,7 +156,7 @@ class ExpenseByCategory extends Component {
             paddingLeft: 9,
           }}
         >
-          <Text style={styles.renderCategoryNameStyle}>{`${category}`}</Text>
+          <Text style={styles.renderCategoryNameStyle}>{`${toTitleCase(category)}`}</Text>
           <Text style={styles.renderCategoryPriceStyle}>{`${price}`}</Text>
         </View>
       </View>

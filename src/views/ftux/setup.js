@@ -138,6 +138,7 @@ class Setup extends Component {
         });
       },
       companyName: this.props.navigation.getParam("companyName", ""),
+      userId: this.props.navigation.getParam("userId", ""),
     });
   };
   myCronJob = async (fromJob = false) => {

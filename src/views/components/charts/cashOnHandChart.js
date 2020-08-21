@@ -4,8 +4,8 @@ import {
   VictoryAxis,
   VictoryChart,
   VictoryLine,
-  VictoryTheme,
-  Data,
+  VictoryTheme, 
+  LineSegment,
 } from "victory-native";
 import Moment from "moment";
 import _ from "lodash";
@@ -340,6 +340,27 @@ export default class CashOnHandChart extends PureComponent {
               />
               <VictoryAxis
                 tickValues={applyGraph.map((each) => each.x)}
+                gridComponent={
+                  <LineSegment
+                    data={applyGraph.map((each) => each.x)}
+                    
+                    // x1={210}
+                    // x2={210}
+                    style={{
+                      stroke: (currentvalue) => {
+                        //console.log("current Value h - ",currentvalue)
+                        return currentvalue == 3 ? "grey": null;
+                      },
+                      strokeDasharray: [1, 3],
+                      strokeWidth: 1.0, 
+                      margin: {
+                        x1: 10,
+                        x2:20
+                      }
+                    }}
+                    
+                  />
+                }
                 style={{
                   axis: { stroke: "none" },
                   tickLabels: {
@@ -348,12 +369,13 @@ export default class CashOnHandChart extends PureComponent {
                     strokeWidth: 2.0,
                     fontSize: 10,
                   },
-                  grid: {
-                    stroke: (currentvalue) =>
-                      currentvalue == currentMonth ? "grey" : null,
-                    strokeDasharray: [1, 3],
-                    strokeWidth: 1.0,
-                  },
+
+                  // grid: {
+                  //   stroke: (currentvalue) =>
+                  //     currentvalue == currentMonth ? "grey" : null,
+                  //   strokeDasharray: [1, 3],
+                  //   strokeWidth: 1.0,
+                  // },
                 }}
               />
               <VictoryLine

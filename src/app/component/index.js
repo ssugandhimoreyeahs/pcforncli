@@ -14,6 +14,11 @@ import {
   OnboardingQuestion,
   OnboardingAnswer,
 } from "./OnboardingQuestion";
+
+import AccountBalance from "./AccountBalance";
+import AccountType from "./AccountType";
+import TransactionTile from './TransactionTile';
+
 export {
   CashOnHand,
   ChangeInCash,
@@ -26,4 +31,7 @@ export {
   OnboardingQuestionCount,
   OnboardingQuestion,
   OnboardingAnswer,
+  AccountBalance,
+  AccountType,
+  TransactionTile
 };
