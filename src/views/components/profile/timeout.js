@@ -9,9 +9,7 @@ import {
   SafeAreaView,
   StatusBar,
 } from "react-native";
-import { Button } from "react-native-paper";
-// import { Ionicons, AntDesign} from '@expo/vector-icons';
-// import { Oops } from '../../../assets/ClipartKey.png';
+import { Button } from "react-native-paper"; 
 
 class TimeOut extends Component {
   constructor(props) {

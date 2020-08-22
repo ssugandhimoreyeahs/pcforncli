@@ -11,8 +11,7 @@ import {
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { BarGraph } from "./BarGraph";
-import * as accounting from "accounting-js";
-// import {Ionicons} from '@expo/vector-icons';
+import * as accounting from "accounting-js"; 
 import { Button } from "react-native-elements";
 import { connect } from "react-redux";
 import { fetchArAsyncCreator } from "../../../reducers/incommingar";

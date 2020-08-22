@@ -8,8 +8,7 @@ import {
   BackHandler,
   SafeAreaView,
   StatusBar,
-} from "react-native";
-//import { AntDesign} from '@expo/vector-icons';
+} from "react-native"; 
 import Spinner from "react-native-loading-spinner-overlay";
 import { getUser } from "../../../api/api";
 import { ScrollView } from "react-native-gesture-handler";

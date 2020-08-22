@@ -14,8 +14,7 @@ import {
 } from "react-native";
 import { Button, Card, Input, Text as Txt, Icon } from "react-native-elements";
 import { TextInput, ScrollView } from "react-native-gesture-handler";
-import logo2g from "../../../assets/logo.png";
-// import {AntDesign} from "@expo/vector-icons";
+import logo2g from "../../../assets/logo.png"; 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { getUser } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";

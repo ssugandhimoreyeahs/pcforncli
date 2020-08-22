@@ -19,7 +19,7 @@ import {
   Alert,
   BackHandler,
 } from "react-native";
-//import {SimpleLineIcons, MaterialIcons, EvilIcons,MaterialCommunityIcons} from '@expo/vector-icons';
+ 
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { ScrollView } from "react-native-gesture-handler";
 import { Dropdown } from "react-native-material-dropdown";

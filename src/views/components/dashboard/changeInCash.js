@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import Moment from "moment";
-// import {Ionicons, SimpleLineIcons,AntDesign,MaterialCommunityIcons} from '@expo/vector-icons';
+ 
 import { Dropdown } from "react-native-material-dropdown";
 import { Button_Months } from "../../../constants/constants";
 import { Button } from "react-native-elements";

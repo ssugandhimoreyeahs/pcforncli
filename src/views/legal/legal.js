@@ -9,8 +9,10 @@ import {
   StatusBar,
   StyleSheet,
 } from "react-native";
-import WebView from "react-native-webview";
-import { Ionicons } from "@expo/vector-icons";
+import WebView from "react-native-webview"; 
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
+Ionicons.loadFont();
 
 class Legal extends Component {
   constructor(props) {

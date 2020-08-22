@@ -12,8 +12,7 @@ import {
 import { Button, Input, Text } from "react-native-elements";
 import { forgetPassword } from "../../api/api";
 import { FORGET_PASSWORD_SEND, TRY_AGAIN } from "../../api/message";
-import Spinner from "react-native-loading-spinner-overlay";
-//import {AntDesign} from "@expo/vector-icons"
+import Spinner from "react-native-loading-spinner-overlay"; 
 import {Root} from '@components';
 import AntDesign from "react-native-vector-icons/AntDesign";
 

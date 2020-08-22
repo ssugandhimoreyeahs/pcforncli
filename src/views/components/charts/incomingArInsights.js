@@ -6,8 +6,12 @@ import {
   StyleSheet,
   TouchableOpacity,
   BackHandler,
-} from "react-native";
-import { AntDesign, Feather } from "@expo/vector-icons";
+} from "react-native"; 
+import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
+
+Feather.loadFont();
+AntDesign.loadFont();
 
 function Separator() {
   return <View style={styles.separator} />;

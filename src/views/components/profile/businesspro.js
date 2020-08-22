@@ -18,8 +18,7 @@ import {
   Icon,
 } from "react-native-elements";
 
-import { Root } from "@components";
-// import {AntDesign} from "@expo/vector-icons";
+import { Root } from "@components"; 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import { Dropdown } from "react-native-material-dropdown";
 import {

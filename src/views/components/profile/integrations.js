@@ -7,8 +7,7 @@ import {
   BackHandler,
   Alert,
   AsyncStorage,
-} from "react-native";
-//import { AntDesign } from "@expo/vector-icons";
+} from "react-native"; 
 import { isCheckUserConnectedToBank } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
 import {
@@ -659,7 +658,6 @@ export default connect(
 //Code in working condition and is commented on 05-02-2020 on 12:55PM
 // import React, { Component } from "react";
 // import { View, Text, StyleSheet, TouchableOpacity, BackHandler,Alert,AsyncStorage } from "react-native";
-// import { AntDesign } from "@expo/vector-icons";
 // import { isCheckUserConnectedToBank } from "../../../api/api";
 // import Spinner from 'react-native-loading-spinner-overlay';
 

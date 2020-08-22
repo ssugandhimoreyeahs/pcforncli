@@ -13,7 +13,7 @@ import {
   BackHandler,
 } from "react-native";
 
-//import {SimpleLineIcons, MaterialIcons, EvilIcons,MaterialCommunityIcons} from '@expo/vector-icons';
+ 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";

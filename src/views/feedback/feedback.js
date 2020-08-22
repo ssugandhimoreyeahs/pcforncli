@@ -14,12 +14,7 @@ import { Button, Text } from "react-native-elements";
 import SelectableTag from "../../controls/SelectableTag";
 import BottomNavLayout from "../../controls/bottom-nav-layout";
 import { sendUserFeedbackData } from "../../api/api";
-import Spinner from "react-native-loading-spinner-overlay";
-
-// import { EvilIcons,Entypo } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
-//import { TouchableOpacity } from "react-native-gesture-handler";
+import Spinner from "react-native-loading-spinner-overlay";  
 import EvilIcons from "react-native-vector-icons/EvilIcons";
 import Entypo from "react-native-vector-icons/Entypo";
 import ImagePickerRN from "react-native-image-picker";

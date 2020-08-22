@@ -8,11 +8,17 @@ import {
   BackHandler,
   ActivityIndicator,
 } from "react-native";
-import { Feather, AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { connect } from "react-redux";
 import { fetchInsightsAsyncCreator } from "../../../reducers/insights";
 
+import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+Feather.loadFont();
+AntDesign.loadFont();
+MaterialCommunityIcons.loadFont();
 class CashOnHandinsights extends React.Component {
   constructor(props) {
     super(props);
@@ -283,9 +289,9 @@ class CashOnHandinsights extends React.Component {
             }}
           >
             <View style={{ marginTop: 42 }}>
-              <Text style={styles.text1}>{`${
-                cohInsightsContent[cohType].insightText
-              }`}</Text>
+              <Text
+                style={styles.text1}
+              >{`${cohInsightsContent[cohType].insightText}`}</Text>
             </View>
           </View>
 
@@ -306,9 +312,7 @@ class CashOnHandinsights extends React.Component {
                   </View>
                   <Text style={styles.viewtxt}>
                     {" "}
-                    {`${
-                      cohInsightsContent[cohType].insightData[singleApiCohData]
-                    }`}
+                    {`${cohInsightsContent[cohType].insightData[singleApiCohData]}`}
                   </Text>
                 </View>
               );
@@ -600,10 +604,7 @@ const mapDispatchToProps = (dispatch) => {
     },
   };
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CashOnHandinsights);
+export default connect(mapStateToProps, mapDispatchToProps)(CashOnHandinsights);
 
 const cohInsightsContent = {
   "50%": {

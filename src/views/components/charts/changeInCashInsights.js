@@ -6,9 +6,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   BackHandler,
-} from "react-native";
-import { Feather, AntDesign } from "@expo/vector-icons";
-
+} from "react-native"; 
+import Feather from "react-native-vector-icons/Feather";
+import AntDesign from "react-native-vector-icons/AntDesign";
+Feather.loadFont();
+AntDesign.loadFont();
 class ChangeInCashInsights extends React.Component {
   constructor(props) {
     super(props);

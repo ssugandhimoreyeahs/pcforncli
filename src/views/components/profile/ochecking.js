@@ -13,9 +13,7 @@ import {
   BackHandler,
   StatusBar,
   ActivityIndicator,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-//import { AntDesign,SimpleLineIcons} from '@expo/vector-icons';
+} from "react-native"; 
 import AntDesign from "react-native-vector-icons/AntDesign";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import Constants from "expo-constants";
@@ -43,7 +41,8 @@ import { ALL_MONTHS } from "../../../constants/constants";
 import { fetchExpensesAsyncCreator } from "../../../reducers/expensecategory";
 import { triggerPlaidCategoryAsync } from "../../../reducers/plaidCategory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
-
+import Ionicons from 'react-native-vector-icons/Ionicons';
+Ionicons.loadFont();
 SimpleLineIcons.loadFont();
 AntDesign.loadFont();
 

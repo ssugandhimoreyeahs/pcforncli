@@ -12,9 +12,7 @@ import { Button, Card, Overlay, Input } from "react-native-elements";
 import { LEDGERS, network } from "../../constants/constants";
 //import { TouchableOpacity } from "react-native-gesture-handler";
 import { Linking } from "react-native";
-import AsyncStorage from "@react-native-community/async-storage";
-
-// import {Ionicons, AntDesign} from "@expo/vector-icons";
+import AsyncStorage from "@react-native-community/async-storage"; 
 import { TextInput } from "react-native-paper";
 import DialogInput from "react-native-dialog-input";
 import { triggerNoQbForm } from "../../api/api";

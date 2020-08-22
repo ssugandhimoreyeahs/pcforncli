@@ -14,8 +14,7 @@ import {
 import Moment, { months } from "moment";
 import { getHealthScoreColor } from "../../../utilities/gradient";
 import { getOutOfCashDate } from "../../../utilities/cash";
-import CashOnHandChart from "../charts/cashOnHandChart";
-// import {Ionicons, SimpleLineIcons} from '@expo/vector-icons';
+import CashOnHandChart from "../charts/cashOnHandChart"; 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import SimpleLineIcons from "react-native-vector-icons/SimpleLineIcons";
 import { Dropdown } from "react-native-material-dropdown";

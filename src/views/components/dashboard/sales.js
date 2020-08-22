@@ -9,8 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import Moment from "moment";
-import SalesChart from "../charts/salesChart";
-// import {Ionicons, SimpleLineIcons} from '@expo/vector-icons';
+import SalesChart from "../charts/salesChart"; 
 import { Dropdown } from "react-native-material-dropdown";
 import { Button_Months } from "../../../constants/constants";
 import { Button } from "react-native-elements";

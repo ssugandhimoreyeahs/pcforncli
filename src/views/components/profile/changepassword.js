@@ -12,9 +12,7 @@ import {
 import { Button, Input, Text, Icon } from "react-native-elements";
 import { createUser } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";
-import {Root} from '@components';
-//import {  } from "react-native-gesture-handler";
-//import {AntDesign} from "@expo/vector-icons";
+import {Root} from '@components'; 
 import { updateUserPassword } from "../../../api/api";
 import {
   PASSWORD_UPDATED,

@@ -11,7 +11,7 @@
     "build:ios": "react-native bundle --entry-file='index.ios.js' --bundle-output='./ios/YourAppName/main.jsbundle' --dev=false --platform='ios' --assets-dest='./ios'"
   },
   "dependencies": {
-    "@expo/vector-icons": "^10.0.6",
+    "@babel/plugin-proposal-decorators": "^7.10.5",
     "@material-ui/core": "^4.7.0",
     "@react-native-community/art": "^1.2.0",
     "@react-native-community/async-storage": "^1.8.1",
@@ -25,13 +25,6 @@
     "cross-spawn": "^7.0.1",
     "css-loader": "^3.2.0",
     "exit-on-double-back": "^1.0.1",
-    "expo": "^34.0.4",
-    "expo-cli": "^3.11.3",
-    "expo-constants": "^6.0.0",
-    "expo-image-picker": "^6.0.0",
-    "expo-module-scripts": "^1.1.1",
-    "expo-permissions": "^6.0.0",
-    "expokit": "^34.0.2",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.15",
     "lottie-ios": "^3.1.3",

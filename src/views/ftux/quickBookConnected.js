@@ -8,13 +8,13 @@ import {
   SafeAreaView,
   StatusBar,
   BackHandler,
-} from "react-native";
-import { Button } from "react-native-elements";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-// import Button from "../components/login/button";
+} from "react-native"; 
 
-import { triggerQbDataCopyDb } from "../../api/api";
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
+Ionicons.loadFont();
+AntDesign.loadFont();
 class AccountConnected extends Component {
   constructor(props) {
     super(props);

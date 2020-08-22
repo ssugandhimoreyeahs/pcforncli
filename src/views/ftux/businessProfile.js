@@ -30,11 +30,7 @@ import {
   STATE_OF_INCORP_OPTIONS,
   YEAR_FOUNDED_OPTIONS,
   AVATAR_IMAGE,
-} from "../../constants/constants";
-// import {AntDesign,S, Ionicons} from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
-import Constants from "expo-constants";
-import * as Permissions from "expo-permissions";
+} from "../../constants/constants";  
 
 import TryAgainScreen from "./somethingWrong";
 import Ionicons from "react-native-vector-icons/Ionicons";

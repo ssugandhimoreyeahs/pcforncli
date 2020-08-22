@@ -12,8 +12,7 @@ import {
   Linking,
   KeyboardAvoidingView,
   ScrollView,
-} from "react-native";
-// import { AntDesign} from '@expo/vector-icons';
+} from "react-native"; 
 import Button from "./button";
 import ClearButton from "./clear-button";
 import FormTextInput from "./input";
@@ -335,7 +334,6 @@ export default LoginScreen;
 
 // import * as React from "react";
 // import { Image, StyleSheet, View, Text, BackHandler, Alert, Keyboard, SafeAreaView,TouchableOpacity,Linking, KeyboardAvoidingView,ScrollView} from "react-native";
-// import { AntDesign} from '@expo/vector-icons';
 // import Button from "./button";
 // import ClearButton from "./clear-button";
 // import FormTextInput from "./input";
@@ -573,7 +571,6 @@ export default LoginScreen;
 
 // // import * as React from "react";
 // // import { Image, StyleSheet, View, Text, BackHandler, Alert, Keyboard, SafeAreaView, StatusBar, TouchableOpacity} from "react-native";
-// // import { AntDesign} from '@expo/vector-icons';
 // // import Button from "./button";
 // // import ClearButton from "./clear-button";
 // // import FormTextInput from "./input";

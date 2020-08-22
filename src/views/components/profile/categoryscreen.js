@@ -7,8 +7,7 @@ import {
   Keyboard,
   StyleSheet,
   ScrollView,
-} from "react-native";
-//import {Ionicons, SimpleLineIcons,AntDesign} from '@expo/vector-icons';
+} from "react-native"; 
 
 import ToggleSwitch from "toggle-switch-react-native";
 import { Switch, ActivityIndicator } from "react-native-paper";
@@ -26,7 +25,7 @@ import { allFirstWordCapital } from "../../../api/common";
 import { StackActions, NavigationActions } from "react-navigation";
 import { fetchExpensesAsyncCreator } from "../../../reducers/expensecategory";
 import { fetchMainExpenseAsyncCreator } from "../../../reducers/mainexpensecategory";
-//import {SimpleLineIcons,AntDesign, MaterialIcons, EvilIcons} from '@expo/vector-icons';
+ 
 
 import {
   DELETECATEGORY,

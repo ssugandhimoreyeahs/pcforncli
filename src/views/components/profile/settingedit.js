@@ -10,8 +10,7 @@ import {
   Keyboard,
   SafeAreaView,
   StatusBar,
-} from "react-native";
-// import { AntDesign, Ionicons} from '@expo/vector-icons';
+} from "react-native"; 
 import { Button } from "react-native-elements";
 import { editUserSetting } from "../../../api/api";
 import Spinner from "react-native-loading-spinner-overlay";

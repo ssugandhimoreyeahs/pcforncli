@@ -11,8 +11,7 @@ import {
   StyleSheet,
   StatusBar,
   Linking,
-} from "react-native";
-// import { Ionicons, AntDesign} from '@expo/vector-icons';
+} from "react-native"; 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import AntDesign from "react-native-vector-icons/AntDesign";
 import Spinner from "react-native-loading-spinner-overlay";

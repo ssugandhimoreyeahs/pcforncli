@@ -9,9 +9,7 @@ import {
   StatusBar,
   BackHandler,
 } from "react-native";
-import { Button } from "react-native-elements";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
-// import Button from "../components/login/button";
+import { Button } from "react-native-elements"; 
 import { Root } from "@components";
 import Spinner from "react-native-loading-spinner-overlay";
 
