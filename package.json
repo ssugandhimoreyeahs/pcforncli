@@ -26,7 +26,7 @@
     "css-loader": "^3.2.0",
     "exit-on-double-back": "^1.0.1",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "lottie-ios": "^3.1.3",
     "lottie-react-native": "^3.3.2",
     "moment": "^2.24.0",
